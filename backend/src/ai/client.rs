@@ -5,6 +5,7 @@ use genai::{
     resolver::{AuthData, Endpoint, ServiceTargetResolver},
     ClientConfig, ModelIden, ServiceTarget,
 };
+use tokio::sync::RwLock;
 
 use crate::secret_cache::{SecretCache, SecretCacheError};
 
@@ -17,16 +18,25 @@ pub enum AtuinAIClientError {
 /// A wrapper around a genai::Client that includes Atuin's custom service target resolver
 pub struct AtuinAIClient {
     client: genai::Client,
-    #[allow(dead_code)] // this will be used to fetch provider API keys in the future
+    #[allow(dead_code)] // kept for future use (e.g., key rotation); resolver uses a clone captured at construction
     secret_cache: Arc<SecretCache>,
+    /// The current desktop username, used for looking up provider API keys.
+    /// Set by the session before making requests.
+    current_username: Arc<RwLock<String>>,
 }
 
 impl AtuinAIClient {
     pub fn new(secret_cache: Arc<SecretCache>) -> Self {
         let secret_cache_clone = secret_cache.clone();
+        let current_username = Arc::new(RwLock::new(String::new()));
+        let username_clone = current_username.clone();
         let target_resolver =
             ServiceTargetResolver::from_resolver_async_fn(move |service_target| {
-                resolve_service_target(service_target, secret_cache_clone.clone())
+                resolve_service_target(
+                    service_target,
+                    secret_cache_clone.clone(),
+                    username_clone.clone(),
+                )
             });
         let client = genai::Client::builder()
             .with_config(ClientConfig::default().with_service_target_resolver(target_resolver))
@@ -35,7 +45,14 @@ impl AtuinAIClient {
         Self {
             client,
             secret_cache,
+            current_username,
         }
+    }
+
+    /// Set the current desktop username for API key lookups.
+    /// Must be called before making requests to non-Hub providers.
+    pub async fn set_current_username(&self, username: String) {
+        *self.current_username.write().await = username;
     }
 }
 
@@ -50,6 +67,7 @@ impl Deref for AtuinAIClient {
 fn resolve_service_target(
     mut service_target: ServiceTarget,
     secret_cache: Arc<SecretCache>,
+    current_username: Arc<RwLock<String>>,
 ) -> Pin<Box<dyn Future<Output = Result<ServiceTarget, genai::resolver::Error>> + Send>> {
     Box::pin(async move {
         let model_name = service_target.model.model_name.to_string();
@@ -67,6 +85,7 @@ fn resolve_service_target(
             "atuinhub" => AdapterKind::Anthropic,
             "claude" => AdapterKind::Anthropic,
             "openai" => AdapterKind::OpenAI,
+            "deepseek" => AdapterKind::DeepSeek,
             "ollama" => AdapterKind::Ollama,
             _ => {
                 return Err(genai::resolver::Error::Custom(format!(
@@ -76,16 +95,26 @@ fn resolve_service_target(
             }
         };
 
+        let is_hub = parts[0] == "atuinhub";
+
         // Set the API key, if any, for the provider
-        let key = get_api_key(&secret_cache, adapter_kind, parts[0] == "atuinhub")
+        // Provider API keys are stored per-OS-user for security isolation
+        let username = current_username.read().await.clone();
+        let key = get_api_key(&secret_cache, adapter_kind, is_hub, &username)
             .await
             .map_err(|e| genai::resolver::Error::Custom(e.to_string()))?;
 
         if let Some(key) = key {
-            let auth = AuthData::Key(key);
-            service_target.auth = auth;
+            service_target.auth = AuthData::Key(key);
+        } else if !is_hub && adapter_kind != AdapterKind::Ollama {
+            log::warn!(
+                "No API key found for provider '{}' (adapter {:?}). Requests will fail with auth error.",
+                parts[0],
+                adapter_kind
+            );
+            service_target.auth = AuthData::Key(String::new());
         } else {
-            service_target.auth = AuthData::Key("".to_string());
+            service_target.auth = AuthData::Key(String::new());
         }
 
         // Set the specific model
@@ -102,14 +131,24 @@ fn resolve_service_target(
 }
 
 async fn get_api_key(
-    _secret_cache: &SecretCache,
-    _adapter_kind: AdapterKind,
+    secret_cache: &SecretCache,
+    adapter_kind: AdapterKind,
     is_hub: bool,
+    username: &str,
 ) -> Result<Option<String>, AtuinAIClientError> {
-    // todo
+    // Hub auth is handled separately via custom HTTP headers in session.rs
     if is_hub {
         return Ok(None);
     }
 
-    Ok(None)
+    // Map adapter kind to the secret storage service name
+    let service = match adapter_kind {
+        AdapterKind::Anthropic => "sh.atuin.runbooks.ai.claude",
+        AdapterKind::OpenAI => "sh.atuin.runbooks.ai.openai",
+        AdapterKind::DeepSeek => "sh.atuin.runbooks.ai.deepseek",
+        AdapterKind::Ollama => "sh.atuin.runbooks.ai.ollama",
+        _ => return Ok(None),
+    };
+
+    secret_cache.get(service, username).await.map_err(Into::into)
 }

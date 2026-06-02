@@ -25,6 +25,7 @@ pub enum ModelSelection {
     AtuinHub { model: String, uri: Option<String> },
     Claude { model: String },
     OpenAI { model: String, uri: Option<String> },
+    DeepSeek { model: String },
     Ollama { model: String, uri: Option<String> },
 }
 
@@ -40,6 +41,7 @@ impl fmt::Display for ModelSelection {
                 Some(uri) => write!(f, "openai::{model}::{}", uri.deref()),
                 None => write!(f, "openai::{model}::default"),
             },
+            ModelSelection::DeepSeek { model } => write!(f, "deepseek::{model}::default"),
             ModelSelection::Ollama { model, uri } => match uri {
                 Some(uri) => write!(f, "ollama::{model}::{}", uri.deref()),
                 None => write!(f, "ollama::{model}::http://localhost:11434"),

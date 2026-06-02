@@ -39,7 +39,7 @@ import handleDeepLink from "@/routes/root/deep";
 import * as api from "@/api/api";
 import InterpreterSelector from "@/lib/blocks/common/InterpreterSelector";
 import AtuinEnv from "@/atuin_env";
-import { OllamaSettings, useAIProviderSettings } from "@/state/settings_ai";
+import { OllamaSettings, ClaudeSettings, OpenAISettings, DeepSeekSettings, useAIProviderSettings } from "@/state/settings_ai";
 
 async function loadFonts(): Promise<string[]> {
   const fonts = await invoke<string[]>("list_fonts");
@@ -1225,6 +1225,9 @@ const AISettings = () => {
         <>
           <AgentSettings />
           <AIOllamaSettings />
+          <AIClaudeSettings />
+          <AIOpenAISettings />
+          <AIDeepSeekSettings />
         </>
       )}
     </>
@@ -1234,6 +1237,9 @@ const AISettings = () => {
 const AgentSettings = () => {
   const providers = [
     ["Atuin Hub", "atuinhub"],
+    ["Claude", "claude"],
+    ["OpenAI", "openai"],
+    ["DeepSeek", "deepseek"],
     ["Ollama", "ollama"]
   ]
 
@@ -1280,6 +1286,49 @@ const AIOllamaSettings = () => {
     model: "",
   });
 
+  const user = useStore((state) => state.user);
+  const keychainUser = user?.username || "default";
+
+  const [apiKey, setApiKey] = useState("");
+  const [apiKeyLoaded, setApiKeyLoaded] = useState(false);
+  const [showApiKey, setShowApiKey] = useState(false);
+
+  // Load API key from OS keychain on mount
+  useEffect(() => {
+    invoke<string | null>("load_password", {
+      service: "sh.atuin.runbooks.ai.ollama",
+      user: keychainUser,
+    })
+      .then((key) => {
+        if (key) setApiKey(key);
+        setApiKeyLoaded(true);
+      })
+      .catch((e) => {
+        console.error("Failed to load Ollama API key:", e);
+        setApiKeyLoaded(true);
+      });
+  }, []);
+
+  const handleApiKeyChange = async (value: string) => {
+    setApiKey(value);
+    try {
+      if (value) {
+        await invoke("save_password", {
+          service: "sh.atuin.runbooks.ai.ollama",
+          user: keychainUser,
+          value,
+        });
+      } else {
+        await invoke("delete_password", {
+          service: "sh.atuin.runbooks.ai.ollama",
+          user: keychainUser,
+        });
+      }
+    } catch (e) {
+      console.error("Failed to save Ollama API key:", e);
+    }
+  };
+
   return (
     <Card shadow="sm">
       <CardBody className="flex flex-col gap-4">
@@ -1308,6 +1357,322 @@ const AIOllamaSettings = () => {
               value={ollamaSettings.model}
               onValueChange={(value) => setOllamaSettings({ ...ollamaSettings, model: value })}
               isDisabled={isLoading}
+            />
+
+            <Input
+              label="API Key (optional)"
+              placeholder="API key for remote Ollama instances"
+              type={showApiKey ? "text" : "password"}
+              value={apiKey}
+              onValueChange={handleApiKeyChange}
+              isDisabled={isLoading || !apiKeyLoaded}
+              description="Only needed for remote Ollama instances with auth. Leave empty for local usage."
+              endContent={
+                <button
+                  className="text-default-400 text-sm hover:text-default-600"
+                  onMouseDown={(e) => { e.preventDefault(); setShowApiKey(!showApiKey); }}
+                >
+                  {showApiKey ? "Hide" : "Show"}
+                </button>
+              }
+            />
+          </div>
+        )}
+      </CardBody>
+    </Card>
+  );
+};
+
+const AIClaudeSettings = () => {
+  const [claudeSettings, setClaudeSettings, isLoading] = useAIProviderSettings<ClaudeSettings>("claude", {
+    enabled: false,
+    model: "claude-sonnet-4-5-20250929",
+  });
+
+  const user = useStore((state) => state.user);
+  const keychainUser = user?.username || "default";
+
+  const [apiKey, setApiKey] = useState("");
+  const [apiKeyLoaded, setApiKeyLoaded] = useState(false);
+  const [showApiKey, setShowApiKey] = useState(false);
+
+  // Load API key from OS keychain on mount
+  useEffect(() => {
+    invoke<string | null>("load_password", {
+      service: "sh.atuin.runbooks.ai.claude",
+      user: keychainUser,
+    })
+      .then((key) => {
+        if (key) setApiKey(key);
+        setApiKeyLoaded(true);
+      })
+      .catch((e) => {
+        console.error("Failed to load Claude API key:", e);
+        setApiKeyLoaded(true);
+      });
+  }, []);
+
+  const handleApiKeyChange = async (value: string) => {
+    setApiKey(value);
+    try {
+      if (value) {
+        await invoke("save_password", {
+          service: "sh.atuin.runbooks.ai.claude",
+          user: keychainUser,
+          value,
+        });
+      } else {
+        await invoke("delete_password", {
+          service: "sh.atuin.runbooks.ai.claude",
+          user: keychainUser,
+        });
+      }
+    } catch (e) {
+      console.error("Failed to save Claude API key:", e);
+    }
+  };
+
+  return (
+    <Card shadow="sm">
+      <CardBody className="flex flex-col gap-4">
+        <h2 className="text-xl font-semibold">Claude (Anthropic)</h2>
+
+        <SettingSwitch
+          label="Enable Claude AI provider"
+          isSelected={claudeSettings.enabled}
+          onValueChange={(enabled) => setClaudeSettings({ ...claudeSettings, enabled })}
+          description="Toggle to use Claude (Anthropic direct API) as the AI provider."
+        />
+
+        {claudeSettings.enabled && (
+          <div className="flex flex-col gap-4">
+            <Input
+              label="Model"
+              placeholder="Model name (e.g. claude-sonnet-4-5-20250929)"
+              value={claudeSettings.model}
+              onValueChange={(value) => setClaudeSettings({ ...claudeSettings, model: value })}
+              isDisabled={isLoading}
+              description="The Anthropic model to use. Must support tool calling."
+            />
+
+            <Input
+              label="API Key"
+              placeholder="sk-ant-api03-..."
+              type={showApiKey ? "text" : "password"}
+              value={apiKey}
+              onValueChange={handleApiKeyChange}
+              isDisabled={isLoading || !apiKeyLoaded}
+              description="Your Anthropic API key. Stored securely in your OS keychain."
+              endContent={
+                <button
+                  className="text-default-400 text-sm hover:text-default-600"
+                  onMouseDown={(e) => { e.preventDefault(); setShowApiKey(!showApiKey); }}
+                >
+                  {showApiKey ? "Hide" : "Show"}
+                </button>
+              }
+            />
+          </div>
+        )}
+      </CardBody>
+    </Card>
+  );
+};
+
+const AIOpenAISettings = () => {
+  const [openaiSettings, setOpenaiSettings, isLoading] = useAIProviderSettings<OpenAISettings>("openai", {
+    enabled: false,
+    endpoint: "",
+    model: "gpt-4o",
+  });
+
+  const user = useStore((state) => state.user);
+  const keychainUser = user?.username || "default";
+
+  const [apiKey, setApiKey] = useState("");
+  const [apiKeyLoaded, setApiKeyLoaded] = useState(false);
+  const [showApiKey, setShowApiKey] = useState(false);
+
+  // Load API key from OS keychain on mount
+  useEffect(() => {
+    invoke<string | null>("load_password", {
+      service: "sh.atuin.runbooks.ai.openai",
+      user: keychainUser,
+    })
+      .then((key) => {
+        if (key) setApiKey(key);
+        setApiKeyLoaded(true);
+      })
+      .catch((e) => {
+        console.error("Failed to load OpenAI API key:", e);
+        setApiKeyLoaded(true);
+      });
+  }, []);
+
+  const handleApiKeyChange = async (value: string) => {
+    setApiKey(value);
+    try {
+      if (value) {
+        await invoke("save_password", {
+          service: "sh.atuin.runbooks.ai.openai",
+          user: keychainUser,
+          value,
+        });
+      } else {
+        await invoke("delete_password", {
+          service: "sh.atuin.runbooks.ai.openai",
+          user: keychainUser,
+        });
+      }
+    } catch (e) {
+      console.error("Failed to save OpenAI API key:", e);
+    }
+  };
+
+  return (
+    <Card shadow="sm">
+      <CardBody className="flex flex-col gap-4">
+        <h2 className="text-xl font-semibold">OpenAI</h2>
+
+        <SettingSwitch
+          label="Enable OpenAI AI provider"
+          isSelected={openaiSettings.enabled}
+          onValueChange={(enabled) => setOpenaiSettings({ ...openaiSettings, enabled })}
+          description="Toggle to use OpenAI (direct API) as the AI provider."
+        />
+
+        {openaiSettings.enabled && (
+          <div className="flex flex-col gap-4">
+            <Input
+              label="Endpoint (optional)"
+              placeholder="Custom OpenAI-compatible endpoint URL"
+              value={openaiSettings.endpoint}
+              onValueChange={(value) => setOpenaiSettings({ ...openaiSettings, endpoint: value })}
+              isDisabled={isLoading}
+              description="Leave empty to use the default OpenAI API endpoint."
+            />
+
+            <Input
+              label="Model"
+              placeholder="Model name (e.g. gpt-4o)"
+              value={openaiSettings.model}
+              onValueChange={(value) => setOpenaiSettings({ ...openaiSettings, model: value })}
+              isDisabled={isLoading}
+              description="The OpenAI model to use. Must support tool calling."
+            />
+
+            <Input
+              label="API Key"
+              placeholder="sk-..."
+              type={showApiKey ? "text" : "password"}
+              value={apiKey}
+              onValueChange={handleApiKeyChange}
+              isDisabled={isLoading || !apiKeyLoaded}
+              description="Your OpenAI API key. Stored securely in your OS keychain."
+              endContent={
+                <button
+                  className="text-default-400 text-sm hover:text-default-600"
+                  onMouseDown={(e) => { e.preventDefault(); setShowApiKey(!showApiKey); }}
+                >
+                  {showApiKey ? "Hide" : "Show"}
+                </button>
+              }
+            />
+          </div>
+        )}
+      </CardBody>
+    </Card>
+  );
+};
+
+const AIDeepSeekSettings = () => {
+  const [deepseekSettings, setDeepseekSettings, isLoading] = useAIProviderSettings<DeepSeekSettings>("deepseek", {
+    enabled: false,
+    model: "deepseek-chat",
+  });
+
+  const user = useStore((state) => state.user);
+  const keychainUser = user?.username || "default";
+
+  const [apiKey, setApiKey] = useState("");
+  const [apiKeyLoaded, setApiKeyLoaded] = useState(false);
+  const [showApiKey, setShowApiKey] = useState(false);
+
+  // Load API key from OS keychain on mount
+  useEffect(() => {
+    invoke<string | null>("load_password", {
+      service: "sh.atuin.runbooks.ai.deepseek",
+      user: keychainUser,
+    })
+      .then((key) => {
+        if (key) setApiKey(key);
+        setApiKeyLoaded(true);
+      })
+      .catch((e) => {
+        console.error("Failed to load DeepSeek API key:", e);
+        setApiKeyLoaded(true);
+      });
+  }, []);
+
+  const handleApiKeyChange = async (value: string) => {
+    setApiKey(value);
+    try {
+      if (value) {
+        await invoke("save_password", {
+          service: "sh.atuin.runbooks.ai.deepseek",
+          user: keychainUser,
+          value,
+        });
+      } else {
+        await invoke("delete_password", {
+          service: "sh.atuin.runbooks.ai.deepseek",
+          user: keychainUser,
+        });
+      }
+    } catch (e) {
+      console.error("Failed to save DeepSeek API key:", e);
+    }
+  };
+
+  return (
+    <Card shadow="sm">
+      <CardBody className="flex flex-col gap-4">
+        <h2 className="text-xl font-semibold">DeepSeek</h2>
+
+        <SettingSwitch
+          label="Enable DeepSeek AI provider"
+          isSelected={deepseekSettings.enabled}
+          onValueChange={(enabled) => setDeepseekSettings({ ...deepseekSettings, enabled })}
+          description="Toggle to use DeepSeek (direct API) as the AI provider."
+        />
+
+        {deepseekSettings.enabled && (
+          <div className="flex flex-col gap-4">
+            <Input
+              label="Model"
+              placeholder="Model name (e.g. deepseek-chat)"
+              value={deepseekSettings.model}
+              onValueChange={(value) => setDeepseekSettings({ ...deepseekSettings, model: value })}
+              isDisabled={isLoading}
+              description="The DeepSeek model to use. Must support tool calling."
+            />
+
+            <Input
+              label="API Key"
+              placeholder="sk-..."
+              type={showApiKey ? "text" : "password"}
+              value={apiKey}
+              onValueChange={handleApiKeyChange}
+              isDisabled={isLoading || !apiKeyLoaded}
+              description="Your DeepSeek API key. Stored securely in your OS keychain."
+              endContent={
+                <button
+                  className="text-default-400 text-sm hover:text-default-600"
+                  onMouseDown={(e) => { e.preventDefault(); setShowApiKey(!showApiKey); }}
+                >
+                  {showApiKey ? "Hide" : "Show"}
+                </button>
+              }
             />
           </div>
         )}

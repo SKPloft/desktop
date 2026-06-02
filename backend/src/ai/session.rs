@@ -560,6 +560,11 @@ impl AISession {
             chat_options = chat_options.with_extra_headers(extra_headers);
         }
 
+        // Set the current username on the client so the resolver can look up provider API keys
+        self.client
+            .set_current_username(config.desktop_username.clone())
+            .await;
+
         drop(config);
         drop(kind);
 
