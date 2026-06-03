@@ -10,4 +10,14 @@ import type { Severity } from "./Severity";
  * ShellCheck uses the arbitrary precision Integer type in Haskell instead of
  * the 32/64 bit fixed width Int for their integers, but u32 should be enough.
  */
-export type Comment = { file: string, line: number, endLine: number, column: number, endColumn: number, level: Severity, code: number, message: string, fix: Fix | null, };
+export type Comment = {
+  file: string;
+  line: number;
+  endLine: number;
+  column: number;
+  endColumn: number;
+  level: Severity;
+  code: number;
+  message: string;
+  fix: Fix | null;
+};

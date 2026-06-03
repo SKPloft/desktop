@@ -27,7 +27,10 @@ export interface DeepSeekSettings {
   model: string;
 }
 
-export function useAIProviderSettings<T extends Record<string, any>>(provider: string, defaultValue: T): [T, (settings: T) => void, boolean] {
+export function useAIProviderSettings<T extends Record<string, any>>(
+  provider: string,
+  defaultValue: T,
+): [T, (settings: T) => void, boolean] {
   const [settings, setSettings, isLoading] = useSettingsState(
     `ai.provider.${provider}.settings`,
     defaultValue as T,
@@ -35,9 +38,11 @@ export function useAIProviderSettings<T extends Record<string, any>>(provider: s
     (settings: T) => Settings.aiProviderSettings(provider, settings),
   );
   return [settings, setSettings, isLoading];
-};
+}
 
-export async function getAIProviderSettings<T extends Record<string, any>>(provider: string): Promise<T> {
+export async function getAIProviderSettings<T extends Record<string, any>>(
+  provider: string,
+): Promise<T> {
   const value = await Settings.aiProviderSettings(provider);
   return value as T;
 }
@@ -53,8 +58,8 @@ export async function getModelSelection(provider: string): Promise<Result<ModelS
       data: {
         model: "claude-opus-4-5-20251101",
         uri: AtuinEnv.url("/api/ai/proxy/"),
-      }
-    }) as Result<ModelSelection, string>
+      },
+    }) as Result<ModelSelection, string>;
   } else if (provider === "ollama") {
     const settings = await getAIProviderSettings<OllamaSettings>("ollama");
     if (!settings.enabled) {
@@ -69,8 +74,8 @@ export async function getModelSelection(provider: string): Promise<Result<ModelS
       data: {
         model: settings.model,
         uri: joinUrlParts([settings.endpoint, "v1/"], true),
-      }
-    }) as Result<ModelSelection, string>
+      },
+    }) as Result<ModelSelection, string>;
   } else if (provider === "claude") {
     const settings = await getAIProviderSettings<ClaudeSettings>("claude");
     if (!settings.enabled) {
@@ -92,8 +97,8 @@ export async function getModelSelection(provider: string): Promise<Result<ModelS
       type: "claude",
       data: {
         model: settings.model,
-      }
-    }) as Result<ModelSelection, string>
+      },
+    }) as Result<ModelSelection, string>;
   } else if (provider === "openai") {
     const settings = await getAIProviderSettings<OpenAISettings>("openai");
     if (!settings.enabled) {
@@ -116,8 +121,8 @@ export async function getModelSelection(provider: string): Promise<Result<ModelS
       data: {
         model: settings.model,
         uri: settings.endpoint ? joinUrlParts([settings.endpoint, "v1/"], true) : null,
-      }
-    }) as Result<ModelSelection, string>
+      },
+    }) as Result<ModelSelection, string>;
   } else if (provider === "deepseek") {
     const settings = await getAIProviderSettings<DeepSeekSettings>("deepseek");
     if (!settings.enabled) {
@@ -139,28 +144,28 @@ export async function getModelSelection(provider: string): Promise<Result<ModelS
       type: "deepSeek",
       data: {
         model: settings.model,
-      }
-    }) as Result<ModelSelection, string>
+      },
+    }) as Result<ModelSelection, string>;
   } else {
     return Ok({
       type: "atuinHub",
       data: {
         model: "claude-opus-4-5-20251101",
         uri: AtuinEnv.url("/api/ai/proxy/"),
-      }
-    }) as Result<ModelSelection, string>
+      },
+    }) as Result<ModelSelection, string>;
   }
 }
 
 function joinUrlParts(parts: string[], trailingSlash: boolean = false): string {
-  parts = parts.filter(p => !!p);
+  parts = parts.filter((p) => !!p);
 
   if (parts.length === 0) {
     return "";
   }
 
-  let result = parts.map(p => p.replace(/\/+$/, '')).join('/');
-  result = result.replace(/([^:]\/)\/+/g, '$1');
+  let result = parts.map((p) => p.replace(/\/+$/, "")).join("/");
+  result = result.replace(/([^:]\/)\/+/g, "$1");
 
   if (trailingSlash && !result.endsWith("/")) {
     return result + "/";

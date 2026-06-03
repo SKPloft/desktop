@@ -28,7 +28,9 @@ interface GitLabPreviewProps {
 export default function GitLabPreview({ props, updateProps }: GitLabPreviewProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [data, setData] = useState<GitLabRepoData | GitLabMRData | GitLabIssueData | GitLabCodeData | null>(null);
+  const [data, setData] = useState<
+    GitLabRepoData | GitLabMRData | GitLabIssueData | GitLabCodeData | null
+  >(null);
   const mountedRef = useRef(true);
 
   const isCacheValid = useCallback(() => {
@@ -85,7 +87,17 @@ export default function GitLabPreview({ props, updateProps }: GitLabPreviewProps
         setLoading(false);
       }
     }
-  }, [props.projectPath, props.urlType, props.mrNumber, props.issueNumber, props.branch, props.filePath, props.lineStart, props.lineEnd, updateProps]);
+  }, [
+    props.projectPath,
+    props.urlType,
+    props.mrNumber,
+    props.issueNumber,
+    props.branch,
+    props.filePath,
+    props.lineStart,
+    props.lineEnd,
+    updateProps,
+  ]);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -106,7 +118,17 @@ export default function GitLabPreview({ props, updateProps }: GitLabPreviewProps
     return () => {
       mountedRef.current = false;
     };
-  }, [props.projectPath, props.urlType, props.mrNumber, props.issueNumber, props.branch, props.filePath, isCacheValid, props.cachedData, fetchData]);
+  }, [
+    props.projectPath,
+    props.urlType,
+    props.mrNumber,
+    props.issueNumber,
+    props.branch,
+    props.filePath,
+    isCacheValid,
+    props.cachedData,
+    fetchData,
+  ]);
 
   const handleRefresh = () => {
     fetchData();
@@ -125,7 +147,12 @@ export default function GitLabPreview({ props, updateProps }: GitLabPreviewProps
               <AlertCircleIcon size={18} />
               <span className="text-sm">{error}</span>
             </div>
-            <Button size="sm" variant="flat" onPress={handleRefresh} startContent={<RefreshCwIcon size={14} />}>
+            <Button
+              size="sm"
+              variant="flat"
+              onPress={handleRefresh}
+              startContent={<RefreshCwIcon size={14} />}
+            >
               Retry
             </Button>
           </div>

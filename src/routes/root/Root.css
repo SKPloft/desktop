@@ -1,56 +1,56 @@
 html {
-    overscroll-behavior: none;
+  overscroll-behavior: none;
 }
 
 .logo.vite:hover {
-    filter: drop-shadow(0 0 2em #747bff);
+  filter: drop-shadow(0 0 2em #747bff);
 }
 
 .logo.react:hover {
-    filter: drop-shadow(0 0 2em #61dafb);
+  filter: drop-shadow(0 0 2em #61dafb);
 }
 
 .history-header {
-    height: 150px;
+  height: 150px;
 }
 
 .history-search {
-    height: 64px;
+  height: 64px;
 }
 
 .history-list {
-    height: calc(100dvh - 4rem - 4rem);
+  height: calc(100dvh - 4rem - 4rem);
 }
 
 .history-item {
-    height: 90px;
+  height: 90px;
 }
 
 .tab-scrollbar::-webkit-scrollbar {
-    height: 3px;
-    background: transparent;
+  height: 3px;
+  background: transparent;
 }
 
 .tab-scrollbar::-webkit-scrollbar-thumb {
-    height: 3px;
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 3px;
+  height: 3px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 3px;
 }
 
 html.dark .tab-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .tab-scrollbar::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.1);
 }
 
 html.dark .tab-scrollbar::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .atuin-cm-completion .cm-completionDetail {
-    display: inline-block;
-    margin-left: 1em;
-    opacity: 0.7;
+  display: inline-block;
+  margin-left: 1em;
+  opacity: 0.7;
 }

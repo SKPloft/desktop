@@ -15,6 +15,7 @@ import { Icon } from "@iconify/react";
 import { KVStore } from "@/state/kv";
 import AccountModal from "../Account/AccountModal";
 import { init_tracking } from "@/tracking";
+import { useTranslation } from "@/lib/i18n";
 
 const FeatureCard = ({ title, description }: any) => (
   <Card>
@@ -26,6 +27,7 @@ const FeatureCard = ({ title, description }: any) => (
 );
 
 const Onboarding = () => {
+  const { t } = useTranslation();
   let {
     isOpen: isOnboardingOpen,
     onOpen: onOnboardingOpen,
@@ -71,46 +73,45 @@ const Onboarding = () => {
         <ModalContent className="w-full">
           {(onClose) => (
             <div className="max-w-[900px] mx-auto p-6 space-y-6">
-              <h1 className="text-4xl font-bold text-center">Welcome to Atuin Desktop</h1>
+              <h1 className="text-4xl font-bold text-center">{t("onboarding.title")}</h1>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FeatureCard
-                  title="Runbooks that Run"
-                  description="Create and run notebooks that integrate seamlessly with your infrastructure"
+                  title={t("onboarding.features.runbooks.title")}
+                  description={t("onboarding.features.runbooks.description")}
                 />
                 <FeatureCard
-                  title="Shell History Explorer"
-                  description="Easily search and analyze your past commands"
+                  title={t("onboarding.features.history.title")}
+                  description={t("onboarding.features.history.description")}
                 />
               </div>
 
               <Card>
                 <CardHeader className="flex gap-3">
                   <div className="flex flex-col">
-                    <p className="text-md">Getting Started</p>
+                    <p className="text-md">{t("onboarding.getting_started.title")}</p>
                   </div>
                 </CardHeader>
                 <Divider />
                 <CardBody>
                   <ul className="list-disc pl-6 space-y-2">
-                    <li>Select a runbook from the sidebar to get started</li>
+                    <li>{t("onboarding.getting_started.select_runbook")}</li>
                     <li>
-                      Use the <Icon className="inline-block" icon="solar:history-outline" /> icon to
-                      explore your shell history
+                      {t("onboarding.getting_started.history")}
                     </li>
                     <li>
-                      Join the{" "}
+                      {t("onboarding.getting_started.community_prefix")}{" "}
                       <a
                         href="https://dub.sh/atuin-desktop-beta"
                         target="_blank"
                         className="text-blue-400 underline"
                       >
-                        community
+                        {t("onboarding.getting_started.community_link")}
                       </a>{" "}
-                      to get help and share feedback
+                      {t("onboarding.getting_started.community_suffix")}
                     </li>
                     <li>
-                      Read the docs at{" "}
+                      {t("onboarding.getting_started.docs_prefix")}{" "}
                       <a
                         href="https://docs.atuin.sh/desktop"
                         target="_blank"
@@ -125,13 +126,12 @@ const Onboarding = () => {
 
               <Card>
                 <CardBody className="gap-4">
-                  <h2 className="text-xl font-bold">Usage Tracking</h2>
+                  <h2 className="text-xl font-bold">{t("onboarding.tracking.title")}</h2>
                   <p className="text-gray-600">
-                    To help improve Atuin, we'd like to collect anonymous usage data and error
-                    reports. We respect your privacy and only track with your permission.
+                    {t("onboarding.tracking.description")}
                   </p>
                   <div className="flex items-center justify-between">
-                    <p className="font-semibold">Enable tracking</p>
+                    <p className="font-semibold">{t("onboarding.tracking.enable")}</p>
                     <Switch
                       isSelected={trackingOptIn}
                       onValueChange={(value) => {
@@ -142,24 +142,24 @@ const Onboarding = () => {
 
                         setTrackingOptIn(value);
                       }}
-                      aria-label="Toggle tracking"
+                      aria-label={t("onboarding.tracking.toggle")}
                     />
                   </div>
                   {trackingOptIn && (
                     <p className="text-sm text-gray-500">
-                      Thank you for helping us improve Atuin. You can change this setting anytime.
+                      {t("onboarding.tracking.enabled_message")}
                     </p>
                   )}
                   {!trackingOptIn && (
                     <p className="text-sm text-gray-500">
-                      Tracking is disabled. No data will be collected.
+                      {t("onboarding.tracking.disabled_message")}
                     </p>
                   )}
                 </CardBody>
               </Card>
 
               <Button color="success" className="w-full" onClick={() => close(onClose)}>
-                Next
+                {t("common.next")}
               </Button>
             </div>
           )}

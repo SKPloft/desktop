@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { Button, Textarea, Spinner } from "@heroui/react";
 import { SparklesIcon, ArrowRightIcon } from "lucide-react";
+import { useTranslation } from "@/lib/i18n";
 
 interface AIPopupBaseProps {
   isVisible: boolean;
@@ -29,6 +30,7 @@ export function AIPopupBase({
   showSuggestions = false,
   onSuggestionClick,
 }: AIPopupBaseProps) {
+  const { t } = useTranslation();
   const [prompt, setPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -46,7 +48,7 @@ export function AIPopupBase({
       setPrompt("");
       onClose();
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Request failed";
+      const errorMessage = err instanceof Error ? err.message : t("common.error");
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -72,12 +74,12 @@ export function AIPopupBase({
     if (isVisible) {
       setPrompt("");
       setError(null);
-      
+
       // Focus after a brief delay to ensure the popup is rendered
       const timeoutId = setTimeout(() => {
         textareaRef.current?.focus();
       }, 100);
-      
+
       return () => clearTimeout(timeoutId);
     }
   }, [isVisible]);
@@ -85,13 +87,13 @@ export function AIPopupBase({
   const handlePopupClick = useCallback((e: React.MouseEvent) => {
     // Stop event from reaching BlockNote editor which steals focus
     e.stopPropagation();
-    
+
     // If clicking on the popup but not on an interactive element, refocus textarea
     const target = e.target as HTMLElement;
-    const isButton = target.closest('button');
-    const isTextarea = target.closest('textarea');
-    const isInput = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA';
-    
+    const isButton = target.closest("button");
+    const isTextarea = target.closest("textarea");
+    const isInput = target.tagName === "INPUT" || target.tagName === "TEXTAREA";
+
     if (!isButton && !isTextarea && !isInput && textareaRef.current) {
       e.preventDefault();
       textareaRef.current.focus();
@@ -138,7 +140,7 @@ export function AIPopupBase({
       style={{
         left: position.x,
         top: shouldPositionBelow ? position.y + 30 : position.y - 10,
-        transform: shouldPositionBelow ? 'none' : 'translateY(-100%)',
+        transform: shouldPositionBelow ? "none" : "translateY(-100%)",
       }}
     >
       <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/20 dark:to-blue-950/20 p-4 rounded-lg">
@@ -146,20 +148,18 @@ export function AIPopupBase({
           <div className="flex-shrink-0 mt-1">
             <SparklesIcon className="h-5 w-5 text-purple-600 dark:text-purple-400" />
           </div>
-          
+
           <div className="flex-1 space-y-3">
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium text-purple-900 dark:text-purple-100">
                 {title}
               </span>
             </div>
-            
+
             {/* Quick suggestions */}
             {showSuggestions && suggestions.length > 0 && (
               <div className="space-y-2">
-                <p className="text-xs text-purple-700 dark:text-purple-300">
-                  Quick suggestions:
-                </p>
+                <p className="text-xs text-purple-700 dark:text-purple-300">{t("editor.ai_popup.quick_suggestions")}</p>
                 <div className="flex flex-wrap gap-1">
                   {suggestions.slice(0, 3).map((suggestion, index) => (
                     <Button
@@ -175,7 +175,7 @@ export function AIPopupBase({
                 </div>
               </div>
             )}
-            
+
             <Textarea
               ref={textareaRef}
               placeholder={placeholder}
@@ -190,21 +190,32 @@ export function AIPopupBase({
               autoFocus
               classNames={{
                 input: "focus:ring-0 focus:outline-none",
-                inputWrapper: "focus-within:ring-0 focus-within:outline-none"
+                inputWrapper: "focus-within:ring-0 focus-within:outline-none",
               }}
             />
-            
+
             {error && (
               <div className="text-red-600 dark:text-red-400 text-xs bg-red-50 dark:bg-red-950/20 p-2 rounded border border-red-200 dark:border-red-800">
                 {error}
               </div>
             )}
-            
+
             <div className="flex items-center justify-between">
               <div className="text-xs text-purple-600 dark:text-purple-400">
-                <kbd className="px-1 py-0.5 bg-purple-100 dark:bg-purple-900 rounded text-xs">⌘</kbd> + <kbd className="px-1 py-0.5 bg-purple-100 dark:bg-purple-900 rounded text-xs">Enter</kbd> to {submitButtonText.toLowerCase()} • <kbd className="px-1 py-0.5 bg-purple-100 dark:bg-purple-900 rounded text-xs">Esc</kbd> to cancel
+                <kbd className="px-1 py-0.5 bg-purple-100 dark:bg-purple-900 rounded text-xs">
+                  ⌘
+                </kbd>{" "}
+                +{" "}
+                <kbd className="px-1 py-0.5 bg-purple-100 dark:bg-purple-900 rounded text-xs">
+                  Enter
+                </kbd>{" "}
+                to {submitButtonText.toLowerCase()} •{" "}
+                <kbd className="px-1 py-0.5 bg-purple-100 dark:bg-purple-900 rounded text-xs">
+                  Esc
+                </kbd>{" "}
+                {t("editor.ai_popup.to_cancel")}
               </div>
-              
+
               <div className="flex gap-2">
                 <Button
                   size="sm"
@@ -213,14 +224,16 @@ export function AIPopupBase({
                   disabled={isLoading}
                   className="text-purple-600 dark:text-purple-400"
                 >
-                  Cancel
+                  {t("common.cancel")}
                 </Button>
                 <Button
                   size="sm"
                   color="secondary"
                   onPress={handleSubmit}
                   disabled={!prompt.trim() || isLoading}
-                  startContent={isLoading ? <Spinner size="sm" /> : <ArrowRightIcon className="h-3 w-3" />}
+                  startContent={
+                    isLoading ? <Spinner size="sm" /> : <ArrowRightIcon className="h-3 w-3" />
+                  }
                   className="bg-purple-600 text-white hover:bg-purple-700"
                 >
                   {isLoading ? submitButtonLoadingText : submitButtonText}

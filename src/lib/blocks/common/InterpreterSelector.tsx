@@ -3,13 +3,24 @@ import { Select, SelectItem, SelectSection, Input, Button } from "@heroui/react"
 import { invoke } from "@tauri-apps/api/core";
 import { PlusIcon, Pencil as PencilIcon, X as XIcon } from "lucide-react";
 import { Settings } from "@/state/settings.ts";
+import { useTranslation } from "@/lib/i18n";
 
 // Supported shells with their possible paths
 export const supportedShells = [
   { name: "bash", paths: ["/bin/bash"], defaultArgs: "-lc", sshArgs: "-l" },
   { name: "zsh", paths: ["/bin/zsh"], defaultArgs: "-lc", sshArgs: "-l" },
-  { name: "fish", paths: ["/usr/bin/fish", "/usr/local/bin/fish", "/opt/homebrew/bin/fish"], defaultArgs: "-c", sshArgs: "" },
-  { name: "python3", paths: ["/usr/bin/python3", "/usr/local/bin/python3"], defaultArgs: "-c", sshArgs: "" },
+  {
+    name: "fish",
+    paths: ["/usr/bin/fish", "/usr/local/bin/fish", "/opt/homebrew/bin/fish"],
+    defaultArgs: "-c",
+    sshArgs: "",
+  },
+  {
+    name: "python3",
+    paths: ["/usr/bin/python3", "/usr/local/bin/python3"],
+    defaultArgs: "-c",
+    sshArgs: "",
+  },
   { name: "node", paths: ["/usr/bin/node", "/usr/local/bin/node"], defaultArgs: "-e", sshArgs: "" },
   { name: "sh", paths: ["/bin/sh"], defaultArgs: "-ic", sshArgs: "-i" },
 ];
@@ -17,26 +28,26 @@ export const supportedShells = [
 // Helper to build interpreter command string
 export const buildInterpreterCommand = (interpreterName: string, isSSH = false) => {
   // Find the shell configuration
-  const shellConfig = supportedShells.find(s => s.name === interpreterName);
+  const shellConfig = supportedShells.find((s) => s.name === interpreterName);
 
   if (shellConfig) {
     if (isSSH) {
       // For SSH execution
-      if (shellConfig.paths[0].startsWith('/bin/')) {
+      if (shellConfig.paths[0].startsWith("/bin/")) {
         // Use absolute path for system shells
         return `${shellConfig.paths[0]} ${shellConfig.sshArgs}`.trim();
       } else {
         // Use env for other shells
-        return `/usr/bin/env ${shellConfig.name}${shellConfig.sshArgs ? ' ' + shellConfig.sshArgs : ''}`;
+        return `/usr/bin/env ${shellConfig.name}${shellConfig.sshArgs ? " " + shellConfig.sshArgs : ""}`;
       }
     } else {
       // For local execution
-      if (shellConfig.paths[0].startsWith('/bin/')) {
+      if (shellConfig.paths[0].startsWith("/bin/")) {
         // Use absolute path for system shells
         return `${shellConfig.paths[0]} ${shellConfig.defaultArgs}`.trim();
       } else {
         // Use env for other shells
-        return `/usr/bin/env ${shellConfig.name}${shellConfig.defaultArgs ? ' ' + shellConfig.defaultArgs : ''}`;
+        return `/usr/bin/env ${shellConfig.name}${shellConfig.defaultArgs ? " " + shellConfig.defaultArgs : ""}`;
       }
     }
   }
@@ -59,20 +70,26 @@ const InterpreterSelector: React.FC<InterpreterSelectorProps> = ({
   size = "sm",
   variant = "flat",
 }) => {
+  const { t } = useTranslation();
   // Track available shells and custom interpreters
   const [availableShells, setAvailableShells] = useState<Record<string, boolean>>({});
   const [isShellMissing, setIsShellMissing] = useState(false);
-  const [isCustom, setIsCustom] = useState(!supportedShells.some(shell => shell.name === interpreter));
+  const [isCustom, setIsCustom] = useState(
+    !supportedShells.some((shell) => shell.name === interpreter),
+  );
   const [customValue, setCustomValue] = useState(isCustom ? interpreter : "");
   const [showCustomInput, setShowCustomInput] = useState(false);
-  const [scriptInterpreters, setScriptInterpreters] = useState<Array<{command: string; name: string}>>([]);
+  const [scriptInterpreters, setScriptInterpreters] = useState<
+    Array<{ command: string; name: string }>
+  >([]);
   const [systemDefaultShell, setSystemDefaultShell] = useState<string>("bash");
 
   useEffect(() => {
     // Update isCustom state once scriptInterpreters are loaded
-    const isInterpreterSupported = supportedShells.some(shell => shell.name === interpreter) || 
-      scriptInterpreters.some(shell => shell.name === interpreter);
-    
+    const isInterpreterSupported =
+      supportedShells.some((shell) => shell.name === interpreter) ||
+      scriptInterpreters.some((shell) => shell.name === interpreter);
+
     setIsCustom(!isInterpreterSupported);
   }, [interpreter, scriptInterpreters, supportedShells]);
 
@@ -141,12 +158,12 @@ const InterpreterSelector: React.FC<InterpreterSelectorProps> = ({
 
   // Function to add a custom interpreter
   const handleAddCustom = useCallback(() => {
-    if (customValue.trim() === '') return;
+    if (customValue.trim() === "") return;
     setIsCustom(true);
     onInterpreterChange(customValue);
     setShowCustomInput(false);
   }, [customValue, onInterpreterChange]);
-  
+
   // Handle editing current custom value
   const handleEditCustom = useCallback(() => {
     setCustomValue(interpreter);
@@ -160,14 +177,18 @@ const InterpreterSelector: React.FC<InterpreterSelectorProps> = ({
           <Input
             size="sm"
             variant="flat"
-            placeholder="/bin/bash -c"
+            placeholder={t("interpreter.placeholder")}
             value={customValue}
             onChange={(e) => setCustomValue(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleAddCustom()}
+            onKeyDown={(e) => e.key === "Enter" && handleAddCustom()}
             autoFocus
           />
-          <Button size="sm" onPress={handleAddCustom} isIconOnly><PlusIcon className="h-3 w-3" /></Button>
-          <Button size="sm" variant="light" onPress={() => setShowCustomInput(false)} isIconOnly><XIcon className="h-3 w-3" /></Button>
+          <Button size="sm" onPress={handleAddCustom} isIconOnly>
+            <PlusIcon className="h-3 w-3" />
+          </Button>
+          <Button size="sm" variant="light" onPress={() => setShowCustomInput(false)} isIconOnly>
+            <XIcon className="h-3 w-3" />
+          </Button>
         </div>
       ) : (
         <div className="flex items-center gap-1 min-w-[300px]">
@@ -178,12 +199,12 @@ const InterpreterSelector: React.FC<InterpreterSelectorProps> = ({
             selectionMode="single"
             popoverProps={{
               classNames: {
-                content: "min-w-[300px]"
-              }
+                content: "min-w-[300px]",
+              },
             }}
             classNames={{
               trigger: "min-h-unit-8 min-w-[180px]",
-              base: "min-w-[180px]"
+              base: "min-w-[180px]",
             }}
             selectedKeys={[interpreter]}
             onOpenChange={(isOpen) => {
@@ -207,39 +228,40 @@ const InterpreterSelector: React.FC<InterpreterSelectorProps> = ({
               setIsCustom(false);
               onInterpreterChange(key);
             }}
-            aria-label="Select interpreter"
+            aria-label={t("interpreter.select_label")}
           >
             {/* Add custom interpreter as first option if we're using one */}
             {isCustom ? (
-              <SelectItem 
-                key={interpreter} 
+              <SelectItem
+                key={interpreter}
                 classNames={{ base: "py-1", description: "text-xs opacity-70" }}
-                description="Custom interpreter"
+                description={t("interpreter.custom_description")}
               >
                 {interpreter}
               </SelectItem>
             ) : null}
 
-            <SelectSection title="System">
+            <SelectSection title={t("interpreter.system")}>
               <SelectItem
                 key="_system_default"
                 classNames={{ base: "py-1", description: "text-xs opacity-70" }}
-                description={`Use system default (${systemDefaultShell})`}
+                description={t("interpreter.use_system_default", { shell: systemDefaultShell })}
               >
-                System Default
+                {t("interpreter.system_default")}
               </SelectItem>
             </SelectSection>
-            <SelectSection title="Shells">
-              {supportedShells.map(shell => {
+            <SelectSection title={t("interpreter.shells")}>
+              {supportedShells.map((shell) => {
                 // Always show bash and sh, or any shell that's available, or the current selected shell
-                const shouldShow = shell.name === "bash" ||
+                const shouldShow =
+                  shell.name === "bash" ||
                   shell.name === "sh" ||
                   availableShells[shell.name] ||
                   interpreter === shell.name;
 
                 return shouldShow ? (
-                  <SelectItem 
-                    key={shell.name} 
+                  <SelectItem
+                    key={shell.name}
                     aria-label={shell.name}
                     className={interpreter === shell.name && isShellMissing ? "text-red-500" : ""}
                     classNames={{ base: "py-1", description: "text-xs opacity-70" }}
@@ -252,9 +274,9 @@ const InterpreterSelector: React.FC<InterpreterSelectorProps> = ({
             </SelectSection>
 
             {scriptInterpreters.length > 0 ? (
-              <SelectSection title="Saved">
-                {scriptInterpreters.map(interpreter => (
-                  <SelectItem 
+              <SelectSection title={t("interpreter.saved")}>
+                {scriptInterpreters.map((interpreter) => (
+                  <SelectItem
                     key={interpreter.command}
                     classNames={{ base: "py-1", description: "text-xs opacity-70" }}
                     description={interpreter.command}
@@ -265,24 +287,24 @@ const InterpreterSelector: React.FC<InterpreterSelectorProps> = ({
               </SelectSection>
             ) : null}
 
-            <SelectSection title="Actions">
+            <SelectSection title={t("interpreter.actions")}>
               <SelectItem
                 key="_custom"
                 startContent={<PlusIcon className="h-3 w-3" />}
                 classNames={{ description: "text-xs opacity-70" }}
-                description="Add custom"
+                description={t("interpreter.add_custom")}
               >
-                Custom
+                {t("interpreter.custom")}
               </SelectItem>
             </SelectSection>
           </Select>
-          
+
           {isCustom && (
-            <Button 
-              size="sm" 
-              isIconOnly 
-              variant="light" 
-              className="text-gray-500" 
+            <Button
+              size="sm"
+              isIconOnly
+              variant="light"
+              className="text-gray-500"
               onPress={handleEditCustom}
             >
               <PencilIcon className="h-3 w-3" />

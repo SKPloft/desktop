@@ -19,8 +19,10 @@ import AtuinEnv from "@/atuin_env";
 import { getGlobalOptions } from "@/lib/global_options";
 import { Update } from "@tauri-apps/plugin-updater";
 import Markdown from "@/components/runbooks/editor/components/Markdown";
+import { useTranslation } from "@/lib/i18n";
 
 export default function UpdateNotifier() {
+  const { t } = useTranslation();
   const [relaunching, setRelaunching] = useState(false);
   const [showingUpdate, setShowingUpdate] = useState(false);
   const [viewUpdateNotes, setViewUpdateNotes] = useState(false);
@@ -62,8 +64,8 @@ export default function UpdateNotifier() {
       console.error("UpdateNotifier: error downloading and installing update", err);
       setUpdating(None);
       addToast({
-        title: "Error",
-        description: "There was an error updating the app. Please try again later.",
+        title: t("updates.error_title"),
+        description: t("updates.error_description"),
         color: "danger",
         shouldShowTimeoutProgress: true,
       });
@@ -90,9 +92,9 @@ export default function UpdateNotifier() {
       setShowedUpdatePrompt(true);
 
       const baseOptions = {
-        title: "Update Available",
+        title: t("updates.available_title"),
         icon: <img src={icon} alt="icon" className="h-8 w-8" />,
-        description: `Atuin Desktop version ${update.version} is available for download.`,
+        description: t("updates.available_description", { version: update.version }),
         color: "primary",
         radius: "sm",
         timeout: Infinity,
@@ -117,7 +119,7 @@ export default function UpdateNotifier() {
                 setViewUpdateNotes(true);
               }}
             >
-              Update
+              {t("updates.update")}
             </Button>
           ),
         })!;
@@ -139,7 +141,7 @@ export default function UpdateNotifier() {
                 browseToDownloads(update.version);
               }}
             >
-              Download
+              {t("updates.download")}
             </Button>
           ),
         })!;
@@ -163,7 +165,7 @@ export default function UpdateNotifier() {
     return (
       <Modal isOpen={true} onClose={dismiss} size="2xl">
         <ModalContent>
-          <ModalHeader>Atuin Desktop v{availableUpdate.version} Release Notes</ModalHeader>
+          <ModalHeader>{t("updates.release_notes", { version: availableUpdate.version })}</ModalHeader>
           <ModalBody>
             <div className="max-h-[300px] overflow-y-auto bg-gray-100 dark:bg-gray-800 rounded-md p-2">
               <Markdown content={availableUpdate.body!} />
@@ -178,10 +180,10 @@ export default function UpdateNotifier() {
               variant="flat"
               color="default"
             >
-              Close
+              {t("updates.close")}
             </Button>
             <Button onPress={() => doUpdate(availableUpdate)} color="primary">
-              Update Now
+              {t("updates.update_now")}
             </Button>
           </ModalFooter>
         </ModalContent>
@@ -194,9 +196,9 @@ export default function UpdateNotifier() {
       <Modal isOpen={true} onClose={() => {}} hideCloseButton>
         <ModalContent>
           {!relaunching && (
-            <ModalHeader>Updating to Atuin Desktop {updating.unwrapOr("<unknown>")}...</ModalHeader>
+            <ModalHeader>{t("updates.updating", { version: updating.unwrapOr("<unknown>") })}</ModalHeader>
           )}
-          {relaunching && <ModalHeader>Relaunching app...</ModalHeader>}
+          {relaunching && <ModalHeader>{t("updates.relaunching")}</ModalHeader>}
           <ModalBody>
             <div className="pb-4">
               <Progress

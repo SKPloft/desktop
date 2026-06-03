@@ -2,6 +2,7 @@ import track_event from "@/tracking";
 import { Button, Tooltip } from "@heroui/react";
 import { Play, RefreshCw, Square } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "@/lib/i18n";
 
 interface PlayButtonProps {
   isRunning: boolean;
@@ -44,6 +45,7 @@ const PlayButton = ({
   tooltip,
   tooltipPlacement,
 }: PlayButtonProps) => {
+  const { t } = useTranslation();
   const [isShiftPressed, setIsShiftPressed] = useState(false);
 
   // bind shift
@@ -72,7 +74,7 @@ const PlayButton = ({
         color={isRunning ? (isShiftPressed && onRefresh ? "warning" : "danger") : "success"}
         variant="flat"
         size="sm"
-        aria-label={isRunning ? "Stop code" : "Run code"}
+        aria-label={isRunning ? t("common.stop_code") : t("common.run_code")}
         isDisabled={disabled && (!alwaysStop || !isRunning)}
         onPress={async () => {
           // If we're not running, call onPlay.
@@ -123,7 +125,7 @@ const PlayButton = ({
     );
   } else if (onRefresh && isRunning) {
     return (
-      <Tooltip content="Hold shift to re-run" delay={500}>
+      <Tooltip content={t("common.hold_shift_rerun")} delay={500}>
         {renderButton()}
       </Tooltip>
     );

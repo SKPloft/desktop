@@ -3,4 +3,8 @@
 /**
  * Current status of block execution
  */
-export type ExecutionStatus = { "type": "Running" } | { "type": "Success" } | { "type": "Failed", "data": string } | { "type": "Cancelled" };
+export type ExecutionStatus =
+  | { type: "Running" }
+  | { type: "Success" }
+  | { type: "Failed"; data: string }
+  | { type: "Cancelled" };

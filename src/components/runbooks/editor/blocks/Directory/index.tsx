@@ -5,6 +5,7 @@ import undent from "undent";
 import AIBlockRegistry from "@/lib/ai/block_registry";
 import { open } from "@tauri-apps/plugin-dialog";
 import { exportPropMatter } from "@/lib/utils";
+import { useTranslation } from "@/lib/i18n";
 
 interface DirectoryProps {
   path: string;
@@ -13,6 +14,7 @@ interface DirectoryProps {
 }
 
 const Directory = ({ path, onInputChange, isEditable }: DirectoryProps) => {
+  const { t } = useTranslation();
   const selectFolder = async () => {
     if (isEditable) {
       const selectedPath = await open({
@@ -27,7 +29,7 @@ const Directory = ({ path, onInputChange, isEditable }: DirectoryProps) => {
   return (
     <div className="w-full !max-w-full !outline-none overflow-none">
       <Tooltip
-        content="Change working directory for all subsequent code blocks (shared with collaborators)"
+        content={t("editor.blocks.directory.tooltip")}
         delay={1000}
       >
         <div className="flex flex-col w-full bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-slate-800 dark:to-blue-950 rounded-lg p-3 border border-blue-200 dark:border-blue-900 shadow-sm hover:shadow-md transition-all duration-200">
@@ -40,7 +42,7 @@ const Directory = ({ path, onInputChange, isEditable }: DirectoryProps) => {
                 isIconOnly
                 variant="light"
                 className="bg-blue-100 dark:bg-blue-800 text-blue-600 dark:text-blue-300"
-                aria-label="Select folder"
+                aria-label={t("editor.blocks.directory.select_folder")}
                 onPress={selectFolder}
                 disabled={!isEditable}
               >
@@ -50,7 +52,7 @@ const Directory = ({ path, onInputChange, isEditable }: DirectoryProps) => {
 
             <div className="flex-1">
               <Input
-                placeholder="~ (working directory shared with collaborators)"
+                placeholder={t("editor.blocks.directory.placeholder")}
                 value={path}
                 autoComplete="off"
                 autoCapitalize="off"

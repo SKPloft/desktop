@@ -28,6 +28,7 @@ import { Command } from "@codemirror/view";
 import { TerminalBlock } from "./schema.ts";
 import { logExecution } from "@/lib/exec_log.ts";
 import { DependencySpec } from "@/lib/workflow/dependency.ts";
+import { useTranslation } from "@/lib/i18n";
 import Terminal from "./components/terminal.tsx";
 import Block from "../common/Block.tsx";
 import PlayButton from "../common/PlayButton.tsx";
@@ -81,6 +82,7 @@ export const RunBlock = ({
   terminalRows,
   setTerminalRows,
 }: RunBlockProps) => {
+  const { t } = useTranslation();
   let editor = useBlockNoteEditor();
   const colorMode = useStore((state) => state.functionalColorMode);
   const cleanupPtyTerm = useStore((store: AtuinState) => store.cleanupPtyTerm);
@@ -132,7 +134,7 @@ export const RunBlock = ({
   useEffect(() => {
     if (execution.isError && execution.error) {
       addToast({
-        title: "Terminal error",
+        title: t("editor.blocks.terminal.error_title"),
         description: execution.error,
         color: "danger",
       });
@@ -305,7 +307,7 @@ export const RunBlock = ({
                 </Chip>
               )}
               <Tooltip
-                content={terminal.outputVisible ? "Hide output terminal" : "Show output terminal"}
+                content={terminal.outputVisible ? t("editor.blocks.script.hide_output_terminal") : t("editor.blocks.script.show_output_terminal")}
               >
                 <button
                   onClick={() => setOutputVisible(!terminal.outputVisible)}
@@ -314,7 +316,7 @@ export const RunBlock = ({
                   {terminal.outputVisible ? <Eye size={20} /> : <EyeOff size={20} />}
                 </button>
               </Tooltip>
-              <Tooltip content={isFullscreen ? "Exit fullscreen" : "Open in fullscreen"}>
+              <Tooltip content={isFullscreen ? t("blocks.common.exit_fullscreen") : t("blocks.common.open_fullscreen")}>
                 <button
                   onClick={() => setIsFullscreen(!isFullscreen)}
                   className="p-2 hover:bg-default-100 rounded-md"
@@ -323,7 +325,7 @@ export const RunBlock = ({
                   {isFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
                 </button>
               </Tooltip>
-              <Tooltip content={collapseCode ? "Expand code" : "Collapse code"}>
+              <Tooltip content={collapseCode ? t("editor.blocks.editor.expand_code") : t("editor.blocks.editor.collapse_code")}>
                 <button
                   onClick={() => setCollapseCode(!collapseCode)}
                   className="p-2 hover:bg-default-100 rounded-md"
@@ -340,8 +342,12 @@ export const RunBlock = ({
 
           <div className="flex flex-row gap-2 flex-grow w-full" ref={elementRef}>
             <PlayButton
-              isLoading={isLoading || ((execution.isStarting || execution.isStopping) && !!sshParent)}
-              disabled={isLoading || ((execution.isStarting || execution.isStopping) && !!sshParent)}
+              isLoading={
+                isLoading || ((execution.isStarting || execution.isStopping) && !!sshParent)
+              }
+              disabled={
+                isLoading || ((execution.isStarting || execution.isStopping) && !!sshParent)
+              }
               isRunning={execution.isRunning}
               cancellable={true}
               onPlay={handlePlay}

@@ -51,8 +51,7 @@ export default createReactBlockSpec(
 AIBlockRegistry.getInstance().addBlock({
   typeName: "horizontal_rule",
   friendlyName: "Horizontal Rule",
-  shortDescription:
-    "Inserts a visual separator line.",
+  shortDescription: "Inserts a visual separator line.",
   description: undent`
     Horizontal Rule blocks insert a visual separator line between sections of a runbook. This block has no configurable props.
 

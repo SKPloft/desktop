@@ -20,6 +20,7 @@ import {
 import { Settings } from "@/state/settings";
 import Runbook from "@/state/runbooks/runbook";
 import Logger from "@/lib/logger";
+import { useTranslation } from "@/lib/i18n";
 
 const logger = new Logger("Notifications", "#6b7280", "#9ca3af");
 (window as any).sendNotification = sendNotification;
@@ -190,6 +191,7 @@ function shouldSendOsNotification(config: EventNotificationConfig): boolean {
 }
 
 export default function NotificationManager() {
+  const { t } = useTranslation();
   const executionsRef = useRef<Map<string, BlockExecution>>(new Map());
   const serialExecutionsRef = useRef<Map<string, SerialExecution>>(new Map());
   const settingsRef = useRef<NotificationSettings | null>(null);
@@ -290,11 +292,11 @@ export default function NotificationManager() {
       }
 
       // Try to get runbook name for better context
-      let runbookName = "Runbook";
+      let runbookName = t("notifications.defaults.runbook");
       try {
         const runbook = await Runbook.load(data.runbook_id);
         if (runbook) {
-          runbookName = runbook.name || "Untitled";
+          runbookName = runbook.name || t("common.untitled");
         }
       } catch {
         // Ignore - use default name
@@ -302,13 +304,13 @@ export default function NotificationManager() {
 
       const durationStr =
         durationSecs >= 60
-          ? `${Math.floor(durationSecs / 60)}m ${Math.round(durationSecs % 60)}s`
-          : `${durationSecs.toFixed(1)}s`;
+          ? t("notifications.duration.minutes_seconds", { minutes: Math.floor(durationSecs / 60), seconds: Math.round(durationSecs % 60) })
+          : t("notifications.duration.seconds", { seconds: durationSecs.toFixed(1) });
 
       notify(
         {
-          title: data.success ? "Block Completed" : "Block Failed",
-          body: `${runbookName} - finished in ${durationStr}`,
+          title: data.success ? t("notifications.block.completed.title") : t("notifications.block.failed.title"),
+          body: t("notifications.block.finished_body", { runbookName, duration: durationStr }),
           success: data.success,
           duration: durationSecs,
         },
@@ -340,11 +342,11 @@ export default function NotificationManager() {
 
       if (!shouldNotify(durationSecs, config)) return;
 
-      let runbookName = "Runbook";
+      let runbookName = t("notifications.defaults.runbook");
       try {
         const runbook = await Runbook.load(data.runbook_id);
         if (runbook) {
-          runbookName = runbook.name || "Untitled";
+          runbookName = runbook.name || t("common.untitled");
         }
       } catch {
         // Ignore
@@ -352,8 +354,8 @@ export default function NotificationManager() {
 
       notify(
         {
-          title: "Block Failed",
-          body: `${runbookName}: ${data.error}`,
+          title: t("notifications.block.failed.title"),
+          body: t("notifications.block.error_body", { runbookName, error: data.error }),
           success: false,
           duration: durationSecs,
         },
@@ -400,11 +402,11 @@ export default function NotificationManager() {
         return;
       }
 
-      let runbookName = "Workflow";
+      let runbookName = t("notifications.defaults.workflow");
       try {
         const runbook = await Runbook.load(data.runbook_id);
         if (runbook) {
-          runbookName = runbook.name || "Untitled";
+          runbookName = runbook.name || t("common.untitled");
         }
       } catch {
         // Ignore
@@ -412,13 +414,13 @@ export default function NotificationManager() {
 
       const durationStr =
         durationSecs >= 60
-          ? `${Math.floor(durationSecs / 60)}m ${Math.round(durationSecs % 60)}s`
-          : `${durationSecs.toFixed(1)}s`;
+          ? t("notifications.duration.minutes_seconds", { minutes: Math.floor(durationSecs / 60), seconds: Math.round(durationSecs % 60) })
+          : t("notifications.duration.seconds", { seconds: durationSecs.toFixed(1) });
 
       notify(
         {
-          title: "Workflow Completed",
-          body: `${runbookName} - finished in ${durationStr}`,
+          title: t("notifications.workflow.completed.title"),
+          body: t("notifications.workflow.finished_body", { runbookName, duration: durationStr }),
           success: true,
           duration: durationSecs,
         },
@@ -445,11 +447,11 @@ export default function NotificationManager() {
 
       if (!shouldNotify(durationSecs, config)) return;
 
-      let runbookName = "Workflow";
+      let runbookName = t("notifications.defaults.workflow");
       try {
         const runbook = await Runbook.load(data.runbook_id);
         if (runbook) {
-          runbookName = runbook.name || "Untitled";
+          runbookName = runbook.name || t("common.untitled");
         }
       } catch {
         // Ignore
@@ -457,13 +459,13 @@ export default function NotificationManager() {
 
       const durationStr =
         durationSecs >= 60
-          ? `${Math.floor(durationSecs / 60)}m ${Math.round(durationSecs % 60)}s`
-          : `${durationSecs.toFixed(1)}s`;
+          ? t("notifications.duration.minutes_seconds", { minutes: Math.floor(durationSecs / 60), seconds: Math.round(durationSecs % 60) })
+          : t("notifications.duration.seconds", { seconds: durationSecs.toFixed(1) });
 
       notify(
         {
-          title: "Workflow Failed",
-          body: `${runbookName} - failed after ${durationStr}: ${data.error}`,
+          title: t("notifications.workflow.failed.title"),
+          body: t("notifications.workflow.failed_body", { runbookName, duration: durationStr, error: data.error }),
           success: false,
           duration: durationSecs,
         },
@@ -507,11 +509,11 @@ export default function NotificationManager() {
         return;
       }
 
-      let runbookName = "Workflow";
+      let runbookName = t("notifications.defaults.workflow");
       try {
         const runbook = await Runbook.load(data.runbook_id);
         if (runbook) {
-          runbookName = runbook.name || "Untitled";
+          runbookName = runbook.name || t("common.untitled");
         }
       } catch {
         // Ignore
@@ -520,8 +522,8 @@ export default function NotificationManager() {
       // Show a toast if we won't show an OS notification
       if (!shouldSendOsNotification(config)) {
         addToast({
-          title: "Workflow Paused",
-          description: `${runbookName} - waiting for manual action`,
+          title: t("notifications.workflow.paused.title"),
+          description: t("notifications.workflow.paused_body", { runbookName }),
           color: "warning",
           timeout: 5000,
         });
@@ -529,8 +531,8 @@ export default function NotificationManager() {
 
       notify(
         {
-          title: "Workflow Paused",
-          body: `${runbookName} - waiting for manual action`,
+          title: t("notifications.workflow.paused.title"),
+          body: t("notifications.workflow.paused_body", { runbookName }),
           success: true,
           duration: durationSecs,
         },
@@ -545,8 +547,8 @@ export default function NotificationManager() {
     (data: GrandCentralEvents["ssh-certificate-load-failed"]) => {
       logger.warn("SSH certificate load failed", data);
       addToast({
-        title: "SSH Certificate Error",
-        description: `Failed to load certificate for ${data.host}. Using key authentication instead.`,
+        title: t("notifications.ssh_certificate.load_failed.title"),
+        description: t("notifications.ssh_certificate.load_failed.description", { host: data.host }),
         color: "warning",
         timeout: 8000,
       });
@@ -559,8 +561,8 @@ export default function NotificationManager() {
     (data: GrandCentralEvents["ssh-certificate-expired"]) => {
       logger.warn("SSH certificate expired", data);
       addToast({
-        title: "SSH Certificate Expired",
-        description: `Certificate for ${data.host} has expired. Using key authentication instead.`,
+        title: t("notifications.ssh_certificate.expired.title"),
+        description: t("notifications.ssh_certificate.expired.description", { host: data.host }),
         color: "warning",
         timeout: 8000,
       });
@@ -573,8 +575,8 @@ export default function NotificationManager() {
     (data: GrandCentralEvents["ssh-certificate-not-yet-valid"]) => {
       logger.warn("SSH certificate not yet valid", data);
       addToast({
-        title: "SSH Certificate Not Yet Valid",
-        description: `Certificate for ${data.host} is not yet valid. Using key authentication instead.`,
+        title: t("notifications.ssh_certificate.not_yet_valid.title"),
+        description: t("notifications.ssh_certificate.not_yet_valid.description", { host: data.host }),
         color: "warning",
         timeout: 8000,
       });

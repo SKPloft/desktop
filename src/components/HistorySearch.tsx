@@ -1,5 +1,6 @@
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
+import { useTranslation } from "@/lib/i18n";
 
 interface HistorySearchProps {
   query: string;
@@ -8,6 +9,8 @@ interface HistorySearchProps {
 }
 
 export default function HistorySearch(props: HistorySearchProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
       <form
@@ -17,7 +20,7 @@ export default function HistorySearch(props: HistorySearchProps) {
         }}
       >
         <label htmlFor="search-field" className="sr-only">
-          Search
+          {t("history.search.label")}
         </label>
         <MagnifyingGlassIcon
           className="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-gray-400"
@@ -27,7 +30,7 @@ export default function HistorySearch(props: HistorySearchProps) {
           id="search-field"
           autoFocus
           className="block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 dark:text-gray-200 placeholder:text-gray-400 focus:ring-0 sm:text-sm outline-none bg-content1"
-          placeholder="Search..."
+          placeholder={t("history.search.placeholder")}
           autoComplete="off"
           autoCapitalize="off"
           autoCorrect="off"

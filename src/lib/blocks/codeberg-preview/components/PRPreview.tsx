@@ -2,12 +2,14 @@ import { Card, CardBody, Chip, Avatar } from "@heroui/react";
 import { GitPullRequestIcon, ExternalLinkIcon, GitMergeIcon, XCircleIcon } from "lucide-react";
 import type { CodebergPRData } from "../api";
 import { open } from "@tauri-apps/plugin-shell";
+import { useTranslation } from "@/lib/i18n";
 
 interface PRPreviewProps {
   data: CodebergPRData;
 }
 
 export default function PRPreview({ data }: PRPreviewProps) {
+  const { t } = useTranslation();
   const handleClick = () => {
     open(data.html_url);
   };
@@ -25,9 +27,9 @@ export default function PRPreview({ data }: PRPreviewProps) {
   };
 
   const getStatusText = () => {
-    if (data.merged) return "Merged";
-    if (data.state === "open") return "Open";
-    return "Closed";
+    if (data.merged) return t("common.merged");
+    if (data.state === "open") return t("common.open");
+    return t("common.closed");
   };
 
   return (
@@ -63,9 +65,7 @@ export default function PRPreview({ data }: PRPreviewProps) {
           </Chip>
         </div>
 
-        {data.body && (
-          <p className="text-sm text-default-500 line-clamp-2">{data.body}</p>
-        )}
+        {data.body && <p className="text-sm text-default-500 line-clamp-2">{data.body}</p>}
 
         <div className="flex items-center gap-4 text-sm">
           <span className="text-success-500">+{data.additions}</span>

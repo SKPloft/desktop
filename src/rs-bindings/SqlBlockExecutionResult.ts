@@ -2,4 +2,6 @@
 import type { SqlQueryResult } from "./SqlQueryResult";
 import type { SqlStatementResult } from "./SqlStatementResult";
 
-export type SqlBlockExecutionResult = { "type": "Query", "data": SqlQueryResult } | { "type": "Statement", "data": SqlStatementResult };
+export type SqlBlockExecutionResult =
+  | { type: "Query"; data: SqlQueryResult }
+  | { type: "Statement"; data: SqlStatementResult };

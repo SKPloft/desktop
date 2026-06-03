@@ -18,6 +18,7 @@ import { ConnectionState } from "@/state/store/user_state";
 import { readDir } from "@tauri-apps/plugin-fs";
 import * as commands from "@/lib/workspaces/commands";
 import { findParentWorkspace } from "@/lib/workspaces/offline_strategy";
+import { useTranslation } from "@/lib/i18n";
 
 interface NewWorkspaceDialogProps {
   onAccept: (name: string, online: boolean, folder: Option<string>) => void;
@@ -25,6 +26,7 @@ interface NewWorkspaceDialogProps {
 }
 
 export default function NewWorkspaceDialog({ onAccept, onCancel }: NewWorkspaceDialogProps) {
+  const { t } = useTranslation();
   const [name, setName] = useState("New Workspace");
   const [isOnline, setIsOnline] = useState(true);
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
@@ -98,12 +100,7 @@ export default function NewWorkspaceDialog({ onAccept, onCancel }: NewWorkspaceD
         <ModalHeader>Create or Open a Workspace</ModalHeader>
         <ModalBody>
           <div className="space-y-4">
-            <Input
-              label="Workspace Name"
-              value={name}
-              onChange={handleNameChange}
-              autoFocus
-            />
+            <Input label="Workspace Name" value={name} onChange={handleNameChange} autoFocus />
 
             <div>
               <label className="block text-sm font-medium mb-2">Workspace Type</label>
@@ -189,8 +186,7 @@ export default function NewWorkspaceDialog({ onAccept, onCancel }: NewWorkspaceD
                   )}
                 {selectedFolder && folderHasContents && existingWorkspaceId && (
                   <div className="text-warning-500 mt-2">
-                    The selected folder already contains a workspace. This workspace will be added
-                    to Atuin Desktop.
+                    {t("workspace.existing_workspace_notice")}
                   </div>
                 )}
               </div>
@@ -199,7 +195,7 @@ export default function NewWorkspaceDialog({ onAccept, onCancel }: NewWorkspaceD
         </ModalBody>
         <ModalFooter>
           <Button onPress={closeAndReset} variant="flat">
-            Cancel
+            {t("common.cancel")}
           </Button>
           <Button
             onPress={handleSubmit}

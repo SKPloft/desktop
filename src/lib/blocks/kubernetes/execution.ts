@@ -1,7 +1,7 @@
 // Preset kubectl commands for easy mode
 export const PRESET_COMMANDS = {
   pods: "kubectl get pods -o json",
-  services: "kubectl get services -o json", 
+  services: "kubectl get services -o json",
   deployments: "kubectl get deployments -o json",
   configmaps: "kubectl get configmaps -o json",
   secrets: "kubectl get secrets -o json",

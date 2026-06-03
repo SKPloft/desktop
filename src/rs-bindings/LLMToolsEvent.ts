@@ -5,4 +5,7 @@ import type { SessionInfo } from "./SessionInfo";
 /**
  * Events broadcast to the LLM Tools window.
  */
-export type LLMToolsEvent = { "type": "sessionCreated", info: SessionInfo, } | { "type": "sessionDestroyed", session_id: string, } | { "type": "sessionEvent", session_id: string, event: SessionEvent, };
+export type LLMToolsEvent =
+  | { type: "sessionCreated"; info: SessionInfo }
+  | { type: "sessionDestroyed"; session_id: string }
+  | { type: "sessionEvent"; session_id: string; event: SessionEvent };

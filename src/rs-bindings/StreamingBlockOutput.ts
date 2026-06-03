@@ -8,4 +8,11 @@ import type { JsonValue } from "./serde_json/JsonValue";
  * Can contain text output (stdout/stderr), binary data (for terminals),
  * or structured JSON objects.
  */
-export type StreamingBlockOutput = { block_id: string, stdout: string | null, stderr: string | null, lifecycle: BlockLifecycleEvent | null, binary: Array<number> | null, object: JsonValue | null, };
+export type StreamingBlockOutput = {
+  block_id: string;
+  stdout: string | null;
+  stderr: string | null;
+  lifecycle: BlockLifecycleEvent | null;
+  binary: Array<number> | null;
+  object: JsonValue | null;
+};

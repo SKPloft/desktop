@@ -67,7 +67,7 @@ export function useAIKeyboardShortcuts({
         console.warn("Could not get cursor position:", error);
       }
     },
-    [editor]
+    [editor],
   );
 
   return { handleKeyDown };

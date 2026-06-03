@@ -14,6 +14,7 @@ import track_event from "@/tracking";
 import SQL from "@/lib/blocks/common/SQL";
 import { exportPropMatter } from "@/lib/utils";
 import { useBlockKvValue } from "@/lib/hooks/useKvValue";
+import { useTranslation } from "@/lib/i18n";
 
 interface SQLProps {
   isEditable: boolean;
@@ -43,14 +44,15 @@ const MySQL = ({
   setSkipSqlModeInit,
   onCodeMirrorFocus,
 }: SQLProps) => {
+  const { t } = useTranslation();
   const settingsContent = (
     <div className="flex items-center justify-between gap-4">
       <div className="flex flex-col">
         <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-          Skip SQL mode initialization
+          {t("editor.blocks.mysql.skip_sql_mode_init")}
         </span>
         <span className="text-xs text-gray-500 dark:text-gray-400">
-          Enable for MySQL-compatible databases like StarRocks or Doris
+          {t("editor.blocks.mysql.skip_sql_mode_init_description")}
         </span>
       </div>
       <Switch
@@ -82,7 +84,7 @@ const MySQL = ({
       setDependency={setDependency}
       onCodeMirrorFocus={onCodeMirrorFocus}
       settingsContent={settingsContent}
-      settingsTitle="MySQL Settings"
+      settingsTitle={t("editor.blocks.mysql.title")}
     />
   );
 };

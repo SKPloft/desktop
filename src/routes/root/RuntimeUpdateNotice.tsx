@@ -3,12 +3,14 @@ import { InfoIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useKvValue } from "@/lib/hooks/useKvValue";
 import { useState } from "react";
+import { useTranslation } from "@/lib/i18n";
 
 interface RuntimeUpdateNoticeProps {
   openRunbookImport: () => void;
 }
 
 export default function RuntimeUpdateNotice(props: RuntimeUpdateNoticeProps) {
+  const { t } = useTranslation();
   const [temporarilyHideAlert, setTemporarilyHideAlert] = useState(false);
 
   // Default to true to prevent the alert from showing on first launch,
@@ -42,7 +44,7 @@ export default function RuntimeUpdateNotice(props: RuntimeUpdateNoticeProps) {
         icon={<InfoIcon />}
         isClosable={true}
         onClose={closeAlert}
-        title="Atuin Desktop's New Execution Engine"
+        title={t("runtime_update.title")}
         classNames={{
           base: cn(["!bg-success-50/100"]),
           title: cn(["!text-lg", "!font-semibold"]),
@@ -50,10 +52,9 @@ export default function RuntimeUpdateNotice(props: RuntimeUpdateNoticeProps) {
         description={
           <>
             <div className="mb-2">
-              This version of Atuin Desktop ships with a{" "}
-              <strong>brand new runbook execution engine</strong>. For more information on the new
-              runtime and any changes you should be aware of, please see the runtime runbook, linked
-              below:
+              {t("runtime_update.description_prefix")}{" "}
+              <strong>{t("runtime_update.description_strong")}</strong>
+              {t("runtime_update.description_suffix")}
             </div>
             <Button
               onPress={handleRuntimeExpainerRunbookClick}
@@ -61,7 +62,7 @@ export default function RuntimeUpdateNotice(props: RuntimeUpdateNoticeProps) {
               role="link"
               color="success"
             >
-              Open Runtime Runbook
+              {t("runtime_update.open")}
             </Button>
             <Button
               onPress={() => setTemporarilyHideAlert(true)}
@@ -70,7 +71,7 @@ export default function RuntimeUpdateNotice(props: RuntimeUpdateNoticeProps) {
               variant="ghost"
               className="ml-2"
             >
-              Remind me Later
+              {t("runtime_update.remind_later")}
             </Button>
           </>
         }

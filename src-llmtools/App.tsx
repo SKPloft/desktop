@@ -14,7 +14,9 @@ export default function App() {
   const { t } = useTranslation();
   const [sessions, setSessions] = useState<SessionInfo[]>([]);
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
-  const [eventsBySession, setEventsBySession] = useState<Map<string, SessionEventWithId[]>>(new Map());
+  const [eventsBySession, setEventsBySession] = useState<Map<string, SessionEventWithId[]>>(
+    new Map(),
+  );
   const [connected, setConnected] = useState(false);
 
   const handleEvent = useCallback((event: LLMToolsEvent) => {
@@ -66,9 +68,7 @@ export default function App() {
   }, [handleEvent]);
 
   const selectedSession = sessions.find((s) => s.id === selectedSessionId);
-  const selectedEvents = selectedSessionId
-    ? eventsBySession.get(selectedSessionId) || []
-    : [];
+  const selectedEvents = selectedSessionId ? eventsBySession.get(selectedSessionId) || [] : [];
 
   return (
     <div className="h-full flex flex-col bg-background text-foreground">
@@ -76,7 +76,9 @@ export default function App() {
       <div className="flex-none p-4 border-b border-divider">
         <h1 className="text-lg font-semibold">{t("llmtools.title")}</h1>
         <p className="text-sm text-default-500">
-          {connected ? t("llmtools.active_sessions", { count: sessions.length }) : t("llmtools.connecting")}
+          {connected
+            ? t("llmtools.active_sessions", { count: sessions.length })
+            : t("llmtools.connecting")}
         </p>
       </div>
 

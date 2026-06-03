@@ -83,7 +83,7 @@ export function useResizable({
       document.addEventListener("mousemove", handleMouseMove);
       document.addEventListener("mouseup", handleMouseUp);
     },
-    [width, onWidthChange, minWidth, maxWidth, edge, dispatchResizeEvent]
+    [width, onWidthChange, minWidth, maxWidth, edge, dispatchResizeEvent],
   );
 
   return { onResizeStart };

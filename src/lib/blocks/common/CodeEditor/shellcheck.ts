@@ -4,7 +4,6 @@ import { invoke } from "@tauri-apps/api/core";
 import { Comment } from "@/rs-bindings/Comment";
 import { ShellCheckOutput } from "@/rs-bindings/ShellCheckOutput";
 
-
 function posToOffset(doc: Text, line: number, column: number) {
   return doc.line(line).from + column - 1;
 }
@@ -29,15 +28,10 @@ function createMessageNode(code: number, message: string) {
   return messageNode;
 }
 
-function shellCheckCommentToDiagnostic(doc: Text, {
-  line,
-  column,
-  endLine,
-  endColumn,
-  level,
-  code,
-  message,
-}: Comment): Diagnostic {
+function shellCheckCommentToDiagnostic(
+  doc: Text,
+  { line, column, endLine, endColumn, level, code, message }: Comment,
+): Diagnostic {
   return {
     from: posToOffset(doc, line, column),
     to: posToOffset(doc, endLine, endColumn),
@@ -45,11 +39,11 @@ function shellCheckCommentToDiagnostic(doc: Text, {
     source: "ShellCheck",
     renderMessage: () => createMessageNode(code, message),
     message: message,
-  }
+  };
 }
 
 export function makeShellCheckLinter(arg0: string, shell: string): Extension {
-  return linter(async view => {
+  return linter(async (view) => {
     const raw = await invoke<ArrayBuffer>("shellcheck", {
       arg0,
       shell,
@@ -57,10 +51,10 @@ export function makeShellCheckLinter(arg0: string, shell: string): Extension {
     });
     const shellCheckOutput = JSON.parse(new TextDecoder().decode(raw)) as ShellCheckOutput;
 
-    return shellCheckOutput.comments.map(comment =>
-      (shellCheckCommentToDiagnostic(view.state.doc, comment))
+    return shellCheckOutput.comments.map((comment) =>
+      shellCheckCommentToDiagnostic(view.state.doc, comment),
     );
-  })
+  });
 }
 
 export const supportedShells = ["sh", "bash", "dash", "ksh", "busybox"] as const;

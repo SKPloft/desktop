@@ -1,6 +1,6 @@
 // Export the Host block for use in the editor
 
-import HostSelect, { insertHostSelect } from './HostSelect';
+import HostSelect, { insertHostSelect } from "./HostSelect";
 
 export { insertHostSelect };
-export default HostSelect; 
+export default HostSelect;

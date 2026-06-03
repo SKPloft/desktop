@@ -87,13 +87,19 @@ export async function fetchGitLabRepoData(projectPath: string): Promise<GitLabRe
   };
 }
 
-export async function fetchGitLabMRData(projectPath: string, mrNumber: number): Promise<GitLabMRData> {
-  const response = await fetch(`${GITLAB_API_BASE}/projects/${encodeProjectPath(projectPath)}/merge_requests/${mrNumber}`, {
-    headers: {
-      Accept: "application/json",
-      "User-Agent": "Atuin-Desktop",
+export async function fetchGitLabMRData(
+  projectPath: string,
+  mrNumber: number,
+): Promise<GitLabMRData> {
+  const response = await fetch(
+    `${GITLAB_API_BASE}/projects/${encodeProjectPath(projectPath)}/merge_requests/${mrNumber}`,
+    {
+      headers: {
+        Accept: "application/json",
+        "User-Agent": "Atuin-Desktop",
+      },
     },
-  });
+  );
 
   if (!response.ok) {
     throw new Error(`Failed to fetch MR: ${response.status} ${response.statusText}`);
@@ -114,13 +120,19 @@ export async function fetchGitLabMRData(projectPath: string, mrNumber: number): 
   };
 }
 
-export async function fetchGitLabIssueData(projectPath: string, issueNumber: number): Promise<GitLabIssueData> {
-  const response = await fetch(`${GITLAB_API_BASE}/projects/${encodeProjectPath(projectPath)}/issues/${issueNumber}`, {
-    headers: {
-      Accept: "application/json",
-      "User-Agent": "Atuin-Desktop",
+export async function fetchGitLabIssueData(
+  projectPath: string,
+  issueNumber: number,
+): Promise<GitLabIssueData> {
+  const response = await fetch(
+    `${GITLAB_API_BASE}/projects/${encodeProjectPath(projectPath)}/issues/${issueNumber}`,
+    {
+      headers: {
+        Accept: "application/json",
+        "User-Agent": "Atuin-Desktop",
+      },
     },
-  });
+  );
 
   if (!response.ok) {
     throw new Error(`Failed to fetch issue: ${response.status} ${response.statusText}`);
@@ -191,4 +203,3 @@ export async function fetchGitLabCodeData(
     web_url,
   };
 }
-

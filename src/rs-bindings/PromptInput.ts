@@ -3,4 +3,7 @@
 /**
  * Input types for client prompts
  */
-export type PromptInput = { "type": "string" } | { "type": "text" } | { "type": "dropdown", "data": Array<[string, string]> };
+export type PromptInput =
+  | { type: "string" }
+  | { type: "text" }
+  | { type: "dropdown"; data: Array<[string, string]> };

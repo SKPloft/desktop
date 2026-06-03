@@ -36,8 +36,7 @@ async function _loadPassword(service: string, user: string): Promise<string | nu
 const _savePassword = (service: string, user: string, password: string) =>
   tauriBackendStore.set(service, user, password);
 
-const _deletePassword = (service: string, user: string) =>
-  tauriBackendStore.remove(service, user);
+const _deletePassword = (service: string, user: string) => tauriBackendStore.remove(service, user);
 
 // Convenience function for setting the hub credentials in development
 DevConsole.addAppObject("setHubCredentials", async (username: string, key: string) => {

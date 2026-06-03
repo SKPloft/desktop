@@ -13,12 +13,7 @@ interface AIGeneratePopupProps {
  * Popup for collecting a prompt to generate blocks.
  * The actual generation is handled by the parent via onSubmit callback.
  */
-export function AIGeneratePopup({
-  isVisible,
-  position,
-  onSubmit,
-  onClose,
-}: AIGeneratePopupProps) {
+export function AIGeneratePopup({ isVisible, position, onSubmit, onClose }: AIGeneratePopupProps) {
   const handleSubmit = useCallback(
     async (prompt: string) => {
       track_event("runbooks.ai.generate_popup", { prompt_length: prompt.length });

@@ -4,6 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import track_event from "@/tracking";
 import AIBlockRegistry from "@/lib/ai/block_registry";
 import undent from "undent";
+import { useTranslation } from "@/lib/i18n";
+import { t as i18nT } from "@/lib/i18n";
 
 interface HeadingItem {
   id: string;
@@ -25,6 +27,7 @@ const getBlockText = (block: any): string => {
 };
 
 const TableOfContents = ({ editor, blockId }: TableOfContentsProps) => {
+  const { t } = useTranslation();
   const [headings, setHeadings] = useState<HeadingItem[]>([]);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -77,7 +80,7 @@ const TableOfContents = ({ editor, blockId }: TableOfContentsProps) => {
     return (
       <div className="w-full flex items-center gap-2 py-2 px-3 text-zinc-400 dark:text-zinc-500 text-sm italic border border-zinc-200 dark:border-zinc-800 rounded-md">
         <ListIcon className="w-4 h-4" />
-        <span>No headings in document</span>
+        <span>{t("editor.blocks.table_of_contents.no_headings")}</span>
       </div>
     );
   }
@@ -93,7 +96,7 @@ const TableOfContents = ({ editor, blockId }: TableOfContentsProps) => {
         ) : (
           <ChevronDownIcon className="w-3 h-3" />
         )}
-        <span>Contents</span>
+        <span>{t("editor.blocks.table_of_contents.contents")}</span>
         <span className="text-zinc-300 dark:text-zinc-600">({headings.length})</span>
       </button>
 
@@ -118,7 +121,7 @@ const TableOfContents = ({ editor, blockId }: TableOfContentsProps) => {
                 `}
                 title={heading.text}
               >
-                {heading.text || "Untitled"}
+                {heading.text || t("common.untitled")}
               </button>
             );
           })}
@@ -146,8 +149,8 @@ export default createReactBlockSpec(
 
 // Component to insert this block from the editor menu
 export const insertTableOfContents = (schema: any) => (editor: typeof schema.BlockNoteEditor) => ({
-  title: "Contents",
-  subtext: "Add a navigable list of all headings",
+  title: i18nT("editor.blocks.table_of_contents.title"),
+  subtext: i18nT("editor.blocks.table_of_contents.insert_subtext"),
   onItemClick: async () => {
     track_event("runbooks.block.create", { type: "table_of_contents" });
 
@@ -164,7 +167,7 @@ export const insertTableOfContents = (schema: any) => (editor: typeof schema.Blo
   },
   icon: <ListIcon size={18} />,
   aliases: ["toc", "contents"],
-  group: "Content",
+  group: i18nT("editor.blocks.group.content"),
 });
 
 AIBlockRegistry.getInstance().addBlock({

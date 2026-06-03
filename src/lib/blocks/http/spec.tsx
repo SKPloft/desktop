@@ -6,83 +6,82 @@ import { createReactBlockSpec } from "@blocknote/react";
 import { Http } from "./component";
 import { HttpBlock as HttpBlockType, HttpVerb, HttpHeaders, HTTP_BLOCK_SCHEMA } from "./schema";
 import { DependencySpec } from "@/lib/workflow/dependency";
+import { t } from "@/lib/i18n";
+//static file, so using t type only
 import track_event from "@/tracking";
 
-export default createReactBlockSpec(
-  HTTP_BLOCK_SCHEMA,
-  {
-    // @ts-ignore
-    render: ({ block, editor, code, type }) => {
-      const setUrl = (url: string) => {
-        editor.updateBlock(block, {
-          // @ts-ignore
-          props: { ...block.props, url: url },
-        });
-      };
+export default createReactBlockSpec(HTTP_BLOCK_SCHEMA, {
+  // @ts-ignore
+  render: ({ block, editor, code, type }) => {
+    const setUrl = (url: string) => {
+      editor.updateBlock(block, {
+        // @ts-ignore
+        props: { ...block.props, url: url },
+      });
+    };
 
-      const setVerb = (verb: HttpVerb) => {
-        editor.updateBlock(block, {
-          // @ts-ignore
-          props: { ...block.props, verb: verb },
-        });
-      };
+    const setVerb = (verb: HttpVerb) => {
+      editor.updateBlock(block, {
+        // @ts-ignore
+        props: { ...block.props, verb: verb },
+      });
+    };
 
-      const setBody = (body: string) => {
-        editor.updateBlock(block, {
-          // @ts-ignore
-          props: { ...block.props, body: body },
-        });
-      };
+    const setBody = (body: string) => {
+      editor.updateBlock(block, {
+        // @ts-ignore
+        props: { ...block.props, body: body },
+      });
+    };
 
-      const setName = (name: string) => {
-        editor.updateBlock(block, {
-          // @ts-ignore
-          props: { ...block.props, name },
-        });
-      };
+    const setName = (name: string) => {
+      editor.updateBlock(block, {
+        // @ts-ignore
+        props: { ...block.props, name },
+      });
+    };
 
-      const setHeaders = (headers: HttpHeaders) => {
-        editor.updateBlock(block, {
-          // @ts-ignore
-          props: { ...block.props, headers: JSON.stringify(headers) },
-        });
-      };
+    const setHeaders = (headers: HttpHeaders) => {
+      editor.updateBlock(block, {
+        // @ts-ignore
+        props: { ...block.props, headers: JSON.stringify(headers) },
+      });
+    };
 
-      const setDependency = (dependency: DependencySpec) => {
-        editor.updateBlock(block, {
-          props: { ...block.props, dependency: dependency.serialize() },
-        });
-      };
+    const setDependency = (dependency: DependencySpec) => {
+      editor.updateBlock(block, {
+        props: { ...block.props, dependency: dependency.serialize() },
+      });
+    };
 
-      let dependency = DependencySpec.deserialize(block.props.dependency);
-      let blockType = new HttpBlockType(
-        block.id,
-        block.props.name,
-        dependency,
-        block.props.url,
-        block.props.verb as HttpVerb,
-        JSON.parse(block.props.headers),
-      );
+    let dependency = DependencySpec.deserialize(block.props.dependency);
+    let blockType = new HttpBlockType(
+      block.id,
+      block.props.name,
+      dependency,
+      block.props.url,
+      block.props.verb as HttpVerb,
+      JSON.parse(block.props.headers),
+    );
 
-      return (
-        <Http
-          http={blockType}
-          setDependency={setDependency}
-          body={block.props.body || ""}
-          isEditable={editor.isEditable}
-          setUrl={setUrl}
-          setVerb={setVerb}
-          setBody={setBody}
-          setName={setName}
-          setHeaders={setHeaders}
-        />
-      );
-    },
+    return (
+      <Http
+        http={blockType}
+        setDependency={setDependency}
+        body={block.props.body || ""}
+        isEditable={editor.isEditable}
+        setUrl={setUrl}
+        setVerb={setVerb}
+        setBody={setBody}
+        setName={setName}
+        setHeaders={setHeaders}
+      />
+    );
   },
-);
+});
 
 export const insertHttp = (schema: any) => (editor: typeof schema.BlockNoteEditor) => ({
-  title: "HTTP",
+  title: t("editor.blocks.http.title"),
   onItemClick: () => {
     track_event("runbooks.block.create", { type: "http" });
 
@@ -104,5 +103,5 @@ export const insertHttp = (schema: any) => (editor: typeof schema.BlockNoteEdito
     );
   },
   icon: <GlobeIcon size={18} />,
-  group: "Network",
+  group: t("editor.blocks.group.network"),
 });

@@ -6,6 +6,7 @@ import SavedBlock from "@/state/runbooks/saved_block";
 import { DialogBuilder } from "@/components/Dialogs/dialog";
 import { useQuery } from "@tanstack/react-query";
 import { savedBlocks } from "@/lib/queries/saved_blocks";
+import { useTranslation } from "@/lib/i18n";
 
 interface SavedBlockPopupProps {
   isVisible: boolean;
@@ -15,6 +16,7 @@ interface SavedBlockPopupProps {
 }
 
 export function SavedBlockPopup({ isVisible, position, onSelect, onClose }: SavedBlockPopupProps) {
+  const { t } = useTranslation();
   const [query, setQuery] = useState("");
   const [filteredBlocks, setFilteredBlocks] = useState<SavedBlock[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -103,11 +105,11 @@ export function SavedBlockPopup({ isVisible, position, onSelect, onClose }: Save
     if (!block) return;
 
     const answer = await new DialogBuilder<"yes" | "no">()
-      .title(`Delete Saved Block ${block.get("name")!}`)
+      .title(t("editor.saved_blocks.delete_title", { name: block.get("name")! }))
       .icon("error")
-      .message("Are you sure you want to delete this saved block?")
-      .action({ label: "OK", value: "yes", variant: "flat", color: "danger" })
-      .action({ label: "Cancel", value: "no", variant: "flat" })
+      .message(t("editor.saved_blocks.delete_confirm"))
+      .action({ label: t("common.ok"), value: "yes", variant: "flat", color: "danger" })
+      .action({ label: t("common.cancel"), value: "no", variant: "flat" })
       .build();
 
     if (answer === "yes") {
@@ -127,7 +129,7 @@ export function SavedBlockPopup({ isVisible, position, onSelect, onClose }: Save
       <div className="p-3">
         <Input
           ref={inputRef}
-          placeholder="Search saved blocks..."
+          placeholder={t("editor.saved_blocks.search")}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           classNames={{
@@ -140,7 +142,7 @@ export function SavedBlockPopup({ isVisible, position, onSelect, onClose }: Save
       <div className="max-h-60 overflow-y-auto">
         {filteredBlocks.length === 0 ? (
           <div className="p-3 text-sm text-gray-500 dark:text-gray-400 text-center">
-            No saved blocks found
+            {t("editor.saved_blocks.none_found")}
           </div>
         ) : (
           filteredBlocks.map((block, index) => (
@@ -156,7 +158,7 @@ export function SavedBlockPopup({ isVisible, position, onSelect, onClose }: Save
             >
               <div className="flex items-center gap-2">
                 <BlocksIcon size={14} />
-                <span className="truncate">{block.get("name") || "Untitled Block"}</span>
+                <span className="truncate">{block.get("name") || t("editor.saved_blocks.untitled_block")}</span>
               </div>
               <TrashIcon
                 size={14}
@@ -169,7 +171,7 @@ export function SavedBlockPopup({ isVisible, position, onSelect, onClose }: Save
       </div>
 
       <div className="p-2 text-xs text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-gray-700">
-        ↑↓ to navigate • Enter to select • Esc to cancel
+        {t("editor.saved_blocks.selector_help")}
       </div>
     </div>
   );

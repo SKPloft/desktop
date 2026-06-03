@@ -48,6 +48,8 @@ import { useStore } from "@/state/store";
 import { ChargeTarget } from "@/rs-bindings/ChargeTarget";
 import AtuinEnv from "@/atuin_env";
 import { getModelSelection } from "@/state/settings_ai";
+import { useTranslation, t } from "@/lib/i18n";
+//also because there are strings in return types
 import { DialogBuilder } from "@/components/Dialogs/dialog";
 import { ModelSelection } from "@/rs-bindings/ModelSelection";
 import { ALL_TOOL_NAMES, AIToolRunner, DEFAULT_AUTO_APPROVE_TOOLS } from "@/lib/ai/tools";
@@ -137,7 +139,9 @@ function ToolParamsDisplay({ params }: { params: any }) {
         ) : (
           <ChevronRightIcon className="h-3 w-3" />
         )}
-        {expanded ? "Hide parameters" : "Show parameters"}
+        {expanded
+          ? t("editor.ai.assistant.hide_parameters")
+          : t("editor.ai.assistant.show_parameters")}
       </button>
       {expanded && (
         <pre className="mt-1 p-2 bg-gray-100 dark:bg-gray-800 rounded text-xs overflow-x-auto max-h-40 overflow-y-auto">
@@ -183,14 +187,14 @@ function ToolCallUI({
     }
   };
 
-  const buttonLabel = selectedAction === "approve" ? "Allow" : "Always Allow";
+  const buttonLabel = selectedAction === "approve" ? t("editor.ai.assistant.allow") : t("editor.ai.assistant.always_allow");
 
   return (
     <div className="mt-2 p-2 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded overflow-x-auto">
       <div className="flex items-center gap-2">
         <WrenchIcon className="h-4 w-4 text-amber-600 dark:text-amber-400" />
         <span className="text-sm font-medium text-amber-700 dark:text-amber-300">
-          Tool: {toolCall.name}
+          {t("editor.ai.assistant.tool_name", { name: toolCall.name })}
         </span>
         {isPending && <Spinner size="sm" variant="dots" />}
         {isApproved && <CheckIcon className="h-3 w-3 text-green-500" />}
@@ -205,7 +209,7 @@ function ToolCallUI({
             onPress={() => onDeny(toolCall)}
             className="text-red-600 dark:text-red-400"
           >
-            Deny
+            {t("editor.ai.assistant.deny")}
           </Button>
           <ButtonGroup>
             <Button
@@ -224,15 +228,17 @@ function ToolCallUI({
               </DropdownTrigger>
               <DropdownMenu
                 disallowEmptySelection
-                aria-label="Tool approval options"
+                aria-label={t("editor.ai.assistant.tool_approval_options")}
                 className="max-w-[300px]"
                 selectedKeys={new Set([selectedAction])}
                 selectionMode="single"
                 onSelectionChange={handleSelectionChange}
               >
-                <DropdownItem key="approve">Allow this tool usage</DropdownItem>
+                <DropdownItem key="approve">
+                  {t("editor.ai.assistant.allow_this_tool_usage")}
+                </DropdownItem>
                 <DropdownItem key="approve-always">
-                  Allow this and future uses of this tool
+                  {t("editor.ai.assistant.allow_this_and_future_uses")}
                 </DropdownItem>
               </DropdownMenu>
             </Dropdown>
@@ -305,9 +311,9 @@ function MessageBubble({
               isTool && "text-gray-600 dark:text-gray-400",
             )}
           >
-            {isUser && "You"}
-            {isAssistant && "Assistant"}
-            {isTool && "Tool Response"}
+            {isUser && t("editor.ai.assistant.role.you")}
+            {isAssistant && t("editor.ai.assistant.role.assistant")}
+            {isTool && t("editor.ai.assistant.role.tool_response")}
           </span>
         </div>
 
@@ -371,6 +377,7 @@ export default function AIAssistant({
   chargeTarget,
   onClose,
 }: AIAssistantProps) {
+  const { t } = useTranslation();
   const [inputValue, setInputValue] = useState("");
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [lockedToBottom, setLockedToBottom] = useState(true);
@@ -451,10 +458,7 @@ export default function AIAssistant({
   } = chat;
 
   // Filter out system messages for display (keep them in messages array for dev tools)
-  const visibleMessages = useMemo(
-    () => messages.filter((m) => m.role !== "system"),
-    [messages],
-  );
+  const visibleMessages = useMemo(() => messages.filter((m) => m.role !== "system"), [messages]);
 
   useEffect(() => {
     if (!sessionId) return;
@@ -545,20 +549,20 @@ export default function AIAssistant({
       if (modelSelection.isErr()) {
         const err = modelSelection.unwrapErr();
         await new DialogBuilder()
-          .title("AI Provider Error")
+          .title(t("editor.ai.assistant.provider_error_title"))
           .icon("error")
-          .message("There was an error setting up your selected AI provider: " + err)
-          .action({ label: "OK", value: undefined, variant: "flat" })
+          .message(t("editor.ai.assistant.provider_error_message", { error: String(err) }))
+          .action({ label: t("common.ok"), value: undefined, variant: "flat" })
           .build();
         return;
       }
     } catch (err) {
       console.error("Failed to get model selection:", err);
       await new DialogBuilder()
-        .title("AI Provider Error")
+        .title(t("editor.ai.assistant.provider_error_title"))
         .icon("error")
-        .message("There was an error setting up your selected AI provider: " + err)
-        .action({ label: "OK", value: undefined, variant: "flat" })
+        .message(t("editor.ai.assistant.provider_error_message", { error: String(err) }))
+        .action({ label: t("common.ok"), value: undefined, variant: "flat" })
         .build();
       return;
     }
@@ -655,10 +659,7 @@ export default function AIAssistant({
         continue;
       }
 
-      if (
-        toolRunner.isAutoApprovable(toolCall.name) &&
-        !autoApprovedRef.current.has(toolCall.id)
-      ) {
+      if (toolRunner.isAutoApprovable(toolCall.name) && !autoApprovedRef.current.has(toolCall.id)) {
         autoApprovedRef.current.add(toolCall.id);
         handleApprove(toolCall);
       }
@@ -680,7 +681,9 @@ export default function AIAssistant({
         <div className="flex items-center gap-2">
           <div
             className={cn("h-2 w-2 rounded-full", isConnected ? "bg-green-500" : "bg-red-500")}
-            title={isConnected ? "Connected" : "Connecting..."}
+            title={
+              isConnected ? t("editor.ai.assistant.connected") : t("editor.ai.assistant.connecting")
+            }
           />
           <Button
             size="sm"
@@ -705,9 +708,9 @@ export default function AIAssistant({
           {!isCreatingSession && visibleMessages.length === 0 && (
             <div className="flex flex-col items-center justify-center h-full text-center text-gray-500 dark:text-gray-400">
               <BotIcon className="h-12 w-12 mb-4 opacity-50" />
-              <p className="text-sm">Ask me to help edit your runbook.</p>
+              <p className="text-sm">{t("editor.ai.assistant.empty_title")}</p>
               <p className="text-xs mt-2 opacity-75">
-                I can read and modify blocks in your document.
+                {t("editor.ai.assistant.empty_description")}
               </p>
             </div>
           )}
@@ -750,7 +753,9 @@ export default function AIAssistant({
                     <MarkdownContent content={streamingContent} isStreaming={true} />
                   </div>
                 ) : (
-                  <div className="text-sm mt-1 text-gray-500 dark:text-gray-400">Thinking...</div>
+                  <div className="text-sm mt-1 text-gray-500 dark:text-gray-400">
+                    {t("editor.ai.assistant.thinking")}
+                  </div>
                 )}
               </div>
             </div>
@@ -762,8 +767,7 @@ export default function AIAssistant({
         </ScrollShadow>
 
         {/* Scroll to bottom button */}
-        {!lockedToBottom &&
-          (visibleMessages.length > 0 || streamingContent !== null) && (
+        {!lockedToBottom && (visibleMessages.length > 0 || streamingContent !== null) && (
           <Button
             isIconOnly
             size="sm"
@@ -775,7 +779,7 @@ export default function AIAssistant({
               setLockedToBottom(true);
             }}
             className="absolute bottom-2 right-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-md"
-            title="Scroll to bottom"
+            title={t("editor.ai.assistant.scroll_to_bottom")}
           >
             <ArrowDownToLineIcon className="h-4 w-4" />
           </Button>
@@ -785,7 +789,9 @@ export default function AIAssistant({
       {/* Queued messages */}
       {queuedMessages.length > 0 && (
         <div className="flex-shrink-0 px-3 pt-2 space-y-1 border-t border-gray-200 dark:border-gray-700">
-          <span className="text-xs text-gray-500 dark:text-gray-400">Queued messages</span>
+          <span className="text-xs text-gray-500 dark:text-gray-400">
+            {t("editor.ai.assistant.queued_messages")}
+          </span>
           {queuedMessages.map((msg, idx) => (
             <QueuedMessageItem key={idx} message={msg} />
           ))}
@@ -807,8 +813,8 @@ export default function AIAssistant({
             onKeyDown={handleKeyDown}
             placeholder={
               canCancel
-                ? "Message will be sent after current operation..."
-                : "Ask the AI to help..."
+                ? t("editor.ai.assistant.placeholder_queued")
+                : t("editor.ai.assistant.placeholder")
             }
             minRows={1}
             maxRows={4}
@@ -825,7 +831,7 @@ export default function AIAssistant({
               color="danger"
               onPress={cancel}
               className="self-end"
-              title="Cancel current operation"
+              title={t("editor.ai.assistant.cancel_current_operation")}
             >
               <StopCircleIcon className="h-4 w-4" />
             </Button>
@@ -843,7 +849,8 @@ export default function AIAssistant({
         </div>
         <div className="flex items-center justify-between mt-2">
           <span className="text-xs text-gray-400">
-            <kbd className="px-1 py-0.5 bg-gray-100 dark:bg-gray-800 rounded">Enter</kbd> to send
+            <kbd className="px-1 py-0.5 bg-gray-100 dark:bg-gray-800 rounded">Enter</kbd>{" "}
+            {t("editor.ai.assistant.enter_to_send")}
           </span>
           {visibleMessages.length > 0 && (
             <Button
@@ -852,7 +859,7 @@ export default function AIAssistant({
               onPress={handleClear}
               className="text-xs text-gray-500 hover:text-gray-700"
             >
-              Clear chat
+              {t("editor.ai.assistant.clear_chat")}
             </Button>
           )}
         </div>

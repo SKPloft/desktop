@@ -2,6 +2,8 @@
 import { createReactBlockSpec } from "@blocknote/react";
 import undent from "undent";
 import AIBlockRegistry from "@/lib/ai/block_registry";
+import { useTranslation } from "@/lib/i18n";
+import { t as i18nT } from "@/lib/i18n";
 
 import { useMemo, useState, useEffect, useRef, useCallback, useContext } from "react";
 
@@ -89,6 +91,7 @@ const ScriptBlock = ({
   terminalRows,
   setTerminalRows,
 }: ScriptBlockProps) => {
+  const { t } = useTranslation();
   const [hasRun, setHasRun] = useState<boolean>(false);
   const xtermRef = useRef<XtermHandle>(null);
   // Track available shells
@@ -137,7 +140,7 @@ const ScriptBlock = ({
   useEffect(() => {
     if (blockExecution.isError && blockExecution.error) {
       addToast({
-        title: "Script error",
+        title: t("editor.blocks.script.error_title"),
         description: blockExecution.error,
         color: "danger",
       });
@@ -197,7 +200,7 @@ const ScriptBlock = ({
           <div className="flex items-center">
             <TriangleAlertIcon size={16} />
           </div>
-          {script.interpreter} not found
+          {t("editor.blocks.script.shell_not_found", { shell: script.interpreter })}
         </div>
       );
     }
@@ -297,7 +300,7 @@ const ScriptBlock = ({
           <div className="flex flex-row justify-between w-full">
             <h1 className="text-default-700 font-semibold">
               <EditableHeading
-                initialText={script.name || "Script"}
+                initialText={script.name || i18nT("editor.blocks.script.title")}
                 onTextChange={(text) => setName(text)}
               />
             </h1>
@@ -311,7 +314,7 @@ const ScriptBlock = ({
                     ? "border-red-400 dark:border-red-400 focus:ring-red-500"
                     : ""
                 }`}
-                placeholder="Output variable"
+                placeholder={t("editor.blocks.script.output_variable")}
                 autoComplete="off"
                 autoCapitalize="off"
                 autoCorrect="off"
@@ -332,7 +335,7 @@ const ScriptBlock = ({
               />
 
               <Tooltip
-                content={script.outputVisible ? "Hide output terminal" : "Show output terminal"}
+                content={script.outputVisible ? t("editor.blocks.script.hide_output_terminal") : t("editor.blocks.script.show_output_terminal")}
               >
                 <Button
                   onPress={() => {
@@ -346,7 +349,7 @@ const ScriptBlock = ({
                 </Button>
               </Tooltip>
 
-              <Tooltip content={collapseCode ? "Expand code" : "Collapse code"}>
+              <Tooltip content={collapseCode ? t("editor.blocks.editor.expand_code") : t("editor.blocks.editor.collapse_code")}>
                 <Button
                   onPress={() => setCollapseCode(!collapseCode)}
                   size="sm"
@@ -367,23 +370,23 @@ const ScriptBlock = ({
             <Tooltip
               content={
                 shellMissing
-                  ? `${script.interpreter} shell not found. This script may not run correctly.`
+                  ? t("editor.blocks.script.shell_not_found", { shell: script.interpreter })
                   : ""
               }
               isDisabled={!shellMissing}
               color="danger"
             >
               <div>
-              <PlayButton
-                eventName="runbooks.block.execute"
-                eventProps={{ type: "script" }}
-                onPlay={handlePlay}
-                onStop={blockExecution.cancel}
-                isRunning={blockExecution.isRunning}
-                cancellable={true}
-                isLoading={showSpinner}
-                disabled={showSpinner}
-              />
+                <PlayButton
+                  eventName="runbooks.block.execute"
+                  eventProps={{ type: "script" }}
+                  onPlay={handlePlay}
+                  onStop={blockExecution.cancel}
+                  isRunning={blockExecution.isRunning}
+                  cancellable={true}
+                  isLoading={showSpinner}
+                  disabled={showSpinner}
+                />
               </div>
             </Tooltip>
 
@@ -605,8 +608,8 @@ export default createReactBlockSpec(
 );
 
 export const insertScript = (schema: any) => (editor: typeof schema.BlockNoteEditor) => ({
-  title: "Script",
-  subtext: "Non-interactive script",
+  title: i18nT("editor.blocks.script.title"),
+  subtext: i18nT("editor.blocks.script.insert_subtext"),
   onItemClick: async () => {
     track_event("runbooks.block.create", { type: "script" });
 
@@ -632,7 +635,7 @@ export const insertScript = (schema: any) => (editor: typeof schema.BlockNoteEdi
     );
   },
   icon: <FileTerminalIcon size={18} />,
-  group: "Execute",
+  group: i18nT("editor.blocks.group.execute"),
 });
 
 AIBlockRegistry.getInstance().addBlock({

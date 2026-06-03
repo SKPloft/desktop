@@ -11,7 +11,7 @@ export default class AIBlockRegistry {
   private static instance: AIBlockRegistry;
   private blocks: Map<string, BlockRegistryDefinition> = new Map();
 
-  private constructor() { }
+  private constructor() {}
 
   public static getInstance(): AIBlockRegistry {
     if (!AIBlockRegistry.instance) {

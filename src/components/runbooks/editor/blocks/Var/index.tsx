@@ -5,6 +5,7 @@ import { createReactBlockSpec } from "@blocknote/react";
 import undent from "undent";
 import AIBlockRegistry from "@/lib/ai/block_registry";
 import { exportPropMatter } from "@/lib/utils";
+import { useTranslation } from "@/lib/i18n";
 import isValidVarName from "../../utils/varNames";
 
 interface VarProps {
@@ -15,6 +16,7 @@ interface VarProps {
 }
 
 const Var = ({ name = "", value = "", onUpdate, isEditable }: VarProps) => {
+  const { t } = useTranslation();
   const [hasNameError, setHasNameError] = useState(false);
 
   // Check for invalid variable name characters (only allow alphanumeric and underscore)
@@ -46,7 +48,7 @@ const Var = ({ name = "", value = "", onUpdate, isEditable }: VarProps) => {
         </div>
 
         <Input
-          placeholder="Name"
+          placeholder={t("editor.blocks.var.name_placeholder")}
           value={name}
           onChange={handleKeyChange}
           autoComplete="off"
@@ -60,12 +62,12 @@ const Var = ({ name = "", value = "", onUpdate, isEditable }: VarProps) => {
           }`}
           disabled={!isEditable}
           isInvalid={hasNameError}
-          errorMessage={"Variable names can only contain letters, numbers, and underscores"}
+          errorMessage={t("editor.blocks.var.name_error")}
         />
 
         <div className="flex-1">
           <Input
-            placeholder="Value"
+            placeholder={t("editor.blocks.var.value_placeholder")}
             value={value}
             onChange={handleValueChange}
             autoComplete="off"

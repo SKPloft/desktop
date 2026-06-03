@@ -31,6 +31,7 @@ import { createTabBarMenu, createTabMenu } from "@/components/runbooks/List/menu
 import { Badge } from "@heroui/react";
 import { invoke } from "@tauri-apps/api/core";
 import debounce from "lodash.debounce";
+import { useTranslation } from "@/lib/i18n";
 
 export const TabsContext = React.createContext<{
   tab: TabType | null;
@@ -51,6 +52,7 @@ export const TabsContext = React.createContext<{
 });
 
 export default function Tabs() {
+  const { t } = useTranslation();
   // Use individual selectors to avoid creating new object references on every store update
   const tabs = useStore((state: AtuinState) => state.tabs);
   const currentTabId = useStore((state: AtuinState) => state.currentTabId);
@@ -158,14 +160,14 @@ export default function Tabs() {
         <div
           className={cn(
             "flex flex-row items-center w-full min-h-[40px] border-b overflow-hidden px-2",
-            !sidebarOpen && "pl-20"
+            !sidebarOpen && "pl-20",
           )}
           data-tauri-drag-region
         >
           <button
             onClick={handleToggleSidebar}
             className="flex items-center justify-center w-9 h-9 mr-1 rounded hover:bg-gray-100 dark:hover:bg-zinc-800 flex-shrink-0"
-            title={sidebarOpen ? "Collapse Sidebar" : "Expand Sidebar"}
+            title={sidebarOpen ? t("root.tabs.collapse_sidebar") : t("root.tabs.expand_sidebar")}
           >
             {sidebarOpen ? (
               <PanelLeftCloseIcon size={20} className="text-gray-500" />
@@ -180,49 +182,49 @@ export default function Tabs() {
             onContextMenu={handleTabBarContextMenu}
             data-tauri-drag-region
           >
-          <SortableContext items={tabs} strategy={horizontalListSortingStrategy}>
-            {tabs.map((tab, index) => (
-              <Tab
-                key={tab.id}
-                id={tab.id}
-                url={tab.url}
-                title={tab.title}
-                icon={tab.icon}
-                badge={tab.badge}
-                index={index}
-                active={tab.id === currentTabId}
-                onActivate={(url) => openTab(url)}
-                onClose={(id) => closeTab(id)}
-                onCloseAllTabs={() => closeAllTabs()}
-                onCloseOtherTabs={() => closeOtherTabs(tab.id)}
-                onCloseLeftTabs={() => closeLeftTabs(tab.id)}
-                onCloseRightTabs={() => closeRightTabs(tab.id)}
-                onUndoCloseTab={() => undoCloseTab()}
-              />
-            ))}
-          </SortableContext>
-          <DragOverlay>
-            {draggedTab && (
-              <TabDisplay
-                id={draggedTab.id + "-drag-overlay"}
-                url={draggedTab.url}
-                title={draggedTab.title}
-                icon={draggedTab.icon}
-                badge={draggedTab.badge}
-                active={false}
-                index={0}
-                onActivate={() => {}}
-                onClose={() => {}}
-                onCloseAllTabs={() => {}}
-                onCloseOtherTabs={() => {}}
-                onCloseLeftTabs={() => {}}
-                onCloseRightTabs={() => {}}
-                onUndoCloseTab={() => {}}
-                ghost
-              />
-            )}
-          </DragOverlay>
-        </ul>
+            <SortableContext items={tabs} strategy={horizontalListSortingStrategy}>
+              {tabs.map((tab, index) => (
+                <Tab
+                  key={tab.id}
+                  id={tab.id}
+                  url={tab.url}
+                  title={tab.title}
+                  icon={tab.icon}
+                  badge={tab.badge}
+                  index={index}
+                  active={tab.id === currentTabId}
+                  onActivate={(url) => openTab(url)}
+                  onClose={(id) => closeTab(id)}
+                  onCloseAllTabs={() => closeAllTabs()}
+                  onCloseOtherTabs={() => closeOtherTabs(tab.id)}
+                  onCloseLeftTabs={() => closeLeftTabs(tab.id)}
+                  onCloseRightTabs={() => closeRightTabs(tab.id)}
+                  onUndoCloseTab={() => undoCloseTab()}
+                />
+              ))}
+            </SortableContext>
+            <DragOverlay>
+              {draggedTab && (
+                <TabDisplay
+                  id={draggedTab.id + "-drag-overlay"}
+                  url={draggedTab.url}
+                  title={draggedTab.title}
+                  icon={draggedTab.icon}
+                  badge={draggedTab.badge}
+                  active={false}
+                  index={0}
+                  onActivate={() => {}}
+                  onClose={() => {}}
+                  onCloseAllTabs={() => {}}
+                  onCloseOtherTabs={() => {}}
+                  onCloseLeftTabs={() => {}}
+                  onCloseRightTabs={() => {}}
+                  onUndoCloseTab={() => {}}
+                  ghost
+                />
+              )}
+            </DragOverlay>
+          </ul>
         </div>
       </DndContext>
 

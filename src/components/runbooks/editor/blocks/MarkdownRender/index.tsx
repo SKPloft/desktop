@@ -17,7 +17,8 @@ import { useBlockKvValue } from "@/lib/hooks/useKvValue";
 import { cn } from "@/lib/utils";
 import { MarkdownRenderState } from "@/rs-bindings/MarkdownRenderState";
 import Markdown from "../../components/Markdown";
-
+import { t, useTranslation } from "@/lib/i18n";
+// t is used by the non-React insertMarkdownRender function below
 /**
  * Opens a URL in the external browser via Tauri shell API
  */
@@ -40,6 +41,7 @@ interface MarkdownRenderProps {
  * Renders markdown content from a variable with expand/fullscreen support
  */
 const MarkdownRender = (props: MarkdownRenderProps) => {
+  const { t } = useTranslation();
   const context = useBlockContext(props.blockId);
   const [collapsed, setCollapsed] = useBlockKvValue<boolean>(props.blockId, "collapsed", false);
   const [isFullscreen, setIsFullscreen] = useBlockKvValue<boolean>(
@@ -99,18 +101,18 @@ const MarkdownRender = (props: MarkdownRenderProps) => {
     };
   }, [isFullscreen, setIsFullscreen]);
 
-  const displayTitle = props.variableName || "Markdown Render";
+  const displayTitle = props.variableName || t("editor.blocks.markdown_render.title");
 
   const source = value
     ? value
     : var_name
-    ? `Variable "${var_name}" is empty`
-    : "No variable selected";
+      ? t("editor.blocks.markdown_render.variable_empty", { name: var_name })
+      : t("editor.blocks.markdown_render.no_variable");
 
   return (
     <>
       <Tooltip
-        content="Render markdown content from a variable"
+        content={t("editor.blocks.markdown_render.tooltip")}
         delay={1000}
         className="outline-none"
       >
@@ -121,7 +123,7 @@ const MarkdownRender = (props: MarkdownRenderProps) => {
               markdown_render
             </span>
             <ButtonGroup size="sm">
-              <Tooltip content={collapsed ? "Expand" : "Collapse"}>
+              <Tooltip content={collapsed ? t("editor.blocks.markdown_render.expand") : t("editor.blocks.markdown_render.collapse")}>
                 <Button
                   isIconOnly
                   variant="light"
@@ -131,7 +133,7 @@ const MarkdownRender = (props: MarkdownRenderProps) => {
                   {collapsed ? <ArrowDownToLineIcon size={16} /> : <ArrowUpToLineIcon size={16} />}
                 </Button>
               </Tooltip>
-              <Tooltip content="Fullscreen">
+              <Tooltip content={t("editor.blocks.markdown_render.fullscreen")}>
                 <Button
                   isIconOnly
                   variant="light"
@@ -160,7 +162,7 @@ const MarkdownRender = (props: MarkdownRenderProps) => {
 
               <div className="flex-1">
                 <Input
-                  placeholder="Variable name"
+                  placeholder={t("editor.blocks.markdown_render.variable_placeholder")}
                   value={props.variableName}
                   onValueChange={props.onUpdateVariableName}
                   autoComplete="off"
@@ -175,7 +177,7 @@ const MarkdownRender = (props: MarkdownRenderProps) => {
               <div className="w-20">
                 <Input
                   type="number"
-                  placeholder="Lines"
+                  placeholder={t("editor.blocks.markdown_render.lines_placeholder")}
                   value={String(props.maxLines)}
                   onValueChange={(val) => {
                     const num = parseInt(val, 10);
@@ -186,7 +188,7 @@ const MarkdownRender = (props: MarkdownRenderProps) => {
                   size="sm"
                   min={1}
                   max={100}
-                  endContent={<span className="text-xs text-gray-400">lines</span>}
+                  endContent={<span className="text-xs text-gray-400">{t("editor.blocks.markdown_render.lines")}</span>}
                 />
               </div>
             </div>
@@ -239,7 +241,7 @@ const MarkdownRender = (props: MarkdownRenderProps) => {
                 <span className="text-lg font-medium text-default-700">{displayTitle}</span>
               </div>
               <Button isIconOnly size="sm" variant="flat" onPress={() => setIsFullscreen(false)}>
-                <Tooltip content="Exit fullscreen (ESC)">
+                <Tooltip content={t("editor.blocks.markdown_render.exit_fullscreen")}>
                   <Minimize2 size={18} />
                 </Tooltip>
               </Button>
@@ -262,8 +264,8 @@ const MarkdownRender = (props: MarkdownRenderProps) => {
  * Insert helper for the slash command menu
  */
 export const insertMarkdownRender = (editor: any) => ({
-  title: "Markdown Render",
-  subtext: "Render markdown content from a variable",
+  title: t("editor.blocks.markdown_render.title"),
+  subtext: t("editor.blocks.markdown_render.tooltip"),
   onItemClick: () => {
     track_event("runbooks.block.create", { type: "markdown_render" });
     editor.insertBlocks(
@@ -274,7 +276,7 @@ export const insertMarkdownRender = (editor: any) => ({
   },
   icon: <FileTextIcon size={18} />,
   aliases: ["markdown", "md", "render", "display"],
-  group: "Content",
+  group: t("editor.blocks.group.content"),
 });
 
 /**
@@ -334,8 +336,7 @@ export default createReactBlockSpec(
 AIBlockRegistry.getInstance().addBlock({
   typeName: "markdown_render",
   friendlyName: "Markdown Render",
-  shortDescription:
-    "Renders markdown content from a template variable.",
+  shortDescription: "Renders markdown content from a template variable.",
   description: undent`
     Markdown Render blocks display formatted markdown content from a template variable. Supports collapsing, fullscreen view, and automatic updates when the variable changes.
 

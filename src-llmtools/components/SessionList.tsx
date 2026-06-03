@@ -1,4 +1,5 @@
 import type { SessionInfo } from "../types";
+import { useTranslation } from "@/lib/i18n";
 
 interface SessionListProps {
   sessions: SessionInfo[];
@@ -7,12 +8,10 @@ interface SessionListProps {
 }
 
 export default function SessionList({ sessions, selectedId, onSelect }: SessionListProps) {
+  const { t } = useTranslation();
+
   if (sessions.length === 0) {
-    return (
-      <div className="p-4 text-sm text-default-400">
-        No active sessions
-      </div>
-    );
+    return <div className="p-4 text-sm text-default-400">{t("llmtools.no_active_sessions")}</div>;
   }
 
   return (
@@ -23,20 +22,21 @@ export default function SessionList({ sessions, selectedId, onSelect }: SessionL
           onClick={() => onSelect(session.id)}
           className={`
             w-full text-left p-3 rounded-lg mb-1 transition-colors
-            ${selectedId === session.id
-              ? "bg-primary-100 dark:bg-primary-900/30"
-              : "hover:bg-default-100 dark:hover:bg-default-800"
+            ${
+              selectedId === session.id
+                ? "bg-primary-100 dark:bg-primary-900/30"
+                : "hover:bg-default-100 dark:hover:bg-default-800"
             }
           `}
         >
           <div className="text-sm font-medium truncate">
-            {session.kind === "assistantChat" ? "Assistant Chat" : "Inline Generation"}
+            {session.kind === "assistantChat"
+              ? t("llmtools.session.assistant_chat")
+              : t("llmtools.session.inline_generation")}
           </div>
-          <div className="text-xs text-default-400 truncate mt-1">
-            {session.id.slice(0, 8)}...
-          </div>
+          <div className="text-xs text-default-400 truncate mt-1">{session.id.slice(0, 8)}...</div>
           <div className="text-xs text-default-500 truncate mt-0.5">
-            Runbook: {session.runbookId.slice(0, 8)}...
+            {t("llmtools.session.runbook_id")} {session.runbookId.slice(0, 8)}...
           </div>
         </button>
       ))}

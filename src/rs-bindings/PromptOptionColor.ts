@@ -3,4 +3,10 @@
 /**
  * Color scheme for prompt options (buttons)
  */
-export type PromptOptionColor = { "type": "default" } | { "type": "primary" } | { "type": "secondary" } | { "type": "success" } | { "type": "warning" } | { "type": "danger" };
+export type PromptOptionColor =
+  | { type: "default" }
+  | { type: "primary" }
+  | { type: "secondary" }
+  | { type: "success" }
+  | { type: "warning" }
+  | { type: "danger" };

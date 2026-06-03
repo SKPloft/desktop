@@ -29,6 +29,7 @@ import { findParentWorkspace } from "@/lib/workspaces/offline_strategy";
 import { uuidv7 } from "uuidv7";
 import WorkspaceManager from "@/lib/workspaces/manager";
 import { doFolderOp } from "@/state/runbooks/workspace_folder_ops";
+import { useTranslation } from "@/lib/i18n";
 interface ConvertWorkspaceDialogProps {
   workspace: Workspace;
   onClose: () => void;
@@ -132,7 +133,7 @@ async function migrateWorkspace(
       const result = await commands.createRunbook(
         workspace.get("id")!,
         null,
-        oldRb!.name || "Untitled",
+        oldRb!.name || t("common.untitled"),
         JSON.parse(oldRb!.content || "[]"),
       );
       if (result.isErr()) {
@@ -211,7 +212,7 @@ async function migrateWorkspace(
       await commands.createRunbook(
         newWs.get("id")!,
         null,
-        oldRb!.name || "Untitled",
+        oldRb!.name || t("common.untitled"),
         JSON.parse(oldRb!.content || "[]"),
       );
     }
@@ -323,6 +324,7 @@ function folderInfoReducer(state: FolderInfo, action: FolderInfoAction): FolderI
 }
 
 export default function ConvertWorkspaceDialog(props: ConvertWorkspaceDialogProps) {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [converting, setConverting] = useState(false);
   const [workspaceInfo, setWorkspaceInfo] = useState<WorkspaceInfo | null>(null);
@@ -419,8 +421,8 @@ export default function ConvertWorkspaceDialog(props: ConvertWorkspaceDialogProp
     } catch (err) {
       console.error("Failed to convert workspace", err);
       addToast({
-        title: "Failed to convert workspace",
-        description: "There was an error while converting the workspace. Please try again.",
+        title: t("workspace.convert.error_title"),
+        description: t("workspace.convert.error_description"),
         color: "danger",
       });
       setConverting(false);
@@ -460,13 +462,12 @@ export default function ConvertWorkspaceDialog(props: ConvertWorkspaceDialogProp
       hideCloseButton={converting}
     >
       <ModalContent>
-        <ModalHeader>Convert Legacy Workspace</ModalHeader>
+        <ModalHeader>{t("workspace.convert.title")}</ModalHeader>
         <ModalBody className="flex gap-4">
           <p>
-            The workspace {props.workspace.get("name")} is a legacy workspace and needs to be
-            converted.{" "}
+            {t("workspace.convert.legacy_description", { name: props.workspace.get("name") })}{" "}
             <a href="#" className="text-sm text-blue-500" onClick={handleLearnMore}>
-              <Tooltip content="Learn more">
+              <Tooltip content={t("common.learn_more")}>
                 <InfoIcon className="w-4 h-4 inline-block mr-1 mb-1" />
               </Tooltip>
             </a>
@@ -474,25 +475,22 @@ export default function ConvertWorkspaceDialog(props: ConvertWorkspaceDialogProp
 
           {connectionState !== ConnectionState.Online && (
             <p className="text-warning">
-              You are offline or not logged in to Atuin Hub. The conversion will proceed with cached
-              data. To ensure up-to-date information, we recommend converting when online.
+              {t("workspace.convert.offline_warning")}
             </p>
           )}
 
           {workspaceType === WorkspaceType.Online && (
             <p>
-              All the runbooks in this workspace are <strong>online</strong>. This workspace will be
-              converted to an <strong>online-only</strong> workspace.
+              {t("workspace.convert.online_description")}
             </p>
           )}
 
           {workspaceType === WorkspaceType.Offline && (
             <>
               <p>
-                All the runbooks in this workspace are <strong>offline</strong>. This workspace will
-                be converted to an <strong>offline-only</strong> workspace.
+                {t("workspace.convert.offline_description")}
               </p>
-              <p>Please choose a folder in which to store the workspace.</p>
+              <p>{t("workspace.convert.choose_folder")}</p>
               <FolderPicker
                 selectedPath={folderInfo.path}
                 setSelectedPath={handleSetSelectedPath}
@@ -507,11 +505,9 @@ export default function ConvertWorkspaceDialog(props: ConvertWorkspaceDialogProp
           {workspaceType === WorkspaceType.Hybrid && (
             <>
               <p>
-                This workspace contains both <strong>online</strong> and <strong>offline</strong>{" "}
-                runbooks. A new offline-only workspace will be created to contain the offline
-                runbooks.
+                {t("workspace.convert.hybrid_description")}
               </p>
-              <p>Please choose a folder in which to create the new offline-only workspace.</p>
+              <p>{t("workspace.convert.choose_folder_hybrid")}</p>
               <FolderPicker
                 selectedPath={folderInfo.path}
                 setSelectedPath={handleSetSelectedPath}
@@ -525,8 +521,7 @@ export default function ConvertWorkspaceDialog(props: ConvertWorkspaceDialogProp
 
           {workspaceType === WorkspaceType.Empty && (
             <p>
-              This workspace is empty. It will be converted to an <strong>online-only</strong>{" "}
-              workspace.
+              {t("workspace.convert.empty_description")}
             </p>
           )}
 
@@ -534,7 +529,7 @@ export default function ConvertWorkspaceDialog(props: ConvertWorkspaceDialogProp
         </ModalBody>
         <ModalFooter>
           <Button onPress={props.onClose} variant="flat" isDisabled={converting}>
-            Cancel
+            {t("common.cancel")}
           </Button>
           <Button
             onPress={handleConvert}
@@ -542,7 +537,7 @@ export default function ConvertWorkspaceDialog(props: ConvertWorkspaceDialogProp
             isDisabled={disabled}
             isLoading={converting}
           >
-            {converting ? "Converting..." : "Convert"}
+            {converting ? t("workspace.convert.converting") : t("workspace.convert.convert")}
           </Button>
         </ModalFooter>
       </ModalContent>
@@ -560,6 +555,7 @@ interface FolderPickerProps {
 }
 
 function FolderPicker(props: FolderPickerProps) {
+  const { t } = useTranslation();
   function handleSelectFolder() {
     open({
       directory: true,
@@ -571,7 +567,7 @@ function FolderPicker(props: FolderPickerProps) {
   return (
     <>
       <div className="flex items-center">
-        <Tooltip content="Select a folder to store your workspace locally">
+        <Tooltip content={t("workspace.convert.select_folder_tooltip")}>
           <Button
             isIconOnly
             className="mr-2"
@@ -582,24 +578,23 @@ function FolderPicker(props: FolderPickerProps) {
           </Button>
         </Tooltip>
         <span className="overflow-x-auto whitespace-nowrap flex-grow">
-          {!props.selectedPath && "No folder selected"}
+          {!props.selectedPath && t("workspace.convert.no_folder_selected")}
           {props.selectedPath && props.selectedPath}
         </span>
       </div>
       {props.selectedPath && props.folderHasContents && !props.folderIsAlreadyWorkspace && (
         <span className="text-red-500 mt-2">
-          The selected folder is not empty. Any conflicting files will be overwritten. We recommend
-          creating a new empty folder for your workspace.
+          {t("workspace.convert.folder_not_empty")}
         </span>
       )}
       {props.selectedPath && props.folderHasContents && props.folderIsAlreadyWorkspace && (
         <span className="text-red-500 mt-2">
-          The selected folder already contains a workspace. Please choose a different folder.
+          {t("workspace.convert.folder_already_workspace")}
         </span>
       )}
       {props.selectedPath && !props.folderIsAlreadyWorkspace && props.folderIsChildOfWorkspace && (
         <span className="text-red-500 mt-2">
-          The selected folder is a child of an existing workspace. Please choose a different folder.
+          {t("workspace.convert.folder_child_of_workspace")}
         </span>
       )}
     </>

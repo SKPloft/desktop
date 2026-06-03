@@ -7,6 +7,7 @@ import { createReactBlockSpec } from "@blocknote/react";
 import undent from "undent";
 import AIBlockRegistry from "@/lib/ai/block_registry";
 import { exportPropMatter } from "@/lib/utils";
+import { useTranslation } from "@/lib/i18n";
 
 interface EnvProps {
   name: string;
@@ -16,6 +17,7 @@ interface EnvProps {
 }
 
 const Env = ({ name = "", value = "", onUpdate, isEditable }: EnvProps) => {
+  const { t } = useTranslation();
   const handleKeyChange = (e: React.FormEvent<HTMLInputElement>) => {
     onUpdate(e.currentTarget.value, value);
   };
@@ -26,7 +28,7 @@ const Env = ({ name = "", value = "", onUpdate, isEditable }: EnvProps) => {
 
   return (
     <Tooltip
-      content="Set an environment variable for all subsequent code blocks"
+      content={t("editor.blocks.env.tooltip")}
       delay={1000}
       className="outline-none"
     >
@@ -45,7 +47,7 @@ const Env = ({ name = "", value = "", onUpdate, isEditable }: EnvProps) => {
 
           <div className="flex-1">
             <Input
-              placeholder="Name"
+              placeholder={t("editor.blocks.env.name_placeholder")}
               value={name}
               onChange={handleKeyChange}
               autoComplete="off"
@@ -59,7 +61,7 @@ const Env = ({ name = "", value = "", onUpdate, isEditable }: EnvProps) => {
 
           <div className="flex-1">
             <Input
-              placeholder="Value"
+              placeholder={t("editor.blocks.env.value_placeholder")}
               value={value}
               onChange={handleValueChange}
               autoComplete="off"

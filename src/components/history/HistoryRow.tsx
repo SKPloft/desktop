@@ -14,6 +14,7 @@ import HistoryInspect from "./HistoryInspect";
 import { cn } from "@/lib/utils";
 import { Tooltip } from "@heroui/react";
 import { useStore } from "@/state/store";
+import { useTranslation } from "@/lib/i18n";
 
 function msToTime(ms: number) {
   let milliseconds = parseInt(ms.toFixed(1));
@@ -30,6 +31,7 @@ function msToTime(ms: number) {
 }
 
 export default function HistoryRow({ h, compact, drawer }: any) {
+  const { t } = useTranslation();
   const colorMode = useStore((state) => state.functionalColorMode);
   const theme = colorMode === "dark" ? themes.oneDark : themes.github;
 
@@ -76,11 +78,11 @@ export default function HistoryRow({ h, compact, drawer }: any) {
           <p className="mt-1 flex text-xs leading-5 text-gray-500">
             <span className="relative truncate ">{h.user}</span>
 
-            <span>&nbsp;on&nbsp;</span>
+            <span>&nbsp;{t("history.row.on")}&nbsp;</span>
 
             <span className="relative truncate ">{h.host}</span>
 
-            <span>&nbsp;in&nbsp;</span>
+            <span>&nbsp;{t("history.row.in")}&nbsp;</span>
 
             <span className="relative truncate ">{h.cwd}</span>
           </p>
@@ -88,7 +90,7 @@ export default function HistoryRow({ h, compact, drawer }: any) {
       </div>
       <div className="flex shrink-0 items-center gap-x-4">
         <div className="hidden sm:flex sm:flex-col sm:items-end">
-          <Tooltip content="Exit code">
+          <Tooltip content={t("history.row.exit_code")}>
             <p className="text-sm leading-6 text-gray-900 dark:text-gray-200">{h.exit}</p>
           </Tooltip>
           {h.duration ? (

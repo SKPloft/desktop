@@ -6,6 +6,7 @@ import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { TrashIcon } from "lucide-react";
 import { useState, useMemo } from "react";
 import { confirm } from "@tauri-apps/plugin-dialog";
+import { useTranslation } from "@/lib/i18n";
 import * as api from "@/api/api";
 
 interface CollaborationManagerProps {
@@ -25,6 +26,7 @@ interface DeleteCollabMutationArgs {
 }
 
 export default function CollaborationManager(props: CollaborationManagerProps) {
+  const { t } = useTranslation();
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
 
   const existingCollabUsers = useMemo(() => {
@@ -55,7 +57,7 @@ export default function CollaborationManager(props: CollaborationManagerProps) {
       queryClient.invalidateQueries({ queryKey: ["remote_runbook", vars.runbookId] });
     },
     onError: (_error: any) => {
-      alert("Error inviting user to collaboration");
+      alert(t("runbooks.collaboration.invite_error"));
     },
   });
 
@@ -67,7 +69,7 @@ export default function CollaborationManager(props: CollaborationManagerProps) {
       queryClient.invalidateQueries({ queryKey: ["remote_runbook", vars.runbookId] });
     },
     onError: (_error: any) => {
-      alert("Error deleting collaboration");
+      alert(t("runbooks.collaboration.delete_error"));
     },
   });
 
@@ -83,8 +85,8 @@ export default function CollaborationManager(props: CollaborationManagerProps) {
 
   async function handleDeleteClicked(collaborationId: string) {
     const doDelete = await confirm(
-      "Are you sure you want to remove this collaborator? This action cannot be undone.",
-      { title: "Atuin Desktop", kind: "warning" },
+      t("runbooks.collaboration.remove_confirm"),
+      { title: t("app.name"), kind: "warning" },
     );
 
     if (!doDelete) return;
@@ -101,11 +103,11 @@ export default function CollaborationManager(props: CollaborationManagerProps) {
     <>
       <form className="flex flex-row gap-2" onSubmit={handleSubmit}>
         <Autocomplete
-          label="Username"
+          label={t("runbooks.collaboration.username")}
           inputValue={list.filterText}
           isLoading={list.isLoading}
           items={list.items}
-          placeholder="Search for a user"
+          placeholder={t("runbooks.collaboration.search_placeholder")}
           variant="bordered"
           onInputChange={list.setFilterText}
           onSelectionChange={handleUserSelect}
@@ -134,7 +136,7 @@ export default function CollaborationManager(props: CollaborationManagerProps) {
           className="py-4 px-8 h-full mt-1"
           isDisabled={!selectedUser || mutationInProgress || props.disabled}
         >
-          Invite Collaborator
+          {t("runbooks.collaboration.invite")}
         </Button>
       </form>
       <ul className="max-h-[200px] overflow-y-auto mt-2">
@@ -149,7 +151,7 @@ export default function CollaborationManager(props: CollaborationManagerProps) {
               <span>{collaboration.user.username}</span>
             </div>
             <div className="flex flex-row text-sm text-gray-500 items-center">
-              <span>{collaboration.accepted ? "Accepted" : "Pending"}</span>
+              <span>{collaboration.accepted ? t("runbooks.collaboration.accepted") : t("runbooks.collaboration.pending")}</span>
               <Button
                 size="sm"
                 variant="flat"

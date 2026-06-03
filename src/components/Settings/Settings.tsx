@@ -39,7 +39,14 @@ import handleDeepLink from "@/routes/root/deep";
 import * as api from "@/api/api";
 import InterpreterSelector from "@/lib/blocks/common/InterpreterSelector";
 import AtuinEnv from "@/atuin_env";
-import { OllamaSettings, ClaudeSettings, OpenAISettings, DeepSeekSettings, useAIProviderSettings } from "@/state/settings_ai";
+import {
+  OllamaSettings,
+  ClaudeSettings,
+  OpenAISettings,
+  DeepSeekSettings,
+  useAIProviderSettings,
+} from "@/state/settings_ai";
+import { useTranslation } from "@/lib/i18n";
 
 async function loadFonts(): Promise<string[]> {
   const fonts = await invoke<string[]>("list_fonts");
@@ -136,6 +143,7 @@ const SettingSwitch = ({
 
 // Settings sections
 const GeneralSettings = () => {
+  const { t, locale, setLocale, availableLocales } = useTranslation();
   const [showingPromptToRestart, setShowingPromptToRestart] = useState(false);
 
   function promptToRestart() {
@@ -143,8 +151,8 @@ const GeneralSettings = () => {
     setShowingPromptToRestart(true);
 
     addToast({
-      title: "Restart required",
-      description: "Atuin needs to restart to apply your changes. This won't take long!",
+      title: t("settings.general.restart_required.title"),
+      description: t("settings.general.restart_required.description"),
       color: "primary",
       radius: "sm",
       timeout: Infinity,
@@ -154,7 +162,7 @@ const GeneralSettings = () => {
       },
       endContent: (
         <Button size="sm" variant="flat" color="primary" className="p-2" onPress={() => relaunch()}>
-          Restart
+          {t("common.restart")}
         </Button>
       ),
     });
@@ -318,38 +326,54 @@ const GeneralSettings = () => {
     <>
       <Card shadow="sm" className="w-full">
         <CardBody>
-          <h2 className="text-xl font-semibold">General</h2>
+          <h2 className="text-xl font-semibold">{t("settings.general.title")}</h2>
 
           <SettingSwitch
             className="mt-4"
-            label="Enable usage tracking"
+            label={t("settings.general.usage_tracking.label")}
             isSelected={trackingOptIn}
             onValueChange={setTrackingOptIn}
-            description="Track usage and errors to improve Atuin"
+            description={t("settings.general.usage_tracking.description")}
           />
           <Select
-            label="Color Mode"
+            label={t("language.label")}
+            selectedKeys={[locale]}
+            onSelectionChange={(keys) => {
+              const key = keys.currentKey as string;
+              if (key) setLocale(key);
+            }}
+            className="mt-8"
+            placeholder={t("language.placeholder")}
+            items={availableLocales.map((l) => ({
+              key: l,
+              label: l === "en" ? "English" : l === "zh-CN" ? "中文" : l,
+            }))}
+          >
+            {(item) => <SelectItem key={item.key}>{item.label}</SelectItem>}
+          </Select>
+          <Select
+            label={t("settings.general.color_mode.label")}
             value={colorMode}
             onSelectionChange={setColorMode}
             className="mt-8"
-            placeholder="Select color mode"
+            placeholder={t("settings.general.color_mode.placeholder")}
             selectedKeys={[colorMode]}
           >
-            <SelectItem key="light" textValue="Light">
-              Light
+            <SelectItem key="light" textValue={t("settings.general.color_mode.light")}>
+              {t("settings.general.color_mode.light")}
             </SelectItem>
-            <SelectItem key="dark" textValue="Dark">
-              Dark
+            <SelectItem key="dark" textValue={t("settings.general.color_mode.dark")}>
+              {t("settings.general.color_mode.dark")}
             </SelectItem>
-            <SelectItem key="system" textValue="System">
-              Follow System
+            <SelectItem key="system" textValue={t("settings.general.color_mode.system")}>
+              {t("settings.general.color_mode.system")}
             </SelectItem>
           </Select>
 
           <div className="mt-6">
             <div className="flex items-end gap-6">
               <Slider
-                label="UI Scale"
+                label={t("settings.general.ui_scale.label")}
                 size="md"
                 step={10}
                 minValue={50}
@@ -397,17 +421,19 @@ const GeneralSettings = () => {
               />
             </div>
             <p className="text-tiny text-default-400 mt-1">
-              Adjust the overall UI size. Use {isAppleDevice() ? "Cmd" : "Ctrl"}+/- to quickly zoom, {isAppleDevice() ? "Cmd" : "Ctrl"}+0 to reset.
+              {t("settings.general.ui_scale.description", {
+                modifier: isAppleDevice() ? "Cmd" : "Ctrl",
+              })}
             </p>
           </div>
 
           <div className="flex flex-row gap-4 mt-4">
             <Autocomplete
-              label="Font"
+              label={t("settings.general.font.label")}
               value={fontFamily}
               selectedKey={fontFamily}
               onSelectionChange={setFontFamily}
-              description="Font to use for the Runbook editor"
+              description={t("settings.general.font.description")}
               defaultItems={fonts?.map((font) => ({ label: font, key: font })) || []}
             >
               {(item) => <AutocompleteItem key={item.key}>{item.label}</AutocompleteItem>}
@@ -415,7 +441,7 @@ const GeneralSettings = () => {
 
             <div>
               <Input
-                label="Font Size"
+                label={t("settings.general.font_size.label")}
                 type="number"
                 value={fontSize.toString()}
                 onChange={(e) => setFontSize(parseInt(e.target.value))}
@@ -423,38 +449,41 @@ const GeneralSettings = () => {
             </div>
           </div>
           <Select
-            label="Runbook selection style"
+            label={t("settings.general.runbook_selection_style.label")}
             value={sidebarClickStyle}
             onSelectionChange={setSidebarClickStyle}
             className="mt-2"
-            placeholder="Select sidebar click style"
+            placeholder={t("settings.general.runbook_selection_style.placeholder")}
             selectedKeys={[sidebarClickStyle]}
           >
-            <SelectItem key="link" textValue="Click to open">
-              Click to open
+            <SelectItem key="link" textValue={t("settings.general.runbook_selection_style.link")}>
+              {t("settings.general.runbook_selection_style.link")}
             </SelectItem>
-            <SelectItem key="explorer" textValue="Click to select, double click to open">
-              Click to select, double click to open
+            <SelectItem
+              key="explorer"
+              textValue={t("settings.general.runbook_selection_style.explorer")}
+            >
+              {t("settings.general.runbook_selection_style.explorer")}
             </SelectItem>
           </Select>
 
           <div className="mt-4 flex flex-row gap-4">
             <SettingSwitch
-              label="Enable background sync"
+              label={t("settings.general.background_sync.label")}
               isSelected={backgroundSync}
               onValueChange={setBackgroundSync}
-              description="Sync runbooks in the background"
+              description={t("settings.general.background_sync.description")}
             />
             <Select
-              label="Number of runbooks to sync concurrently"
+              label={t("settings.general.sync_concurrency.label")}
               value={syncConcurrency.toString()}
               onSelectionChange={setSyncConcurrency}
               className="mt-4"
-              placeholder="Select sync concurrency"
+              placeholder={t("settings.general.sync_concurrency.placeholder")}
               selectedKeys={[syncConcurrency.toString()]}
               disabled={!backgroundSync}
               items={[
-                { label: "1 (no concurrency)", key: "1" },
+                { label: t("settings.general.sync_concurrency.one"), key: "1" },
                 { label: "2", key: "2" },
                 { label: "5", key: "5" },
                 { label: "10", key: "10" },
@@ -468,14 +497,14 @@ const GeneralSettings = () => {
 
       <Card shadow="sm">
         <CardBody>
-          <h2 className="text-xl font-semibold">Editor</h2>
+          <h2 className="text-xl font-semibold">{t("settings.editor.title")}</h2>
 
           <Select
-            label="Light mode editor theme"
+            label={t("settings.editor.light_theme.label")}
             value={lightModeEditorTheme}
             onSelectionChange={setLightModeEditorTheme}
             className="mt-4"
-            placeholder="Select light mode editor theme"
+            placeholder={t("settings.editor.light_theme.placeholder")}
             selectedKeys={[lightModeEditorTheme]}
             items={themes.map((theme) => ({ label: theme[0], key: theme[1] }))}
           >
@@ -483,11 +512,11 @@ const GeneralSettings = () => {
           </Select>
 
           <Select
-            label="Dark mode editor theme"
+            label={t("settings.editor.dark_theme.label")}
             value={darkModeEditorTheme}
             onSelectionChange={setDarkModeEditorTheme}
             className="mt-4"
-            placeholder="Select dark mode editor theme"
+            placeholder={t("settings.editor.dark_theme.placeholder")}
             selectedKeys={[darkModeEditorTheme]}
             items={themes.map((theme) => ({ label: theme[0], key: theme[1] }))}
           >
@@ -496,29 +525,29 @@ const GeneralSettings = () => {
 
           <SettingSwitch
             className="mt-4"
-            label="Enable Vim mode"
+            label={t("settings.editor.vim_mode.label")}
             isSelected={vimModeEnabled}
             onValueChange={setVimModeEnabled}
-            description="Enable Vim key bindings in code editors"
+            description={t("settings.editor.vim_mode.description")}
           />
 
           <SettingSwitch
             className="mt-4"
-            label="Enable ShellCheck"
+            label={t("settings.editor.shellcheck.label")}
             isSelected={shellCheckEnabled}
             onValueChange={setShellCheckEnabled}
-            description="Enable ShellCheck static analysis for shell scripts in code editors"
+            description={t("settings.editor.shellcheck.description")}
           />
 
           {shellCheckEnabled && (
             <div className="mt-4">
               <SettingInput
                 type="text"
-                label="ShellCheck path"
+                label={t("settings.editor.shellcheck_path.label")}
                 value={shellCheckPath || ""}
                 onChange={setShellCheckPath}
                 placeholder=""
-                description="(Optional) Path to the ShellCheck command line tool if it's not allready in PATH"
+                description={t("settings.editor.shellcheck_path.description")}
               />
             </div>
           )}
@@ -530,7 +559,7 @@ const GeneralSettings = () => {
               className="text-sm text-blue-500 underline"
               onPress={() => open("https://uiwjs.github.io/react-codemirror/#/theme/home")}
             >
-              Preview available themes
+              {t("settings.editor.preview_themes")}
             </Link>
           </div>
         </CardBody>
@@ -540,6 +569,7 @@ const GeneralSettings = () => {
 };
 
 const RunbookSettings = () => {
+  const { t } = useTranslation();
   const fonts = useAsyncData(loadFonts, []);
   const [scriptInterpreters, setScriptInterpreters] = useState<
     Array<{ command: string; name: string }>
@@ -644,13 +674,13 @@ const RunbookSettings = () => {
     <>
       <Card shadow="sm">
         <CardBody className="flex flex-col gap-4">
-          <h2 className="text-xl font-semibold">Terminal</h2>
+          <h2 className="text-xl font-semibold">{t("settings.runbooks.terminal.title")}</h2>
           <div className="flex flex-row gap-4">
             <Autocomplete
-              label="Terminal font"
+              label={t("settings.runbooks.terminal.font.label")}
               selectedKey={terminalFont}
               onSelectionChange={setTerminalFont}
-              description="Font to use for the terminal"
+              description={t("settings.runbooks.terminal.font.description")}
               defaultItems={fonts.map((font) => ({ label: font, key: font }))}
             >
               {(item) => <AutocompleteItem key={item.key}>{item.label}</AutocompleteItem>}
@@ -660,46 +690,48 @@ const RunbookSettings = () => {
                 type="number"
                 value={terminalFontSize || Settings.DEFAULT_FONT_SIZE}
                 onChange={(e) => setTerminalFontSize(parseInt(e.target.value))}
-                label="Font Size"
+                label={t("settings.general.font_size.label")}
               />
             </div>
           </div>
           <SettingSwitch
-            label="Use Ghostty terminal"
+            label={t("settings.runbooks.terminal.ghostty.label")}
             isSelected={terminalGhostty}
             onValueChange={setTerminalGhostty}
-            description="Experimental: Use Ghostty's WASM-based terminal emulator"
+            description={t("settings.runbooks.terminal.ghostty.description")}
           />
           {!terminalGhostty && (
             <SettingSwitch
-              label="Enable WebGL rendering"
+              label={t("settings.runbooks.terminal.webgl.label")}
               isSelected={terminalGl}
               onValueChange={setTerminalGl}
-              description="May have issues with some fonts"
+              description={t("settings.runbooks.terminal.webgl.description")}
             />
           )}
           <SettingInput
             type="text"
-            label="Custom shell"
+            label={t("settings.runbooks.terminal.custom_shell.label")}
             value={terminalShell || ""}
             onChange={setTerminalShell}
-            placeholder="/bin/bash, /bin/zsh, /usr/bin/fish"
-            description="Leave empty to use your default shell"
+            placeholder={t("settings.runbooks.terminal.custom_shell.placeholder")}
+            description={t("settings.runbooks.terminal.custom_shell.description")}
           />
         </CardBody>
       </Card>
 
       <Card shadow="sm">
         <CardBody className="flex flex-col gap-4">
-          <h2 className="text-xl font-semibold">Script</h2>
-          <p className="text-sm text-default-500">Configure default settings for script blocks</p>
+          <h2 className="text-xl font-semibold">{t("settings.runbooks.script.title")}</h2>
+          <p className="text-sm text-default-500">{t("settings.runbooks.script.description")}</p>
 
           <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
               <div>
-                <label className="text-sm font-medium">Default shell</label>
+                <label className="text-sm font-medium">
+                  {t("settings.runbooks.script.default_shell.label")}
+                </label>
                 <p className="text-xs text-default-500">
-                  Default shell interpreter for new script blocks
+                  {t("settings.runbooks.script.default_shell.description")}
                 </p>
               </div>
               <InterpreterSelector
@@ -713,7 +745,7 @@ const RunbookSettings = () => {
 
           <div className="border-t pt-4">
             <p className="text-sm text-default-500 mb-3">
-              Add custom script interpreters for use in script blocks
+              {t("settings.runbooks.script.custom_interpreters.description")}
             </p>
           </div>
 
@@ -742,13 +774,13 @@ const RunbookSettings = () => {
 
           <div className="flex flex-row gap-2 mt-2">
             <Input
-              placeholder="Display name (e.g., Ruby)"
+              placeholder={t("settings.runbooks.script.display_name.placeholder")}
               value={newInterpreterName}
               onValueChange={setNewInterpreterName}
               size="sm"
             />
             <Input
-              placeholder="Command (e.g., /usr/bin/ruby -e)"
+              placeholder={t("settings.runbooks.script.command.placeholder")}
               value={newInterpreterCommand}
               onValueChange={setNewInterpreterCommand}
               size="sm"
@@ -767,14 +799,14 @@ const RunbookSettings = () => {
 
       <Card shadow="sm">
         <CardBody className="flex flex-col gap-4">
-          <h2 className="text-xl font-semibold">Prometheus</h2>
+          <h2 className="text-xl font-semibold">{t("settings.runbooks.prometheus.title")}</h2>
           <SettingInput
             type="url"
-            label="Default Prometheus server URL"
+            label={t("settings.runbooks.prometheus.default_url.label")}
             value={prometheusUrl}
             onChange={setPrometheusUrl}
             placeholder="http://localhost:9090"
-            description="Default URL for Prometheus blocks"
+            description={t("settings.runbooks.prometheus.default_url.description")}
           />
         </CardBody>
       </Card>
@@ -789,6 +821,7 @@ type AuthTokenModalProps = {
 };
 
 const AuthTokenModal = (props: AuthTokenModalProps) => {
+  const { t } = useTranslation();
   const [token, setToken] = useState("");
   const [validToken, setValidToken] = useState(false);
 
@@ -801,11 +834,11 @@ const AuthTokenModal = (props: AuthTokenModalProps) => {
   return (
     <Modal isOpen={props.open} onClose={() => props.onClose()} size="lg">
       <ModalContent>
-        <ModalHeader>Log in via auth token</ModalHeader>
+        <ModalHeader>{t("settings.user.login_token")}</ModalHeader>
         <ModalBody>
           <Input
             type="password"
-            label="Paste your token here"
+            label={t("settings.auth_token.input.label")}
             value={token}
             onValueChange={setToken}
           />
@@ -817,7 +850,7 @@ const AuthTokenModal = (props: AuthTokenModalProps) => {
             variant="flat"
             onPress={() => props.onSubmit(token.trim())}
           >
-            Submit
+            {t("common.submit")}
           </Button>
         </ModalFooter>
       </ModalContent>
@@ -868,6 +901,7 @@ const NotificationRow = ({
   sounds,
   volume,
 }: NotificationRowProps) => {
+  const { t } = useTranslation();
   const playSound = (soundId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
@@ -879,7 +913,7 @@ const NotificationRow = ({
     });
   };
 
-  const allSounds = [{ id: "none", name: "None" }, ...sounds];
+  const allSounds = [{ id: "none", name: t("settings.notifications.sound.none") }, ...sounds];
 
   return (
     <div className="flex flex-col gap-2 py-3 border-b last:border-b-0">
@@ -895,11 +929,11 @@ const NotificationRow = ({
           max={3600}
           aria-label={durationLabel}
         />
-        <span className="text-sm text-default-500">seconds</span>
+        <span className="text-sm text-default-500">{t("settings.notifications.seconds")}</span>
       </div>
       <div className="flex items-center gap-4 pl-4">
         <Select
-          label="Sound"
+          label={t("settings.notifications.sound.label")}
           size="sm"
           className="w-48"
           selectedKeys={[sound]}
@@ -928,7 +962,7 @@ const NotificationRow = ({
           )}
         </Select>
         <Select
-          label="System Notification"
+          label={t("settings.notifications.system.label")}
           size="sm"
           className="w-52"
           selectedKeys={[os]}
@@ -937,9 +971,11 @@ const NotificationRow = ({
             if (key) onOsChange(key);
           }}
         >
-          <SelectItem key="always">Always</SelectItem>
-          <SelectItem key="not_focused">When app not focused</SelectItem>
-          <SelectItem key="never">Never</SelectItem>
+          <SelectItem key="always">{t("settings.notifications.system.always")}</SelectItem>
+          <SelectItem key="not_focused">
+            {t("settings.notifications.system.not_focused")}
+          </SelectItem>
+          <SelectItem key="never">{t("settings.notifications.system.never")}</SelectItem>
         </Select>
       </div>
     </div>
@@ -947,6 +983,7 @@ const NotificationRow = ({
 };
 
 const NotificationSettings = () => {
+  const { t } = useTranslation();
   const sounds = useAsyncData(loadSounds);
 
   const [notificationsEnabled, setNotificationsEnabled, enabledLoading] = useSettingsState(
@@ -1088,20 +1125,20 @@ const NotificationSettings = () => {
   return (
     <Card shadow="sm">
       <CardBody className="flex flex-col gap-4">
-        <h2 className="text-xl font-semibold">Notifications</h2>
-        <p className="text-sm text-default-500">Get notified when blocks and workflows complete</p>
+        <h2 className="text-xl font-semibold">{t("settings.notifications.title")}</h2>
+        <p className="text-sm text-default-500">{t("settings.notifications.description")}</p>
 
         <SettingSwitch
-          label="Enable notifications"
+          label={t("settings.notifications.enable.label")}
           isSelected={notificationsEnabled}
           onValueChange={setNotificationsEnabled}
-          description="Enable or disable all notifications"
+          description={t("settings.notifications.enable.description")}
         />
 
         {notificationsEnabled && (
           <>
             <Slider
-              label="Volume"
+              label={t("settings.notifications.volume.label")}
               size="sm"
               step={1}
               minValue={0}
@@ -1115,10 +1152,10 @@ const NotificationSettings = () => {
             />
 
             <div className="border-t pt-4 mt-2">
-              <p className="text-sm font-medium mb-2">Block Notifications</p>
+              <p className="text-sm font-medium mb-2">{t("settings.notifications.block.title")}</p>
               <NotificationRow
-                label="Finished after running at least"
-                durationLabel="Block finished minimum duration"
+                label={t("settings.notifications.finished_after")}
+                durationLabel={t("settings.notifications.block_finished_duration")}
                 duration={blockFinishedDuration}
                 onDurationChange={setBlockFinishedDuration}
                 sound={blockFinishedSound}
@@ -1129,8 +1166,8 @@ const NotificationSettings = () => {
                 volume={volume}
               />
               <NotificationRow
-                label="Failed after running at least"
-                durationLabel="Block failed minimum duration"
+                label={t("settings.notifications.failed_after")}
+                durationLabel={t("settings.notifications.block_failed_duration")}
                 duration={blockFailedDuration}
                 onDurationChange={setBlockFailedDuration}
                 sound={blockFailedSound}
@@ -1143,10 +1180,10 @@ const NotificationSettings = () => {
             </div>
 
             <div className="border-t pt-4 mt-2">
-              <p className="text-sm font-medium mb-2">Serial Execution Notifications</p>
+              <p className="text-sm font-medium mb-2">{t("settings.notifications.serial.title")}</p>
               <NotificationRow
-                label="Workflow finishes after running at least"
-                durationLabel="Serial finished minimum duration"
+                label={t("settings.notifications.workflow_finished_after")}
+                durationLabel={t("settings.notifications.serial_finished_duration")}
                 duration={serialFinishedDuration}
                 onDurationChange={setSerialFinishedDuration}
                 sound={serialFinishedSound}
@@ -1157,8 +1194,8 @@ const NotificationSettings = () => {
                 volume={volume}
               />
               <NotificationRow
-                label="Workflow fails after running at least"
-                durationLabel="Serial failed minimum duration"
+                label={t("settings.notifications.workflow_failed_after")}
+                durationLabel={t("settings.notifications.serial_failed_duration")}
                 duration={serialFailedDuration}
                 onDurationChange={setSerialFailedDuration}
                 sound={serialFailedSound}
@@ -1169,8 +1206,8 @@ const NotificationSettings = () => {
                 volume={volume}
               />
               <NotificationRow
-                label="Workflow pauses after running at least"
-                durationLabel="Serial paused minimum duration"
+                label={t("settings.notifications.workflow_paused_after")}
+                durationLabel={t("settings.notifications.serial_paused_duration")}
                 duration={serialPausedDuration}
                 onDurationChange={setSerialPausedDuration}
                 sound={serialPausedSound}
@@ -1189,6 +1226,7 @@ const NotificationSettings = () => {
 };
 
 const AISettings = () => {
+  const { t } = useTranslation();
   const aiEnabled = useStore((state) => state.aiEnabled);
   const aiShareContext = useStore((state) => state.aiShareContext);
   const setAiEnabled = useStore((state) => state.setAiEnabled);
@@ -1198,25 +1236,23 @@ const AISettings = () => {
     <>
       <Card shadow="sm">
         <CardBody className="flex flex-col gap-4 mb-4">
-          <h2 className="text-xl font-semibold">AI</h2>
-          <p className="text-sm text-default-500">
-            Configure AI-powered features in runbooks
-          </p>
+          <h2 className="text-xl font-semibold">{t("settings.ai.title")}</h2>
+          <p className="text-sm text-default-500">{t("settings.ai.description")}</p>
 
           <SettingSwitch
-            label="Enable AI features"
+            label={t("settings.ai.enable.label")}
             isSelected={aiEnabled}
             onValueChange={setAiEnabled}
-            description="Enable AI block generation and editing (Cmd+Enter, Cmd+K, AI Agent Sidebar)"
+            description={t("settings.ai.enable.description")}
           />
 
           {aiEnabled && (
             <SettingSwitch
               className="ml-4"
-              label="Share document context"
+              label={t("settings.ai.share_context.label")}
               isSelected={aiShareContext}
               onValueChange={setAiShareContext}
-              description="Send document content to improve AI suggestions. Disable for sensitive documents."
+              description={t("settings.ai.share_context.description")}
             />
           )}
         </CardBody>
@@ -1235,13 +1271,14 @@ const AISettings = () => {
 };
 
 const AgentSettings = () => {
+  const { t } = useTranslation();
   const providers = [
     ["Atuin Hub", "atuinhub"],
     ["Claude", "claude"],
     ["OpenAI", "openai"],
     ["DeepSeek", "deepseek"],
-    ["Ollama", "ollama"]
-  ]
+    ["Ollama", "ollama"],
+  ];
 
   const [aiProvider, setAiProvider, aiProviderLoading] = useSettingsState(
     "ai_provider",
@@ -1260,14 +1297,14 @@ const AgentSettings = () => {
   return (
     <Card shadow="sm">
       <CardBody className="flex flex-col gap-4">
-        <h2 className="text-xl font-semibold">AI Agent</h2>
+        <h2 className="text-xl font-semibold">{t("settings.ai.agent.title")}</h2>
 
         <Select
-          label="Default AI provider"
+          label={t("settings.ai.agent.default_provider.label")}
           value={aiProvider}
           onSelectionChange={handleProviderChange}
           className="mt-4"
-          placeholder="Select default AI provider"
+          placeholder={t("settings.ai.agent.default_provider.placeholder")}
           selectedKeys={[aiProvider]}
           items={providers.map(([name, id]) => ({ label: name, key: id }))}
           isDisabled={aiProviderLoading}
@@ -1280,11 +1317,15 @@ const AgentSettings = () => {
 };
 
 const AIOllamaSettings = () => {
-  const [ollamaSettings, setOllamaSettings, isLoading] = useAIProviderSettings<OllamaSettings>("ollama", {
-    enabled: false,
-    endpoint: "http://localhost:11434",
-    model: "",
-  });
+  const { t } = useTranslation();
+  const [ollamaSettings, setOllamaSettings, isLoading] = useAIProviderSettings<OllamaSettings>(
+    "ollama",
+    {
+      enabled: false,
+      endpoint: "http://localhost:11434",
+      model: "",
+    },
+  );
 
   const user = useStore((state) => state.user);
   const keychainUser = user?.username || "default";
@@ -1335,44 +1376,47 @@ const AIOllamaSettings = () => {
         <h2 className="text-xl font-semibold">Ollama</h2>
 
         <SettingSwitch
-          label="Enable Ollama AI provider"
+          label={t("settings.ai.provider.enable", { provider: "Ollama" })}
           isSelected={ollamaSettings.enabled}
           onValueChange={(enabled) => setOllamaSettings({ ...ollamaSettings, enabled })}
-          description="Toggle to use Ollama as the AI provider."
+          description={t("settings.ai.provider.toggle", { provider: "Ollama" })}
         />
 
         {ollamaSettings.enabled && (
           <div className="flex flex-col gap-4">
             <Input
-              label="Endpoint (optional, defaults to http://localhost:11434)"
-              placeholder="Endpoint URL (e.g. http://localhost:11434)"
+              label={t("settings.ai.provider.ollama_endpoint")}
+              placeholder={t("settings.ai.provider.endpoint_placeholder")}
               value={ollamaSettings.endpoint}
               onValueChange={(value) => setOllamaSettings({ ...ollamaSettings, endpoint: value })}
               isDisabled={isLoading}
             />
 
             <Input
-              label="Model (required; your chosen model must support tool calling)"
-              placeholder="Model name"
+              label={t("settings.ai.provider.ollama_model")}
+              placeholder={t("settings.ai.provider.model_placeholder")}
               value={ollamaSettings.model}
               onValueChange={(value) => setOllamaSettings({ ...ollamaSettings, model: value })}
               isDisabled={isLoading}
             />
 
             <Input
-              label="API Key (optional)"
-              placeholder="API key for remote Ollama instances"
+              label={t("settings.ai.provider.api_key_optional")}
+              placeholder={t("settings.ai.provider.remote_ollama_api_key_placeholder")}
               type={showApiKey ? "text" : "password"}
               value={apiKey}
               onValueChange={handleApiKeyChange}
               isDisabled={isLoading || !apiKeyLoaded}
-              description="Only needed for remote Ollama instances with auth. Leave empty for local usage."
+              description={t("settings.ai.provider.ollama_api_key_description")}
               endContent={
                 <button
                   className="text-default-400 text-sm hover:text-default-600"
-                  onMouseDown={(e) => { e.preventDefault(); setShowApiKey(!showApiKey); }}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    setShowApiKey(!showApiKey);
+                  }}
                 >
-                  {showApiKey ? "Hide" : "Show"}
+                  {showApiKey ? t("common.hide") : t("common.show")}
                 </button>
               }
             />
@@ -1384,10 +1428,14 @@ const AIOllamaSettings = () => {
 };
 
 const AIClaudeSettings = () => {
-  const [claudeSettings, setClaudeSettings, isLoading] = useAIProviderSettings<ClaudeSettings>("claude", {
-    enabled: false,
-    model: "claude-sonnet-4-5-20250929",
-  });
+  const { t } = useTranslation();
+  const [claudeSettings, setClaudeSettings, isLoading] = useAIProviderSettings<ClaudeSettings>(
+    "claude",
+    {
+      enabled: false,
+      model: "claude-sonnet-4-5-20250929",
+    },
+  );
 
   const user = useStore((state) => state.user);
   const keychainUser = user?.username || "default";
@@ -1438,37 +1486,42 @@ const AIClaudeSettings = () => {
         <h2 className="text-xl font-semibold">Claude (Anthropic)</h2>
 
         <SettingSwitch
-          label="Enable Claude AI provider"
+          label={t("settings.ai.provider.enable", { provider: "Claude" })}
           isSelected={claudeSettings.enabled}
           onValueChange={(enabled) => setClaudeSettings({ ...claudeSettings, enabled })}
-          description="Toggle to use Claude (Anthropic direct API) as the AI provider."
+          description={t("settings.ai.provider.toggle", {
+            provider: "Claude (Anthropic direct API)",
+          })}
         />
 
         {claudeSettings.enabled && (
           <div className="flex flex-col gap-4">
             <Input
-              label="Model"
-              placeholder="Model name (e.g. claude-sonnet-4-5-20250929)"
+              label={t("settings.ai.provider.model")}
+              placeholder={t("settings.ai.provider.claude_model_placeholder")}
               value={claudeSettings.model}
               onValueChange={(value) => setClaudeSettings({ ...claudeSettings, model: value })}
               isDisabled={isLoading}
-              description="The Anthropic model to use. Must support tool calling."
+              description={t("settings.ai.provider.model_description", { provider: "Anthropic" })}
             />
 
             <Input
-              label="API Key"
-              placeholder="sk-ant-api03-..."
+              label={t("settings.ai.provider.api_key")}
+              placeholder={t("settings.ai.provider.claude_api_key_placeholder")}
               type={showApiKey ? "text" : "password"}
               value={apiKey}
               onValueChange={handleApiKeyChange}
               isDisabled={isLoading || !apiKeyLoaded}
-              description="Your Anthropic API key. Stored securely in your OS keychain."
+              description={t("settings.ai.provider.api_key_description", { provider: "Anthropic" })}
               endContent={
                 <button
                   className="text-default-400 text-sm hover:text-default-600"
-                  onMouseDown={(e) => { e.preventDefault(); setShowApiKey(!showApiKey); }}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    setShowApiKey(!showApiKey);
+                  }}
                 >
-                  {showApiKey ? "Hide" : "Show"}
+                  {showApiKey ? t("common.hide") : t("common.show")}
                 </button>
               }
             />
@@ -1480,11 +1533,15 @@ const AIClaudeSettings = () => {
 };
 
 const AIOpenAISettings = () => {
-  const [openaiSettings, setOpenaiSettings, isLoading] = useAIProviderSettings<OpenAISettings>("openai", {
-    enabled: false,
-    endpoint: "",
-    model: "gpt-4o",
-  });
+  const { t } = useTranslation();
+  const [openaiSettings, setOpenaiSettings, isLoading] = useAIProviderSettings<OpenAISettings>(
+    "openai",
+    {
+      enabled: false,
+      endpoint: "",
+      model: "gpt-4o",
+    },
+  );
 
   const user = useStore((state) => state.user);
   const keychainUser = user?.username || "default";
@@ -1535,46 +1592,49 @@ const AIOpenAISettings = () => {
         <h2 className="text-xl font-semibold">OpenAI</h2>
 
         <SettingSwitch
-          label="Enable OpenAI AI provider"
+          label={t("settings.ai.provider.enable", { provider: "OpenAI" })}
           isSelected={openaiSettings.enabled}
           onValueChange={(enabled) => setOpenaiSettings({ ...openaiSettings, enabled })}
-          description="Toggle to use OpenAI (direct API) as the AI provider."
+          description={t("settings.ai.provider.toggle", { provider: "OpenAI (direct API)" })}
         />
 
         {openaiSettings.enabled && (
           <div className="flex flex-col gap-4">
             <Input
-              label="Endpoint (optional)"
-              placeholder="Custom OpenAI-compatible endpoint URL"
+              label={t("settings.ai.provider.endpoint_optional")}
+              placeholder={t("settings.ai.provider.openai_endpoint_placeholder")}
               value={openaiSettings.endpoint}
               onValueChange={(value) => setOpenaiSettings({ ...openaiSettings, endpoint: value })}
               isDisabled={isLoading}
-              description="Leave empty to use the default OpenAI API endpoint."
+              description={t("settings.ai.provider.openai_endpoint_description")}
             />
 
             <Input
-              label="Model"
-              placeholder="Model name (e.g. gpt-4o)"
+              label={t("settings.ai.provider.model")}
+              placeholder={t("settings.ai.provider.openai_model_placeholder")}
               value={openaiSettings.model}
               onValueChange={(value) => setOpenaiSettings({ ...openaiSettings, model: value })}
               isDisabled={isLoading}
-              description="The OpenAI model to use. Must support tool calling."
+              description={t("settings.ai.provider.model_description", { provider: "OpenAI" })}
             />
 
             <Input
-              label="API Key"
-              placeholder="sk-..."
+              label={t("settings.ai.provider.api_key")}
+              placeholder={t("settings.ai.provider.openai_api_key_placeholder")}
               type={showApiKey ? "text" : "password"}
               value={apiKey}
               onValueChange={handleApiKeyChange}
               isDisabled={isLoading || !apiKeyLoaded}
-              description="Your OpenAI API key. Stored securely in your OS keychain."
+              description={t("settings.ai.provider.api_key_description", { provider: "OpenAI" })}
               endContent={
                 <button
                   className="text-default-400 text-sm hover:text-default-600"
-                  onMouseDown={(e) => { e.preventDefault(); setShowApiKey(!showApiKey); }}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    setShowApiKey(!showApiKey);
+                  }}
                 >
-                  {showApiKey ? "Hide" : "Show"}
+                  {showApiKey ? t("common.hide") : t("common.show")}
                 </button>
               }
             />
@@ -1586,10 +1646,12 @@ const AIOpenAISettings = () => {
 };
 
 const AIDeepSeekSettings = () => {
-  const [deepseekSettings, setDeepseekSettings, isLoading] = useAIProviderSettings<DeepSeekSettings>("deepseek", {
-    enabled: false,
-    model: "deepseek-chat",
-  });
+  const { t } = useTranslation();
+  const [deepseekSettings, setDeepseekSettings, isLoading] =
+    useAIProviderSettings<DeepSeekSettings>("deepseek", {
+      enabled: false,
+      model: "deepseek-chat",
+    });
 
   const user = useStore((state) => state.user);
   const keychainUser = user?.username || "default";
@@ -1640,37 +1702,40 @@ const AIDeepSeekSettings = () => {
         <h2 className="text-xl font-semibold">DeepSeek</h2>
 
         <SettingSwitch
-          label="Enable DeepSeek AI provider"
+          label={t("settings.ai.provider.enable", { provider: "DeepSeek" })}
           isSelected={deepseekSettings.enabled}
           onValueChange={(enabled) => setDeepseekSettings({ ...deepseekSettings, enabled })}
-          description="Toggle to use DeepSeek (direct API) as the AI provider."
+          description={t("settings.ai.provider.toggle", { provider: "DeepSeek (direct API)" })}
         />
 
         {deepseekSettings.enabled && (
           <div className="flex flex-col gap-4">
             <Input
-              label="Model"
-              placeholder="Model name (e.g. deepseek-chat)"
+              label={t("settings.ai.provider.model")}
+              placeholder={t("settings.ai.provider.deepseek_model_placeholder")}
               value={deepseekSettings.model}
               onValueChange={(value) => setDeepseekSettings({ ...deepseekSettings, model: value })}
               isDisabled={isLoading}
-              description="The DeepSeek model to use. Must support tool calling."
+              description={t("settings.ai.provider.model_description", { provider: "DeepSeek" })}
             />
 
             <Input
-              label="API Key"
-              placeholder="sk-..."
+              label={t("settings.ai.provider.api_key")}
+              placeholder={t("settings.ai.provider.deepseek_api_key_placeholder")}
               type={showApiKey ? "text" : "password"}
               value={apiKey}
               onValueChange={handleApiKeyChange}
               isDisabled={isLoading || !apiKeyLoaded}
-              description="Your DeepSeek API key. Stored securely in your OS keychain."
+              description={t("settings.ai.provider.api_key_description", { provider: "DeepSeek" })}
               endContent={
                 <button
                   className="text-default-400 text-sm hover:text-default-600"
-                  onMouseDown={(e) => { e.preventDefault(); setShowApiKey(!showApiKey); }}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    setShowApiKey(!showApiKey);
+                  }}
                 >
-                  {showApiKey ? "Hide" : "Show"}
+                  {showApiKey ? t("common.hide") : t("common.show")}
                 </button>
               }
             />
@@ -1682,6 +1747,7 @@ const AIDeepSeekSettings = () => {
 };
 
 const UserSettings = () => {
+  const { t } = useTranslation();
   const user = useStore((state) => state.user);
   const refreshUser = useStore((state) => state.refreshUser);
   const { isOpen: modalOpen, onOpen: openModal, onClose: closeModal } = useDisclosure();
@@ -1697,14 +1763,14 @@ const UserSettings = () => {
     const deepLink = `atuin://register-token/${token}`;
     // token submit deep link doesn't require a runbook activation,
     // so passing an empty function for simplicity
-    handleDeepLink(deepLink, () => { });
+    handleDeepLink(deepLink, () => {});
   }
 
   let content;
   if (!user || !user.isLoggedIn()) {
     content = (
       <>
-        <p>You are not logged in.</p>
+        <p>{t("settings.user.not_logged_in")}</p>
         <div className="flex flex-row gap-2 items-center">
           <Button
             onPress={() => open(AtuinEnv.url("/settings/desktop-connect"))}
@@ -1712,11 +1778,11 @@ const UserSettings = () => {
             variant="flat"
             className="grow"
           >
-            Log in via Atuin Hub
+            {t("settings.user.login_hub")}
           </Button>
-          or
+          {t("common.or")}
           <Button onPress={() => openModal()} color="primary" variant="flat" className="grow">
-            Log in via auth token
+            {t("settings.user.login_token")}
           </Button>
         </div>
       </>
@@ -1741,7 +1807,7 @@ const UserSettings = () => {
           classNames={{ base: "mt-2 justify-start" }}
         />
         <Button onPress={logOut} color="danger" variant="flat">
-          Sign out
+          {t("settings.user.sign_out")}
         </Button>
       </>
     );
@@ -1750,7 +1816,7 @@ const UserSettings = () => {
   return (
     <Card shadow="sm">
       <CardBody>
-        <h2 className="text-xl font-semibold">User</h2>
+        <h2 className="text-xl font-semibold">{t("settings.user.title")}</h2>
         <div className="flex flex-col gap-4">{content}</div>
         {modalOpen && (
           <AuthTokenModal onSubmit={handleTokenSubmit} onClose={closeModal} open={modalOpen} />
@@ -1762,16 +1828,17 @@ const UserSettings = () => {
 
 // Main Settings component
 const SettingsPanel = () => {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col gap-4 p-4 pt-2 w-full">
       <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold">Settings</h1>
+        <h1 className="text-2xl font-bold">{t("settings.title")}</h1>
         <p className="text-small text-default-400 uppercase font-semibold">
-          Customize your experience
+          {t("settings.subtitle")}
         </p>
       </div>
       <Tabs
-        aria-label="Settings"
+        aria-label={t("settings.title")}
         color="primary"
         classNames={{
           tabList: "sticky top-4 start-0 z-20 pt-2 pb-4",
@@ -1779,31 +1846,31 @@ const SettingsPanel = () => {
         }}
         isVertical
       >
-        <Tab key="general" title="General">
+        <Tab key="general" title={t("settings.tabs.general")}>
           <div className="flex flex-col gap-4">
             <GeneralSettings />
           </div>
         </Tab>
 
-        <Tab key="runbook" title="Runbooks">
+        <Tab key="runbook" title={t("settings.tabs.runbooks")}>
           <div className="flex flex-col gap-4">
             <RunbookSettings />
           </div>
         </Tab>
 
-        <Tab key="notification" title="Notifications">
+        <Tab key="notification" title={t("settings.tabs.notifications")}>
           <div className="flex flex-col gap-4">
             <NotificationSettings />
           </div>
         </Tab>
 
-        <Tab key="ai" title="AI">
+        <Tab key="ai" title={t("settings.tabs.ai")}>
           <div className="flex flex-col gap-4">
             <AISettings />
           </div>
         </Tab>
 
-        <Tab key="user" title="User">
+        <Tab key="user" title={t("settings.tabs.user")}>
           <div className="flex flex-col gap-4">
             <UserSettings />
           </div>

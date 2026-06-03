@@ -2,6 +2,8 @@ import { TERMINAL_BLOCK_SCHEMA, TerminalBlock } from "@/lib/blocks/terminal";
 import { DependencySpec } from "@/lib/workflow/dependency";
 import { createReactBlockSpec } from "@blocknote/react";
 import { RunBlock } from "./component";
+import { t } from "@/lib/i18n";
+//static file, so using t type only
 import track_event from "@/tracking";
 import { CodeIcon } from "lucide-react";
 import { exportPropMatter } from "@/lib/utils";
@@ -10,11 +12,7 @@ import { useBlockKvValue } from "@/lib/hooks/useKvValue";
 export default createReactBlockSpec(TERMINAL_BLOCK_SCHEMA, {
   // @ts-ignore
   render: ({ block, editor, code, type }) => {
-    const [collapseCode, setCollapseCode] = useBlockKvValue<boolean>(
-      block.id,
-      "collapsed",
-      false,
-    );
+    const [collapseCode, setCollapseCode] = useBlockKvValue<boolean>(block.id, "collapsed", false);
 
     const handleCodeMirrorFocus = () => {
       // Ensure BlockNote knows which block contains the focused CodeMirror
@@ -93,8 +91,8 @@ export default createReactBlockSpec(TERMINAL_BLOCK_SCHEMA, {
 });
 
 export const insertTerminal = (editor: any) => ({
-  title: "Terminal",
-  subtext: "Interactive terminal",
+  title: t("editor.blocks.terminal.title"),
+  subtext: t("editor.blocks.terminal.insert_subtext"),
   onItemClick: () => {
     track_event("runbooks.block.create", { type: "run" });
 
@@ -117,5 +115,5 @@ export const insertTerminal = (editor: any) => ({
   },
   icon: <CodeIcon size={18} />,
   aliases: ["terminal", "run"],
-  group: "Execute",
+  group: t("editor.blocks.group.execute"),
 });

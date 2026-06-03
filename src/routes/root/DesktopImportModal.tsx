@@ -20,6 +20,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { DynamicIcon } from "lucide-react/dynamic";
 import { useEffect, useLayoutEffect, useMemo, useReducer, useState } from "react";
+import { useTranslation } from "@/lib/i18n";
 
 interface DesktopImportModalProps {
   runbookId: string;
@@ -31,6 +32,7 @@ interface DesktopImportModalProps {
 type ModalStep = "checking" | "forked-options" | "import";
 
 export default function DesktopImportModal(props: DesktopImportModalProps) {
+  const { t } = useTranslation();
   const connectionState = useStore((state) => state.connectionState);
   const currentWorkspaceId = useStore((state) => state.currentWorkspaceId);
   const workspaces = useQuery(allWorkspaces());
@@ -124,8 +126,8 @@ export default function DesktopImportModal(props: DesktopImportModalProps) {
         error instanceof Error
           ? error.message
           : typeof error === "string"
-          ? error
-          : "An unknown error occurred",
+            ? error
+            : "An unknown error occurred",
       );
     } finally {
       setImporting(false);
@@ -142,12 +144,12 @@ export default function DesktopImportModal(props: DesktopImportModalProps) {
     body = (
       <div className="flex flex-col items-center justify-center gap-2">
         <Spinner />
-        <p>Checking for existing copies...</p>
+        <p>{t("desktop_import.checking")}</p>
       </div>
     );
     footer = (
       <ModalFooter>
-        <Button onPress={handleClose}>Cancel</Button>
+        <Button onPress={handleClose}>{t("common.cancel")}</Button>
       </ModalFooter>
     );
   } else if (step === "forked-options") {
@@ -201,7 +203,7 @@ export default function DesktopImportModal(props: DesktopImportModalProps) {
   } else if (importing) {
     body = (
       <div className="flex flex-col items-center justify-center gap-2">
-        <p>Importing runbook...</p>
+        <p>{t("desktop_import.importing")}</p>
       </div>
     );
     footer = (
@@ -230,10 +232,7 @@ export default function DesktopImportModal(props: DesktopImportModalProps) {
     );
   } else if (failed) {
     body = (
-      <p>
-        Failed to load runbook information. The runbook may not exist or you may not have permission
-        to access it.
-      </p>
+      <p>{t("desktop_import.load_info_failed")}</p>
     );
     footer = (
       <ModalFooter>
@@ -242,9 +241,7 @@ export default function DesktopImportModal(props: DesktopImportModalProps) {
     );
   } else if (cannotImport) {
     body = (
-      <p>
-        Cannot connect to Atuin Hub. Ensure your Internet connection is good, or try again later.
-      </p>
+      <p>{t("desktop_import.cannot_connect")}</p>
     );
     footer = (
       <ModalFooter>
@@ -255,7 +252,7 @@ export default function DesktopImportModal(props: DesktopImportModalProps) {
     body = (
       <div className="flex flex-col items-center justify-center gap-2">
         <Spinner />
-        <p>Loading runbook information...</p>
+        <p>{t("desktop_import.loading_info")}</p>
       </div>
     );
     footer = (
@@ -299,7 +296,7 @@ export default function DesktopImportModal(props: DesktopImportModalProps) {
         {() => (
           <>
             <ModalHeader>
-              {step === "forked-options" ? "Open Runbook" : "Import Runbook"}
+              {step === "forked-options" ? t("desktop_import.open_title") : t("desktop_import.import_title")}
             </ModalHeader>
             <ModalBody>{body}</ModalBody>
             {footer}
@@ -347,13 +344,16 @@ function WorkspaceSelector(props: WorkspaceSelectorProps) {
     { name: "Personal", id: "<PERSONAL>" },
     ...orgs.map((org) => ({ name: org.name, id: org.id })),
   ];
-  const workspacesPerOrg = orgsDisplay.reduce((acc, org) => {
-    acc[org.id] = props.workspaces.filter(
-      (ws) =>
-        ws.get("orgId") === (org.id == "<PERSONAL>" ? null : org.id) && ws.canManageRunbooks(),
-    );
-    return acc;
-  }, {} as Record<string, Workspace[]>);
+  const workspacesPerOrg = orgsDisplay.reduce(
+    (acc, org) => {
+      acc[org.id] = props.workspaces.filter(
+        (ws) =>
+          ws.get("orgId") === (org.id == "<PERSONAL>" ? null : org.id) && ws.canManageRunbooks(),
+      );
+      return acc;
+    },
+    {} as Record<string, Workspace[]>,
+  );
 
   useLayoutEffect(() => {
     if (props.selectedWorkspace) {

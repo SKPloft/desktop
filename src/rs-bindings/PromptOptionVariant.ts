@@ -3,4 +3,11 @@
 /**
  * Visual variant for prompt options (buttons)
  */
-export type PromptOptionVariant = { "type": "flat" } | { "type": "light" } | { "type": "shadow" } | { "type": "solid" } | { "type": "bordered" } | { "type": "faded" } | { "type": "ghost" };
+export type PromptOptionVariant =
+  | { type: "flat" }
+  | { type: "light" }
+  | { type: "shadow" }
+  | { type: "solid" }
+  | { type: "bordered" }
+  | { type: "faded" }
+  | { type: "ghost" };

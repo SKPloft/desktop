@@ -232,13 +232,16 @@ export class SharedStateManager<T extends SharableState> {
       (connectionState) => {
         if (connectionState === ConnectionState.Online) {
           // onConnect is async on the next tick, so wait a small amount of time to init
-          timeoutPromise(100, undefined).then(() => {
-            return this.adapter.ensureConnected()
-          }).then(() => {
-            return this.resync();
-          }).catch((err) => {
-            this.logger.error("Failed to ensure channel connection and resync:", err);
-          });
+          timeoutPromise(100, undefined)
+            .then(() => {
+              return this.adapter.ensureConnected();
+            })
+            .then(() => {
+              return this.resync();
+            })
+            .catch((err) => {
+              this.logger.error("Failed to ensure channel connection and resync:", err);
+            });
         }
       },
       {

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from "react";
 
 /**
  * Hook for CodeMirror that avoids React re-renders on every keystroke
@@ -7,7 +7,7 @@ import { useCallback, useEffect, useRef } from 'react';
 export function useCodeMirrorValue(
   initialValue: string,
   onUpdate: (value: string) => void,
-  delay: number = 50
+  delay: number = 50,
 ) {
   const valueRef = useRef(initialValue);
   const timeoutRef = useRef<number | undefined>(undefined);
@@ -20,21 +20,24 @@ export function useCodeMirrorValue(
   }, [onUpdate]);
 
   // Handle CodeMirror changes - updates ref without triggering re-render
-  const onChange = useCallback((val: string) => {
-    valueRef.current = val;
-    
-    // Debounce the sync to external state
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
+  const onChange = useCallback(
+    (val: string) => {
+      valueRef.current = val;
 
-    timeoutRef.current = window.setTimeout(() => {
-      if (valueRef.current !== lastSyncedValue.current) {
-        onUpdateRef.current(valueRef.current);
-        lastSyncedValue.current = valueRef.current;
+      // Debounce the sync to external state
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
       }
-    }, delay);
-  }, [delay]);
+
+      timeoutRef.current = window.setTimeout(() => {
+        if (valueRef.current !== lastSyncedValue.current) {
+          onUpdateRef.current(valueRef.current);
+          lastSyncedValue.current = valueRef.current;
+        }
+      }, delay);
+    },
+    [delay],
+  );
 
   // Sync external changes to ref
   useEffect(() => {
@@ -58,6 +61,6 @@ export function useCodeMirrorValue(
   return {
     value: initialValue, // Should auto-update when props change
     onChange,
-    getCurrentValue: () => valueRef.current
+    getCurrentValue: () => valueRef.current,
   };
 }

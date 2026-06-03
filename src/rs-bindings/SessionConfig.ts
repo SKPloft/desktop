@@ -2,4 +2,8 @@
 import type { ChargeTarget } from "./ChargeTarget";
 import type { ModelSelection } from "./ModelSelection";
 
-export type SessionConfig = { model: ModelSelection, desktopUsername: string, chargeTarget: ChargeTarget, };
+export type SessionConfig = {
+  model: ModelSelection;
+  desktopUsername: string;
+  chargeTarget: ChargeTarget;
+};

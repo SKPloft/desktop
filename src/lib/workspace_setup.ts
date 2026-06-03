@@ -13,6 +13,7 @@ import { Rc } from "@binarymuse/ts-stdlib";
 import { TabIcon } from "@/state/store/ui_state";
 import { invoke } from "@tauri-apps/api/core";
 import { DialogBuilder } from "@/components/Dialogs/dialog";
+import { t } from "@/lib/i18n";
 
 const logger = new Logger("WorkspaceMigration");
 
@@ -61,17 +62,17 @@ export default async function doWorkspaceSetup(): Promise<void> {
         workspacePath = await invoke<string>("copy_welcome_workspace", { id: welcomeWorkspaceId });
       } catch (err) {
         await new DialogBuilder()
-          .title("Failed to create welcome workspace")
+          .title(t("workspace.welcome.failed_title"))
           .icon("error")
           .message(err as string)
-          .action({ label: "OK", value: "ok", variant: "flat" })
+          .action({ label: t("common.ok"), value: "ok", variant: "flat" })
           .build();
 
         resolve?.();
         return;
       }
 
-      let name = "Welcome to Atuin";
+      let name = t("workspace.welcome.name");
       workspace = new Workspace({
         id: welcomeWorkspaceId,
         name: name,

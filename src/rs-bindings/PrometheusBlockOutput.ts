@@ -5,12 +5,13 @@ import type { PrometheusQueryResult } from "./PrometheusQueryResult";
  * Output structure for Prometheus blocks that implements BlockExecutionOutput
  * for template access to query results.
  */
-export type PrometheusBlockOutput = { 
-/**
- * All query results from the Prometheus execution
- */
-results: Array<PrometheusQueryResult>, 
-/**
- * Total number of series across all results
- */
-totalSeries: number, };
+export type PrometheusBlockOutput = {
+  /**
+   * All query results from the Prometheus execution
+   */
+  results: Array<PrometheusQueryResult>;
+  /**
+   * Total number of series across all results
+   */
+  totalSeries: number;
+};

@@ -47,7 +47,7 @@ export function scoreFuzzy(
   target: string,
   query: string,
   queryLower: string,
-  allowNonContiguousMatches: boolean
+  allowNonContiguousMatches: boolean,
 ): FuzzyScore {
   if (!target || !query) {
     return NO_SCORE;
@@ -68,7 +68,7 @@ export function scoreFuzzy(
     target,
     targetLower,
     targetLength,
-    allowNonContiguousMatches
+    allowNonContiguousMatches,
   );
 }
 
@@ -79,7 +79,7 @@ function doScoreFuzzy(
   target: string,
   targetLower: string,
   targetLength: number,
-  allowNonContiguousMatches: boolean
+  allowNonContiguousMatches: boolean,
 ): FuzzyScore {
   const scores: number[] = [];
   const matches: number[] = [];
@@ -115,13 +115,11 @@ function doScoreFuzzy(
           target,
           targetLower,
           targetIndex,
-          matchesSequenceLength
+          matchesSequenceLength,
         );
       }
 
-      const isValidScore =
-        score &&
-        diagScore + score >= leftScore;
+      const isValidScore = score && diagScore + score >= leftScore;
       if (
         isValidScore &&
         (allowNonContiguousMatches ||
@@ -162,7 +160,7 @@ function computeCharScore(
   target: string,
   targetLower: string,
   targetIndex: number,
-  matchesSequenceLength: number
+  matchesSequenceLength: number,
 ): number {
   let score = 0;
 
@@ -207,8 +205,8 @@ function considerAsEqual(a: string, b: string): boolean {
   }
 
   // Special case path separators: ignore platform differences
-  if (a === '/' || a === '\\') {
-    return b === '/' || b === '\\';
+  if (a === "/" || a === "\\") {
+    return b === "/" || b === "\\";
   }
 
   return false;
@@ -276,7 +274,7 @@ export interface FuzzyMatchResult {
 export function fuzzyMatch(
   query: string,
   target: string,
-  allowNonContiguous = true
+  allowNonContiguous = true,
 ): FuzzyMatchResult | null {
   if (!query || !target) {
     return null;

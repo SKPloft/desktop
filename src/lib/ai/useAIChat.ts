@@ -103,7 +103,10 @@ export default function useAIChat(sessionId: string): AIChatAPI {
               const existingToolCallIds = new Set(
                 prev.flatMap((msg) =>
                   msg.content.parts
-                    .filter((part): part is { type: "toolCall"; data: AIToolCall } => part.type === "toolCall")
+                    .filter(
+                      (part): part is { type: "toolCall"; data: AIToolCall } =>
+                        part.type === "toolCall",
+                    )
                     .map((part) => part.data.id),
                 ),
               );

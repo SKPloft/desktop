@@ -241,21 +241,17 @@ export const onSerialExecutionPaused = (
   handler: (data: GrandCentralEvents["serial-execution-paused"]) => void,
 ) => grandCentral.on("serial-execution-paused", handler);
 
-export const onBlockStarted = (
-  handler: (data: GrandCentralEvents["block-started"]) => void,
-) => grandCentral.on("block-started", handler);
+export const onBlockStarted = (handler: (data: GrandCentralEvents["block-started"]) => void) =>
+  grandCentral.on("block-started", handler);
 
-export const onBlockFinished = (
-  handler: (data: GrandCentralEvents["block-finished"]) => void,
-) => grandCentral.on("block-finished", handler);
+export const onBlockFinished = (handler: (data: GrandCentralEvents["block-finished"]) => void) =>
+  grandCentral.on("block-finished", handler);
 
-export const onBlockFailed = (
-  handler: (data: GrandCentralEvents["block-failed"]) => void,
-) => grandCentral.on("block-failed", handler);
+export const onBlockFailed = (handler: (data: GrandCentralEvents["block-failed"]) => void) =>
+  grandCentral.on("block-failed", handler);
 
-export const onBlockCancelled = (
-  handler: (data: GrandCentralEvents["block-cancelled"]) => void,
-) => grandCentral.on("block-cancelled", handler);
+export const onBlockCancelled = (handler: (data: GrandCentralEvents["block-cancelled"]) => void) =>
+  grandCentral.on("block-cancelled", handler);
 
 export const onSshCertificateLoadFailed = (
   handler: (data: GrandCentralEvents["ssh-certificate-load-failed"]) => void,

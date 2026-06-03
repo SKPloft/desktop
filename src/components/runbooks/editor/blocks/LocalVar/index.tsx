@@ -7,6 +7,7 @@ import AIBlockRegistry from "@/lib/ai/block_registry";
 import track_event from "@/tracking";
 import { exportPropMatter } from "@/lib/utils";
 import { useBlockKvValue } from "@/lib/hooks/useKvValue";
+import { useTranslation } from "@/lib/i18n";
 import isValidVarName from "../../utils/varNames";
 
 interface LocalVarProps {
@@ -19,6 +20,7 @@ interface LocalVarProps {
 }
 
 const LocalVar = (props: LocalVarProps) => {
+  const { t } = useTranslation();
   const [value, setValue] = useBlockKvValue(props.blockId, "value", "");
 
   const [hasNameError, setHasNameError] = useState(false);
@@ -43,7 +45,7 @@ const LocalVar = (props: LocalVarProps) => {
         </div>
 
         <Input
-          placeholder="Name (shared)"
+          placeholder={t("editor.blocks.local_var.name_placeholder")}
           value={props.name}
           onValueChange={props.onNameUpdate}
           autoComplete="off"
@@ -57,7 +59,7 @@ const LocalVar = (props: LocalVarProps) => {
           }`}
           disabled={!props.isEditable}
           isInvalid={hasNameError}
-          errorMessage={"Variable names can only contain letters, numbers, and underscores"}
+          errorMessage={t("editor.blocks.local_var.name_error")}
         />
 
         <Input
@@ -81,7 +83,11 @@ const LocalVar = (props: LocalVarProps) => {
           onPress={() => props.onObscuredUpdate(!props.obscured)}
           isDisabled={!props.isEditable}
         >
-          {props.obscured ? <EyeOffIcon className="h-3.5 w-3.5" /> : <EyeIcon className="h-3.5 w-3.5" />}
+          {props.obscured ? (
+            <EyeOffIcon className="h-3.5 w-3.5" />
+          ) : (
+            <EyeIcon className="h-3.5 w-3.5" />
+          )}
         </Button>
       </div>
     </div>
@@ -166,8 +172,7 @@ export const insertLocalVar = (schema: any) => (editor: typeof schema.BlockNoteE
 AIBlockRegistry.getInstance().addBlock({
   typeName: "local-var",
   friendlyName: "Local Variable",
-  shortDescription:
-    "Stores a variable locally on the user's device (not synced).",
+  shortDescription: "Stores a variable locally on the user's device (not synced).",
   description: undent`
     Local Variable blocks store sensitive values locally on the user's machine. The variable name is synced with collaborators, but the value is stored only on the local device and never uploaded.
 

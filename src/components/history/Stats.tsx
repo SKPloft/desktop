@@ -2,34 +2,30 @@ import { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import PacmanLoader from "react-spinners/PacmanLoader";
 
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { useTranslation } from "@/lib/i18n";
 
 function renderLoading() {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col items-center justify-center h-full ">
       <div>
         <PacmanLoader color="#26bd65" />
       </div>
       <div className="block mt-4">
-        <p>Crunching the latest numbers...</p>
+        <p>{t("history.loading")}</p>
       </div>
     </div>
   );
 }
 
 function TopTable({ stats }: any) {
+  const { t } = useTranslation();
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="flex items-center">
         <div className="flex-auto">
-          <h1 className="text-base font-semibold">Top commands</h1>
+          <h1 className="text-base font-semibold">{t("history.top_commands")}</h1>
         </div>
       </div>
       <div className="mt-4 flow-root">
@@ -42,13 +38,13 @@ function TopTable({ stats }: any) {
                     scope="col"
                     className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 lg:pl-8"
                   >
-                    Command
+                    {t("history.command")}
                   </th>
                   <th
                     scope="col"
                     className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
-                    Count
+                    {t("history.count")}
                   </th>
                 </tr>
               </thead>
@@ -58,9 +54,7 @@ function TopTable({ stats }: any) {
                     <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8">
                       {stat[0][0]}
                     </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                      {stat[1]}
-                    </td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{stat[1]}</td>
                   </tr>
                 ))}
               </tbody>
@@ -123,13 +117,8 @@ export default function Stats() {
       <div className="flexfull">
         <dl className="grid grid-cols-1 sm:grid-cols-5 w-full">
           {stats.map((item: any) => (
-            <div
-              key={item.name}
-              className="overflow-hidden bg-white px-4 py-5 shadow sm:p-6"
-            >
-              <dt className="truncate text-sm font-medium text-gray-500">
-                {item.name}
-              </dt>
+            <div key={item.name} className="overflow-hidden bg-white px-4 py-5 shadow sm:p-6">
+              <dt className="truncate text-sm font-medium text-gray-500">{item.name}</dt>
               <dd className="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
                 {item.stat}
               </dd>

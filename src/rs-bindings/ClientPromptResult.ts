@@ -3,12 +3,13 @@
 /**
  * The result from a client prompt interaction
  */
-export type ClientPromptResult = { 
-/**
- * The value of the button that was clicked
- */
-button: string, 
-/**
- * The value entered in an input field, if any
- */
-value: string | null, };
+export type ClientPromptResult = {
+  /**
+   * The value of the button that was clicked
+   */
+  button: string;
+  /**
+   * The value entered in an input field, if any
+   */
+  value: string | null;
+};

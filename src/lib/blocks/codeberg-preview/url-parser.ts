@@ -54,7 +54,9 @@ export function parseCodebergUrl(url: string): ParsedCodebergUrl | null {
 
   // Check for code URL: /src/branch/{branch}/{path} or /src/commit/{hash}/{path}
   // Line numbers: #L{start}-L{end} or #L{start}
-  const codeMatch = rest.match(/^\/src\/(?:branch|commit|tag)\/([^/]+)\/(.+?)(?:#L(\d+)(?:-L(\d+))?)?$/);
+  const codeMatch = rest.match(
+    /^\/src\/(?:branch|commit|tag)\/([^/]+)\/(.+?)(?:#L(\d+)(?:-L(\d+))?)?$/,
+  );
   if (codeMatch) {
     const result: ParsedCodebergUrl = {
       type: "code",

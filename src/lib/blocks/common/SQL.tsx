@@ -55,6 +55,7 @@ import {
 } from "@/lib/hooks/useDocumentBridge";
 import { SqlBlockExecutionResult } from "@/rs-bindings/SqlBlockExecutionResult";
 import { TabsContext } from "@/routes/root/Tabs";
+import { useTranslation } from "@/lib/i18n";
 
 type QueryCountMessage = {
   type: "queryCount";
@@ -123,6 +124,7 @@ const SQL = ({
   settingsContent,
   settingsTitle,
 }: SQLProps) => {
+  const { t } = useTranslation();
   let editor = useBlockNoteEditor();
   const [results, setResults] = useState<SqlBlockExecutionResult | null>(null);
   const [queryCount, setQueryCount] = useState<Option<number>>(None);
@@ -269,7 +271,7 @@ const SQL = ({
       topRightElement={
         <div className="flex items-center gap-1">
           {settingsContent && (
-            <Tooltip content="Settings" delay={500}>
+            <Tooltip content={t("blocks.common.show_settings")} delay={500}>
               <button
                 onClick={() => setSettingsOpen(true)}
                 className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
@@ -278,7 +280,7 @@ const SQL = ({
               </button>
             </Tooltip>
           )}
-          <Tooltip content={isFullscreen ? "Exit fullscreen" : "Open in fullscreen"} delay={500}>
+          <Tooltip content={isFullscreen ? t("blocks.common.exit_fullscreen") : t("blocks.common.open_fullscreen")} delay={500}>
             <button
               onClick={() => setIsFullscreen(!isFullscreen)}
               className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
@@ -318,29 +320,29 @@ const SQL = ({
                 </Button>
               </DropdownTrigger>
               <DropdownMenu disabledKeys={["secret"]}>
-                <DropdownSection title="Use a local variable or script">
+                <DropdownSection title={t("blocks.common.variable_or_script")}>
                   <DropdownItem
                     key="local-var"
-                    description="Local variable - not synced"
+                    description={t("blocks.common.local_variable_description")}
                     startContent={<CloudOffIcon size={16} />}
                     onPress={addLocalVar}
                   >
-                    Variable
+                    {t("blocks.common.variable")}
                   </DropdownItem>
                   <DropdownItem
                     key="template"
-                    description="Shell command output"
+                    description={t("blocks.common.script_description")}
                     startContent={<FileTerminalIcon size={16} />}
                     onPress={addScriptForUri}
                   >
-                    Script
+                    {t("blocks.common.script")}
                   </DropdownItem>
                   <DropdownItem
                     key="secret"
-                    description="Synchronized + encrypted secret"
+                    description={t("blocks.common.secret_description")}
                     startContent={<LockIcon size={16} />}
                   >
-                    Secret
+                    {t("blocks.common.secret")}
                   </DropdownItem>
                 </DropdownSection>
               </DropdownMenu>
@@ -361,7 +363,7 @@ const SQL = ({
               })}
             >
               <CodeMirror
-                placeholder={"Write your query here..."}
+                placeholder={t("blocks.sql.query_placeholder")}
                 className="!pt-0 max-w-full border border-gray-300 rounded"
                 basicSetup={true}
                 extensions={[getSqlExtension(), ...extensions]}
@@ -398,12 +400,12 @@ const SQL = ({
                   startContent={<RefreshCwIcon size={16} />}
                   endContent={<ChevronDown size={16} />}
                 >
-                  Auto refresh:{" "}
+                  {t("blocks.common.auto_refresh")}:{" "}
                   {autoRefresh == 0
-                    ? "Off"
+                    ? t("common.off")
                     : (
                         autoRefreshChoices.find((a) => a.value == autoRefresh) || {
-                          label: "Off",
+                          label: t("common.off"),
                         }
                       ).label}
                 </Button>
@@ -429,7 +431,7 @@ const SQL = ({
               variant="flat"
               onPress={() => setCollapseQuery(!collapseQuery)}
             >
-              <Tooltip content={collapseQuery ? "Expand query" : "Collapse query"}>
+              <Tooltip content={collapseQuery ? t("blocks.sql.expand_query") : t("blocks.sql.collapse_query")}>
                 {collapseQuery ? (
                   <ArrowDownToLineIcon size={16} />
                 ) : (
@@ -481,7 +483,7 @@ const SQL = ({
                   onPress={() => setIsFullscreenQueryCollapsed(!isFullscreenQueryCollapsed)}
                 >
                   <Tooltip
-                    content={isFullscreenQueryCollapsed ? "Show query editor" : "Hide query editor"}
+                    content={isFullscreenQueryCollapsed ? t("blocks.sql.show_query_editor") : t("blocks.sql.hide_query_editor")}
                   >
                     {isFullscreenQueryCollapsed ? (
                       <ArrowDownToLineIcon size={16} />
@@ -491,7 +493,7 @@ const SQL = ({
                   </Tooltip>
                 </Button>
                 <Button isIconOnly size="sm" variant="flat" onPress={() => setIsFullscreen(false)}>
-                  <Tooltip content="Exit fullscreen">
+                  <Tooltip content={t("blocks.common.exit_fullscreen")}>
                     <Minimize2 size={18} />
                   </Tooltip>
                 </Button>
@@ -526,29 +528,29 @@ const SQL = ({
                           </Button>
                         </DropdownTrigger>
                         <DropdownMenu disabledKeys={["secret"]}>
-                          <DropdownSection title="Use a local variable or script">
+                          <DropdownSection title={t("blocks.common.variable_or_script")}>
                             <DropdownItem
                               key="local-var"
-                              description="Local variable - not synced"
+                              description={t("blocks.common.local_variable_description")}
                               startContent={<CloudOffIcon size={16} />}
                               onPress={addLocalVar}
                             >
-                              Variable
+                              {t("blocks.common.variable")}
                             </DropdownItem>
                             <DropdownItem
                               key="template"
-                              description="Shell command output"
+                              description={t("blocks.common.script_description")}
                               startContent={<FileTerminalIcon size={16} />}
                               onPress={addScriptForUri}
                             >
-                              Script
+                              {t("blocks.common.script")}
                             </DropdownItem>
                             <DropdownItem
                               key="secret"
-                              description="Synchronized + encrypted secret"
+                              description={t("blocks.common.secret_description")}
                               startContent={<LockIcon size={16} />}
                             >
-                              Secret
+                              {t("blocks.common.secret")}
                             </DropdownItem>
                           </DropdownSection>
                         </DropdownMenu>
@@ -568,7 +570,7 @@ const SQL = ({
                       />
                       <div className="flex-grow min-h-0 min-w-0">
                         <CodeMirror
-                          placeholder={"Write your query here..."}
+                          placeholder={t("blocks.sql.query_placeholder")}
                           className="!pt-0 border border-gray-300 rounded h-full overflow-scroll"
                           basicSetup={true}
                           extensions={[getSqlExtension(), ...extensions]}
@@ -610,18 +612,12 @@ const SQL = ({
 
       {/* Settings Modal */}
       {settingsContent && (
-        <Modal
-          isOpen={settingsOpen}
-          onClose={() => setSettingsOpen(false)}
-          size="sm"
-        >
+        <Modal isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} size="sm">
           <ModalContent>
             <ModalHeader className="text-base font-medium">
               {settingsTitle || "Settings"}
             </ModalHeader>
-            <ModalBody className="pb-6">
-              {settingsContent}
-            </ModalBody>
+            <ModalBody className="pb-6">{settingsContent}</ModalBody>
           </ModalContent>
         </Modal>
       )}

@@ -1,4 +1,5 @@
 import { useLayoutEffect, useState, useRef, useEffect } from "react";
+import { useTranslation } from "@/lib/i18n";
 
 interface AIFocusOverlayProps {
   blockIds: string[];
@@ -23,6 +24,7 @@ export function AIFocusOverlay({
   onEditSubmit,
   onEditCancel,
 }: AIFocusOverlayProps) {
+  const { t } = useTranslation();
   const [position, setPosition] = useState<{
     top: number;
     left: number;
@@ -136,60 +138,75 @@ export function AIFocusOverlay({
       }}
     >
       {/* Edit input or hint text at the bottom */}
-      {!hideAllHints && <div className="absolute -bottom-10 left-0 right-0 flex justify-center pointer-events-auto">
-        {isEditing ? (
-          <div className="flex items-center gap-2 bg-white dark:bg-zinc-900 px-3 py-2 rounded-lg shadow-md border border-purple-300 dark:border-purple-700">
-            <input
-              ref={inputRef}
-              type="text"
-              value={editValue}
-              onChange={(e) => onEditChange?.(e.target.value)}
-              onKeyDown={(e) => {
-                e.stopPropagation();
-                if (e.key === "Enter") {
-                  onEditSubmit?.();
-                  editor?.focus();
-                } else if (e.key === "Escape") {
-                  onEditCancel?.();
-                  editor?.focus();
-                }
-              }}
-              placeholder="Describe changes..."
-              className="text-sm bg-transparent border-none outline-none w-72 text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 dark:placeholder:text-zinc-500"
-            />
-            <span className="text-[10px] text-zinc-400 dark:text-zinc-500 flex items-center gap-1.5">
-              <kbd className="font-mono bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded border border-zinc-200 dark:border-zinc-700">↵</kbd>
-              <span>send</span>
-            </span>
-          </div>
-        ) : (
-          <div className="text-[11px] bg-white dark:bg-zinc-900 px-3 py-1.5 rounded-lg shadow-md border border-purple-300 dark:border-purple-700 flex items-center gap-3">
-            {showRunHint && (
-              <>
-                <span className="flex items-center gap-1.5 text-purple-700 dark:text-purple-300">
-                  <kbd className="font-mono text-[10px] bg-purple-100 dark:bg-purple-900/60 px-1.5 py-0.5 rounded border border-purple-200 dark:border-purple-700">⌘</kbd>
-                  <kbd className="font-mono text-[10px] bg-purple-100 dark:bg-purple-900/60 px-1.5 py-0.5 rounded border border-purple-200 dark:border-purple-700">Enter</kbd>
-                  <span className="ml-0.5">Run</span>
-                </span>
-                <span className="text-purple-300 dark:text-purple-600">│</span>
-              </>)}
-            <span className="flex items-center gap-1.5 text-purple-700 dark:text-purple-300">
-              <kbd className="font-mono text-[10px] bg-purple-100 dark:bg-purple-900/60 px-1.5 py-0.5 rounded border border-purple-200 dark:border-purple-700">Tab</kbd>
-              <span className="ml-0.5">Accept</span>
-            </span>
-            <span className="text-purple-300 dark:text-purple-600">│</span>
-            <span className="flex items-center gap-1.5 text-purple-700 dark:text-purple-300">
-              <kbd className="font-mono text-[10px] bg-purple-100 dark:bg-purple-900/60 px-1.5 py-0.5 rounded border border-purple-200 dark:border-purple-700">E</kbd>
-              <span className="ml-0.5">Edit</span>
-            </span>
-            <span className="text-purple-300 dark:text-purple-600">│</span>
-            <span className="flex items-center gap-1.5 text-purple-700 dark:text-purple-300">
-              <kbd className="font-mono text-[10px] bg-purple-100 dark:bg-purple-900/60 px-1.5 py-0.5 rounded border border-purple-200 dark:border-purple-700">Esc</kbd>
-              <span className="ml-0.5">Dismiss</span>
-            </span>
-          </div>
-        )}
-      </div>}
+      {!hideAllHints && (
+        <div className="absolute -bottom-10 left-0 right-0 flex justify-center pointer-events-auto">
+          {isEditing ? (
+            <div className="flex items-center gap-2 bg-white dark:bg-zinc-900 px-3 py-2 rounded-lg shadow-md border border-purple-300 dark:border-purple-700">
+              <input
+                ref={inputRef}
+                type="text"
+                value={editValue}
+                onChange={(e) => onEditChange?.(e.target.value)}
+                onKeyDown={(e) => {
+                  e.stopPropagation();
+                  if (e.key === "Enter") {
+                    onEditSubmit?.();
+                    editor?.focus();
+                  } else if (e.key === "Escape") {
+                    onEditCancel?.();
+                    editor?.focus();
+                  }
+                }}
+                placeholder={t("editor.ai_focus_overlay.describe_changes")}
+                className="text-sm bg-transparent border-none outline-none w-72 text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 dark:placeholder:text-zinc-500"
+              />
+              <span className="text-[10px] text-zinc-400 dark:text-zinc-500 flex items-center gap-1.5">
+                <kbd className="font-mono bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded border border-zinc-200 dark:border-zinc-700">
+                  ↵
+                </kbd>
+                <span>{t("editor.ai_focus_overlay.send")}</span>
+              </span>
+            </div>
+          ) : (
+            <div className="text-[11px] bg-white dark:bg-zinc-900 px-3 py-1.5 rounded-lg shadow-md border border-purple-300 dark:border-purple-700 flex items-center gap-3">
+              {showRunHint && (
+                <>
+                  <span className="flex items-center gap-1.5 text-purple-700 dark:text-purple-300">
+                    <kbd className="font-mono text-[10px] bg-purple-100 dark:bg-purple-900/60 px-1.5 py-0.5 rounded border border-purple-200 dark:border-purple-700">
+                      ⌘
+                    </kbd>
+                    <kbd className="font-mono text-[10px] bg-purple-100 dark:bg-purple-900/60 px-1.5 py-0.5 rounded border border-purple-200 dark:border-purple-700">
+                      Enter
+                    </kbd>
+                    <span className="ml-0.5">{t("editor.ai_focus_overlay.run")}</span>
+                  </span>
+                  <span className="text-purple-300 dark:text-purple-600">│</span>
+                </>
+              )}
+              <span className="flex items-center gap-1.5 text-purple-700 dark:text-purple-300">
+                <kbd className="font-mono text-[10px] bg-purple-100 dark:bg-purple-900/60 px-1.5 py-0.5 rounded border border-purple-200 dark:border-purple-700">
+                  Tab
+                </kbd>
+                <span className="ml-0.5">{t("editor.ai_focus_overlay.accept")}</span>
+              </span>
+              <span className="text-purple-300 dark:text-purple-600">│</span>
+              <span className="flex items-center gap-1.5 text-purple-700 dark:text-purple-300">
+                <kbd className="font-mono text-[10px] bg-purple-100 dark:bg-purple-900/60 px-1.5 py-0.5 rounded border border-purple-200 dark:border-purple-700">
+                  E
+                </kbd>
+                <span className="ml-0.5">{t("editor.ai_focus_overlay.edit")}</span>
+              </span>
+              <span className="text-purple-300 dark:text-purple-600">│</span>
+              <span className="flex items-center gap-1.5 text-purple-700 dark:text-purple-300">
+                <kbd className="font-mono text-[10px] bg-purple-100 dark:bg-purple-900/60 px-1.5 py-0.5 rounded border border-purple-200 dark:border-purple-700">
+                  Esc
+                </kbd>
+                <span className="ml-0.5">{t("editor.ai_focus_overlay.dismiss")}</span>
+              </span>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

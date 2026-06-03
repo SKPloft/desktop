@@ -7,7 +7,11 @@ export interface AtuinQueryState {
 
 export const persistQueryKeys: (keyof AtuinQueryState)[] = [];
 
-export const createQueryState: StateCreator<AtuinQueryState> = (_set, _get, _store): AtuinQueryState => ({
+export const createQueryState: StateCreator<AtuinQueryState> = (
+  _set,
+  _get,
+  _store,
+): AtuinQueryState => ({
   queryClient: new QueryClient({
     defaultOptions: {
       queries: {

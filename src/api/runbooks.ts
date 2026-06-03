@@ -116,10 +116,7 @@ export interface ResolvedRunbook {
 
 /// Resolve a runbook by NWO (name-with-owner), optionally with a tag
 /// NWO format: "user/slug" or with tag "user/slug:tag"
-export async function resolveRunbookByNwo(
-  nwo: string,
-  tag?: string,
-): Promise<ResolvedRunbook> {
+export async function resolveRunbookByNwo(nwo: string, tag?: string): Promise<ResolvedRunbook> {
   let url = `/resolve/runbook?nwo=${encodeURIComponent(nwo)}`;
   if (tag) {
     url += `&tag=${encodeURIComponent(tag)}`;

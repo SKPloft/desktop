@@ -3,4 +3,4 @@
 /**
  * Summary information about an active session for the LLM Tools window.
  */
-export type SessionInfo = { id: string, runbookId: string, kind: string, };
+export type SessionInfo = { id: string; runbookId: string; kind: string };

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useMemo } from "react";
 import type { SessionInfo, SessionEvent, AIMessage, AIToolCall, State } from "../types";
+import { useTranslation } from "@/lib/i18n";
 
 interface SessionDetailProps {
   session: SessionInfo;
@@ -29,11 +30,15 @@ function getMessageToolCalls(message: AIMessage): AIToolCall[] {
 function getMessageToolResponses(message: AIMessage): { callId: string; result: string }[] {
   const parts = message.content.parts || [];
   return parts
-    .filter((p): p is { type: "toolResponse"; data: { callId: string; result: string } } => p.type === "toolResponse")
+    .filter(
+      (p): p is { type: "toolResponse"; data: { callId: string; result: string } } =>
+        p.type === "toolResponse",
+    )
     .map((p) => p.data);
 }
 
 function MessageView({ message, index }: { message: AIMessage; index: number }) {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const text = getMessageText(message);
   const toolCalls = getMessageToolCalls(message);
@@ -47,14 +52,16 @@ function MessageView({ message, index }: { message: AIMessage; index: number }) 
   };
 
   const roleLabels: Record<string, string> = {
-    system: "System",
-    user: "User",
-    assistant: "Assistant",
-    tool: "Tool",
+    system: t("llmtools.roles.system"),
+    user: t("llmtools.roles.user"),
+    assistant: t("llmtools.roles.assistant"),
+    tool: t("llmtools.roles.tool"),
   };
 
   return (
-    <div className={`p-3 border-l-4 ${roleColors[message.role] || "bg-default-100 border-default-300"} mb-2 rounded-r`}>
+    <div
+      className={`p-3 border-l-4 ${roleColors[message.role] || "bg-default-100 border-default-300"} mb-2 rounded-r`}
+    >
       <div className="flex items-center gap-2 mb-2">
         <span className="text-xs font-semibold uppercase tracking-wide">
           {roleLabels[message.role] || message.role}
@@ -64,7 +71,7 @@ function MessageView({ message, index }: { message: AIMessage; index: number }) 
           onClick={() => setExpanded(!expanded)}
           className="ml-auto text-xs text-default-400 hover:text-default-600"
         >
-          {expanded ? "Collapse" : "Expand JSON"}
+          {expanded ? t("llmtools.actions.collapse") : t("llmtools.actions.expand_json")}
         </button>
       </div>
 
@@ -73,7 +80,7 @@ function MessageView({ message, index }: { message: AIMessage; index: number }) 
           {message.role === "system" ? (
             <details>
               <summary className="cursor-pointer text-default-500">
-                System prompt ({text.length} chars)
+                {t("llmtools.system_prompt", { count: text.length })}
               </summary>
               <pre className="mt-2 text-xs overflow-x-auto bg-default-100 dark:bg-default-800 p-2 rounded">
                 {text}
@@ -102,7 +109,7 @@ function MessageView({ message, index }: { message: AIMessage; index: number }) 
         <div className="mt-2 space-y-2">
           {toolResponses.map((resp, i) => (
             <div key={i} className="bg-default-100 dark:bg-default-800 p-2 rounded text-sm">
-              <div className="text-xs text-default-400">Tool Response: {resp.callId}</div>
+              <div className="text-xs text-default-400">{t("llmtools.tool_response", { id: resp.callId })}</div>
               <pre className="text-xs mt-1 overflow-x-auto whitespace-pre-wrap max-h-40 overflow-y-auto">
                 {resp.result}
               </pre>
@@ -121,26 +128,26 @@ function MessageView({ message, index }: { message: AIMessage; index: number }) 
 }
 
 function StreamingIndicator({ content, state }: { content: string; state: State | null }) {
+  const { t } = useTranslation();
   if (!state || state.type === "idle") return null;
 
   return (
     <div className="p-3 border-l-4 bg-green-500/10 border-green-500/50 mb-2 rounded-r animate-pulse">
       <div className="flex items-center gap-2 mb-2">
-        <span className="text-xs font-semibold uppercase tracking-wide">Assistant</span>
+        <span className="text-xs font-semibold uppercase tracking-wide">{t("llmtools.roles.assistant")}</span>
         <span className="text-xs text-green-500">
-          {state.type === "sending" && "Sending..."}
-          {state.type === "streaming" && "Streaming..."}
-          {state.type === "pendingTools" && "Awaiting tool results..."}
+          {state.type === "sending" && t("llmtools.streaming.sending")}
+          {state.type === "streaming" && t("llmtools.streaming.streaming")}
+          {state.type === "pendingTools" && t("llmtools.streaming.pending_tools")}
         </span>
       </div>
-      {content && (
-        <div className="text-sm whitespace-pre-wrap break-words">{content}</div>
-      )}
+      {content && <div className="text-sm whitespace-pre-wrap break-words">{content}</div>}
     </div>
   );
 }
 
 function ConversationView({ events }: { events: { sessionId: string; event: SessionEvent }[] }) {
+  const { t } = useTranslation();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Build conversation state from events
@@ -190,7 +197,7 @@ function ConversationView({ events }: { events: { sessionId: string; event: Sess
   return (
     <div ref={scrollRef} className="flex-1 overflow-y-auto p-4">
       {messages.length === 0 && !streamingContent ? (
-        <div className="text-sm text-default-400">No messages yet</div>
+        <div className="text-sm text-default-400">{t("llmtools.no_messages")}</div>
       ) : (
         <>
           {messages.map((msg, i) => (
@@ -200,10 +207,13 @@ function ConversationView({ events }: { events: { sessionId: string; event: Sess
           {pendingToolCalls.length > 0 && currentState?.type === "pendingTools" && (
             <div className="p-3 border-l-4 bg-purple-500/20 border-purple-500/50 mb-2 rounded-r">
               <div className="text-xs font-semibold uppercase tracking-wide mb-2">
-                Pending Tool Calls
+                {t("llmtools.pending_tool_calls")}
               </div>
               {pendingToolCalls.map((call, i) => (
-                <div key={i} className="bg-default-100 dark:bg-default-800 p-2 rounded text-sm mb-1">
+                <div
+                  key={i}
+                  className="bg-default-100 dark:bg-default-800 p-2 rounded text-sm mb-1"
+                >
                   <div className="font-medium text-purple-500">{call.name}</div>
                   <pre className="text-xs mt-1 overflow-x-auto whitespace-pre-wrap">
                     {JSON.stringify(call.args, null, 2)}
@@ -219,28 +229,29 @@ function ConversationView({ events }: { events: { sessionId: string; event: Sess
 }
 
 function EventItem({ event, index }: { event: SessionEvent; index: number }) {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
 
   const getEventLabel = (e: SessionEvent): string => {
     switch (e.type) {
       case "stateChanged":
-        return `State: ${e.state.type}`;
+        return t("llmtools.events.state", { state: e.state.type });
       case "streamStarted":
-        return "Stream Started";
+        return t("llmtools.events.stream_started");
       case "chunk":
-        return `Chunk (${e.content.length} chars)`;
+        return t("llmtools.events.chunk", { count: e.content.length });
       case "responseComplete":
-        return "Response Complete";
+        return t("llmtools.events.response_complete");
       case "toolsRequested":
-        return `Tools Requested (${e.calls.length})`;
+        return t("llmtools.events.tools_requested", { count: e.calls.length });
       case "error":
-        return `Error: ${e.message}`;
+        return t("llmtools.events.error", { message: e.message });
       case "cancelled":
-        return "Cancelled";
+        return t("llmtools.events.cancelled");
       case "history":
-        return `History (${e.messages.length} messages)`;
+        return t("llmtools.events.history", { count: e.messages.length });
       default:
-        return "Unknown Event";
+        return t("llmtools.events.unknown");
     }
   };
 
@@ -277,9 +288,7 @@ function EventItem({ event, index }: { event: SessionEvent; index: number }) {
         <span className={`text-sm font-medium ${getEventColor(event)}`}>
           {getEventLabel(event)}
         </span>
-        <span className="ml-auto text-xs text-default-400">
-          {expanded ? "[-]" : "[+]"}
-        </span>
+        <span className="ml-auto text-xs text-default-400">{expanded ? "[-]" : "[+]"}</span>
       </button>
       {expanded && (
         <div className="p-2 bg-default-50 dark:bg-default-900 border-t border-divider">
@@ -293,6 +302,7 @@ function EventItem({ event, index }: { event: SessionEvent; index: number }) {
 }
 
 function EventStreamView({ events }: { events: { sessionId: string; event: SessionEvent }[] }) {
+  const { t } = useTranslation();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -304,7 +314,7 @@ function EventStreamView({ events }: { events: { sessionId: string; event: Sessi
   return (
     <div ref={scrollRef} className="flex-1 overflow-y-auto">
       {events.length === 0 ? (
-        <div className="p-4 text-sm text-default-400">No events yet</div>
+        <div className="p-4 text-sm text-default-400">{t("llmtools.no_events")}</div>
       ) : (
         events.map((e, i) => <EventItem key={i} event={e.event} index={i} />)
       )}
@@ -313,6 +323,7 @@ function EventStreamView({ events }: { events: { sessionId: string; event: Sessi
 }
 
 export default function SessionDetail({ session, events }: SessionDetailProps) {
+  const { t } = useTranslation();
   const [viewMode, setViewMode] = useState<ViewMode>("conversation");
 
   return (
@@ -320,15 +331,17 @@ export default function SessionDetail({ session, events }: SessionDetailProps) {
       {/* Session info header */}
       <div className="flex-none p-4 border-b border-divider bg-default-50 dark:bg-default-900">
         <h2 className="text-base font-semibold">
-          {session.kind === "assistantChat" ? "Assistant Chat" : "Inline Generation"}
+          {session.kind === "assistantChat"
+            ? t("llmtools.session.assistant_chat")
+            : t("llmtools.session.inline_generation")}
         </h2>
         <div className="mt-2 text-sm text-default-500 space-y-1">
           <div>
-            <span className="font-medium">Session ID:</span>{" "}
+            <span className="font-medium">{t("llmtools.session.session_id")}</span>{" "}
             <span className="font-mono text-xs">{session.id}</span>
           </div>
           <div>
-            <span className="font-medium">Runbook ID:</span>{" "}
+            <span className="font-medium">{t("llmtools.session.runbook_id")}</span>{" "}
             <span className="font-mono text-xs">{session.runbookId}</span>
           </div>
         </div>
@@ -344,7 +357,7 @@ export default function SessionDetail({ session, events }: SessionDetailProps) {
               : "hover:bg-default-100 dark:hover:bg-default-800 text-default-600"
           }`}
         >
-          Conversation
+          {t("llmtools.tabs.conversation")}
         </button>
         <button
           onClick={() => setViewMode("events")}
@@ -354,7 +367,7 @@ export default function SessionDetail({ session, events }: SessionDetailProps) {
               : "hover:bg-default-100 dark:hover:bg-default-800 text-default-600"
           }`}
         >
-          Events ({events.length})
+          {t("llmtools.tabs.events", { count: events.length })}
         </button>
       </div>
 

@@ -6,28 +6,29 @@ import type { JsonValue } from "./serde_json/JsonValue";
  * Output structure for Kubernetes blocks that implements BlockExecutionOutput
  * for template access to kubectl results.
  */
-export type KubernetesBlockOutput = { 
-/**
- * The parsed table data as rows (each row is a list of cell values)
- */
-data: Array<Array<JsonValue>>, 
-/**
- * Column definitions for the table
- */
-columns: Array<KubernetesColumn>, 
-/**
- * Number of items/rows returned
- */
-itemCount: number, 
-/**
- * The resource kind if detected (e.g., "pod", "service", "deployment")
- */
-resourceKind: string | null, 
-/**
- * Raw stdout from the command (if not parsed as JSON)
- */
-rawOutput: string | null, 
-/**
- * Stderr output if any
- */
-stderr: string | null, };
+export type KubernetesBlockOutput = {
+  /**
+   * The parsed table data as rows (each row is a list of cell values)
+   */
+  data: Array<Array<JsonValue>>;
+  /**
+   * Column definitions for the table
+   */
+  columns: Array<KubernetesColumn>;
+  /**
+   * Number of items/rows returned
+   */
+  itemCount: number;
+  /**
+   * The resource kind if detected (e.g., "pod", "service", "deployment")
+   */
+  resourceKind: string | null;
+  /**
+   * Raw stdout from the command (if not parsed as JSON)
+   */
+  rawOutput: string | null;
+  /**
+   * Stderr output if any
+   */
+  stderr: string | null;
+};

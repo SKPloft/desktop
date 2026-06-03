@@ -33,6 +33,7 @@ import DebugWindow from "@/lib/dev/DebugWindow";
 import { useSerialExecution } from "@/lib/hooks/useSerialExecution";
 import { Button, Spinner } from "@heroui/react";
 import AtuinEnv from "@/atuin_env";
+import { useTranslation } from "@/lib/i18n";
 
 const Editor = React.lazy(() => import("@/components/runbooks/editor/Editor"));
 const Topbar = React.lazy(() => import("@/components/runbooks/TopBar/TopBar"));
@@ -48,6 +49,7 @@ function useMarkRunbookRead(runbook: Runbook | null, refreshRunbooks: () => void
 }
 
 export default function Runbooks() {
+  const { t } = useTranslation();
   const { runbookId } = useParams();
 
   const user = useStore((store) => store.user);
@@ -194,11 +196,11 @@ export default function Runbooks() {
             `You are currently executing a workflow in the Runbook "${currentRunbook.name}". Closing this tab will stop the workflow.`,
           )
           .action({
-            label: "Cancel",
+            label: t("common.cancel"),
             value: "cancel",
           })
           .action({
-            label: "Stop and Close",
+            label: t("runbooks.dialog.cancel_execution.stop_and_close"),
             value: "ok",
             color: "danger",
           })
@@ -446,10 +448,10 @@ export default function Runbooks() {
   function handleShowTagMenu() {
     if (currentRunbook && serialExecution.isRunning) {
       new DialogBuilder()
-        .title("Cannot switch tags")
-        .message("You cannot switch tags while a runbook is executing a workflow.")
+        .title(t("runbooks.dialog.cannot_switch_tags.title"))
+        .message(t("runbooks.dialog.cannot_switch_tags.message"))
         .action({
-          label: "OK",
+          label: t("common.ok"),
           value: "ok",
           color: "primary",
         })

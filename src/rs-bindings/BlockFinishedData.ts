@@ -3,4 +3,4 @@
 /**
  * Data for block finished lifecycle event
  */
-export type BlockFinishedData = { exit_code: number | null, success: boolean, };
+export type BlockFinishedData = { exit_code: number | null; success: boolean };

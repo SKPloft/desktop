@@ -10,6 +10,7 @@ import {
 } from "@heroui/react";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
+import { useTranslation } from "@/lib/i18n";
 
 interface SaveBlockModalProps {
   block: any;
@@ -18,6 +19,7 @@ interface SaveBlockModalProps {
 }
 
 export default function SaveBlockModal(props: SaveBlockModalProps) {
+  const { t } = useTranslation();
   const [blockName, setBlockName] = useState("");
   const { data: fetchedSavedBlocks } = useQuery(savedBlocks());
 
@@ -46,27 +48,27 @@ export default function SaveBlockModal(props: SaveBlockModalProps) {
       <ModalContent>
         {(onClose) => (
           <>
-            <ModalHeader>Save Block</ModalHeader>
+            <ModalHeader>{t("saved_block.title")}</ModalHeader>
             <ModalBody>
-              <p>Save this block so you can quickly insert it into runbooks later.</p>
+              <p>{t("saved_block.description")}</p>
               <Input
                 autoFocus
-                placeholder="Block Name"
+                placeholder={t("saved_block.name_placeholder")}
                 value={blockName}
                 onValueChange={setBlockName}
                 onKeyDown={handleKeyDown}
                 isInvalid={hasNameConflict}
-                errorMessage="A saved block with this name already exists. Saving with this name will overwrite the existing block."
+                errorMessage={t("saved_block.conflict")}
               />
             </ModalBody>
             <ModalFooter>
-              <Button onPress={onClose}>Cancel</Button>
+              <Button onPress={onClose}>{t("common.cancel")}</Button>
               <Button
                 onPress={confirmSaveBlock}
                 color={hasNameConflict ? "danger" : "primary"}
                 isDisabled={blockName.trim().length === 0}
               >
-                {hasNameConflict ? "Overwrite" : "Save"}
+                {hasNameConflict ? t("saved_block.overwrite") : t("common.save")}
               </Button>
             </ModalFooter>
           </>

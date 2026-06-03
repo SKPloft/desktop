@@ -44,6 +44,7 @@ import { useBlockExecution, useBlockOutput } from "@/lib/hooks/useDocumentBridge
 import { PrometheusQueryResult } from "@/rs-bindings/PrometheusQueryResult";
 import MaskedInput from "@/components/MaskedInput/MaskedInput";
 import { useInterval } from "usehooks-ts";
+import { useTranslation } from "@/lib/i18n";
 
 interface PromProps {
   setName: (name: string) => void;
@@ -103,6 +104,7 @@ const Prometheus = ({
   setAutoRefresh,
   setDependency,
 }: PromProps) => {
+  const { t } = useTranslation();
   let editor = useBlockNoteEditor();
   const [value, setValue] = useState<string>(prometheus.query);
   const [data, setData] = useState<Array<Array<number>>>([]);
@@ -230,7 +232,7 @@ const Prometheus = ({
               size="sm"
               maskRegex={/(?<=:\/\/).*(?=@[^@]*$)/}
               placeholder={"protocol://user:password@host:port/db"}
-              label="Endpoint"
+              label={t("editor.blocks.prometheus.endpoint")}
               isRequired
               startContent={<DatabaseIcon size={18} />}
               value={prometheus.endpoint}
@@ -313,7 +315,7 @@ const Prometheus = ({
                     {timeFrame.short}
                   </Button>
                 </DropdownTrigger>
-                <DropdownMenu variant="faded" aria-label="Select time frame for chart">
+                <DropdownMenu variant="faded" aria-label={t("editor.blocks.prometheus.select_time_frame")}>
                   {timeOptions.map((timeOption) => {
                     return (
                       <DropdownItem
@@ -511,8 +513,7 @@ export const insertPrometheus = (schema: any) => (editor: typeof schema.BlockNot
 AIBlockRegistry.getInstance().addBlock({
   typeName: "prometheus",
   friendlyName: "Prometheus",
-  shortDescription:
-    "Queries Prometheus and displays results as a chart.",
+  shortDescription: "Queries Prometheus and displays results as a chart.",
   description: undent`
     Prometheus blocks execute PromQL queries against a Prometheus server and display the results as interactive line charts.
 

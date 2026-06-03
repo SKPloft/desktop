@@ -4,6 +4,7 @@ import { createReactBlockSpec } from "@blocknote/react";
 import undent from "undent";
 import AIBlockRegistry from "@/lib/ai/block_registry";
 import { exportPropMatter } from "@/lib/utils";
+import { useTranslation } from "@/lib/i18n";
 import { useSerialExecution } from "@/lib/hooks/useSerialExecution";
 import { useCurrentRunbookId } from "@/context/runbook_id_context";
 import track_event from "@/tracking";
@@ -25,6 +26,7 @@ const Pause = ({
   onConditionChange,
   onPauseIfTruthyChange,
 }: PauseProps) => {
+  const { t } = useTranslation();
   const runbookId = useCurrentRunbookId();
   const serialExecution = useSerialExecution(runbookId);
 
@@ -67,7 +69,7 @@ const Pause = ({
           )}
         </div>
 
-        <span className="text-xs font-medium text-amber-700 dark:text-amber-300">Pause</span>
+        <span className="text-xs font-medium text-amber-700 dark:text-amber-300">{t("editor.blocks.pause.title")}</span>
 
         <Select
           size="sm"
@@ -75,13 +77,13 @@ const Pause = ({
           selectedKeys={[pauseIfTruthy ? "conditional" : "always"]}
           onSelectionChange={handleModeChange}
           isDisabled={!isEditable}
-          aria-label="Pause mode"
+          aria-label={t("editor.blocks.pause.mode")}
           classNames={{
             trigger: "h-8 min-h-8",
           }}
         >
-          <SelectItem key="always">Always</SelectItem>
-          <SelectItem key="conditional">If condition</SelectItem>
+          <SelectItem key="always">{t("editor.blocks.pause.always")}</SelectItem>
+          <SelectItem key="conditional">{t("editor.blocks.pause.if_condition")}</SelectItem>
         </Select>
 
         {pauseIfTruthy && (
@@ -183,8 +185,7 @@ export const insertPause = (schema: any) => (editor: typeof schema.BlockNoteEdit
 AIBlockRegistry.getInstance().addBlock({
   typeName: "pause",
   friendlyName: "Pause",
-  shortDescription:
-    "Pauses workflow execution until the user continues.",
+  shortDescription: "Pauses workflow execution until the user continues.",
   description: undent`
     Pause blocks halt serial workflow execution until the user manually continues. Can be unconditional or conditional based on a template variable.
 

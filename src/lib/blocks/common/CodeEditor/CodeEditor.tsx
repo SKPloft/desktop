@@ -13,6 +13,7 @@ import { makeShellCheckLinter, supportedShells } from "./shellcheck";
 import { Button, Tooltip, addToast } from "@heroui/react";
 import { ClipboardIcon } from "lucide-react";
 import { useBlockContext } from "@/lib/hooks/useDocumentBridge";
+import { useTranslation } from "@/lib/i18n";
 
 interface CodeEditorProps {
   id: string;
@@ -52,6 +53,7 @@ export default function CodeEditor({
   keyMap,
   onFocus,
 }: CodeEditorProps) {
+  const { t } = useTranslation();
   const vimModeEnabled = useStore((state) => state.vimModeEnabled);
 
   const shellCheckEnabled = useStore((state) => state.shellCheckEnabled);
@@ -151,14 +153,14 @@ export default function CodeEditor({
     try {
       await navigator.clipboard.writeText(code);
       addToast({
-        title: "Code copied to clipboard",
+        title: t("blocks.common.code_copied"),
         color: "success",
         radius: "sm",
       });
     } catch (err) {
       console.error("Failed to copy to clipboard:", err);
       addToast({
-        title: "Failed to copy code",
+        title: t("blocks.common.copy_code_failed"),
         color: "danger",
         radius: "sm",
       });
@@ -178,7 +180,7 @@ export default function CodeEditor({
     <div className="relative">
       <CodeMirror
         id={id}
-        placeholder={"Write your code here..."}
+        placeholder={t("blocks.common.code_placeholder")}
         className="!pt-0 max-w-full border border-gray-300 rounded flex-grow"
         value={codeMirrorValue.value}
         editable={isEditable}
@@ -196,7 +198,7 @@ export default function CodeEditor({
             isFocused ? "opacity-100" : "opacity-50"
           }`}
         >
-          <Tooltip content="Copy code">
+          <Tooltip content={t("blocks.common.copy_code")}>
             <Button
               onPress={handleCopyCode}
               size="sm"

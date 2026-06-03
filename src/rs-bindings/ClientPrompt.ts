@@ -8,4 +8,10 @@ import type { PromptOption } from "./PromptOption";
  *
  * Prompts can include text input fields, dropdowns, and action buttons.
  */
-export type ClientPrompt = { title: string, prompt: string, icon: PromptIcon | null, input: PromptInput | null, options: Array<PromptOption>, };
+export type ClientPrompt = {
+  title: string;
+  prompt: string;
+  icon: PromptIcon | null;
+  input: PromptInput | null;
+  options: Array<PromptOption>;
+};

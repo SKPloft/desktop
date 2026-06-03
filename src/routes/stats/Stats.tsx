@@ -7,6 +7,8 @@ import { useEffect, useMemo, useState } from "react";
 import { parseDate } from "@internationalized/date";
 import TopCommands from "@/components/TopCommands/TopCommands";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import { useTranslation, t } from "@/lib/i18n";
+//mixed usage of React and normal type
 
 const StatsFilterBar = ({
   onRefresh,
@@ -42,14 +44,14 @@ const StatsFilterBar = ({
   return (
     <Card shadow="sm">
       <CardHeader>
-        <h2 className="uppercase text-gray-500">Filter</h2>
+        <h2 className="uppercase text-gray-500">{t("stats.filter.title")}</h2>
       </CardHeader>
       <CardBody className="flex flex-row gap-4">
         <div className="flex-1">
           <Input
             type="text"
             variant="bordered"
-            placeholder="Command"
+            placeholder={t("stats.filter.command")}
             value={commandFilter}
             onChange={handleCommandFilterChange}
             className="w-full"
@@ -63,7 +65,7 @@ const StatsFilterBar = ({
           <Input
             type="text"
             variant="bordered"
-            placeholder="Path"
+            placeholder={t("stats.filter.path")}
             value={pathFilter}
             onChange={handlePathFilterChange}
             className="w-full"
@@ -77,7 +79,7 @@ const StatsFilterBar = ({
           <Input
             type="text"
             variant="bordered"
-            placeholder="Hostname"
+            placeholder={t("stats.filter.hostname")}
             value={hostFilter}
             onChange={handleHostFilterChange}
             className="w-full"
@@ -90,7 +92,13 @@ const StatsFilterBar = ({
         <div>
           <DateRangePicker variant="bordered" value={dateRange} onChange={onDateRangeChange} />
         </div>
-        <Button onPress={onRefresh} isIconOnly variant="flat" aria-label="Refresh statistics" isLoading={isLoading}>
+        <Button
+          onPress={onRefresh}
+          isIconOnly
+          variant="flat"
+          aria-label={t("stats.refresh")}
+          isLoading={isLoading}
+        >
           <RefreshCw className="h-5 w-5" />
         </Button>
       </CardBody>
@@ -131,6 +139,8 @@ interface Stats {
 }
 
 const Stats = () => {
+  const { t: tt } = useTranslation();
+  //rename to avoid conflict with t type from the lib
   const [loading, setLoading] = useState(false);
   const [commandFilter, setCommandFilter] = useState("");
   const [pathFilter, setPathFilter] = useState("");
@@ -175,59 +185,59 @@ const Stats = () => {
 
   const weekStart = useStore((state: AtuinState) => state.weekStart);
   const colorMode = useStore((state: AtuinState) => state.functionalColorMode);
-  
+
   // Use theme colors that match the activity graph
   const themeColors = {
     light: ["#f0f0f0", "#c4edde", "#7ac7c4", "#f73859", "#384259"],
     dark: ["#27272a", "#002e62", "#005bc4", "#338ef7", "#66aaf9"],
   };
-  
+
   // Choose colors based on current color mode
-  const COLORS = colorMode === 'dark' ? themeColors.dark : themeColors.light;
-  
+  const COLORS = colorMode === "dark" ? themeColors.dark : themeColors.light;
+
   // Success color - use a green that works in both themes
-  const SUCCESS_COLOR = colorMode === 'dark' ? '#4CAF50' : '#4CAF50';
+  const SUCCESS_COLOR = colorMode === "dark" ? "#4CAF50" : "#4CAF50";
   // Other errors color - use a neutral color
-  const OTHER_ERRORS_COLOR = colorMode === 'dark' ? '#27272a' : '#f0f0f0';
+  const OTHER_ERRORS_COLOR = colorMode === "dark" ? "#27272a" : "#f0f0f0";
 
   const exitCodeData = useMemo(() => {
     if (!stats.exit_code_distribution) {
       return [];
     }
-    
+
     // Group all error codes except the most common ones
     const successCode = stats.exit_code_distribution.find(([code]) => code === 0);
     const successCount = successCode ? successCode[1] : 0;
-    
+
     // Sort by count (descending) and take top errors
     const sortedErrors = stats.exit_code_distribution
       .filter(([code]) => code !== 0)
       .sort((a, b) => b[1] - a[1]);
-    
+
     // Take top 5 errors
     const topErrors = sortedErrors.slice(0, 5);
-    
+
     // Sum the rest into "Other Errors"
     const otherErrorsCount = sortedErrors.slice(5).reduce((sum, [_, count]) => sum + count, 0);
-    
+
     const result = [
-      { exitCode: "Success (0)", count: successCount, rawExitCode: 0 },
-      ...topErrors.map(([code, count]) => ({ 
-        exitCode: `Error (${code})`, 
-        count, 
-        rawExitCode: code 
-      }))
+      { exitCode: tt("stats.exit_code.success"), count: successCount, rawExitCode: 0 },
+      ...topErrors.map(([code, count]) => ({
+        exitCode: tt("stats.exit_code.error", { code }),
+        count,
+        rawExitCode: code,
+      })),
     ];
-    
+
     // Add "Other Errors" category if there are any
     if (otherErrorsCount > 0) {
-      result.push({ 
-        exitCode: "Other Errors", 
-        count: otherErrorsCount, 
-        rawExitCode: -999 // Special code to identify this category
+      result.push({
+        exitCode: tt("stats.exit_code.other_errors"),
+        count: otherErrorsCount,
+        rawExitCode: -999, // Special code to identify this category
       });
     }
-    
+
     return result;
   }, [stats.exit_code_distribution]);
 
@@ -260,7 +270,7 @@ const Stats = () => {
       <div className="grid grid-cols-5 gap-4 pt-4 w-full">
         <Card shadow="sm" className="col-span-4">
           <CardHeader>
-            <h2 className="uppercase text-gray-500">Activity graph</h2>
+            <h2 className="uppercase text-gray-500">{tt("stats.activity_graph")}</h2>
           </CardHeader>
           <CardBody>
             {calendar.length > 0 && (
@@ -274,13 +284,13 @@ const Stats = () => {
             <h2 className="font-bold text-4xl dark:text-gray-300">
               {stats.count.toLocaleString()}
             </h2>
-            <h3 className="pt-2 uppercase text-gray-500">Total Commands</h3>
+            <h3 className="pt-2 uppercase text-gray-500">{tt("stats.total_commands")}</h3>
           </CardBody>
         </Card>
 
         <Card shadow="sm" className="col-span-3">
           <CardHeader>
-            <h2 className="uppercase text-gray-500">Top commands</h2>
+            <h2 className="uppercase text-gray-500">{tt("stats.top_commands")}</h2>
           </CardHeader>
           <CardBody>
             <TopCommands chartData={topCommands} />
@@ -289,10 +299,10 @@ const Stats = () => {
 
         <Card shadow="sm" className="col-span-2">
           <CardHeader>
-            <h2 className="uppercase text-gray-500">Exit code distribution</h2>
+            <h2 className="uppercase text-gray-500">{tt("stats.exit_code_distribution")}</h2>
           </CardHeader>
           <CardBody className="p-0 flex items-center justify-center">
-            <div style={{ width: '100%', height: 300 }}>
+            <div style={{ width: "100%", height: 300 }}>
               {exitCodeData.length > 0 ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
@@ -301,29 +311,39 @@ const Stats = () => {
                       cx="50%"
                       cy="50%"
                       labelLine={true}
-                      label={({ percent }) => percent > 0.05 ? `${(percent * 100).toFixed(0)}%` : ''}
+                      label={({ percent }) =>
+                        percent > 0.05 ? `${(percent * 100).toFixed(0)}%` : ""
+                      }
                       outerRadius={130}
                       fill="#8884d8"
                       dataKey="count"
                       nameKey="exitCode"
                     >
                       {exitCodeData.map((entry, index) => (
-                        <Cell 
-                          key={`cell-${index}`} 
-                          fill={entry.rawExitCode === 0 ? SUCCESS_COLOR : 
-                               (entry.rawExitCode === -999 ? OTHER_ERRORS_COLOR : COLORS[(index % COLORS.length)])} 
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={
+                            entry.rawExitCode === 0
+                              ? SUCCESS_COLOR
+                              : entry.rawExitCode === -999
+                                ? OTHER_ERRORS_COLOR
+                                : COLORS[index % COLORS.length]
+                          }
                         />
                       ))}
                     </Pie>
-                    <Tooltip 
-                      formatter={(value: number, _: string, props: any) => [`${value} commands (${((value/stats.count)*100).toFixed(1)}%)`, props.payload.exitCode]}
-                      labelFormatter={() => ''}
+                    <Tooltip
+                      formatter={(value: number, _: string, props: any) => [
+                        tt("stats.tooltip.commands", { count: value, percent: ((value / stats.count) * 100).toFixed(1) }),
+                        props.payload.exitCode,
+                      ]}
+                      labelFormatter={() => ""}
                     />
                   </PieChart>
                 </ResponsiveContainer>
               ) : (
                 <div className="flex items-center justify-center h-full text-gray-500">
-                  No exit code data available
+                  {tt("stats.no_exit_code_data")}
                 </div>
               )}
             </div>

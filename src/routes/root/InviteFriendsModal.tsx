@@ -14,6 +14,7 @@ import {
   ModalHeader,
 } from "@heroui/react";
 import { useState } from "react";
+import { useTranslation } from "@/lib/i18n";
 
 type Invite = {
   email: string;
@@ -38,6 +39,7 @@ type InviteFriendsModalProps = {
 };
 
 export default function InviteFriendsModal(props: InviteFriendsModalProps) {
+  const { t } = useTranslation();
   const connectionState = useStore((state) => state.connectionState);
   const [emails, setEmails] = useState<Invite[]>([]);
   const [newEmailValid, setNewEmailValid] = useState<boolean>(false);
@@ -84,8 +86,8 @@ export default function InviteFriendsModal(props: InviteFriendsModalProps) {
   async function handleSend() {
     if (connectionState !== ConnectionState.Online) {
       addToast({
-        title: "Error",
-        description: "Please check your internet connection and try again.",
+        title: t("common.error"),
+        description: t("invite_friends.connection_error"),
         color: "danger",
       });
       return;
@@ -96,16 +98,16 @@ export default function InviteFriendsModal(props: InviteFriendsModalProps) {
       const result = await inviteFriends(emailsToSend);
       console.log(result);
       addToast({
-        title: "Success",
-        description: "Invitations sent successfully.",
+        title: t("common.success"),
+        description: t("invite_friends.sent_success"),
         color: "success",
         shouldShowTimeoutProgress: true,
       });
       closeAndReset();
     } catch (error) {
       addToast({
-        title: "Error",
-        description: "We weren't able to send the invitations. Please try again later.",
+        title: t("common.error"),
+        description: t("invite_friends.sent_error"),
         color: "danger",
         shouldShowTimeoutProgress: true,
       });
@@ -115,26 +117,23 @@ export default function InviteFriendsModal(props: InviteFriendsModalProps) {
   return (
     <Modal isOpen={props.isOpen} onClose={closeAndReset}>
       <ModalContent>
-        <ModalHeader>Invite Friends</ModalHeader>
+        <ModalHeader>{t("invite_friends.title")}</ModalHeader>
         <ModalBody>
-          <p>Invite friends and colleagues to try Atuin Desktop!</p>
+          <p>{t("invite_friends.description")}</p>
           {connectionState !== ConnectionState.Online && (
             <Alert color="danger" className="my-4">
-              You don't appear to be online. Please check your internet connection.
+              {t("invite_friends.offline")}
             </Alert>
           )}
-          <form
-            className="flex flex-row gap-2 items-center"
-            onSubmit={handleFormSubmit}
-          >
+          <form className="flex flex-row gap-2 items-center" onSubmit={handleFormSubmit}>
             <Input
-              label="Add invite"
+              label={t("invite_friends.add_invite")}
               placeholder="email@domain.com"
               value={newEmail}
               onChange={handleNewEmailChange}
             />
             <Button onPress={handleAddEmail} isDisabled={!newEmailValid}>
-              Add
+              {t("common.add")}
             </Button>
           </form>
           <div>
@@ -147,7 +146,7 @@ export default function InviteFriendsModal(props: InviteFriendsModalProps) {
         </ModalBody>
         <ModalFooter>
           <Button onPress={closeAndReset} variant="flat">
-            Cancel
+            {t("common.cancel")}
           </Button>
           <Button
             onPress={handleSend}
@@ -155,8 +154,8 @@ export default function InviteFriendsModal(props: InviteFriendsModalProps) {
             isDisabled={emails.length === 0 || connectionState !== ConnectionState.Online}
           >
             {emails.length > 0
-              ? `Send ${emails.length} ${emails.length === 1 ? "Invite" : "Invites"}`
-              : "Add emails to invite"}
+              ? t(emails.length === 1 ? "invite_friends.send_one" : "invite_friends.send_many", { count: emails.length })
+              : t("invite_friends.add_emails")}
           </Button>
         </ModalFooter>
       </ModalContent>

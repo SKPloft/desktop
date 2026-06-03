@@ -65,7 +65,7 @@ function buildOptions(
   isDark: boolean,
   width: number,
   height: number,
-  onCursor: (u: uPlot) => void
+  onCursor: (u: uPlot) => void,
 ): uPlot.Options {
   return {
     width,
@@ -99,8 +99,7 @@ function buildOptions(
 
 export function PromLineChart({ data, seriesNames }: PromLineChartProps) {
   const isDark = useStore((state) => state.functionalColorMode === "dark");
-  const { ref, width = 400, height = 200 } =
-    useResizeObserver<HTMLDivElement>();
+  const { ref, width = 400, height = 200 } = useResizeObserver<HTMLDivElement>();
   const [tooltip, setTooltip] = useState<TooltipData>({
     show: false,
     x: 0,
@@ -130,12 +129,12 @@ export function PromLineChart({ data, seriesNames }: PromLineChartProps) {
         values,
       });
     },
-    [seriesNames]
+    [seriesNames],
   );
 
   const options = useMemo(
     () => buildOptions(seriesNames, isDark, width, height, handleCursor),
-    [seriesNames, isDark, width, height, handleCursor]
+    [seriesNames, isDark, width, height, handleCursor],
   );
 
   // Calculate tooltip position - fixed at top, flips at midpoint
@@ -144,9 +143,7 @@ export function PromLineChart({ data, seriesNames }: PromLineChartProps) {
 
   // Flip to left side when cursor is past midpoint
   const flipX = tooltip.x > width / 2;
-  const tooltipLeft = flipX
-    ? Math.max(0, tooltip.x - tooltipWidth - padding)
-    : tooltip.x + padding;
+  const tooltipLeft = flipX ? Math.max(0, tooltip.x - tooltipWidth - padding) : tooltip.x + padding;
 
   return (
     <div ref={ref} className="h-full w-full relative prom-chart">
@@ -155,26 +152,18 @@ export function PromLineChart({ data, seriesNames }: PromLineChartProps) {
           border-right: 1px dashed ${isDark ? "#71717a" : "#a1a1aa"};
         }
       `}</style>
-      {width > 0 && height > 0 && (
-        <UplotReact options={options} data={data as uPlot.AlignedData} />
-      )}
+      {width > 0 && height > 0 && <UplotReact options={options} data={data as uPlot.AlignedData} />}
       {tooltip.show && (
         <div
           className={`absolute z-50 pointer-events-none rounded px-3 py-2 text-sm shadow-xl ${
-            isDark
-              ? "bg-zinc-900/95 border border-zinc-700"
-              : "bg-white/95 border border-zinc-200"
+            isDark ? "bg-zinc-900/95 border border-zinc-700" : "bg-white/95 border border-zinc-200"
           }`}
           style={{
             left: tooltipLeft,
             top: 8,
           }}
         >
-          <div
-            className={`text-xs font-mono mb-2 ${
-              isDark ? "text-zinc-300" : "text-zinc-600"
-            }`}
-          >
+          <div className={`text-xs font-mono mb-2 ${isDark ? "text-zinc-300" : "text-zinc-600"}`}>
             {tooltip.time}
           </div>
           {tooltip.values.map((v, i) => (
@@ -184,9 +173,7 @@ export function PromLineChart({ data, seriesNames }: PromLineChartProps) {
                 style={{ backgroundColor: v.color }}
               />
               <span
-                className={`truncate flex-1 min-w-0 ${
-                  isDark ? "text-zinc-300" : "text-zinc-600"
-                }`}
+                className={`truncate flex-1 min-w-0 ${isDark ? "text-zinc-300" : "text-zinc-600"}`}
               >
                 {v.name}
               </span>

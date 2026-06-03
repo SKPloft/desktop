@@ -18,10 +18,7 @@ import { AIToolCall } from "@/rs-bindings/AIToolCall";
  * Default tools that are auto-approved (read-only, non-sensitive, no side effects).
  * Components can override this via AIToolRunner.setAutoApproveTools().
  */
-export const DEFAULT_AUTO_APPROVE_TOOLS = [
-  "get_block_docs",
-  "get_default_shell",
-];
+export const DEFAULT_AUTO_APPROVE_TOOLS = ["get_block_docs", "get_default_shell"];
 
 /**
  * All known tool names.
@@ -249,9 +246,7 @@ export class AIToolRunner {
    * Returns a map of tool call ID to result.
    * Non-auto-approvable tools are skipped.
    */
-  async executeAutoApprovableToolCalls(
-    toolCalls: AIToolCall[],
-  ): Promise<Map<string, ToolResult>> {
+  async executeAutoApprovableToolCalls(toolCalls: AIToolCall[]): Promise<Map<string, ToolResult>> {
     const results = new Map<string, ToolResult>();
 
     for (const toolCall of toolCalls) {

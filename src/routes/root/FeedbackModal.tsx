@@ -12,6 +12,7 @@ import {
 } from "@heroui/react";
 import { invoke } from "@tauri-apps/api/core";
 import { useReducer } from "react";
+import { useTranslation } from "@/lib/i18n";
 
 interface FeedbackModalProps {
   isOpen: boolean;
@@ -56,6 +57,7 @@ function reducer(state: FeedbackModalState, action: FeedbackModalAction) {
 }
 
 export default function FeedbackModal(props: FeedbackModalProps) {
+  const { t } = useTranslation();
   const connectionState = useStore((state) => state.connectionState);
   const [state, dispatch] = useReducer(reducer, {
     feedback: "",
@@ -97,25 +99,24 @@ export default function FeedbackModal(props: FeedbackModalProps) {
   return (
     <Modal isOpen={props.isOpen} onClose={handleClose}>
       <ModalContent>
-        <ModalHeader>Share your feedback with us</ModalHeader>
+        <ModalHeader>{t("feedback.title")}</ModalHeader>
         <ModalBody>
-          {state.sent && <p>Thank you for sharing your feedback with us!</p>}
+          {state.sent && <p>{t("feedback.sent")}</p>}
           {!state.sent && (
             <form className="flex flex-col gap-2">
               <Textarea
-                placeholder="What would you like to share with us?"
+                placeholder={t("feedback.placeholder")}
                 value={state.feedback}
                 onChange={handleFeedbackChange}
               />
               <Input
-                placeholder="Email (optional)"
+                placeholder={t("feedback.email_placeholder")}
                 value={state.email}
                 onValueChange={handleEmailChange}
               />
               {state.error && (
                 <div className="text-danger-600">
-                  There was an error sending your feedback. If the issue persists, please try again
-                  later.
+                  {t("feedback.error")}
                 </div>
               )}
             </form>
@@ -123,7 +124,7 @@ export default function FeedbackModal(props: FeedbackModalProps) {
         </ModalBody>
         <ModalFooter>
           <Button onPress={handleClose} variant="flat">
-            {state.sent ? "Close" : "Cancel"}
+            {state.sent ? t("common.close") : t("common.cancel")}
           </Button>
           <Button
             type="submit"
@@ -137,7 +138,7 @@ export default function FeedbackModal(props: FeedbackModalProps) {
             isLoading={state.sending}
             onPress={handleSendFeedback}
           >
-            {state.sending ? "Sending..." : "Send Feedback"}
+            {state.sending ? t("feedback.sending") : t("feedback.send")}
           </Button>
         </ModalFooter>
       </ModalContent>

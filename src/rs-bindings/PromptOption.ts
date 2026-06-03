@@ -5,4 +5,9 @@ import type { PromptOptionVariant } from "./PromptOptionVariant";
 /**
  * A button option in a client prompt dialog
  */
-export type PromptOption = { label: string, value: string, variant: PromptOptionVariant | null, color: PromptOptionColor | null, };
+export type PromptOption = {
+  label: string;
+  value: string;
+  variant: PromptOptionVariant | null;
+  color: PromptOptionColor | null;
+};

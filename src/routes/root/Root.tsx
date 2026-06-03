@@ -5,10 +5,7 @@ import { AtuinState, useStore } from "@/state/store";
 import { Toaster } from "@/components/ui/toaster";
 
 import { checkForAppUpdates } from "@/updater";
-import {
-  addToast,
-  Alert,
-} from "@heroui/react";
+import { addToast, Alert } from "@heroui/react";
 import { UnlistenFn } from "@tauri-apps/api/event";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useResizable } from "@/lib/hooks/useResizable";
@@ -55,6 +52,8 @@ import { uuidv7 } from "uuidv7";
 import DesktopImportModal from "./DesktopImportModal";
 import RuntimeUpdateNotice from "./RuntimeUpdateNotice";
 import NotificationManager from "@/lib/notifications/NotificationManager";
+import { useTranslation, t } from "@/lib/i18n";
+// this is different from import { useTranslation }... because this file is react-function mixed 
 
 const globalOptions = getGlobalOptions();
 const UPDATE_CHECK_INTERVAL = globalOptions.channel === "edge" ? 1000 * 60 * 5 : 1000 * 60 * 60;
@@ -106,6 +105,7 @@ async function isOnboardingComplete(): Promise<boolean> {
 }
 
 function App() {
+  const { t } = useTranslation();
   const refreshRunbooks = useStore((state: AtuinState) => state.refreshRunbooks);
   const setCurrentWorkspaceId = useStore((state: AtuinState) => state.setCurrentWorkspaceId);
   const openInDesktopImport = useStore((state: AtuinState) => state.openInDesktopImport);
@@ -132,14 +132,16 @@ function App() {
   const clearSavingBlock = useStore((state: AtuinState) => state.clearSavingBlock);
 
   const showNewWorkspaceDialog = useStore((state: AtuinState) => state.newWorkspaceDialogOpen);
-  const setShowNewWorkspaceDialog = useStore((state: AtuinState) => state.setNewWorkspaceDialogOpen);
+  const setShowNewWorkspaceDialog = useStore(
+    (state: AtuinState) => state.setNewWorkspaceDialogOpen,
+  );
 
   const listRef = useRef<ListApi>(null);
 
   let onOpenUrlListener = useRef<UnlistenFn | null>(null);
 
   function onSettingsOpen() {
-    openTab("/settings", "Settings", TabIcon.SETTINGS);
+    openTab("/settings", t("common.settings"), TabIcon.SETTINGS);
   }
 
   function handleOpenFeedback() {
@@ -254,8 +256,8 @@ function App() {
 
     if (!updateAvailable) {
       addToast({
-        title: "No updates available",
-        description: "You are running the latest version of Atuin Desktop",
+        title: t("root.update.no_updates.title"),
+        description: t("root.update.no_updates.description"),
         color: "primary",
         radius: "sm",
         timeout: 5000,
@@ -368,24 +370,27 @@ function App() {
     return () => {};
   }, []);
 
-  const navigateToRunbook = useCallback(async (runbookId: string | null) => {
-    let runbook: Runbook | null = null;
-    if (runbookId) {
-      runbook = await Runbook.load(runbookId);
-    }
+  const navigateToRunbook = useCallback(
+    async (runbookId: string | null) => {
+      let runbook: Runbook | null = null;
+      if (runbookId) {
+        runbook = await Runbook.load(runbookId);
+      }
 
-    if (runbook) {
-      setCurrentWorkspaceId(runbook.workspaceId);
-    }
+      if (runbook) {
+        setCurrentWorkspaceId(runbook.workspaceId);
+      }
 
-    if (runbookId) {
-      track_event("runbooks.open", {
-        total: await Runbook.count(),
-      });
+      if (runbookId) {
+        track_event("runbooks.open", {
+          total: await Runbook.count(),
+        });
 
-      openTab(`/runbook/${runbookId}`, undefined, TabIcon.RUNBOOKS);
-    }
-  }, [setCurrentWorkspaceId, openTab]);
+        openTab(`/runbook/${runbookId}`, undefined, TabIcon.RUNBOOKS);
+      }
+    },
+    [setCurrentWorkspaceId, openTab],
+  );
 
   const handlePromptDeleteRunbook = useCallback(async (runbookId: string) => {
     const runbook = await Runbook.load(runbookId);
@@ -932,10 +937,7 @@ function App() {
   );
 
   return (
-    <div
-      className="flex w-screen"
-      style={{ maxWidth: "100vw", height: "100vh" }}
-    >
+    <div className="flex w-screen" style={{ maxWidth: "100vw", height: "100vh" }}>
       <RunbookContext.Provider value={runbookContextValue}>
         <CommandMenu index={runbookIndex} />
         <CommandPalette />
@@ -981,15 +983,9 @@ function App() {
         {showDesktopConnect && <DesktopConnect />}
         {showOnboarding && <Onboarding />}
         {showNewWorkspaceDialog && (
-          <NewWorkspaceDialog
-            onAccept={handleAcceptNewWorkspace}
-            onCancel={hideWorkspaceDialog}
-          />
+          <NewWorkspaceDialog onAccept={handleAcceptNewWorkspace} onCancel={hideWorkspaceDialog} />
         )}
-        <InviteFriendsModal
-          isOpen={showInviteFriends}
-          onClose={handleCloseInviteFriends}
-        />
+        <InviteFriendsModal isOpen={showInviteFriends} onClose={handleCloseInviteFriends} />
         <FeedbackModal isOpen={showFeedback} onClose={handleCloseFeedback} />
 
         <DialogManager />
@@ -1044,60 +1040,59 @@ async function confirmMoveItems(
   if (info.folders === 0 && info.runbooks > 0) {
     countSnippet = (
       <strong className="text-danger">
-        {info.runbooks} {info.runbooks === 1 ? "runbook" : "runbooks"}
+        {info.runbooks} {info.runbooks === 1 ? t("root.move_items.runbook") : t("root.move_items.runbooks")}
       </strong>
     );
   } else if (info.folders > 0 && info.runbooks === 0) {
     countSnippet = (
       <strong className="text-danger">
-        {info.folders} {info.folders === 1 ? "folder" : "folders"}
+        {info.folders} {info.folders === 1 ? t("root.move_items.folder") : t("root.move_items.folders")}
       </strong>
     );
   } else if (info.folders > 0 && info.runbooks > 0) {
     countSnippet = (
       <>
         <strong className="text-danger">
-          {info.folders} {info.folders === 1 ? "folder" : "folders"}
+          {info.folders} {info.folders === 1 ? t("root.move_items.folder") : t("root.move_items.folders")}
         </strong>{" "}
-        and{" "}
+        {t("common.and")}{" "}
         <strong className="text-danger">
-          {info.runbooks} {info.runbooks === 1 ? "runbook" : "runbooks"}
+          {info.runbooks} {info.runbooks === 1 ? t("root.move_items.runbook") : t("root.move_items.runbooks")}
         </strong>
       </>
     );
   }
 
+  const itemLabel = moveBundles.length === 1 ? t("root.move_items.item") : t("root.move_items.items");
+  const itemLabelCap = total === 1 ? t("root.move_items.item_cap") : t("root.move_items.items_cap");
+
   const message = (
     <div className="flex flex-col gap-2">
       <p>
-        Are you sure you want to move {moveBundles.length}{" "}
-        {moveBundles.length === 1 ? "item " : "items "}
-        to the {targetWorkspace.get("name")} workspace?
+        {t("root.move_items.confirm_question", { count: moveBundles.length, itemLabel, workspace: targetWorkspace.get("name") || "" })}
       </p>
 
       {!sourceWorkspace.isOrgOwned() && targetWorkspace.isOrgOwned() && (
         <Alert color="warning" variant="flat" className="mt-2">
-          By moving items to an Organization workspace, they will be owned by the Organization and
-          managed via that Organization's permissions. You will not be able to move them back to
-          your personal workspace.
+          {t("root.move_items.organization_warning")}
         </Alert>
       )}
 
-      {total > 0 && <p>This will move {countSnippet}.</p>}
+      {total > 0 && <p>{t("root.move_items.summary")} {countSnippet}.</p>}
     </div>
   );
 
   return new DialogBuilder<"yes" | "no">()
-    .title(`Confirm Move Items`)
+    .title(t("root.move_items.title"))
     .icon("warning")
     .message(message)
-    .action({ label: "Cancel", value: "no", variant: "flat" })
+    .action({ label: t("common.cancel"), value: "no", variant: "flat" })
     .action({
-      label: `Move ${total} ${total === 1 ? "Item" : "Items"}`,
+      label: t("root.move_items.move_button", { count: total, itemLabel: itemLabelCap }),
       value: "yes",
       color: "danger",
       confirmWith:
-        total > 0 ? `Confirm Moving ${total} ${total === 1 ? "Item" : "Items"}` : undefined,
+        total > 0 ? t("root.move_items.confirm_button", { count: total, itemLabel: itemLabelCap }) : undefined,
     })
     .build();
 }

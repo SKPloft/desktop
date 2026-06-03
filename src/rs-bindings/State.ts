@@ -3,4 +3,8 @@
 /**
  * The discrete states of the agent FSM.
  */
-export type State = { "type": "idle" } | { "type": "sending" } | { "type": "streaming" } | { "type": "pendingTools" };
+export type State =
+  | { type: "idle" }
+  | { type: "sending" }
+  | { type: "streaming" }
+  | { type: "pendingTools" };

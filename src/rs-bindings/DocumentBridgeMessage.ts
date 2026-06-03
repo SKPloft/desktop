@@ -10,4 +10,9 @@ import type { JsonValue } from "./serde_json/JsonValue";
  * These messages communicate execution state, output, and context updates
  * to the desktop application frontend.
  */
-export type DocumentBridgeMessage = { "type": "blockContextUpdate", "data": { blockId: string, context: ResolvedContext, } } | { "type": "blockStateChanged", "data": { blockId: string, state: JsonValue, } } | { "type": "blockExecutionOutputChanged", "data": { blockId: string, } } | { "type": "blockOutput", "data": { blockId: string, output: StreamingBlockOutput, } } | { "type": "clientPrompt", "data": { executionId: string, promptId: string, prompt: ClientPrompt, } };
+export type DocumentBridgeMessage =
+  | { type: "blockContextUpdate"; data: { blockId: string; context: ResolvedContext } }
+  | { type: "blockStateChanged"; data: { blockId: string; state: JsonValue } }
+  | { type: "blockExecutionOutputChanged"; data: { blockId: string } }
+  | { type: "blockOutput"; data: { blockId: string; output: StreamingBlockOutput } }
+  | { type: "clientPrompt"; data: { executionId: string; promptId: string; prompt: ClientPrompt } };

@@ -52,15 +52,7 @@ export interface EditorAIFeaturesHandle {
 
 export const EditorAIFeatures = forwardRef<EditorAIFeaturesHandle, EditorAIFeaturesProps>(
   function EditorAIFeatures(
-    {
-      editor,
-      runbookId,
-      documentBridge,
-      aiShareContext,
-      username,
-      chargeTarget,
-      showHint,
-    },
+    { editor, runbookId, documentBridge, aiShareContext, username, chargeTarget, showHint },
     ref,
   ) {
     // =========================================================================
@@ -185,7 +177,13 @@ export const EditorAIFeatures = forwardRef<EditorAIFeaturesHandle, EditorAIFeatu
         clearPostGenerationMode,
         showAIPopup,
       }),
-      [handleKeyDown, hasGeneratedBlocks, getIsProgrammaticEdit, clearPostGenerationMode, showAIPopup],
+      [
+        handleKeyDown,
+        hasGeneratedBlocks,
+        getIsProgrammaticEdit,
+        clearPostGenerationMode,
+        showAIPopup,
+      ],
     );
 
     // =========================================================================

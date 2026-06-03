@@ -12,11 +12,7 @@ export async function settings(): Promise<Settings> {
   return await invoke("config");
 }
 
-export async function login(
-  username: string,
-  password: string,
-  key: string,
-): Promise<string> {
+export async function login(username: string, password: string, key: string): Promise<string> {
   return await invoke("login", { username, password, key });
 }
 
@@ -24,10 +20,6 @@ export async function logout(): Promise<string> {
   return await invoke("logout");
 }
 
-export async function register(
-  username: string,
-  email: string,
-  password: string,
-): Promise<string> {
+export async function register(username: string, email: string, password: string): Promise<string> {
   return await invoke("register", { username, email, password });
 }

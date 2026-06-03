@@ -18,12 +18,14 @@ import { allRunbooks } from "@/lib/queries/runbooks";
 import { allWorkspaces } from "@/lib/queries/workspaces";
 import RunbookContext from "@/context/runbook_context";
 import { VisuallyHidden } from "@heroui/react";
+import { useTranslation } from "@/lib/i18n";
 
 interface CommandMenuProps {
   index: RunbookIndexService;
 }
 
 export default function CommandMenu(props: CommandMenuProps) {
+  const { t } = useTranslation();
   const [query, setQuery] = useState("");
   const { data: runbooks } = useQuery(allRunbooks());
   const { data: workspaces } = useQuery(allWorkspaces());
@@ -130,30 +132,26 @@ export default function CommandMenu(props: CommandMenuProps) {
   }
 
   return (
-    <Dialog
-      modal={false}
-      open={isOpen}
-      onOpenChange={handleOpenChange}
-    >
+    <Dialog modal={false} open={isOpen} onOpenChange={handleOpenChange}>
       <DialogPortal>
         <DialogContent className="overflow-hidden p-0 data-[state=open]:animate-none data-[state=closed]:animate-none">
           <VisuallyHidden>
-            <DialogTitle>Search Runbooks</DialogTitle>
+            <DialogTitle>{t("command_menu.title")}</DialogTitle>
           </VisuallyHidden>
           <Command shouldFilter={false}>
-            <CommandInput placeholder="Search Runbooks..." value={query} onValueChange={setQuery} />
+            <CommandInput placeholder={t("command_menu.placeholder")} value={query} onValueChange={setQuery} />
             <CommandList>
               <CommandEmpty>
                 <div className="py-6 text-center text-sm">
                   {query.length === 0 ? (
-                    <p>Type to search runbooks...</p>
+                    <p>{t("command_menu.empty")}</p>
                   ) : (
                     <div>
-                      <p>No results for &quot;{query}&quot;</p>
+                      <p>{t("command_palette.no_results", { query })}</p>
                       <p className="text-muted-foreground">
                         {query.length === 1
-                          ? "Try adding more characters to your search term."
-                          : "Try searching for something else."}
+                          ? t("command_palette.add_more")
+                          : t("command_palette.search_else")}
                       </p>
                     </div>
                   )}

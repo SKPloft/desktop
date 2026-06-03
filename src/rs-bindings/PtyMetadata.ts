@@ -3,20 +3,21 @@
 /**
  * Metadata about a PTY instance
  */
-export type PtyMetadata = { 
-/**
- * Unique PTY identifier
- */
-pid: string, 
-/**
- * Runbook ID this PTY belongs to
- */
-runbook: string, 
-/**
- * Block ID that created this PTY
- */
-block: string, 
-/**
- * Unix timestamp when PTY was created
- */
-created_at: bigint, };
+export type PtyMetadata = {
+  /**
+   * Unique PTY identifier
+   */
+  pid: string;
+  /**
+   * Runbook ID this PTY belongs to
+   */
+  runbook: string;
+  /**
+   * Block ID that created this PTY
+   */
+  block: string;
+  /**
+   * Unix timestamp when PTY was created
+   */
+  created_at: bigint;
+};

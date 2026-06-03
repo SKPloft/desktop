@@ -213,7 +213,7 @@ export default function TreeView(props: TreeViewProps) {
         // By not setting the selection until we know the tree height, we avoid a bug
         // where the tree would sometimes not render the first few rows after trying to
         // scroll to the selected node while the tree was resizing.
-        selection={rowCount ? props.selectedItemId ?? undefined : undefined}
+        selection={rowCount ? (props.selectedItemId ?? undefined) : undefined}
         openByDefault={true}
         initialOpenState={props.initialOpenState}
         width={width}

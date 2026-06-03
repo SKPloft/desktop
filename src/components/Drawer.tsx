@@ -1,12 +1,6 @@
 import { Drawer as VDrawer } from "vaul";
 
-export default function Drawer({
-  trigger,
-  children,
-  width,
-  open,
-  onOpenChange,
-}: any) {
+export default function Drawer({ trigger, children, width, open, onOpenChange }: any) {
   return (
     <VDrawer.Root direction="right" open={open} onOpenChange={onOpenChange}>
       <VDrawer.Trigger asChild>{trigger}</VDrawer.Trigger>

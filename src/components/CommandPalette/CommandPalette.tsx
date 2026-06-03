@@ -13,8 +13,10 @@ import { commandRegistry, registerBuiltinCommands } from "@/lib/commands/registr
 import { CommandSearchResult } from "@/lib/commands/types";
 import { useStore } from "@/state/store";
 import { LucideIcon } from "lucide-react";
+import { useTranslation } from "@/lib/i18n";
 
 export default function CommandPalette() {
+  const { t } = useTranslation();
   const [query, setQuery] = useState("");
   const isOpen = useStore((store: any) => store.commandPaletteOpen);
   const setOpen = useStore((store: any) => store.setCommandPaletteOpen);
@@ -96,30 +98,26 @@ export default function CommandPalette() {
   }
 
   return (
-    <Dialog
-      modal={false}
-      open={isOpen}
-      onOpenChange={handleOpenChange}
-    >
+    <Dialog modal={false} open={isOpen} onOpenChange={handleOpenChange}>
       <DialogPortal>
         <DialogContent className="overflow-hidden p-0 data-[state=open]:animate-none data-[state=closed]:animate-none">
           <VisuallyHidden>
-            <DialogTitle>Command Palette</DialogTitle>
+            <DialogTitle>{t("command_palette.title")}</DialogTitle>
           </VisuallyHidden>
           <Command shouldFilter={false}>
-            <CommandInput placeholder="Type a command..." value={query} onValueChange={setQuery} />
+            <CommandInput placeholder={t("command_palette.placeholder")} value={query} onValueChange={setQuery} />
             <CommandList>
               <CommandEmpty>
                 <div className="py-6 text-center text-sm">
                   {query.length === 0 ? (
-                    <p>Type to search commands...</p>
+                    <p>{t("command_palette.empty")}</p>
                   ) : (
                     <div>
-                      <p>No results for &quot;{query}&quot;</p>
+                      <p>{t("command_palette.no_results", { query })}</p>
                       <p className="text-muted-foreground">
                         {query.length === 1
-                          ? "Try adding more characters to your search term."
-                          : "Try searching for something else."}
+                          ? t("command_palette.add_more")
+                          : t("command_palette.search_else")}
                       </p>
                     </div>
                   )}

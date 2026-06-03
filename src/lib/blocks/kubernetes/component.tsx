@@ -40,6 +40,7 @@ import Block from "@/lib/blocks/common/Block";
 import { cn } from "@/lib/utils";
 import { KubernetesBlock } from "./schema";
 import InterpreterSelector from "../common/InterpreterSelector";
+import { useTranslation } from "@/lib/i18n";
 import { useBlockExecution, useBlockOutput } from "@/lib/hooks/useDocumentBridge";
 
 type KubernetesMode = "preset" | "custom";
@@ -66,16 +67,16 @@ interface KubernetesResult {
   time: Date;
 }
 
-const autoRefreshChoices = [
-  { label: "Off", value: 0 },
-  { label: "1s", value: 1000 },
-  { label: "5s", value: 5000 },
-  { label: "10s", value: 10000 },
-  { label: "30s", value: 30000 },
-  { label: "1m", value: 60000 },
-  { label: "2m", value: 120000 },
-  { label: "5m", value: 300000 },
-];
+const REFRESH_INTERVAL_KEYS: Record<number, string> = {
+  0: "common.off",
+  1000: "kubernetes.refresh.1s",
+  5000: "kubernetes.refresh.5s",
+  10000: "kubernetes.refresh.10s",
+  30000: "kubernetes.refresh.30s",
+  60000: "kubernetes.refresh.1m",
+  120000: "kubernetes.refresh.2m",
+  300000: "kubernetes.refresh.5m",
+};
 
 export function KubernetesComponent({
   kubernetes,
@@ -90,6 +91,7 @@ export function KubernetesComponent({
   isEditable,
   onCodeMirrorFocus,
 }: KubernetesComponentProps) {
+  const { t } = useTranslation();
   const [results, setResults] = useState<KubernetesResult | null>(null);
   const [collapseQuery, setCollapseQuery] = useState<boolean>(false);
   const [expandedFooter, setExpandedFooter] = useState<boolean>(false);
@@ -99,9 +101,8 @@ export function KubernetesComponent({
   const themeObj = useCodemirrorTheme();
   const codeMirrorValue = useCodeMirrorValue(kubernetes.command, setCommand);
 
-  // Get the refresh interval in milliseconds
-  const refreshLabel =
-    autoRefreshChoices.find((c) => c.value === kubernetes.refreshInterval)?.label || "Off";
+  // Get the refresh interval label
+  const refreshLabel = t(REFRESH_INTERVAL_KEYS[kubernetes.refreshInterval] || "common.off");
 
   // Use the new hooks for execution and output
   const execution = useBlockExecution(kubernetes.id);
@@ -201,7 +202,7 @@ export function KubernetesComponent({
                   }
                 }}
                 className="flex-grow"
-                placeholder="Select kubectl command"
+                placeholder={t("kubernetes.select_command")}
                 startContent={<Container size={18} />}
                 disabled={!isEditable}
               >
@@ -225,7 +226,7 @@ export function KubernetesComponent({
                 cancellable={false}
               />
               <CodeMirror
-                placeholder="kubectl get pods -o json"
+                placeholder={t("kubernetes.command_placeholder")}
                 className={cn("!pt-0 max-w-full border border-gray-300 rounded flex-grow", {
                   "h-8 overflow-hidden": collapseQuery,
                 })}
@@ -271,7 +272,7 @@ export function KubernetesComponent({
                   variant="flat"
                   onPress={() => setCollapseQuery(!collapseQuery)}
                 >
-                  <Tooltip content={collapseQuery ? "Expand query" : "Collapse query"}>
+                  <Tooltip content={collapseQuery ? t("blocks.sql.expand_query") : t("blocks.sql.collapse_query")}>
                     {collapseQuery ? (
                       <ArrowDownToLineIcon size={16} />
                     ) : (
@@ -287,7 +288,7 @@ export function KubernetesComponent({
               isIconOnly
               onPress={() => setExpandedFooter(!expandedFooter)}
             >
-              <Tooltip content={expandedFooter ? "Hide settings" : "Show settings"}>
+              <Tooltip content={expandedFooter ? t("blocks.common.hide_settings") : t("blocks.common.show_settings")}>
                 {expandedFooter ? <ChevronUpIcon size={16} /> : <SettingsIcon size={16} />}
               </Tooltip>
             </Button>
@@ -300,7 +301,7 @@ export function KubernetesComponent({
                 <Input
                   size="sm"
                   placeholder="default"
-                  label="Namespace"
+                  label={t("kubernetes.namespace")}
                   value={kubernetes.namespace}
                   onChange={(e) => setNamespace(e.target.value)}
                   disabled={!isEditable}
@@ -312,7 +313,7 @@ export function KubernetesComponent({
                 <Input
                   size="sm"
                   placeholder="current-context"
-                  label="Context"
+                  label={t("kubernetes.context")}
                   value={kubernetes.context}
                   onChange={(e) => setContext(e.target.value)}
                   disabled={!isEditable}
@@ -330,28 +331,29 @@ export function KubernetesComponent({
                     startContent={<RefreshCw size={16} />}
                     endContent={<ChevronDown size={16} />}
                   >
-                    Auto refresh: {refreshLabel}
+                    {t("blocks.common.auto_refresh")}: {refreshLabel}
                   </Button>
                 </DropdownTrigger>
                 <DropdownMenu
                   variant="faded"
-                  aria-label="Select auto refresh interval"
+                  aria-label={t("blocks.common.select_refresh_interval")}
                   selectedKeys={refreshLabel ? [refreshLabel] : undefined}
                 >
-                  {autoRefreshChoices.map((setting) => (
+                  {Object.entries(REFRESH_INTERVAL_KEYS).map(([value, key]) => (
                     <DropdownItem
-                      key={setting.label}
+                      key={t(key)}
                       onPress={() => {
-                        if (setting.value === 0) {
+                        const numValue = parseInt(value);
+                        if (numValue === 0) {
                           setAutoRefresh(false);
                           setRefreshInterval(0);
                         } else {
                           setAutoRefresh(true);
-                          setRefreshInterval(setting.value);
+                          setRefreshInterval(numValue);
                         }
                       }}
                     >
-                      {setting.label}
+                      {t(key)}
                     </DropdownItem>
                   ))}
                 </DropdownMenu>
@@ -381,6 +383,7 @@ interface KubernetesResultsProps {
 }
 
 function KubernetesResults({ results, error, dismiss }: KubernetesResultsProps) {
+  const { t } = useTranslation();
   if (error) {
     return (
       <Card shadow="sm" className="w-full max-w-full border border-danger-200">
@@ -397,15 +400,14 @@ function KubernetesResults({ results, error, dismiss }: KubernetesResultsProps) 
               startContent={<CircleXIcon size={14} />}
               className="pl-3 py-2"
             >
-              Error
+              {t("common.error")}
             </Chip>
-            <span className="text-danger-700 font-semibold">kubectl command failed</span>
+            <span className="text-danger-700 font-semibold">{t("kubernetes.command_failed")}</span>
           </div>
         </CardHeader>
         <CardBody className="p-4">
           <p className="text-danger-600 select-text">
-            {error ||
-              "An error occurred while executing the kubectl command. Please check your cluster connection and try again."}
+            {error || t("kubernetes.command_error_description")}
           </p>
         </CardBody>
       </Card>
@@ -429,15 +431,16 @@ function KubernetesResults({ results, error, dismiss }: KubernetesResultsProps) 
             startContent={<CheckCircle size={14} />}
             className="pl-3 py-2"
           >
-            Success
+            {t("common.success")}
           </Chip>
           {results.rowCount > 0 ? (
             <span className="text-success-700 font-semibold">
-              {results.rowCount.toLocaleString()}{" "}
-              {results.rowCount === 1 ? "resource" : "resources"} returned
+              {results.rowCount === 1
+                ? t("kubernetes.resources_returned_one", { count: results.rowCount })
+                : t("kubernetes.resources_returned_many", { count: results.rowCount })}
             </span>
           ) : (
-            <span className="text-default-700 font-semibold">Command successful</span>
+            <span className="text-default-700 font-semibold">{t("kubernetes.command_successful")}</span>
           )}
         </div>
         <div className="flex items-center gap-4">

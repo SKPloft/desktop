@@ -4,6 +4,7 @@ import { Card, CardBody, CardHeader, Chip, Tooltip, Button, Divider } from "@her
 import { CheckCircle, CircleXIcon, Clock, HardDriveIcon, Rows4Icon } from "lucide-react";
 import { SqlBlockExecutionResult } from "@/rs-bindings/SqlBlockExecutionResult";
 import { formatBytes } from "@/lib/utils";
+import { useTranslation } from "@/lib/i18n";
 
 interface SQLProps {
   error: any;
@@ -13,6 +14,7 @@ interface SQLProps {
 }
 
 const SQLResults = ({ results, error, dismiss, isFullscreen = false }: SQLProps) => {
+  const { t } = useTranslation();
   const [columns, setColumns] = useState<
     { id: string; title: string; grow?: number; width?: number }[] | null
   >(null);
@@ -61,15 +63,14 @@ const SQLResults = ({ results, error, dismiss, isFullscreen = false }: SQLProps)
               startContent={<CircleXIcon size={14} />}
               className="pl-3 py-2"
             >
-              Error
+              {t("common.error")}
             </Chip>
-            <span className="text-danger-700 font-semibold">Database error</span>
+            <span className="text-danger-700 font-semibold">{t("blocks.sql.database_error")}</span>
           </div>
         </CardHeader>
         <CardBody className="p-4">
           <p className="text-danger-600 select-text">
-            {error ||
-              "An error occurred while making the request. Please check your connection and try again."}
+            {error || t("blocks.common.request_error")}
           </p>
         </CardBody>
       </Card>
@@ -100,35 +101,41 @@ const SQLResults = ({ results, error, dismiss, isFullscreen = false }: SQLProps)
             startContent={<CheckCircle size={14} />}
             className="pl-3 py-2"
           >
-            Success
+            {t("common.success")}
           </Chip>
           {rows && rows.length > 0 ? (
             <span className="text-success-700 font-semibold">
-              {rows!.length.toLocaleString()} {rows!.length == 1 ? "row" : "rows"} returned
+              {rows!.length === 1
+                ? t("blocks.sql.rows_returned_one", { count: rows!.length })
+                : t("blocks.sql.rows_returned_many", { count: rows!.length })}
             </span>
           ) : (rowsAffected ?? null) != null ? (
             <span className="text-success-700 font-semibold">
-              {rowsAffected!.toLocaleString()} {rowsAffected === 1 ? "row" : "rows"} affected
+              {rowsAffected === 1
+                ? t("blocks.sql.rows_affected_one", { count: rowsAffected! })
+                : t("blocks.sql.rows_affected_many", { count: rowsAffected! })}
             </span>
           ) : (
-            <span className="text-default-700 font-semibold">Query successful</span>
+            <span className="text-default-700 font-semibold">{t("blocks.sql.query_successful")}</span>
           )}
         </div>
         <div className="flex items-center gap-4">
           {rowsRead && (
-            <Tooltip content="Rows read">
+            <Tooltip content={t("blocks.sql.rows_read")}>
               <div className="flex items-center gap-1 text-default-500">
                 <Rows4Icon size={14} />
 
                 <span className="text-sm select-text">
-                  {rowsRead?.toLocaleString()} {rowsRead > 1 ? "rows" : "row"}
+                  {rowsRead > 1
+                    ? t("blocks.sql.row_count_many", { count: rowsRead })
+                    : t("blocks.sql.row_count_one", { count: rowsRead })}
                 </span>
               </div>
             </Tooltip>
           )}
 
           {bytesRead && (
-            <Tooltip content="Bytes read">
+            <Tooltip content={t("blocks.common.bytes_read")}>
               <div className="flex items-center gap-1 text-default-500">
                 <HardDriveIcon size={14} />
 
@@ -137,7 +144,7 @@ const SQLResults = ({ results, error, dismiss, isFullscreen = false }: SQLProps)
             </Tooltip>
           )}
 
-          <Tooltip content="Request duration">
+          <Tooltip content={t("blocks.common.request_duration")}>
             <div className="flex items-center gap-1 text-default-500">
               <Clock size={14} />
               <span className="text-sm select-text">

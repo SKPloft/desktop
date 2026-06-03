@@ -16,6 +16,7 @@ import Block from "@/lib/workflow/blocks/block";
 import { useBlockNoteEditor } from "@blocknote/react";
 import { blocksBefore, convertBlocknoteToAtuin } from "@/lib/workflow/blocks/convert";
 import { DependencySpec } from "@/lib/workflow/dependency";
+import { useTranslation } from "@/lib/i18n";
 
 interface DependencyProps {
   block: Block;
@@ -24,6 +25,7 @@ interface DependencyProps {
 }
 
 const Dependency: React.FC<DependencyProps> = ({ block, setDependency }) => {
+  const { t } = useTranslation();
   let editor = useBlockNoteEditor();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -58,7 +60,7 @@ const Dependency: React.FC<DependencyProps> = ({ block, setDependency }) => {
 
   return (
     <>
-      <Tooltip content="Workflow settings">
+      <Tooltip content={t("dependency.workflow_settings")}>
         <Button
           variant="flat"
           size="sm"
@@ -72,15 +74,13 @@ const Dependency: React.FC<DependencyProps> = ({ block, setDependency }) => {
 
       <Modal isOpen={isOpen} onClose={handleClose} size="2xl">
         <ModalContent>
-          <ModalHeader>Workflow Settings</ModalHeader>
+          <ModalHeader>{t("dependency.modal_title")}</ModalHeader>
           <ModalBody>
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-medium mb-2">Block Dependencies</h3>
+                <h3 className="text-lg font-medium mb-2">{t("dependency.block_dependencies")}</h3>
                 <p className="text-sm text-gray-500 mb-4">
-                  Configure how this block depends on other blocks in the Runbook. Blocks must have
-                  a unique name to be used as a dependency. Blocks can only depend on blocks before
-                  them in the runbook.
+                  {t("dependency.description")}
                 </p>
               </div>
 
@@ -88,9 +88,9 @@ const Dependency: React.FC<DependencyProps> = ({ block, setDependency }) => {
                 <div>
                   <div className="flex items-center mb-2">
                     <label htmlFor="parent-block" className="text-sm font-medium">
-                    Dependency
+                      {t("dependency.label")}
                     </label>
-                    <Tooltip content="The dependency block must complete successfully before this block can run">
+                    <Tooltip content={t("dependency.dependency_tooltip")}>
                       <div className="ml-2 text-gray-400 cursor-help">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -125,7 +125,7 @@ const Dependency: React.FC<DependencyProps> = ({ block, setDependency }) => {
                           setSelectedParent(selected || null);
                         }
                       }}
-                      placeholder="Select a parent block"
+                      placeholder={t("dependency.parent_placeholder")}
                     >
                       {(block) => (
                         <AutocompleteItem key={block.name} textValue={block.name}>
@@ -142,7 +142,7 @@ const Dependency: React.FC<DependencyProps> = ({ block, setDependency }) => {
                         onPress={() => setSelectedParent(null)}
                         className="shrink-0"
                       >
-                        Clear
+                        {t("common.clear")}
                       </Button>
                     )}
                   </div>
@@ -151,8 +151,8 @@ const Dependency: React.FC<DependencyProps> = ({ block, setDependency }) => {
                 {selectedParent && (
                   <div>
                     <div className="flex items-center mb-2">
-                      <label className="text-sm font-medium">Dependency Timing</label>
-                      <Tooltip content="Configure when this block can run relative to its parent">
+                      <label className="text-sm font-medium">{t("dependency.timing")}</label>
+                      <Tooltip content={t("dependency.timing_tooltip")}>
                         <div className="ml-2 text-gray-400 cursor-help">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -184,7 +184,7 @@ const Dependency: React.FC<DependencyProps> = ({ block, setDependency }) => {
                             }
                           }}
                         >
-                        Always required
+                          {t("dependency.always_required")}
                         </Button>
                         <Button
                           className="flex-1"
@@ -193,7 +193,7 @@ const Dependency: React.FC<DependencyProps> = ({ block, setDependency }) => {
                             setDependency(new DependencySpec(block.dependency?.parents || [], 1));
                           }}
                         >
-                        Required once
+                          {t("dependency.required_once")}
                         </Button>
                         <Button
                           className="flex-1"
@@ -202,14 +202,14 @@ const Dependency: React.FC<DependencyProps> = ({ block, setDependency }) => {
                             setDependency(new DependencySpec(block.dependency?.parents || [], -1));
                           }}
                         >
-                        Any time
+                          {t("dependency.any_time")}
                         </Button>
                       </ButtonGroup>
                     </div>
 
                     {block.dependency?.within > 0 && (
                       <div className="flex items-center gap-2 mb-4">
-                        <label className="text-sm whitespace-nowrap">Time period:</label>
+                        <label className="text-sm whitespace-nowrap">{t("dependency.time_period")}</label>
                         <input
                           type="number"
                           className="border rounded p-1 w-20"
@@ -224,33 +224,32 @@ const Dependency: React.FC<DependencyProps> = ({ block, setDependency }) => {
                           min="0"
                           step="1"
                         />
-                        <span className="text-sm">seconds</span>
+                        <span className="text-sm">{t("dependency.seconds")}</span>
                       </div>
                     )}
                   </div>
                 )}
 
                 <div className="bg-gray-50 p-4 rounded-md border border-gray-200">
-                  <h4 className="text-sm font-medium mb-2">Execution Behavior</h4>
+                  <h4 className="text-sm font-medium mb-2">{t("dependency.execution_behavior")}</h4>
                   {!selectedParent ? (
                     <p className="text-sm text-gray-600">
-                      The dependency must run successfully before this block can run.
+                      {t("dependency.must_run_successfully")}
                     </p>
                   ) : block.dependency?.within === 0 ? (
                     <p className="text-sm text-gray-600">
-                      This block will only run once for earch time "{selectedParent.name}" completes
-                      successfully.
+                      {t("dependency.only_run_once", { parent: selectedParent.name })}
                     </p>
                   ) : block.dependency?.within > 0 ? (
                     <p className="text-sm text-gray-600">
-                      This block can run any number of times within{" "}
-                      {(block.dependency.within / 60).toFixed(1)} minutes after "
-                      {selectedParent.name}" completes successfully.
+                      {t("dependency.can_run_within", {
+                        minutes: (block.dependency.within / 60).toFixed(1),
+                        parent: selectedParent.name,
+                      })}
                     </p>
                   ) : (
                     <p className="text-sm text-gray-600">
-                      This block can run anytime after "{selectedParent.name}" has completed
-                      successfully, at some point in the past.
+                      {t("dependency.can_run_anytime", { parent: selectedParent.name })}
                     </p>
                   )}
                 </div>
@@ -259,10 +258,10 @@ const Dependency: React.FC<DependencyProps> = ({ block, setDependency }) => {
           </ModalBody>
           <ModalFooter>
             <Button color="default" variant="flat" onPress={handleClose} className="mr-2">
-              Cancel
+              {t("common.cancel")}
             </Button>
             <Button color="primary" onPress={handleSave}>
-              Save changes
+              {t("common.save_changes")}
             </Button>
           </ModalFooter>
         </ModalContent>

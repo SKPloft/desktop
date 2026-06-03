@@ -172,8 +172,12 @@ export function AIHint({ editor, isGenerating, aiEnabled }: AIHintProps) {
       }}
     >
       <div className="text-[10px] text-zinc-400 dark:text-zinc-500 flex items-center gap-1">
-        <kbd className="font-mono bg-zinc-100 dark:bg-zinc-800 px-1 py-0.5 rounded text-zinc-500 dark:text-zinc-400">⌘</kbd>
-        <kbd className="font-mono bg-zinc-100 dark:bg-zinc-800 px-1 py-0.5 rounded text-zinc-500 dark:text-zinc-400">↵</kbd>
+        <kbd className="font-mono bg-zinc-100 dark:bg-zinc-800 px-1 py-0.5 rounded text-zinc-500 dark:text-zinc-400">
+          ⌘
+        </kbd>
+        <kbd className="font-mono bg-zinc-100 dark:bg-zinc-800 px-1 py-0.5 rounded text-zinc-500 dark:text-zinc-400">
+          ↵
+        </kbd>
         <span className="ml-0.5">to generate</span>
         <button
           onClick={dismissPermanently}

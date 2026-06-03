@@ -1,6 +1,25 @@
 import { useState, useEffect, useRef } from "react";
-import { BookOpenIcon, ChevronDownIcon, GlobeIcon, FileIcon, AlertCircleIcon, SettingsIcon } from "lucide-react";
-import { Button, Input, Tooltip, Select, SelectItem, Spinner, Switch, Modal, ModalContent, ModalHeader, ModalBody } from "@heroui/react";
+import {
+  BookOpenIcon,
+  ChevronDownIcon,
+  GlobeIcon,
+  FileIcon,
+  AlertCircleIcon,
+  SettingsIcon,
+} from "lucide-react";
+import {
+  Button,
+  Input,
+  Tooltip,
+  Select,
+  SelectItem,
+  Spinner,
+  Switch,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+} from "@heroui/react";
 import { cn, exportPropMatter } from "@/lib/utils";
 import { createReactBlockSpec } from "@blocknote/react";
 import useDocumentBridge, { useBlockExecution, useBlockState } from "@/lib/hooks/useDocumentBridge";
@@ -14,12 +33,14 @@ import { RemoteRunbook } from "@/state/models";
 import { resolveRunbookByNwo, ResolvedRunbook } from "@/api/runbooks";
 import undent from "undent";
 import AIBlockRegistry from "@/lib/ai/block_registry";
+import { useTranslation } from "@/lib/i18n";
+import { t as i18nT } from "@/lib/i18n";
 
 const searchIndex = new RunbookIndexService();
 
 function getRelativePath(fromPath: string, toPath: string): string {
-  const fromParts = fromPath.split('/').filter(Boolean);
-  const toParts = toPath.split('/').filter(Boolean);
+  const fromParts = fromPath.split("/").filter(Boolean);
+  const toParts = toPath.split("/").filter(Boolean);
 
   fromParts.pop();
 
@@ -33,15 +54,15 @@ function getRelativePath(fromPath: string, toPath: string): string {
   }
 
   const upCount = fromParts.length - commonLength;
-  const relativeParts = Array(upCount).fill('..');
+  const relativeParts = Array(upCount).fill("..");
 
   relativeParts.push(...toParts.slice(commonLength));
 
   if (relativeParts.length === 0) {
-    return './' + toParts[toParts.length - 1];
+    return "./" + toParts[toParts.length - 1];
   }
 
-  return relativeParts.join('/');
+  return relativeParts.join("/");
 }
 
 function getRunbookPathFromWorkspace(runbookId: string): string | null {
@@ -78,13 +99,13 @@ function getHubInfoFromRunbook(runbook: Runbook): { uri: string | null; tags: st
 }
 
 function getTagFromUri(uri: string): string {
-  const colonIndex = uri.lastIndexOf(':');
-  if (colonIndex === -1) return 'latest';
-  return uri.substring(colonIndex + 1) || 'latest';
+  const colonIndex = uri.lastIndexOf(":");
+  if (colonIndex === -1) return "latest";
+  return uri.substring(colonIndex + 1) || "latest";
 }
 
 function getBaseUri(uri: string): string {
-  const colonIndex = uri.lastIndexOf(':');
+  const colonIndex = uri.lastIndexOf(":");
   if (colonIndex === -1) return uri;
   return uri.substring(0, colonIndex);
 }
@@ -107,15 +128,15 @@ type SubRunbookStatus =
   | "recursionDetected";
 
 function getStatusLabel(status: SubRunbookStatus): string {
-  if (status === "idle") return "Ready";
-  if (status === "loading") return "Loading...";
-  if (status === "running") return "Running...";
-  if (status === "success") return "Completed";
-  if (status === "cancelled") return "Cancelled";
-  if (status === "notFound") return "Not Found";
-  if (status === "recursionDetected") return "Recursion Detected";
-  if (typeof status === "object" && "failed" in status) return `Failed: ${status.failed.error}`;
-  return "Unknown";
+  if (status === "idle") return i18nT("editor.blocks.sub_runbook.status.ready");
+  if (status === "loading") return i18nT("common.loading");
+  if (status === "running") return i18nT("editor.blocks.sub_runbook.status.running");
+  if (status === "success") return i18nT("editor.blocks.sub_runbook.status.completed");
+  if (status === "cancelled") return i18nT("editor.blocks.sub_runbook.status.cancelled");
+  if (status === "notFound") return i18nT("editor.blocks.sub_runbook.status.not_found");
+  if (status === "recursionDetected") return i18nT("editor.blocks.sub_runbook.status.recursion_detected");
+  if (typeof status === "object" && "failed" in status) return i18nT("editor.blocks.sub_runbook.status.failed", { error: status.failed.error });
+  return i18nT("editor.blocks.sub_runbook.status.unknown");
 }
 
 function isErrorStatus(status: SubRunbookStatus): boolean {
@@ -156,8 +177,8 @@ interface SubRunbookProps {
 function isValidHubUri(uri: string): boolean {
   const cleanUri = uri
     .trim()
-    .replace(/^https?:\/\//, '')
-    .replace(/^hub\.atuin\.sh\//, '');
+    .replace(/^https?:\/\//, "")
+    .replace(/^hub\.atuin\.sh\//, "");
 
   const pattern = /^[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+(?::[a-zA-Z0-9._-]+)?$/;
   return pattern.test(cleanUri);
@@ -184,6 +205,7 @@ function RunbookSelector({
   anchorRef: React.RefObject<HTMLDivElement | null>;
   currentRunbookId: string | null;
 }) {
+  const { t } = useTranslation();
   const [query, setQuery] = useState("");
   const [runbooks, setRunbooks] = useState<Runbook[]>([]);
   const [filteredRunbooks, setFilteredRunbooks] = useState<Runbook[]>([]);
@@ -220,9 +242,8 @@ function RunbookSelector({
       } catch (err: any) {
         // Only update state if this request is still relevant
         if (!isCancelled) {
-          const message = err?.code === 404
-            ? "Runbook not found"
-            : err?.message || "Failed to fetch";
+          const message =
+            err?.code === 404 ? i18nT("editor.blocks.sub_runbook.runbook_not_found") : err?.message || i18nT("editor.blocks.sub_runbook.failed_to_fetch");
           setHubLookup({ status: "error", message });
         }
       }
@@ -237,10 +258,10 @@ function RunbookSelector({
   function parseHubUri(uri: string): { nwo: string; tag: string | null } | null {
     const cleanUri = uri
       .trim()
-      .replace(/^https?:\/\//, '')
-      .replace(/^hub\.atuin\.sh\//, '');
+      .replace(/^https?:\/\//, "")
+      .replace(/^hub\.atuin\.sh\//, "");
 
-    const colonIndex = cleanUri.lastIndexOf(':');
+    const colonIndex = cleanUri.lastIndexOf(":");
     if (colonIndex === -1) {
       return { nwo: cleanUri, tag: null };
     }
@@ -251,7 +272,7 @@ function RunbookSelector({
   }
 
   const selectRunbook = (runbook: Runbook) => {
-    const runbookName = runbook.name || "Untitled Runbook";
+    const runbookName = runbook.name || i18nT("editor.blocks.sub_runbook.untitled_runbook");
     let relativePath: string | null = null;
     let runbookUri: string | null = null;
 
@@ -377,7 +398,16 @@ function RunbookSelector({
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isVisible, filteredRunbooks, selectedIndex, onSelect, onClose, hubResultSelectable, totalItems, hubLookup]);
+  }, [
+    isVisible,
+    filteredRunbooks,
+    selectedIndex,
+    onSelect,
+    onClose,
+    hubResultSelectable,
+    totalItems,
+    hubLookup,
+  ]);
 
   useEffect(() => {
     if (!isVisible) return;
@@ -405,7 +435,7 @@ function RunbookSelector({
       <div className="p-3">
         <Input
           ref={inputRef}
-          placeholder="Search or enter hub URI (user/runbook)"
+          placeholder={t("editor.blocks.sub_runbook.search_placeholder")}
           value={query}
           onValueChange={setQuery}
           size="sm"
@@ -421,9 +451,7 @@ function RunbookSelector({
             {hubLookup.status === "loading" && (
               <div className="flex items-center gap-2 px-3 py-2 text-sm border-b border-gray-100 dark:border-gray-700">
                 <Spinner size="sm" classNames={{ wrapper: "h-4 w-4" }} />
-                <span className="text-gray-500 dark:text-gray-400">
-                  Looking up {query}...
-                </span>
+                <span className="text-gray-500 dark:text-gray-400">{t("editor.blocks.sub_runbook.looking_up", { query })}</span>
               </div>
             )}
 
@@ -459,7 +487,7 @@ function RunbookSelector({
 
         {filteredRunbooks.length === 0 && !showHubResult ? (
           <div className="p-3 text-sm text-gray-500 dark:text-gray-400 text-center">
-            No runbooks found
+            {t("editor.blocks.sub_runbook.no_runbooks_found")}
           </div>
         ) : (
           filteredRunbooks.map((runbook, index) => {
@@ -480,7 +508,7 @@ function RunbookSelector({
                 ) : (
                   <FileIcon size={14} />
                 )}
-                <span className="truncate">{runbook.name || "Untitled Runbook"}</span>
+                <span className="truncate">{runbook.name || t("editor.blocks.sub_runbook.untitled_runbook")}</span>
               </div>
             );
           })
@@ -488,7 +516,7 @@ function RunbookSelector({
       </div>
 
       <div className="p-2 text-xs text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-gray-700">
-        ↑↓ navigate · Enter select · Esc close
+        {t("editor.blocks.sub_runbook.selector_help")}
       </div>
     </div>
   );
@@ -507,6 +535,7 @@ const SubRunbook = ({
   onExportSettingsChange,
   currentRunbookId,
 }: SubRunbookProps) => {
+  const { t } = useTranslation();
   const [selectorVisible, setSelectorVisible] = useState(false);
   const [selectorPosition, setSelectorPosition] = useState({ x: 0, y: 0 });
   const [availableTags, setAvailableTags] = useState<string[]>([]);
@@ -523,16 +552,18 @@ const SubRunbook = ({
       return;
     }
 
-    Runbook.load(runbookId).then((runbook) => {
-      if (runbook && runbook.isOnline()) {
-        const hubInfo = getHubInfoFromRunbook(runbook);
-        setAvailableTags(hubInfo.tags);
-      } else {
+    Runbook.load(runbookId)
+      .then((runbook) => {
+        if (runbook && runbook.isOnline()) {
+          const hubInfo = getHubInfoFromRunbook(runbook);
+          setAvailableTags(hubInfo.tags);
+        } else {
+          setAvailableTags([]);
+        }
+      })
+      .catch(() => {
         setAvailableTags([]);
-      }
-    }).catch(() => {
-      setAvailableTags([]);
-    });
+      });
   }, [runbookId, runbookUri]);
 
   const status = state?.status || "idle";
@@ -565,15 +596,14 @@ const SubRunbook = ({
 
   return (
     <div ref={containerRef} className="relative w-full">
-      <Tooltip
-        content="Execute another runbook as part of this one"
-        delay={1000}
-      >
+      <Tooltip content={t("editor.blocks.sub_runbook.tooltip")} delay={1000}>
         <div className="flex flex-col w-full bg-white dark:bg-slate-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200">
           {/* Header row with block type name and settings */}
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] font-mono text-gray-400 dark:text-gray-500">subrunbook</span>
-            <Tooltip content="Settings" delay={500}>
+            <span className="text-[10px] font-mono text-gray-400 dark:text-gray-500">
+              subrunbook
+            </span>
+            <Tooltip content={t("common.settings")} delay={500}>
               <button
                 onClick={() => setSettingsOpen(true)}
                 className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
@@ -593,7 +623,7 @@ const SubRunbook = ({
               isRunning={execution.isRunning}
               cancellable={true}
               disabled={!runbookId}
-              tooltip={!runbookId ? "Select a runbook first" : undefined}
+              tooltip={!runbookId ? t("editor.blocks.sub_runbook.select_first") : undefined}
             />
 
             <div className="flex-1 min-w-0">
@@ -606,7 +636,9 @@ const SubRunbook = ({
                   isDisabled={!isEditable}
                   endContent={<ChevronDownIcon className="h-4 w-4 shrink-0" />}
                 >
-                  <span className="truncate text-sm">{runbookId ? runbookName : "Select Runbook"}</span>
+                  <span className="truncate text-sm">
+                    {runbookId ? runbookName : t("editor.blocks.sub_runbook.select_runbook")}
+                  </span>
                 </Button>
                 {runbookUri && availableTags.length > 0 && (
                   <Select
@@ -620,8 +652,11 @@ const SubRunbook = ({
                       }
                     }}
                     isDisabled={!isEditable}
-                    aria-label="Select tag"
-                    items={[{ key: 'latest', label: 'latest' }, ...availableTags.map(tag => ({ key: tag, label: tag }))]}
+                    aria-label={t("editor.blocks.sub_runbook.select_tag")}
+                    items={[
+                      { key: "latest", label: "latest" },
+                      ...availableTags.map((tag) => ({ key: tag, label: tag })),
+                    ]}
                   >
                     {(item) => <SelectItem key={item.key}>{item.label}</SelectItem>}
                   </Select>
@@ -640,10 +675,14 @@ const SubRunbook = ({
                   {(status === "running" || status === "loading") && (
                     <span className="flex items-center gap-1.5 text-[10px] font-mono text-gray-400 dark:text-gray-500 whitespace-nowrap ml-2">
                       <Spinner size="sm" classNames={{ wrapper: "h-3 w-3" }} />
-                      {status === "loading" ? "Loading..." : (
+                      {status === "loading" ? (
+                        t("common.loading")
+                      ) : (
                         <>
                           {progress}
-                          {currentBlock && <span className="truncate max-w-[120px]">({currentBlock})</span>}
+                          {currentBlock && (
+                            <span className="truncate max-w-[120px]">({currentBlock})</span>
+                          )}
                         </>
                       )}
                     </span>
@@ -662,13 +701,9 @@ const SubRunbook = ({
       )}
 
       {/* Settings Modal */}
-      <Modal
-        isOpen={settingsOpen}
-        onClose={() => setSettingsOpen(false)}
-        size="sm"
-      >
+      <Modal isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} size="sm">
         <ModalContent>
-          <ModalHeader className="text-base font-medium">Sub-Runbook Settings</ModalHeader>
+          <ModalHeader className="text-base font-medium">{t("editor.blocks.sub_runbook.settings_title")}</ModalHeader>
           <ModalBody className="pb-6">
             <div className="space-y-4">
               {/* Export All Context Button */}
@@ -680,8 +715,10 @@ const SubRunbook = ({
                   className="w-full"
                   isDisabled={!isEditable}
                   onPress={() => {
-                    const allEnabled = exportSettings.exportEnv && exportSettings.exportVars &&
-                                       exportSettings.exportCwd;
+                    const allEnabled =
+                      exportSettings.exportEnv &&
+                      exportSettings.exportVars &&
+                      exportSettings.exportCwd;
                     onExportSettingsChange({
                       exportEnv: !allEnabled,
                       exportVars: !allEnabled,
@@ -689,13 +726,12 @@ const SubRunbook = ({
                     });
                   }}
                 >
-                  {exportSettings.exportEnv && exportSettings.exportVars &&
-                   exportSettings.exportCwd
-                    ? "Disable All Exports"
-                    : "Export All Context"}
+                  {exportSettings.exportEnv && exportSettings.exportVars && exportSettings.exportCwd
+                    ? t("editor.blocks.sub_runbook.disable_all_exports")
+                    : t("editor.blocks.sub_runbook.export_all_context")}
                 </Button>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
-                  Export all context from sub-runbook to parent
+                  {t("editor.blocks.sub_runbook.export_all_description")}
                 </p>
               </div>
 
@@ -703,10 +739,10 @@ const SubRunbook = ({
               <div className="flex items-center justify-between gap-4">
                 <div className="flex flex-col">
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Environment variables
+                    {t("editor.blocks.sub_runbook.environment_variables")}
                   </span>
                   <span className="text-xs text-gray-500 dark:text-gray-400">
-                    Merge env vars into parent runbook
+                    {t("editor.blocks.sub_runbook.merge_env")}
                   </span>
                 </div>
                 <Switch
@@ -720,10 +756,10 @@ const SubRunbook = ({
               <div className="flex items-center justify-between gap-4">
                 <div className="flex flex-col">
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Variables
+                    {t("editor.blocks.sub_runbook.variables")}
                   </span>
                   <span className="text-xs text-gray-500 dark:text-gray-400">
-                    Merge template variables into parent
+                    {t("editor.blocks.sub_runbook.merge_vars")}
                   </span>
                 </div>
                 <Switch
@@ -737,10 +773,10 @@ const SubRunbook = ({
               <div className="flex items-center justify-between gap-4">
                 <div className="flex flex-col">
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Working directory
+                    {t("editor.blocks.sub_runbook.working_directory")}
                   </span>
                   <span className="text-xs text-gray-500 dark:text-gray-400">
-                    Use sub-runbook&apos;s final working directory
+                    {t("editor.blocks.sub_runbook.use_final_cwd")}
                   </span>
                 </div>
                 <Switch
@@ -773,23 +809,29 @@ export default createReactBlockSpec(
     propSchema: {
       name: { default: "" },
       // Runbook reference - at least one should be set
-      runbookId: { default: "" },    // UUID (set by desktop app)
-      runbookUri: { default: "" },   // Hub URI: "user/runbook" or "user/runbook:tag"
-      runbookPath: { default: "" },  // File path for CLI use
+      runbookId: { default: "" }, // UUID (set by desktop app)
+      runbookUri: { default: "" }, // Hub URI: "user/runbook" or "user/runbook:tag"
+      runbookPath: { default: "" }, // File path for CLI use
       // Display name
       runbookName: { default: "" },
       // Context export settings
-      exportEnv: { default: false },     // Export env vars to parent runbook
-      exportVars: { default: false },    // Export variables to parent runbook
-      exportCwd: { default: false },     // Export working directory to parent runbook
+      exportEnv: { default: false }, // Export env vars to parent runbook
+      exportVars: { default: false }, // Export variables to parent runbook
+      exportCwd: { default: false }, // Export working directory to parent runbook
     },
     content: "none",
   },
   {
     toExternalHTML: ({ block }) => {
       const propMatter = exportPropMatter("sub-runbook", block.props, [
-        "name", "runbookId", "runbookUri", "runbookPath", "runbookName",
-        "exportEnv", "exportVars", "exportCwd"
+        "name",
+        "runbookId",
+        "runbookUri",
+        "runbookPath",
+        "runbookName",
+        "exportEnv",
+        "exportVars",
+        "exportCwd",
       ]);
       return (
         <div>
@@ -870,8 +912,8 @@ export default createReactBlockSpec(
 
 // Component to insert this block from the editor menu
 export const insertSubRunbook = (editor: any) => ({
-  title: "Sub-Runbook",
-  subtext: "Embed and execute another runbook",
+  title: i18nT("editor.blocks.sub_runbook.title"),
+  subtext: i18nT("editor.blocks.sub_runbook.insert_subtext"),
   onItemClick: () => {
     track_event("runbooks.block.create", { type: "sub-runbook" });
 
@@ -887,7 +929,7 @@ export const insertSubRunbook = (editor: any) => ({
   },
   icon: <BookOpenIcon size={18} />,
   aliases: ["sub", "runbook", "embed", "include", "nested"],
-  group: "Execute",
+  group: i18nT("editor.blocks.group.execute"),
 });
 
 AIBlockRegistry.getInstance().addBlock({

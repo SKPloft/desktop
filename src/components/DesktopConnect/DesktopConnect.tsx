@@ -2,8 +2,10 @@ import { useStore } from "@/state/store";
 import { Modal, ModalContent, Button, Card, CardBody } from "@heroui/react";
 import { setHubApiToken } from "@/api/api";
 import SocketManager from "@/socket";
+import { useTranslation } from "@/lib/i18n";
 
 const DesktopConnect = () => {
+  const { t } = useTranslation();
   let setProposedDesktopConnectUser = useStore((state) => state.setProposedDesktopConnectuser);
   let proposedUser = useStore((state) => state.proposedDesktopConnectUser);
 
@@ -33,29 +35,27 @@ const DesktopConnect = () => {
       <ModalContent className="w-full">
         {(_onClose) => (
           <div className="max-w-[900px] mx-auto p-6 space-y-6">
-            <h1 className="text-4xl text-center">Atuin Hub Connection</h1>
+            <h1 className="text-4xl text-center">{t("desktop_connect.title")}</h1>
             <Card>
               <CardBody className="gap-4">
-                <h2 className="text-xl">Connection request from Atuin Hub</h2>
-                <h3 className="text-l">Username: {proposedUser!.username}</h3>
+                <h2 className="text-xl">{t("desktop_connect.request_title")}</h2>
+                <h3 className="text-l">{t("desktop_connect.username", { username: proposedUser!.username })}</h3>
                 <p className="text-gray-600">
-                  Atuin Hub is requesting to connect to your Atuin Desktop instance. This will allow
-                  you to browse and share Runbooks with other users, and keep them backed up.
+                  {t("desktop_connect.description")}
                 </p>
                 <p className="text-gray-600">
-                  We store all secrets securely in your keychain, which you will be prompted to
-                  provide access to.
+                  {t("desktop_connect.keychain")}
                 </p>
               </CardBody>
             </Card>
 
             <div className="flex justify-end gap-2">
               <Button variant="flat" color="default" onClick={cancel}>
-                Cancel
+                {t("common.cancel")}
               </Button>
 
               <Button variant="flat" color="success" onClick={confirm}>
-                Accept
+                {t("desktop_connect.accept")}
               </Button>
             </div>
           </div>

@@ -17,6 +17,7 @@ import useCodemirrorTheme from "@/lib/hooks/useCodemirrorTheme";
 import { useCodeMirrorValue } from "@/lib/hooks/useCodeMirrorValue";
 import PlayButton from "../common/PlayButton";
 import Block from "../common/Block";
+import { useTranslation } from "@/lib/i18n";
 import { useBlockExecution, useBlockOutput } from "@/lib/hooks/useDocumentBridge";
 import { HttpResponse } from "@/rs-bindings/HttpResponse";
 
@@ -43,6 +44,7 @@ export const Http = ({
   setHeaders,
   setDependency,
 }: HttpProps) => {
+  const { t } = useTranslation();
   const colorMode = useStore((state) => state.functionalColorMode);
   const [response, setResponse] = useState<any | null>(null);
   const [activeTab, setActiveTab] = useState("headers");
@@ -122,21 +124,21 @@ export const Http = ({
       }
     >
       <Tabs
-        aria-label="Options"
+        aria-label={t("http.options")}
         selectedKey={activeTab}
         onSelectionChange={setActiveTab as any}
         variant="underlined"
       >
-        <Tab key="headers" title="Headers">
+        <Tab key="headers" title={t("http.headers")}>
           <RequestHeaders pairs={http.headers} setPairs={setHeaders} disabled={!isEditable} />
         </Tab>
         <Tab
           key="body"
-          title="Body"
+          title={t("http.body")}
           isDisabled={http.verb === HttpVerb.GET || http.verb === HttpVerb.HEAD}
         >
           <CodeMirror
-            placeholder={"Request Body (JSON)"}
+            placeholder={t("http.body_placeholder")}
             className="!pt-0 max-w-full border border-gray-300 rounded flex-grow text-sm max-h-96"
             value={codeMirrorValue.value}
             onChange={codeMirrorValue.onChange}

@@ -4,16 +4,17 @@
  * Output structure for Terminal blocks that implements BlockExecutionOutput
  * for template access to terminal output.
  */
-export type TerminalBlockOutput = { 
-/**
- * Raw terminal output (UTF-8 lossy conversion from PTY bytes)
- */
-output: string, 
-/**
- * Total number of bytes received
- */
-byteCount: number, 
-/**
- * Whether the terminal was cancelled (true) or finished naturally (false)
- */
-cancelled: boolean, };
+export type TerminalBlockOutput = {
+  /**
+   * Raw terminal output (UTF-8 lossy conversion from PTY bytes)
+   */
+  output: string;
+  /**
+   * Total number of bytes received
+   */
+  byteCount: number;
+  /**
+   * Whether the terminal was cancelled (true) or finished naturally (false)
+   */
+  cancelled: boolean;
+};

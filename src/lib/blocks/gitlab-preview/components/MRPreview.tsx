@@ -2,12 +2,14 @@ import { Card, CardBody, Chip, Avatar } from "@heroui/react";
 import { GitPullRequestIcon, ExternalLinkIcon, GitMergeIcon, XCircleIcon } from "lucide-react";
 import type { GitLabMRData } from "../api";
 import { open } from "@tauri-apps/plugin-shell";
+import { useTranslation } from "@/lib/i18n";
 
 interface MRPreviewProps {
   data: GitLabMRData;
 }
 
 export default function MRPreview({ data }: MRPreviewProps) {
+  const { t } = useTranslation();
   const handleClick = () => {
     open(data.web_url);
   };
@@ -25,9 +27,9 @@ export default function MRPreview({ data }: MRPreviewProps) {
   };
 
   const getStatusText = () => {
-    if (data.state === "merged") return "Merged";
-    if (data.state === "opened") return "Open";
-    return "Closed";
+    if (data.state === "merged") return t("common.merged");
+    if (data.state === "opened") return t("common.open");
+    return t("common.closed");
   };
 
   return (

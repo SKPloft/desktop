@@ -125,9 +125,8 @@ export class Settings {
 
   public static async scriptInterpreters(): Promise<Array<{ command: string; name: string }>> {
     let store = await KVStore.open_default();
-    const interpreters = await store.get<Array<{ command: string; name: string }>>(
-      SCRIPT_INTERPRETERS,
-    );
+    const interpreters =
+      await store.get<Array<{ command: string; name: string }>>(SCRIPT_INTERPRETERS);
     return interpreters || [];
   }
 
@@ -418,10 +417,13 @@ export class Settings {
       return val;
     }
 
-    return await store.get(AI_AGENT_PROVIDER) ?? "atuinhub";
+    return (await store.get(AI_AGENT_PROVIDER)) ?? "atuinhub";
   }
 
-  public static async aiProviderSettings<T extends Record<string, any>>(provider: string, settings: T | null = null): Promise<T> {
+  public static async aiProviderSettings<T extends Record<string, any>>(
+    provider: string,
+    settings: T | null = null,
+  ): Promise<T> {
     let store = await KVStore.open_default();
 
     if (settings !== null) {
@@ -429,6 +431,6 @@ export class Settings {
       return settings;
     }
 
-    return await store.get(`ai.provider.${provider}.settings`) ?? {} as T;
+    return (await store.get(`ai.provider.${provider}.settings`)) ?? ({} as T);
   }
 }

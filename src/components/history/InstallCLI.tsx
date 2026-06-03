@@ -1,16 +1,11 @@
-import {
-  Modal,
-  ModalContent,
-  Button,
-  useDisclosure,
-  Card,
-  CardBody,
-} from "@heroui/react";
+import { Modal, ModalContent, Button, useDisclosure, Card, CardBody } from "@heroui/react";
 
 import { useEffect, useState } from "react";
 import { installAtuinCLI } from "@/lib/utils";
+import { useTranslation } from "@/lib/i18n";
 
 const InstallCLI = () => {
+  const { t } = useTranslation();
   let {
     isOpen: isInstallCLIOpen,
     onOpen: onInstallCLIOpen,
@@ -36,11 +31,11 @@ const InstallCLI = () => {
         {(onClose) => (
           <div className="max-w-[900px] mx-auto p-6 space-y-6">
             <h1 className="text-4xl font-bold text-center">
-              Install the Atuin CLI for full history functionality
+              {t("history.install_cli.title")}
             </h1>
 
             <h3 className="text-xl font-semibold text-center">
-              Search, sync, and explore your shell history
+              {t("history.install_cli.subtitle")}
             </h3>
 
             <div style={{ position: "relative", paddingTop: "56.25%" }}>
@@ -62,12 +57,10 @@ const InstallCLI = () => {
             <Card>
               <CardBody>
                 <ul className="list-disc pl-6 space-y-2">
-                  <li>Not required for Runbook functionality</li>
-                  <li>
-                    MIT licensed, open source CLI with {">"}20,000 GitHub stars
-                  </li>
-                  <li>Single binary install</li>
-                  <li>Optional, e2e encrypted shell history sync and backup</li>
+                  <li>{t("history.install_cli.not_required")}</li>
+                  <li>{t("history.install_cli.open_source")}</li>
+                  <li>{t("history.install_cli.single_binary")}</li>
+                  <li>{t("history.install_cli.encrypted_sync")}</li>
                 </ul>
               </CardBody>
             </Card>
@@ -83,7 +76,7 @@ const InstallCLI = () => {
                 onClose();
               }}
             >
-              Install CLI
+              {t("history.install_cli.install")}
             </Button>
           </div>
         )}

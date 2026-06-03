@@ -15,6 +15,7 @@ import { useEffect, useMemo, useReducer } from "react";
 import { None, Option, Some, usernameFromNwo } from "@/lib/utils";
 import { ConnectionState } from "@/state/store/user_state";
 import Workspace from "@/state/runbooks/workspace";
+import { useTranslation } from "@/lib/i18n";
 
 interface DeleteRunbookModalProps {
   runbookId: string;
@@ -78,6 +79,7 @@ const INITIAL_STATE: DeleteState = {
 };
 
 export default function DeleteRunbookModal(props: DeleteRunbookModalProps) {
+  const { t } = useTranslation();
   const { runbookId, onClose } = props;
 
   const user = useStore((store) => store.user);
@@ -163,7 +165,7 @@ export default function DeleteRunbookModal(props: DeleteRunbookModalProps) {
       onClose();
     } catch (err) {
       dispatch({ type: "set_deleting", isDeleting: false });
-      alert("There was a problem deleting the runbook");
+      alert(t("delete_runbook.delete_error"));
     }
   }
 
@@ -184,61 +186,47 @@ export default function DeleteRunbookModal(props: DeleteRunbookModalProps) {
       return (
         <>
           <p>
-            Are you sure you want to delete <strong>{deleteState.runbook?.name}</strong>?
+            {t("delete_runbook.confirm_prefix")} <strong>{deleteState.runbook?.name}</strong>?
           </p>
           {ownership === "local" && (
-            <p>
-              This runbook is not backed up to Atuin Hub, so the contents of the runbook will be
-              permanently lost when it is deleted.
-            </p>
+            <p>{t("delete_runbook.local_warning")}</p>
           )}
           {ownership === "none" && (
             <p>
-              Once this runbook is deleted, you will only be able to access it again via Atuin Hub
-              at {nwo.unwrap()}.
+              {t("delete_runbook.none_warning", { nwo: nwo.unwrap() })}
             </p>
           )}
           {ownership === "owner" && (
             <>
-              <p>Deleting this runbook will:</p>
+              <p>{t("delete_runbook.will")}</p>
               <ul className="list-disc ml-4">
-                <li>Permanently delete this runbook from your machine</li>
-                <li>Permanently delete this runbook from Atuin Hub ({nwo.unwrap()})</li>
+                <li>{t("delete_runbook.machine")}</li>
+                <li>{t("delete_runbook.hub", { nwo: nwo.unwrap() })}</li>
               </ul>
               {connectionState !== ConnectionState.Online && (
-                <p>
-                  Since you are offline, this operation will be performed the next time you are
-                  online.
-                </p>
+                <p>{t("delete_runbook.offline_notice")}</p>
               )}
             </>
           )}
           {ownership === "org" && (
             <>
-              <p>Deleting this runbook will permanently remove it from your organization.</p>
+              <p>{t("delete_runbook.org_warning")}</p>
               {connectionState !== ConnectionState.Online && (
-                <p>
-                  Since you are offline, this operation will be performed the next time you are
-                  online.
-                </p>
+                <p>{t("delete_runbook.offline_notice")}</p>
               )}
             </>
           )}
           {ownership === "collaborator" && (
             <>
-              <p>Deleting this runbook will:</p>
+              <p>{t("delete_runbook.will")}</p>
               <ul className="list-disc ml-4">
-                <li>Permanently delete this runbook from your machine</li>
+                <li>{t("delete_runbook.machine")}</li>
                 <li>
-                  Permanently remove your collaboration with the runbook on Atuin Hub (
-                  {nwo.unwrap()})
+                  {t("delete_runbook.collaboration", { nwo: nwo.unwrap() })}
                 </li>
               </ul>
               {connectionState !== ConnectionState.Online && (
-                <p>
-                  Since you are offline, this operation will be performed the next time you are
-                  online.
-                </p>
+                <p>{t("delete_runbook.offline_notice")}</p>
               )}
             </>
           )}
@@ -252,7 +240,7 @@ export default function DeleteRunbookModal(props: DeleteRunbookModalProps) {
       <ModalContent>
         {(onClose) => (
           <>
-            <ModalHeader>Delete Runbook</ModalHeader>
+            <ModalHeader>{t("delete_runbook.title")}</ModalHeader>
             <ModalBody>{renderModalContent()}</ModalBody>
             <ModalFooter>
               <Button
@@ -260,10 +248,10 @@ export default function DeleteRunbookModal(props: DeleteRunbookModalProps) {
                 onPress={confirmDeleteRunbook}
                 disabled={deleteState.isDeleting}
               >
-                Delete
+                {t("common.delete")}
               </Button>
               <Button onPress={onClose} disabled={deleteState.isDeleting}>
-                Cancel
+                {t("common.cancel")}
               </Button>
             </ModalFooter>
           </>

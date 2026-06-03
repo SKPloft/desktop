@@ -13,6 +13,8 @@ import track_event from "@/tracking";
 import SQL from "@/lib/blocks/common/SQL";
 import { exportPropMatter } from "@/lib/utils";
 import { useBlockKvValue } from "@/lib/hooks/useKvValue";
+import { t } from "@/lib/i18n";
+// t is used by the non-React insertPostgres function below
 
 interface SQLProps {
   isEditable: boolean;
@@ -162,12 +164,12 @@ export default createReactBlockSpec(
 );
 
 export const insertPostgres = (schema: any) => (editor: typeof schema.BlockNoteEditor) => ({
-  title: "PostgreSQL",
+  title: t("editor.blocks.postgres.title"),
   onItemClick: () => {
     track_event("runbooks.block.create", { type: "postgres" });
 
     let postgresBlocks = editor.document.filter((block: any) => block.type === "postgres");
-    let name = `PostgreSQL ${postgresBlocks.length + 1}`;
+    let name = `${t("editor.blocks.postgres.title")} ${postgresBlocks.length + 1}`;
 
     editor.insertBlocks(
       [
@@ -184,7 +186,7 @@ export const insertPostgres = (schema: any) => (editor: typeof schema.BlockNoteE
     );
   },
   icon: <DatabaseIcon size={18} />,
-  group: "Database",
+  group: t("editor.blocks.group.database"),
 });
 
 AIBlockRegistry.getInstance().addBlock({

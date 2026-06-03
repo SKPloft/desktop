@@ -1,6 +1,6 @@
-import type {ComponentInfo, Attributes} from "./data";
+import type { ComponentInfo, Attributes } from "./data";
 
-import {IMPORT_PATH_MATCH_REGEX, IMPORT_REGEX} from "./regex-constants";
+import { IMPORT_PATH_MATCH_REGEX, IMPORT_REGEX } from "./regex-constants";
 
 export type ComponentCodeFiles = Record<string, string>;
 export type SandpackFiles = {

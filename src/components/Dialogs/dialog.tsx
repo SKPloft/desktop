@@ -2,6 +2,8 @@ import { Option, Some, None } from "@binarymuse/ts-stdlib";
 import { useStore } from "@/state/store";
 import { DialogAction, DialogRequest } from "@/state/store/dialog_state";
 import { uuidv7 } from "uuidv7";
+import { t } from "@/lib/i18n";
+// different from react import { useTranslation } because this is pure function defining file
 
 export type DialogIcon = DialogRequest<unknown>["icon"];
 
@@ -86,6 +88,6 @@ export function alert(title: string, message: string): Promise<void> {
   return new DialogBuilder<void>()
     .title(title)
     .message(message)
-    .action({ label: "OK", value: undefined, variant: "flat" })
+    .action({ label: t("common.ok"), value: undefined, variant: "flat" })
     .build();
 }

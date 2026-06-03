@@ -1,9 +1,7 @@
 import { TableSchema } from "@/lib/blocks/common/database";
 import Database from "@tauri-apps/plugin-sql";
 
-export const sqliteSchema = async (
-  database: Database,
-): Promise<TableSchema[]> => {
+export const sqliteSchema = async (database: Database): Promise<TableSchema[]> => {
   const query = `
     SELECT
       m.name AS table_name,

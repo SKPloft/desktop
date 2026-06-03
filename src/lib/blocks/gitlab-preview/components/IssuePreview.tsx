@@ -2,12 +2,14 @@ import { Card, CardBody, Chip, Avatar } from "@heroui/react";
 import { CircleDotIcon, ExternalLinkIcon, CheckCircleIcon } from "lucide-react";
 import type { GitLabIssueData } from "../api";
 import { open } from "@tauri-apps/plugin-shell";
+import { useTranslation } from "@/lib/i18n";
 
 interface IssuePreviewProps {
   data: GitLabIssueData;
 }
 
 export default function IssuePreview({ data }: IssuePreviewProps) {
+  const { t } = useTranslation();
   const handleClick = () => {
     open(data.web_url);
   };
@@ -21,7 +23,7 @@ export default function IssuePreview({ data }: IssuePreviewProps) {
   };
 
   const getStatusText = () => {
-    return data.state === "opened" ? "Open" : "Closed";
+    return data.state === "opened" ? t("common.open") : t("common.closed");
   };
 
   return (
@@ -63,11 +65,7 @@ export default function IssuePreview({ data }: IssuePreviewProps) {
 
         <div className="flex items-center gap-3 flex-wrap">
           {data.labels.map((label) => (
-            <Chip
-              key={label}
-              size="sm"
-              variant="flat"
-            >
+            <Chip key={label} size="sm" variant="flat">
               {label}
             </Chip>
           ))}

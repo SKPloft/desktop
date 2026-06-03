@@ -187,8 +187,8 @@ export function buildJinjaAutocomplete(blockContext: ResolvedContext): JinjaComp
             typeof currentSource[v] === "string"
               ? currentSource[v]
               : current[v]
-              ? current[v]
-              : null,
+                ? current[v]
+                : null,
           section: {
             name: sectionName,
           },

@@ -92,7 +92,11 @@ export async function fetchPRData(owner: string, repo: string, prNumber: number)
   return response.json();
 }
 
-export async function fetchIssueData(owner: string, repo: string, issueNumber: number): Promise<IssueData> {
+export async function fetchIssueData(
+  owner: string,
+  repo: string,
+  issueNumber: number,
+): Promise<IssueData> {
   const response = await fetch(`${GITHUB_API_BASE}/repos/${owner}/${repo}/issues/${issueNumber}`, {
     headers: {
       Accept: "application/vnd.github.v3+json",
@@ -157,4 +161,3 @@ export async function fetchCodeData(
     html_url,
   };
 }
-

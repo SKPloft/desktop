@@ -49,6 +49,7 @@ import { useCurrentRunbookId } from "@/context/runbook_id_context";
 import { useBlockKvValue } from "@/lib/hooks/useKvValue";
 import type { Extension as BlockNoteExtension } from "@blocknote/core";
 import { useBlockContext } from "@/lib/hooks/useDocumentBridge";
+import { useTranslation } from "@/lib/i18n";
 
 interface LanguageLoader {
   name: string;
@@ -112,6 +113,7 @@ const EditorBlock = ({
   collapseCode,
   setCollapseCode,
 }: CodeBlockProps) => {
+  const { t } = useTranslation();
   const languages: LanguageLoader[] = useMemo(() => languageLoaders(), []);
   const codeMirrorValue = useCodeMirrorValue(code, onChange);
 
@@ -190,7 +192,7 @@ const EditorBlock = ({
             <EditableHeading initialText={name} onTextChange={setName} />
             <div className="flex flex-row gap-2 items-center">
               <Popover showArrow offset={10} placement="bottom-start">
-                <Tooltip content="Set editor contents to the value of a template variable">
+                <Tooltip content={t("editor.blocks.editor.copy_from_var_tooltip")}>
                   <PopoverTrigger>
                     <Button size="sm" variant="flat" isIconOnly className="mr-4">
                       <FileInputIcon size={16} />
@@ -199,12 +201,12 @@ const EditorBlock = ({
                 </Tooltip>
                 <PopoverContent>
                   <div className="flex flex-col gap-2 w-[350px] my-2">
-                    <div>Set editor contents to the value of a template variable:</div>
+                    <div>{t("editor.blocks.editor.copy_from_var_description")}</div>
                     <div className="flex flex-row gap-2 items-center">
                       <Select
                         size="sm"
                         variant="flat"
-                        placeholder="Select variable"
+                        placeholder={t("editor.blocks.editor.select_variable")}
                         value={variableName}
                         onSelectionChange={handleCopyFromVarChange}
                         disabled={!isEditable}
@@ -222,7 +224,7 @@ const EditorBlock = ({
                         isDisabled={!copyFromVar}
                         onPress={handleApplyCopyFromVar}
                       >
-                        Apply
+                        {t("common.apply")}
                       </Button>
                     </div>
                   </div>
@@ -234,19 +236,14 @@ const EditorBlock = ({
                 autoCorrect="off"
                 spellCheck="false"
                 size="sm"
-                placeholder="Variable"
+                placeholder={t("editor.blocks.editor.variable_placeholder")}
                 value={variableName}
                 onChange={handleVariableNameInputChange}
                 disabled={!isEditable}
                 className="font-mono text-xs"
               />
-              <Tooltip content={collapseCode ? "Expand code" : "Collapse code"}>
-                <Button
-                  onPress={handleToggleCollapseCode}
-                  size="sm"
-                  variant="flat"
-                  isIconOnly
-                >
+              <Tooltip content={collapseCode ? t("editor.blocks.editor.expand_code") : t("editor.blocks.editor.collapse_code")}>
+                <Button onPress={handleToggleCollapseCode} size="sm" variant="flat" isIconOnly>
                   {collapseCode ? (
                     <ArrowDownToLineIcon size={20} />
                   ) : (
@@ -266,11 +263,11 @@ const EditorBlock = ({
                     className="capitalize min-w-[200px]"
                     endContent={<ChevronDownIcon size={16} />}
                   >
-                    {selected ? selected.name : "Select a language"}
+                    {selected ? selected.name : t("editor.blocks.editor.select_language")}
                   </Button>
                 </DropdownTrigger>
                 <DropdownMenu
-                  aria-label="Scrollable dropdown"
+                  aria-label={t("editor.blocks.editor.language_dropdown")}
                   className="max-h-[300px] overflow-y-auto"
                   items={filteredItems}
                   topContent={
@@ -281,7 +278,7 @@ const EditorBlock = ({
                       autoCorrect="off"
                       spellCheck="false"
                       type="text"
-                      placeholder="Filter languages..."
+                      placeholder={t("editor.blocks.editor.filter_languages")}
                       value={filterText}
                       onChange={handleFilterTextChange}
                       className="w-full"
@@ -476,8 +473,7 @@ export const insertEditor = (schema: any) => (editor: typeof schema.BlockNoteEdi
 AIBlockRegistry.getInstance().addBlock({
   typeName: "editor",
   friendlyName: "Editor",
-  shortDescription:
-    "A syntax-highlighted code editor for viewing and editing code.",
+  shortDescription: "A syntax-highlighted code editor for viewing and editing code.",
   description: undent`
     Editor blocks provide a syntax-highlighted code editor with language selection. The content can optionally be stored in a template variable.
 

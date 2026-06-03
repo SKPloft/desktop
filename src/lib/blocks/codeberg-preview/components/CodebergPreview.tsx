@@ -28,7 +28,9 @@ interface CodebergPreviewProps {
 export default function CodebergPreview({ props, updateProps }: CodebergPreviewProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [data, setData] = useState<CodebergRepoData | CodebergPRData | CodebergIssueData | CodebergCodeData | null>(null);
+  const [data, setData] = useState<
+    CodebergRepoData | CodebergPRData | CodebergIssueData | CodebergCodeData | null
+  >(null);
   const mountedRef = useRef(true);
 
   const isCacheValid = useCallback(() => {
@@ -54,7 +56,11 @@ export default function CodebergPreview({ props, updateProps }: CodebergPreviewP
           result = await fetchCodebergPRData(props.owner, props.repo, parseInt(props.prNumber, 10));
           break;
         case "issue":
-          result = await fetchCodebergIssueData(props.owner, props.repo, parseInt(props.issueNumber, 10));
+          result = await fetchCodebergIssueData(
+            props.owner,
+            props.repo,
+            parseInt(props.issueNumber, 10),
+          );
           break;
         case "code":
           result = await fetchCodebergCodeData(
@@ -86,7 +92,18 @@ export default function CodebergPreview({ props, updateProps }: CodebergPreviewP
         setLoading(false);
       }
     }
-  }, [props.owner, props.repo, props.urlType, props.prNumber, props.issueNumber, props.branch, props.filePath, props.lineStart, props.lineEnd, updateProps]);
+  }, [
+    props.owner,
+    props.repo,
+    props.urlType,
+    props.prNumber,
+    props.issueNumber,
+    props.branch,
+    props.filePath,
+    props.lineStart,
+    props.lineEnd,
+    updateProps,
+  ]);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -107,7 +124,18 @@ export default function CodebergPreview({ props, updateProps }: CodebergPreviewP
     return () => {
       mountedRef.current = false;
     };
-  }, [props.owner, props.repo, props.urlType, props.prNumber, props.issueNumber, props.branch, props.filePath, isCacheValid, props.cachedData, fetchData]);
+  }, [
+    props.owner,
+    props.repo,
+    props.urlType,
+    props.prNumber,
+    props.issueNumber,
+    props.branch,
+    props.filePath,
+    isCacheValid,
+    props.cachedData,
+    fetchData,
+  ]);
 
   const handleRefresh = () => {
     fetchData();
@@ -126,7 +154,12 @@ export default function CodebergPreview({ props, updateProps }: CodebergPreviewP
               <AlertCircleIcon size={18} />
               <span className="text-sm">{error}</span>
             </div>
-            <Button size="sm" variant="flat" onPress={handleRefresh} startContent={<RefreshCwIcon size={14} />}>
+            <Button
+              size="sm"
+              variant="flat"
+              onPress={handleRefresh}
+              startContent={<RefreshCwIcon size={14} />}
+            >
               Retry
             </Button>
           </div>

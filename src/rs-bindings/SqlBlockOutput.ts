@@ -5,12 +5,13 @@ import type { SqlBlockExecutionResult } from "./SqlBlockExecutionResult";
  * Output structure for SQL blocks that implements BlockExecutionOutput
  * for template access to query results.
  */
-export type SqlBlockOutput = { 
-/**
- * All results from the SQL execution (supports multiple statements)
- */
-results: Array<SqlBlockExecutionResult>, 
-/**
- * Total execution duration in seconds
- */
-totalDuration: number, };
+export type SqlBlockOutput = {
+  /**
+   * All results from the SQL execution (supports multiple statements)
+   */
+  results: Array<SqlBlockExecutionResult>;
+  /**
+   * Total execution duration in seconds
+   */
+  totalDuration: number;
+};

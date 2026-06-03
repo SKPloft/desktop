@@ -2,116 +2,115 @@ import { KUBERNETES_BLOCK_SCHEMA, KubernetesBlock } from "@/lib/blocks/kubernete
 import { DependencySpec } from "@/lib/workflow/dependency";
 import { createReactBlockSpec } from "@blocknote/react";
 import { KubernetesComponent } from "./component";
+import { t } from "@/lib/i18n";
+//static file, so using t type only
 import track_event from "@/tracking";
 import { Container } from "lucide-react";
 import { Settings } from "@/state/settings";
 
-export default createReactBlockSpec(
-    KUBERNETES_BLOCK_SCHEMA,
-    {
-      // @ts-ignore
-      render: ({ block, editor }) => {
-        const handleCodeMirrorFocus = () => {
-          // Ensure BlockNote knows which block contains the focused CodeMirror
-          editor.setTextCursorPosition(block.id, "start");
-        };
+export default createReactBlockSpec(KUBERNETES_BLOCK_SCHEMA, {
+  // @ts-ignore
+  render: ({ block, editor }) => {
+    const handleCodeMirrorFocus = () => {
+      // Ensure BlockNote knows which block contains the focused CodeMirror
+      editor.setTextCursorPosition(block.id, "start");
+    };
 
-        const setName = (name: string) => {
-          editor.updateBlock(block, {
-            props: { ...block.props, name: name },
-          });
-        };
+    const setName = (name: string) => {
+      editor.updateBlock(block, {
+        props: { ...block.props, name: name },
+      });
+    };
 
-        const setCommand = (command: string) => {
-          editor.updateBlock(block, {
-            props: { ...block.props, command: command },
-          });
-        };
+    const setCommand = (command: string) => {
+      editor.updateBlock(block, {
+        props: { ...block.props, command: command },
+      });
+    };
 
-        const setMode = (mode: string) => {
-          editor.updateBlock(block, {
-            props: { ...block.props, mode: mode },
-          });
-        };
+    const setMode = (mode: string) => {
+      editor.updateBlock(block, {
+        props: { ...block.props, mode: mode },
+      });
+    };
 
-        const setInterpreter = (interpreter: string) => {
-          editor.updateBlock(block, {
-            props: { ...block.props, interpreter: interpreter },
-          });
-        };
+    const setInterpreter = (interpreter: string) => {
+      editor.updateBlock(block, {
+        props: { ...block.props, interpreter: interpreter },
+      });
+    };
 
-        const setAutoRefresh = (autoRefresh: boolean) => {
-          console.log("setting auto refresh in spec", autoRefresh);
-          editor.updateBlock(block, {
-            props: { ...block.props, autoRefresh: autoRefresh },
-          });
-        };
+    const setAutoRefresh = (autoRefresh: boolean) => {
+      console.log("setting auto refresh in spec", autoRefresh);
+      editor.updateBlock(block, {
+        props: { ...block.props, autoRefresh: autoRefresh },
+      });
+    };
 
-        const setRefreshInterval = (refreshInterval: number) => {
-          console.log("setting refresh interval in spec", refreshInterval);
-          editor.updateBlock(block, {
-            props: { ...block.props, refreshInterval: refreshInterval },
-          });
-        };
+    const setRefreshInterval = (refreshInterval: number) => {
+      console.log("setting refresh interval in spec", refreshInterval);
+      editor.updateBlock(block, {
+        props: { ...block.props, refreshInterval: refreshInterval },
+      });
+    };
 
-        const setNamespace = (namespace: string) => {
-          editor.updateBlock(block, {
-            props: { ...block.props, namespace: namespace },
-          });
-        };
+    const setNamespace = (namespace: string) => {
+      editor.updateBlock(block, {
+        props: { ...block.props, namespace: namespace },
+      });
+    };
 
-        const setContext = (context: string) => {
-          editor.updateBlock(block, {
-            props: { ...block.props, context: context },
-          });
-        };
+    const setContext = (context: string) => {
+      editor.updateBlock(block, {
+        props: { ...block.props, context: context },
+      });
+    };
 
+    let dependency = DependencySpec.deserialize(block.props.dependency || "{}");
+    let kubernetes = new KubernetesBlock(
+      block.id,
+      block.props.name,
+      dependency,
+      block.props.command,
+      block.props.mode as "preset" | "custom",
+      block.props.interpreter,
+      block.props.autoRefresh,
+      block.props.refreshInterval,
+      block.props.namespace || "",
+      block.props.context || "",
+    );
 
-
-        let dependency = DependencySpec.deserialize(block.props.dependency || "{}");
-        let kubernetes = new KubernetesBlock(
-          block.id,
-          block.props.name,
-          dependency,
-          block.props.command,
-          block.props.mode as "preset" | "custom",
-          block.props.interpreter,
-          block.props.autoRefresh,
-          block.props.refreshInterval,
-          block.props.namespace || "",
-          block.props.context || "",
-        );
-
-        return (
-          <KubernetesComponent
-            kubernetes={kubernetes}
-            setName={setName}
-            setCommand={setCommand}
-            setMode={setMode}
-            setInterpreter={setInterpreter}
-            setAutoRefresh={setAutoRefresh}
-            setRefreshInterval={setRefreshInterval}
-            setNamespace={setNamespace}
-            setContext={setContext}
-            isEditable={editor.isEditable}
-            onCodeMirrorFocus={handleCodeMirrorFocus}
-          />
-        );
-      },
-      toExternalHTML: ({ block }) => {
-        return (
-          <div>
-            <h3>Kubernetes Get {block?.props?.mode === "preset" ? "Command" : "Custom Command"}</h3>
-            <pre><code>{block?.props?.command}</code></pre>
-          </div>
-        );
-      },
-    },
-  );
+    return (
+      <KubernetesComponent
+        kubernetes={kubernetes}
+        setName={setName}
+        setCommand={setCommand}
+        setMode={setMode}
+        setInterpreter={setInterpreter}
+        setAutoRefresh={setAutoRefresh}
+        setRefreshInterval={setRefreshInterval}
+        setNamespace={setNamespace}
+        setContext={setContext}
+        isEditable={editor.isEditable}
+        onCodeMirrorFocus={handleCodeMirrorFocus}
+      />
+    );
+  },
+  toExternalHTML: ({ block }) => {
+    return (
+      <div>
+        <h3>Kubernetes Get {block?.props?.mode === "preset" ? "Command" : "Custom Command"}</h3>
+        <pre>
+          <code>{block?.props?.command}</code>
+        </pre>
+      </div>
+    );
+  },
+});
 
 export const insertKubernetes = (editor: any) => ({
-  title: "Kubernetes Get",
-  subtext: "Execute kubectl get commands with live results",
+  title: t("kubernetes.title"),
+  subtext: t("kubernetes.subtext"),
   onItemClick: () => {
     track_event("runbooks.block.create", { type: "kubernetes-get" });
 
@@ -139,5 +138,5 @@ export const insertKubernetes = (editor: any) => ({
   },
   icon: <Container size={18} />,
   aliases: ["kubernetes", "kubernetes-get", "k8s", "kubectl", "pods", "get"],
-  group: "Execute",
+  group: t("editor.blocks.group.execute"),
 });

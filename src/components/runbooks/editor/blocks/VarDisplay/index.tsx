@@ -5,6 +5,7 @@ import undent from "undent";
 import AIBlockRegistry from "@/lib/ai/block_registry";
 import { exportPropMatter } from "@/lib/utils";
 import { useBlockContext } from "@/lib/hooks/useDocumentBridge";
+import { useTranslation } from "@/lib/i18n";
 
 /**
  * Props for the VarDisplay component that shows a live preview of a template variable
@@ -21,6 +22,7 @@ interface VarDisplayProps {
  * Refreshes automatically every 2 seconds to keep values in sync
  */
 const VarDisplay = (props: VarDisplayProps) => {
+  const { t } = useTranslation();
   const context = useBlockContext(props.blockId);
 
   let value = None;
@@ -30,12 +32,14 @@ const VarDisplay = (props: VarDisplayProps) => {
 
   return (
     <Tooltip
-      content="Display a template variable's current value"
+      content={t("editor.blocks.var_display.tooltip")}
       delay={1000}
       className="outline-none"
     >
       <div className="flex flex-col w-full bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-800 dark:to-indigo-950 rounded-lg p-3 border border-blue-200 dark:border-blue-900 shadow-sm hover:shadow-md transition-all duration-200">
-        <span className="text-[10px] font-mono text-gray-400 dark:text-gray-500 mb-2">var_display</span>
+        <span className="text-[10px] font-mono text-gray-400 dark:text-gray-500 mb-2">
+          var_display
+        </span>
         <div className="flex flex-row items-center space-x-3">
           <div className="flex items-center">
             <Button
@@ -49,7 +53,7 @@ const VarDisplay = (props: VarDisplayProps) => {
 
           <div className="flex-1">
             <Input
-              placeholder="Variable name"
+              placeholder={t("editor.blocks.var_display.placeholder")}
               value={props.name}
               onValueChange={props.onUpdate}
               autoComplete="off"
@@ -64,7 +68,7 @@ const VarDisplay = (props: VarDisplayProps) => {
           <div className="flex-1 bg-white dark:bg-slate-900 rounded-md px-4 py-2 border border-blue-200 dark:border-blue-800 font-mono text-sm min-h-[2rem] max-h-[6rem] overflow-auto">
             <div className="w-full transition-opacity duration-200">
               {value.unwrapOr(
-                <span className="italic text-gray-500 dark:text-gray-400">(empty)</span>,
+                <span className="italic text-gray-500 dark:text-gray-400">{t("editor.blocks.var_display.empty")}</span>,
               )}
             </div>
           </div>
@@ -120,8 +124,7 @@ export default createReactBlockSpec(
 AIBlockRegistry.getInstance().addBlock({
   typeName: "var_display",
   friendlyName: "Display Variable",
-  shortDescription:
-    "Displays the current value of a template variable.",
+  shortDescription: "Displays the current value of a template variable.",
   description: undent`
     Display Variable blocks show the current value of a template variable in the runbook. The displayed value updates automatically as the variable changes.
 

@@ -186,7 +186,11 @@ export default function Topbar(props: TopbarProps) {
             {/* Row 1: Name/URL + Copy */}
             <div className="hidden md:flex items-center whitespace-nowrap">
               {remoteRunbook ? (
-                <a href={AtuinEnv.url(remoteRunbook.nwo)} onClick={openHubRunbook} className="truncate">
+                <a
+                  href={AtuinEnv.url(remoteRunbook.nwo)}
+                  onClick={openHubRunbook}
+                  className="truncate"
+                >
                   {name}
                 </a>
               ) : (
@@ -302,7 +306,7 @@ export default function Topbar(props: TopbarProps) {
                 "bg-black/5 dark:bg-white/5",
                 props.isSettingsOpen
                   ? "bg-black/15 dark:bg-white/15 text-gray-800 dark:text-gray-100"
-                  : "text-gray-600 dark:text-gray-300 hover:bg-black/10 dark:hover:bg-white/10"
+                  : "text-gray-600 dark:text-gray-300 hover:bg-black/10 dark:hover:bg-white/10",
               )}
               onPress={props.onToggleSettings}
             >
@@ -328,7 +332,7 @@ export default function Topbar(props: TopbarProps) {
                   ? "opacity-50 text-gray-400 dark:text-gray-500"
                   : props.isAIAssistantOpen
                     ? "bg-purple-500/20 dark:bg-purple-400/20 text-purple-600 dark:text-purple-300"
-                    : "text-purple-500 dark:text-purple-400 hover:bg-black/10 dark:hover:bg-white/10"
+                    : "text-purple-500 dark:text-purple-400 hover:bg-black/10 dark:hover:bg-white/10",
               )}
               onPress={props.isAIFeaturesEnabled ? props.toggleAIAssistant : undefined}
             >

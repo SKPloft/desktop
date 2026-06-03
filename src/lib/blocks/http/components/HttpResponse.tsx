@@ -7,6 +7,7 @@ import { githubDarkTheme } from "@uiw/react-json-view/githubDark";
 import "../style.css";
 import ResultTable from "../../common/ResultTable";
 import { HttpResponse } from "@/rs-bindings/HttpResponse";
+import { useTranslation } from "@/lib/i18n";
 
 const renderBody = (body: string, headers: any, colorMode: "dark" | "light") => {
   let contentType = headers["content-type"];
@@ -40,6 +41,8 @@ interface HttpResponseProps {
 }
 
 const HttpResponseComponent = ({ response, error, dismiss, colorMode }: HttpResponseProps) => {
+  const { t } = useTranslation();
+
   const copyToClipboard = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
@@ -62,15 +65,14 @@ const HttpResponseComponent = ({ response, error, dismiss, colorMode }: HttpResp
               startContent={<WifiOff size={14} />}
               className="pl-3 py-2"
             >
-              Error
+              {t("common.error")}
             </Chip>
-            <span className="text-danger-700 font-semibold">Connection Error</span>
+            <span className="text-danger-700 font-semibold">{t("blocks.http.connection_error")}</span>
           </div>
         </CardHeader>
         <CardBody className="p-4">
           <p className="text-danger-600 select-text">
-            {error ||
-              "An error occurred while making the request. Please check your connection and try again."}
+            {error || t("blocks.common.request_error")}
           </p>
         </CardBody>
       </Card>
@@ -117,7 +119,7 @@ const HttpResponseComponent = ({ response, error, dismiss, colorMode }: HttpResp
           <span className="text-default-700 font-semibold select-text">{statusText}</span>
         </div>
         <div className="flex items-center gap-4">
-          <Tooltip content="Request duration">
+          <Tooltip content={t("blocks.common.request_duration")}>
             <div className="flex items-center gap-1 text-default-500">
               <Clock size={14} />
               <span className="text-sm select-text">{(response.duration * 1000).toFixed(3)}ms</span>
@@ -133,7 +135,7 @@ const HttpResponseComponent = ({ response, error, dismiss, colorMode }: HttpResp
         {/* Response Headers Section */}
         <div>
           <div className="flex justify-between items-center mb-2">
-            <h3 className="text-sm font-semibold text-default-700">Response Headers</h3>
+            <h3 className="text-sm font-semibold text-default-700">{t("blocks.http.response_headers")}</h3>
             <Button
               variant="light"
               size="sm"
@@ -155,12 +157,12 @@ const HttpResponseComponent = ({ response, error, dismiss, colorMode }: HttpResp
               columns={[
                 {
                   id: "Header",
-                  title: "Header",
+                  title: t("blocks.http.header"),
                   grow: 1,
                 },
                 {
                   id: "Value",
-                  title: "Value",
+                  title: t("blocks.http.value"),
                   grow: 1,
                 },
               ]}
@@ -171,7 +173,7 @@ const HttpResponseComponent = ({ response, error, dismiss, colorMode }: HttpResp
         {/* Response Body Section */}
         <div>
           <div className="flex justify-between items-center mb-2">
-            <h3 className="text-sm font-semibold text-default-700">Response Body</h3>
+            <h3 className="text-sm font-semibold text-default-700">{t("blocks.http.response_body")}</h3>
             <Button variant="light" size="sm" isIconOnly onClick={() => copyToClipboard(body)}>
               <Copy size={14} />
             </Button>

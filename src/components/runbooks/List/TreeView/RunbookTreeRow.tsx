@@ -1,6 +1,7 @@
 import { cn, usernameFromNwo } from "@/lib/utils";
 import { Tooltip } from "@heroui/react";
 import { BookLockIcon, BookPlusIcon, BookTextIcon, Terminal } from "lucide-react";
+import { useTranslation } from "@/lib/i18n";
 import { NodeRendererProps } from "react-arborist";
 import { useStore } from "@/state/store";
 import { usePtyStore } from "@/state/ptyStore";
@@ -26,6 +27,7 @@ export interface RunbookTreeRowProps extends NodeRendererProps<RunbookRowData> {
 }
 
 export default function RunbookTreeRow(props: RunbookTreeRowProps) {
+  const { t } = useTranslation();
   const ptys = usePtyStore((state) => state.ptys);
   const count = Object.values(ptys).filter((pty) => pty.runbook === props.node.id).length;
   const sidebarClickStyle = useStore((state) => state.sidebarClickStyle);
@@ -120,13 +122,13 @@ export default function RunbookTreeRow(props: RunbookTreeRowProps) {
     }
   }
 
-  let tooltipContent = "This is a local runbook";
+  let tooltipContent = t("runbook_list.tooltip.local_runbook");
   if (hubRunbookOwnedByUser) {
-    tooltipContent = "This runbook has been shared to Atuin Hub";
+    tooltipContent = t("runbook_list.tooltip.shared_to_hub");
   } else if (hubRunbookNotOwnedButHasPermission) {
-    tooltipContent = "You're collaborating on this runbook";
+    tooltipContent = t("runbook_list.tooltip.collaborating");
   } else if (hubRunbookNotOwnedAndNoPermission) {
-    tooltipContent = "This runbook belongs to another user";
+    tooltipContent = t("runbook_list.tooltip.belongs_to_other");
   }
 
   return (
@@ -173,18 +175,18 @@ export default function RunbookTreeRow(props: RunbookTreeRowProps) {
             })}
           >
             {!localRunbookName && !props.useProvidedName && !remoteRunbook && (
-              <span className="italic">Loading...</span>
+              <span className="italic">{t("common.loading")}</span>
             )}
             {!localRunbookName && !props.useProvidedName && remoteRunbook && (
               <span>{remoteRunbook.name}</span>
             )}
             {props.useProvidedName && <span>{props.node.data.name}</span>}
-            {!props.useProvidedName && localRunbookName && (localRunbookName || "Untitled")}
+            {!props.useProvidedName && localRunbookName && (localRunbookName || t("common.untitled"))}
           </span>
         </h3>
         <div className="flex items-center">
           {count > 0 && (
-            <Tooltip content={`${count} active terminal${count > 1 ? "s" : ""}`}>
+            <Tooltip content={t("runbook_list.active_terminals", { count })}>
               <div className="flex items-center text-primary-500 ml-1 mr-2 mt-1">
                 <Terminal size={14} />
                 <span className="text-xs ml-1">{count}</span>

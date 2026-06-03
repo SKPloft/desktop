@@ -101,11 +101,14 @@ const TerminalComponent = ({
       setCommandDuration(null);
     });
 
-    terminalData.on("command_end", ({ exitCode, duration }: { exitCode: number; duration: number }) => {
-      setExitCode(exitCode);
-      setCommandDuration(duration);
-      setCommandRunning(false);
-    });
+    terminalData.on(
+      "command_end",
+      ({ exitCode, duration }: { exitCode: number; duration: number }) => {
+        setExitCode(exitCode);
+        setCommandDuration(duration);
+        setCommandRunning(false);
+      },
+    );
 
     // terminal object needs attaching to a ref to a div
     if (!isAttached && terminalData && terminalData.terminal) {

@@ -22,6 +22,8 @@ import { exportPropMatter } from "@/lib/utils";
 import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
 import { useBlockKvValue } from "@/lib/hooks/useKvValue";
+import { useTranslation } from "@/lib/i18n";
+import { t as i18nT } from "@/lib/i18n";
 
 interface SshKeyInfo {
   name: string;
@@ -69,6 +71,7 @@ const SshConnect = ({
   onSettingsChange,
   isEditable,
 }: SshConnectProps) => {
+  const { t } = useTranslation();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [availableKeys, setAvailableKeys] = useState<SshKeyInfo[]>([]);
   const [keysLoading, setKeysLoading] = useState(false);
@@ -163,7 +166,7 @@ const SshConnect = ({
   return (
     <>
       <Tooltip
-        content="Ensure we are connected to an SSH server and make it the current connection"
+        content={t("editor.blocks.ssh_connect.tooltip")}
         delay={1000}
         className="outline-none"
       >
@@ -172,7 +175,7 @@ const SshConnect = ({
             <span className="text-[10px] font-mono text-gray-400 dark:text-gray-500">
               ssh-connect
             </span>
-            <Tooltip content="Settings" delay={500}>
+            <Tooltip content={t("common.settings")} delay={500}>
               <button
                 onClick={() => setSettingsOpen(true)}
                 className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
@@ -196,7 +199,9 @@ const SshConnect = ({
             <div className="flex-1">
               <Input
                 placeholder={
-                  hasExplicitConfig ? "Configured via settings" : "myserver or user@host:port"
+                  hasExplicitConfig
+                    ? t("editor.blocks.ssh_connect.configured_via_settings")
+                    : t("editor.blocks.ssh_connect.quick_input_placeholder")
                 }
                 value={displayValue}
                 autoComplete="off"
@@ -220,19 +225,18 @@ const SshConnect = ({
         scrollBehavior="inside"
       >
         <ModalContent>
-          <ModalHeader className="text-base font-medium">SSH Connect Settings</ModalHeader>
+          <ModalHeader className="text-base font-medium">{t("editor.blocks.ssh_connect.settings_title")}</ModalHeader>
           <ModalBody className="pb-6">
             <div className="grid grid-cols-2 gap-6">
               {/* Left column: Connection */}
               <div className="space-y-3">
-                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Connection</h3>
+                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">{t("editor.blocks.ssh_connect.connection")}</h3>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Override connection details. When set, these take precedence over the quick input
-                  field.
+                  {t("editor.blocks.ssh_connect.connection_description")}
                 </p>
 
                 <Input
-                  label="User"
+                  label={t("editor.blocks.ssh_connect.user")}
                   placeholder="root"
                   value={user}
                   onValueChange={(v) => onSettingsChange({ user: v })}
@@ -244,7 +248,7 @@ const SshConnect = ({
                   spellCheck="false"
                 />
                 <Input
-                  label="Hostname"
+                  label={t("editor.blocks.ssh_connect.hostname")}
                   placeholder="example.com"
                   value={hostname}
                   onValueChange={(v) => onSettingsChange({ hostname: v })}
@@ -256,7 +260,7 @@ const SshConnect = ({
                   spellCheck="false"
                 />
                 <Input
-                  label="Port"
+                  label={t("editor.blocks.ssh_connect.port")}
                   placeholder="22"
                   type="number"
                   value={port ? String(port) : ""}
@@ -275,8 +279,9 @@ const SshConnect = ({
 
                 {hasIncompleteConfig && (
                   <p className="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 p-2 rounded">
-                    Both user and hostname must be set together. Currently only{" "}
-                    {user ? "user" : "hostname"} is configured.
+                    {t("editor.blocks.ssh_connect.incomplete_config", {
+                      field: user ? t("editor.blocks.ssh_connect.user_lower") : t("editor.blocks.ssh_connect.hostname_lower"),
+                    })}
                   </p>
                 )}
               </div>
@@ -285,10 +290,10 @@ const SshConnect = ({
               <div className="space-y-4">
                 <div className="space-y-3">
                   <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Identity Key
+                    {t("editor.blocks.ssh_connect.identity_key")}
                   </h3>
                   <p className="text-xs text-gray-500 dark:text-gray-400">
-                    Specify a private key for authentication. Overrides SSH config and agent.
+                    {t("editor.blocks.ssh_connect.identity_key_description")}
                   </p>
 
                   <RadioGroup
@@ -299,16 +304,16 @@ const SshConnect = ({
                     isDisabled={!isEditable}
                     size="sm"
                   >
-                    <Radio value="none">Use SSH config/agent (default)</Radio>
-                    <Radio value="path">Specify key path</Radio>
-                    <Radio value="paste">Paste key content</Radio>
+                    <Radio value="none">{t("editor.blocks.ssh_connect.identity_key_use_config")}</Radio>
+                    <Radio value="path">{t("editor.blocks.ssh_connect.identity_key_path")}</Radio>
+                    <Radio value="paste">{t("editor.blocks.ssh_connect.identity_key_paste")}</Radio>
                   </RadioGroup>
 
                   {identityKey.mode === "path" && (
                     <div className="mt-3 space-y-2">
                       <Select
-                        label="Select from ~/.ssh"
-                        placeholder={keysLoading ? "Loading keys..." : "Select a key"}
+                        label={t("editor.blocks.ssh_connect.select_from_ssh")}
+                        placeholder={keysLoading ? t("editor.blocks.ssh_connect.loading_keys") : t("editor.blocks.ssh_connect.select_key")}
                         selectedKeys={identityKey.value ? [identityKey.value] : []}
                         onSelectionChange={async (keys) => {
                           const selected = Array.from(keys)[0] as string;
@@ -324,20 +329,20 @@ const SshConnect = ({
                             <div className="flex flex-col">
                               <span className="text-sm">{key.name}</span>
                               <span className="text-xs text-gray-500">
-                                {key.keyType || "private key"}
+                                {key.keyType || t("editor.blocks.ssh_connect.private_key")}
                               </span>
                             </div>
                           </SelectItem>
                         ))}
                       </Select>
-                      <p className="text-xs text-gray-500">Or browse/enter a custom path:</p>
+                      <p className="text-xs text-gray-500">{t("editor.blocks.ssh_connect.custom_key_path")}</p>
                       <div className="flex flex-row items-center space-x-2">
                         <Button
                           isIconOnly
                           variant="light"
                           size="sm"
                           className="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
-                          aria-label="Browse for key file"
+                          aria-label={t("editor.blocks.ssh_connect.browse_key_file")}
                           onPress={selectKeyFile}
                           isDisabled={!isEditable}
                         >
@@ -363,7 +368,7 @@ const SshConnect = ({
 
                   {identityKey.mode === "paste" && (
                     <Textarea
-                      label="Private Key Content"
+                      label={t("editor.blocks.ssh_connect.private_key_content")}
                       placeholder="-----BEGIN OPENSSH PRIVATE KEY-----&#10;..."
                       value={identityKey.value}
                       onValueChange={async (v) => {
@@ -386,10 +391,10 @@ const SshConnect = ({
 
                 <div className="pt-3 border-t border-gray-200 dark:border-gray-700 space-y-3">
                   <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Certificate
+                    {t("editor.blocks.ssh_connect.certificate")}
                   </h3>
                   <p className="text-xs text-gray-500 dark:text-gray-400">
-                    Specify an SSH certificate for authentication. Overrides auto-detection.
+                    {t("editor.blocks.ssh_connect.certificate_description")}
                   </p>
 
                   <RadioGroup
@@ -400,21 +405,21 @@ const SshConnect = ({
                     isDisabled={!isEditable}
                     size="sm"
                   >
-                    <Radio value="none">Auto-detect from key path (default)</Radio>
-                    <Radio value="path">Specify certificate path</Radio>
-                    <Radio value="paste">Paste certificate content</Radio>
+                    <Radio value="none">{t("editor.blocks.ssh_connect.certificate_auto_detect")}</Radio>
+                    <Radio value="path">{t("editor.blocks.ssh_connect.certificate_path")}</Radio>
+                    <Radio value="paste">{t("editor.blocks.ssh_connect.certificate_paste")}</Radio>
                   </RadioGroup>
 
                   {certificate.mode === "path" && (
                     <div className="mt-3 space-y-2">
-                      <p className="text-xs text-gray-500">Browse or enter a certificate path:</p>
+                      <p className="text-xs text-gray-500">{t("editor.blocks.ssh_connect.certificate_path_description")}</p>
                       <div className="flex flex-row items-center space-x-2">
                         <Button
                           isIconOnly
                           variant="light"
                           size="sm"
                           className="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
-                          aria-label="Browse for certificate file"
+                          aria-label={t("editor.blocks.ssh_connect.browse_certificate_file")}
                           onPress={selectCertFile}
                           isDisabled={!isEditable}
                         >
@@ -440,7 +445,7 @@ const SshConnect = ({
 
                   {certificate.mode === "paste" && (
                     <Textarea
-                      label="Certificate Content"
+                      label={t("editor.blocks.ssh_connect.certificate_content")}
                       placeholder="ssh-ed25519-cert-v01@openssh.com AAAA..."
                       value={certificate.value}
                       onValueChange={async (v) => {
@@ -482,10 +487,10 @@ const SshConnect = ({
                     await setCertificate({ mode: "none", value: "" });
                   }}
                 >
-                  Clear All Settings
+                  {t("editor.blocks.ssh_connect.clear_all_settings")}
                 </Button>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
-                  This will re-enable the quick input field and reset identity key and certificate
+                  {t("editor.blocks.ssh_connect.clear_all_description")}
                 </p>
               </div>
             )}
@@ -552,7 +557,7 @@ export default createReactBlockSpec(
 );
 
 export const insertSshConnect = (schema: any) => (editor: typeof schema.BlockNoteEditor) => ({
-  title: "SSH Connect",
+  title: i18nT("editor.blocks.ssh_connect.title"),
   onItemClick: () => {
     track_event("runbooks.block.create", { type: "ssh-connect" });
 
@@ -567,7 +572,7 @@ export const insertSshConnect = (schema: any) => (editor: typeof schema.BlockNot
     );
   },
   icon: <GlobeIcon size={18} />,
-  group: "Network",
+  group: i18nT("editor.blocks.group.network"),
 });
 
 AIBlockRegistry.getInstance().addBlock({

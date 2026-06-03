@@ -11,6 +11,8 @@ import track_event from "@/tracking";
 import SQL from "@/lib/blocks/common/SQL";
 import { exportPropMatter } from "@/lib/utils";
 import { useBlockKvValue } from "@/lib/hooks/useKvValue";
+import { t } from "@/lib/i18n";
+// t is used by the non-React insertClickhouse function below
 
 interface SQLProps {
   isEditable: boolean;
@@ -161,12 +163,12 @@ export default createReactBlockSpec(
 );
 
 export const insertClickhouse = (schema: any) => (editor: typeof schema.BlockNoteEditor) => ({
-  title: "Clickhouse",
+  title: t("editor.blocks.clickhouse.title"),
   onItemClick: () => {
     track_event("runbooks.block.create", { type: "clickhouse" });
 
     let clickhouseBlocks = editor.document.filter((block: any) => block.type === "clickhouse");
-    let name = `Clickhouse ${clickhouseBlocks.length + 1}`;
+    let name = `${t("editor.blocks.clickhouse.title")} ${clickhouseBlocks.length + 1}`;
 
     editor.insertBlocks(
       [
@@ -183,12 +185,12 @@ export const insertClickhouse = (schema: any) => (editor: typeof schema.BlockNot
     );
   },
   icon: <DatabaseIcon size={18} />,
-  group: "Database",
+  group: t("editor.blocks.group.database"),
 });
 
 AIBlockRegistry.getInstance().addBlock({
   typeName: "clickhouse",
-  friendlyName: "ClickHouse",
+  friendlyName: t("editor.blocks.clickhouse.title"),
   shortDescription: "Executes SQL queries against a ClickHouse database.",
   description: undent`
     ClickHouse blocks execute SQL queries against a ClickHouse database and display results in an interactive table.

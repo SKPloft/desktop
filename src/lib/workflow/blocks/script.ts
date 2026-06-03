@@ -11,7 +11,6 @@ export class ScriptBlock extends Block {
     return "script";
   }
 
-
   constructor(
     id: string,
     name: string,

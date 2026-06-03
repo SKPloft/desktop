@@ -3,4 +3,9 @@
 /**
  * Icon types for client prompts
  */
-export type PromptIcon = { "type": "info" } | { "type": "warning" } | { "type": "error" } | { "type": "success" } | { "type": "question" };
+export type PromptIcon =
+  | { type: "info" }
+  | { type: "warning" }
+  | { type: "error" }
+  | { type: "success" }
+  | { type: "question" };

@@ -56,6 +56,7 @@ import Workspace from "@/state/runbooks/workspace";
 import { TabIcon } from "@/state/store/ui_state";
 import { clearHubApiToken } from "@/api/auth";
 import SocketManager from "@/socket";
+import { useTranslation } from "@/lib/i18n";
 
 const scrollWorkspaceIntoViewGenerator =
   (elRef: React.RefObject<HTMLDivElement | null>) => async (workspaceId: string) => {
@@ -119,6 +120,7 @@ interface NotesSidebarProps {
 }
 
 const NoteSidebar = forwardRef((props: NotesSidebarProps, ref: React.ForwardedRef<ListApi>) => {
+  const { t } = useTranslation();
   const isSyncing = useStore((state: AtuinState) => state.isSyncing);
   const isSearchOpen = useStore((store: AtuinState) => store.searchOpen);
   const setSearchOpen = useStore((store: AtuinState) => store.setSearchOpen);
@@ -208,11 +210,11 @@ const NoteSidebar = forwardRef((props: NotesSidebarProps, ref: React.ForwardedRe
   }
 
   function handleOpenHistory() {
-    openTab("/history", "History", TabIcon.HISTORY);
+    openTab("/history", t("runbook_list.history"), TabIcon.HISTORY);
   }
 
   function handleOpenStats() {
-    openTab("/stats", "Stats", TabIcon.STATS);
+    openTab("/stats", t("runbook_list.stats"), TabIcon.STATS);
   }
 
   function handleOpenSettings() {
@@ -319,9 +321,7 @@ const NoteSidebar = forwardRef((props: NotesSidebarProps, ref: React.ForwardedRe
             classNames={{ track: "bg-transparent" }}
           />
           <PendingInvitations />
-          <div
-            className="border-b border-gray-100 dark:border-gray-800 pt-4"
-          >
+          <div className="border-b border-gray-100 dark:border-gray-800 pt-4">
             <Dropdown showArrow size="lg" placement="bottom-end">
               <DropdownTrigger>
                 <div
@@ -333,40 +333,40 @@ const NoteSidebar = forwardRef((props: NotesSidebarProps, ref: React.ForwardedRe
                   )}
                 >
                   <div className="flex items-center gap-2">
-                  {selectedOrg && (
-                    <h2 className="text-lg font-semibold flex items-center gap-2">
-                      {org?.avatar_url && (
-                        <Avatar
-                          src={org.avatar_url}
-                          size="sm"
-                          radius="sm"
-                          classNames={{ base: "inline-block mr-2 min-w-[32px]" }}
-                          name={org.name}
-                        />
-                      )}
-                      {org?.name}
-                    </h2>
-                  )}
-                  {!selectedOrg && (
-                    <h2 className="text-lg font-semibold flex items-center gap-2">
-                      {user.isLoggedIn() ? (
-                        <>
-                          {user.avatar_url && (
-                            <Avatar
-                              src={user.avatar_url}
-                              size="sm"
-                              radius="sm"
-                              classNames={{ base: "inline-block mr-2 min-w-[32px]" }}
-                              name={user.username}
-                            />
-                          )}
-                          {user.username}
-                        </>
-                      ) : (
-                        "Personal"
-                      )}
-                    </h2>
-                  )}
+                    {selectedOrg && (
+                      <h2 className="text-lg font-semibold flex items-center gap-2">
+                        {org?.avatar_url && (
+                          <Avatar
+                            src={org.avatar_url}
+                            size="sm"
+                            radius="sm"
+                            classNames={{ base: "inline-block mr-2 min-w-[32px]" }}
+                            name={org.name}
+                          />
+                        )}
+                        {org?.name}
+                      </h2>
+                    )}
+                    {!selectedOrg && (
+                      <h2 className="text-lg font-semibold flex items-center gap-2">
+                        {user.isLoggedIn() ? (
+                          <>
+                            {user.avatar_url && (
+                              <Avatar
+                                src={user.avatar_url}
+                                size="sm"
+                                radius="sm"
+                                classNames={{ base: "inline-block mr-2 min-w-[32px]" }}
+                                name={user.username}
+                              />
+                            )}
+                            {user.username}
+                          </>
+                        ) : (
+                          "Personal"
+                        )}
+                      </h2>
+                    )}
                   </div>
                   <ChevronDownIcon size={16} />
                 </div>
@@ -473,89 +473,89 @@ const NoteSidebar = forwardRef((props: NotesSidebarProps, ref: React.ForwardedRe
                 placement="bottom"
                 delay={300}
                 classNames={{
-                  content: "text-xs py-1 px-2 bg-gray-800/90 dark:bg-gray-900/90 text-white rounded shadow-sm",
+                  content:
+                    "text-xs py-1 px-2 bg-gray-800/90 dark:bg-gray-900/90 text-white rounded shadow-sm",
                 }}
               >
-                <Button
-                  variant="light"
-                  size="sm"
-                  isIconOnly
-                  onPress={handleOpenSearch}
-                >
+                <Button variant="light" size="sm" isIconOnly onPress={handleOpenSearch}>
                   <SearchIcon size={18} />
                 </Button>
               </Tooltip>
               <Tooltip
                 content={
                   <span className="flex items-center gap-1.5">
-                    Commands <kbd className="px-1 py-0.5 text-[10px] bg-gray-600/50 rounded">⇧⌘P</kbd>
+                    Commands{" "}
+                    <kbd className="px-1 py-0.5 text-[10px] bg-gray-600/50 rounded">⇧⌘P</kbd>
                   </span>
                 }
                 placement="bottom"
                 delay={300}
                 classNames={{
-                  content: "text-xs py-1 px-2 bg-gray-800/90 dark:bg-gray-900/90 text-white rounded shadow-sm",
+                  content:
+                    "text-xs py-1 px-2 bg-gray-800/90 dark:bg-gray-900/90 text-white rounded shadow-sm",
                 }}
               >
-                <Button
-                  variant="light"
-                  size="sm"
-                  isIconOnly
-                  onPress={handleOpenCommandPalette}
-                >
+                <Button variant="light" size="sm" isIconOnly onPress={handleOpenCommandPalette}>
                   <TerminalIcon size={18} />
                 </Button>
               </Tooltip>
               <Tooltip
-                content="History"
+                content={t("runbook_list.history")}
                 placement="bottom"
                 delay={300}
                 classNames={{
-                  content: "text-xs py-1 px-2 bg-gray-800/90 dark:bg-gray-900/90 text-white rounded shadow-sm",
+                  content:
+                    "text-xs py-1 px-2 bg-gray-800/90 dark:bg-gray-900/90 text-white rounded shadow-sm",
                 }}
               >
-                <Button
-                  variant="light"
-                  size="sm"
-                  isIconOnly
-                  onPress={handleOpenHistory}
-                >
+                <Button variant="light" size="sm" isIconOnly onPress={handleOpenHistory}>
                   <HistoryIcon size={18} />
                 </Button>
               </Tooltip>
               <Tooltip
-                content="Stats"
+                content={t("runbook_list.stats")}
                 placement="bottom"
                 delay={300}
                 classNames={{
-                  content: "text-xs py-1 px-2 bg-gray-800/90 dark:bg-gray-900/90 text-white rounded shadow-sm",
+                  content:
+                    "text-xs py-1 px-2 bg-gray-800/90 dark:bg-gray-900/90 text-white rounded shadow-sm",
                 }}
               >
-                <Button
-                  variant="light"
-                  size="sm"
-                  isIconOnly
-                  onPress={handleOpenStats}
-                >
+                <Button variant="light" size="sm" isIconOnly onPress={handleOpenStats}>
                   <ChartBarBigIcon size={18} />
                 </Button>
               </Tooltip>
               <Dropdown placement="bottom-end">
                 <DropdownTrigger>
-                  <Button
-                    variant="light"
-                    size="sm"
-                    isIconOnly
-                  >
+                  <Button variant="light" size="sm" isIconOnly>
                     <CircleHelpIcon size={18} />
                   </Button>
                 </DropdownTrigger>
                 <DropdownMenu
-                  aria-label="Help menu"
+                  aria-label={t("runbook_list.help_menu")}
                   items={[
-                    { key: "docs", label: "Documentation", icon: BookOpenIcon, action: () => open("https://docs.atuin.sh/desktop") },
-                    { key: "feedback", label: "Send Feedback", icon: MessageCircleHeartIcon, action: props.onOpenFeedback },
-                    ...(isLoggedIn() ? [{ key: "invite", label: "Invite Friends", icon: MailPlusIcon, action: props.onOpenInvite }] : []),
+                    {
+                      key: "docs",
+                      label: t("runbook_list.documentation"),
+                      icon: BookOpenIcon,
+                      action: () => open("https://docs.atuin.sh/desktop"),
+                    },
+                    {
+                      key: "feedback",
+                      label: t("feedback.send"),
+                      icon: MessageCircleHeartIcon,
+                      action: props.onOpenFeedback,
+                    },
+                    ...(isLoggedIn()
+                      ? [
+                          {
+                            key: "invite",
+                            label: t("invite_friends.title"),
+                            icon: MailPlusIcon,
+                            action: props.onOpenInvite,
+                          },
+                        ]
+                      : []),
                   ]}
                 >
                   {(item) => (
@@ -570,19 +570,15 @@ const NoteSidebar = forwardRef((props: NotesSidebarProps, ref: React.ForwardedRe
                 </DropdownMenu>
               </Dropdown>
               <Tooltip
-                content="Settings"
+                content={t("common.settings")}
                 placement="bottom"
                 delay={300}
                 classNames={{
-                  content: "text-xs py-1 px-2 bg-gray-800/90 dark:bg-gray-900/90 text-white rounded shadow-sm",
+                  content:
+                    "text-xs py-1 px-2 bg-gray-800/90 dark:bg-gray-900/90 text-white rounded shadow-sm",
                 }}
               >
-                <Button
-                  variant="light"
-                  size="sm"
-                  isIconOnly
-                  onPress={handleOpenSettings}
-                >
+                <Button variant="light" size="sm" isIconOnly onPress={handleOpenSettings}>
                   <SettingsIcon size={18} />
                 </Button>
               </Tooltip>
@@ -599,7 +595,7 @@ const NoteSidebar = forwardRef((props: NotesSidebarProps, ref: React.ForwardedRe
                 className="flex-1"
                 onPress={handleNewRunbookInCurrentWorkspace}
               >
-                <Plus size={18} /> New Runbook
+                <Plus size={18} /> {t("runbook_list.new_runbook")}
               </Button>
               <Button
                 size="sm"
@@ -667,9 +663,7 @@ const NoteSidebar = forwardRef((props: NotesSidebarProps, ref: React.ForwardedRe
                       <div className="flex flex-col gap-1">
                         <span className="font-medium">{user.username}</span>
                         <span className="text-xs text-gray-500">{user.email}</span>
-                        {user.bio && (
-                          <span className="text-xs text-gray-400 mt-1">{user.bio}</span>
-                        )}
+                        {user.bio && <span className="text-xs text-gray-400 mt-1">{user.bio}</span>}
                       </div>
                     </div>
                     <button
@@ -677,7 +671,7 @@ const NoteSidebar = forwardRef((props: NotesSidebarProps, ref: React.ForwardedRe
                       className="flex items-center gap-2 px-3 py-2 text-danger hover:bg-danger/10 transition-colors text-left"
                     >
                       <LogOutIcon size={16} />
-                      Sign out
+                      {t("runbook_list.sign_out")}
                     </button>
                   </div>
                 </PopoverContent>

@@ -125,8 +125,8 @@ export default function ResultTable({ columns, results, setColumns, width }: Res
       value === null || value === undefined
         ? "null"
         : typeof value === "object"
-        ? JSON.stringify(value, null, 2)
-        : String(value);
+          ? JSON.stringify(value, null, 2)
+          : String(value);
 
     // Get the cell element position
     const cellElement = event.event?.target as HTMLElement;

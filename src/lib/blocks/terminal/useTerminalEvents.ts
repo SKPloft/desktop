@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { addToast } from "@heroui/react";
 import { logExecution } from "@/lib/exec_log.ts";
 import { TerminalBlock } from "./schema.ts";
+import { useTranslation } from "@/lib/i18n";
 
 export const useTerminalEvents = (terminalData: any, terminal: TerminalBlock) => {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [exitCode, setExitCode] = useState<number | null>(null);
@@ -45,7 +47,7 @@ export const useTerminalEvents = (terminalData: any, terminal: TerminalBlock) =>
       console.log("Terminal execution error", message);
       setIsRunning(false);
       addToast({
-        title: "Terminal error",
+        title: t("editor.blocks.terminal.error_title"),
         description: message,
         color: "danger",
       });

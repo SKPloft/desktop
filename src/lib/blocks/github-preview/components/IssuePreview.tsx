@@ -2,6 +2,7 @@ import { Card, CardBody, Chip, Avatar } from "@heroui/react";
 import { CircleDotIcon, ExternalLinkIcon, CheckCircleIcon } from "lucide-react";
 import type { IssueData } from "../api";
 import { open } from "@tauri-apps/plugin-shell";
+import { useTranslation } from "@/lib/i18n";
 
 interface IssuePreviewProps {
   data: IssueData;
@@ -13,6 +14,7 @@ function normalizeColor(color: string): string {
 }
 
 export default function IssuePreview({ data }: IssuePreviewProps) {
+  const { t } = useTranslation();
   const handleClick = () => {
     open(data.html_url);
   };
@@ -26,7 +28,7 @@ export default function IssuePreview({ data }: IssuePreviewProps) {
   };
 
   const getStatusText = () => {
-    return data.state === "open" ? "Open" : "Closed";
+    return data.state === "open" ? t("common.open") : t("common.closed");
   };
 
   return (
@@ -62,9 +64,7 @@ export default function IssuePreview({ data }: IssuePreviewProps) {
           </Chip>
         </div>
 
-        {data.body && (
-          <p className="text-sm text-default-500 line-clamp-2">{data.body}</p>
-        )}
+        {data.body && <p className="text-sm text-default-500 line-clamp-2">{data.body}</p>}
 
         <div className="flex items-center gap-3 flex-wrap">
           {data.labels.map((label) => {

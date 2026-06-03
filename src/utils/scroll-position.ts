@@ -50,7 +50,7 @@ export function clearScrollPosition(runbookId: string): void {
 export function restoreScrollPosition(element: HTMLElement, runbookId: string): void {
   const savedPosition = getScrollPosition(runbookId);
   const maxScroll = element.scrollHeight - element.clientHeight;
-  
+
   if (savedPosition > 0 && savedPosition <= maxScroll) {
     element.scrollTop = savedPosition;
   }

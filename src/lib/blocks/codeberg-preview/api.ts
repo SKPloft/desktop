@@ -62,7 +62,10 @@ export type CodebergData = CodebergRepoData | CodebergPRData | CodebergIssueData
 const CODEBERG_API_BASE = "https://codeberg.org/api/v1";
 const RAW_CODEBERG_BASE = "https://codeberg.org";
 
-export async function fetchCodebergRepoData(owner: string, repo: string): Promise<CodebergRepoData> {
+export async function fetchCodebergRepoData(
+  owner: string,
+  repo: string,
+): Promise<CodebergRepoData> {
   const response = await fetch(`${CODEBERG_API_BASE}/repos/${owner}/${repo}`, {
     headers: {
       Accept: "application/json",
@@ -90,7 +93,11 @@ export async function fetchCodebergRepoData(owner: string, repo: string): Promis
   };
 }
 
-export async function fetchCodebergPRData(owner: string, repo: string, prNumber: number): Promise<CodebergPRData> {
+export async function fetchCodebergPRData(
+  owner: string,
+  repo: string,
+  prNumber: number,
+): Promise<CodebergPRData> {
   const response = await fetch(`${CODEBERG_API_BASE}/repos/${owner}/${repo}/pulls/${prNumber}`, {
     headers: {
       Accept: "application/json",
@@ -120,13 +127,20 @@ export async function fetchCodebergPRData(owner: string, repo: string, prNumber:
   };
 }
 
-export async function fetchCodebergIssueData(owner: string, repo: string, issueNumber: number): Promise<CodebergIssueData> {
-  const response = await fetch(`${CODEBERG_API_BASE}/repos/${owner}/${repo}/issues/${issueNumber}`, {
-    headers: {
-      Accept: "application/json",
-      "User-Agent": "Atuin-Desktop",
+export async function fetchCodebergIssueData(
+  owner: string,
+  repo: string,
+  issueNumber: number,
+): Promise<CodebergIssueData> {
+  const response = await fetch(
+    `${CODEBERG_API_BASE}/repos/${owner}/${repo}/issues/${issueNumber}`,
+    {
+      headers: {
+        Accept: "application/json",
+        "User-Agent": "Atuin-Desktop",
+      },
     },
-  });
+  );
 
   if (!response.ok) {
     throw new Error(`Failed to fetch issue: ${response.status} ${response.statusText}`);
@@ -156,11 +170,14 @@ export async function fetchCodebergCodeData(
   lineStart?: number,
   lineEnd?: number,
 ): Promise<CodebergCodeData> {
-  const response = await fetch(`${RAW_CODEBERG_BASE}/${owner}/${repo}/raw/branch/${branch}/${filePath}`, {
-    headers: {
-      "User-Agent": "Atuin-Desktop",
+  const response = await fetch(
+    `${RAW_CODEBERG_BASE}/${owner}/${repo}/raw/branch/${branch}/${filePath}`,
+    {
+      headers: {
+        "User-Agent": "Atuin-Desktop",
+      },
     },
-  });
+  );
 
   if (!response.ok) {
     throw new Error(`Failed to fetch code: ${response.status} ${response.statusText}`);
@@ -195,4 +212,3 @@ export async function fetchCodebergCodeData(
     html_url,
   };
 }
-

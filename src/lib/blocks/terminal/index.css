@@ -1,8 +1,8 @@
 .cm-editor.cm-focused {
-    outline: none !important;
-    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1) !important;
 }
 
 .xterm {
-    padding: 8px;
+  padding: 8px;
 }

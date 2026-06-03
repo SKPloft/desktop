@@ -5026,4 +5026,4 @@ const searchData = {
   ],
 };
 
-export {searchData};
+export { searchData };

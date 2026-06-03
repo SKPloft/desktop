@@ -1,6 +1,15 @@
 import { useState, useEffect, useRef } from "react";
-import { Input, Checkbox, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@heroui/react";
+import {
+  Input,
+  Checkbox,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Button,
+} from "@heroui/react";
 import { ChevronDownIcon, TrashIcon } from "lucide-react";
+import { useTranslation } from "@/lib/i18n";
 
 interface HeaderRow {
   id: string;
@@ -16,6 +25,7 @@ interface RequestHeadersProps {
 }
 
 const RequestHeaders = ({ pairs, setPairs, disabled = false }: RequestHeadersProps) => {
+  const { t } = useTranslation();
   const [rows, setRows] = useState<HeaderRow[]>([]);
   const nextIdRef = useRef(0);
   const isInternalUpdateRef = useRef(false);
@@ -33,7 +43,7 @@ const RequestHeaders = ({ pairs, setPairs, disabled = false }: RequestHeadersPro
       value,
       enabled: true,
     }));
-    
+
     // Always ensure there's at least one empty row at the end
     headerRows.push({
       id: `empty-${nextIdRef.current++}`,
@@ -41,26 +51,30 @@ const RequestHeaders = ({ pairs, setPairs, disabled = false }: RequestHeadersPro
       value: "",
       enabled: true,
     });
-    
+
     setRows(headerRows);
   }, [pairs]);
 
   const updatePairsFromRows = (updatedRows: HeaderRow[]) => {
     const newPairs: { [key: string]: string } = {};
-    updatedRows.forEach(row => {
+    updatedRows.forEach((row) => {
       if (row.enabled && row.key.trim() && row.value.trim()) {
         newPairs[row.key.trim()] = row.value.trim();
       }
     });
-    
+
     // Mark that this is an internal update so the useEffect doesn't trigger
     isInternalUpdateRef.current = true;
     setPairs(newPairs);
   };
 
-  const handleRowChange = (rowId: string, field: 'key' | 'value' | 'enabled', newValue: string | boolean) => {
-    setRows(currentRows => {
-      const updatedRows = currentRows.map(row => {
+  const handleRowChange = (
+    rowId: string,
+    field: "key" | "value" | "enabled",
+    newValue: string | boolean,
+  ) => {
+    setRows((currentRows) => {
+      const updatedRows = currentRows.map((row) => {
         if (row.id === rowId) {
           return { ...row, [field]: newValue };
         }
@@ -70,7 +84,7 @@ const RequestHeaders = ({ pairs, setPairs, disabled = false }: RequestHeadersPro
       // Check if we need to add a new empty row
       const lastRow = updatedRows[updatedRows.length - 1];
       const needsNewRow = lastRow.key.trim() !== "" || lastRow.value.trim() !== "";
-      
+
       if (needsNewRow) {
         updatedRows.push({
           id: `empty-${nextIdRef.current++}`,
@@ -82,19 +96,21 @@ const RequestHeaders = ({ pairs, setPairs, disabled = false }: RequestHeadersPro
 
       // Update pairs after state change
       updatePairsFromRows(updatedRows);
-      
+
       return updatedRows;
     });
   };
 
   const handleDeleteRow = (rowId: string) => {
     if (disabled) return;
-    
-    setRows(currentRows => {
-      const updatedRows = currentRows.filter(row => row.id !== rowId);
-      
+
+    setRows((currentRows) => {
+      const updatedRows = currentRows.filter((row) => row.id !== rowId);
+
       // Ensure there's always at least one empty row
-      const hasEmptyRow = updatedRows.some(row => row.key.trim() === "" && row.value.trim() === "");
+      const hasEmptyRow = updatedRows.some(
+        (row) => row.key.trim() === "" && row.value.trim() === "",
+      );
       if (!hasEmptyRow) {
         updatedRows.push({
           id: `empty-${nextIdRef.current++}`,
@@ -103,10 +119,10 @@ const RequestHeaders = ({ pairs, setPairs, disabled = false }: RequestHeadersPro
           enabled: true,
         });
       }
-      
+
       // Update pairs after state change
       updatePairsFromRows(updatedRows);
-      
+
       return updatedRows;
     });
   };
@@ -119,16 +135,16 @@ const RequestHeaders = ({ pairs, setPairs, disabled = false }: RequestHeadersPro
         <div key={row.id} className="flex items-center gap-2">
           <Checkbox
             isSelected={row.enabled}
-            onValueChange={(enabled) => handleRowChange(row.id, 'enabled', enabled)}
+            onValueChange={(enabled) => handleRowChange(row.id, "enabled", enabled)}
             size="sm"
             disabled={disabled || isEmptyRow(row)}
             className="min-w-fit"
           />
-          
+
           <Input
             value={row.key}
-            onValueChange={(value) => handleRowChange(row.id, 'key', value)}
-            placeholder="Header-Name"
+            onValueChange={(value) => handleRowChange(row.id, "key", value)}
+            placeholder={t("http.header_name")}
             className="flex-grow"
             variant="bordered"
             size="sm"
@@ -142,11 +158,11 @@ const RequestHeaders = ({ pairs, setPairs, disabled = false }: RequestHeadersPro
               inputWrapper: "h-8 min-h-unit-8 bg-gray-50 dark:bg-gray-900/50",
             }}
           />
-          
+
           <Input
             value={row.value}
-            onValueChange={(value) => handleRowChange(row.id, 'value', value)}
-            placeholder="value"
+            onValueChange={(value) => handleRowChange(row.id, "value", value)}
+            placeholder={t("http.header_value")}
             className="flex-grow"
             variant="bordered"
             size="sm"
@@ -160,7 +176,7 @@ const RequestHeaders = ({ pairs, setPairs, disabled = false }: RequestHeadersPro
               inputWrapper: "h-8 min-h-unit-8 bg-gray-50 dark:bg-gray-900/50",
             }}
           />
-          
+
           <Dropdown>
             <DropdownTrigger>
               <Button
@@ -180,7 +196,7 @@ const RequestHeaders = ({ pairs, setPairs, disabled = false }: RequestHeadersPro
                 color="danger"
                 onPress={() => handleDeleteRow(row.id)}
               >
-                Delete
+                {t("common.delete")}
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>

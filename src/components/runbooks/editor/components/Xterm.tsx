@@ -27,155 +27,157 @@ export interface XtermHandle {
   write: (data: string | Uint8Array) => void;
 }
 
-const Xterm = forwardRef<XtermHandle, XtermProps>(({ className = "min-h-[200px] w-full", height, onDimensionsReady }, ref) => {
-  const [terminal, setTerminal] = useState<Terminal | null>(null);
-  const [fitAddon, setFitAddon] = useState<FitAddon | null>(null);
-  const [readyToAttach, setReadyToAttach] = useState(false);
-  const terminalRef = useRef<HTMLDivElement>(null);
-  const writeBuffer = useRef<(string | Uint8Array)[]>([]);
-  const clearPending = useRef(false);
+const Xterm = forwardRef<XtermHandle, XtermProps>(
+  ({ className = "min-h-[200px] w-full", height, onDimensionsReady }, ref) => {
+    const [terminal, setTerminal] = useState<Terminal | null>(null);
+    const [fitAddon, setFitAddon] = useState<FitAddon | null>(null);
+    const [readyToAttach, setReadyToAttach] = useState(false);
+    const terminalRef = useRef<HTMLDivElement>(null);
+    const writeBuffer = useRef<(string | Uint8Array)[]>([]);
+    const clearPending = useRef(false);
 
-  // Expose methods via ref
-  useImperativeHandle(
-    ref,
-    () => ({
-      clear: () => {
-        if (terminal) {
-          terminal.clear();
-        } else {
-          // Buffer the clear operation
-          clearPending.current = true;
-          writeBuffer.current = [];
+    // Expose methods via ref
+    useImperativeHandle(
+      ref,
+      () => ({
+        clear: () => {
+          if (terminal) {
+            terminal.clear();
+          } else {
+            // Buffer the clear operation
+            clearPending.current = true;
+            writeBuffer.current = [];
+          }
+        },
+        write: (data: string | Uint8Array) => {
+          if (terminal) {
+            terminal.write(data);
+          } else {
+            // Buffer the write operation
+            writeBuffer.current.push(data);
+          }
+        },
+      }),
+      [terminal],
+    );
+
+    // Initialize terminal on mount
+    useEffect(() => {
+      let fitAddon: FitAddon | null = null;
+      let webglAddon: WebglAddon | null = null;
+
+      const initializeTerminal = async () => {
+        // Load font settings from Settings (matching pty_state.ts behavior)
+        const font = (await Settings.terminalFont()) || Settings.DEFAULT_FONT;
+        const fontSize = (await Settings.terminalFontSize()) || Settings.DEFAULT_FONT_SIZE;
+        const useWebGL = await Settings.terminalGL();
+
+        const term = new Terminal({
+          fontFamily: `${font}, monospace`,
+          fontSize: fontSize,
+          convertEol: true,
+          rescaleOverlappingGlyphs: true,
+          letterSpacing: 0,
+          lineHeight: 1,
+        });
+
+        fitAddon = new FitAddon();
+        term.loadAddon(fitAddon);
+
+        // Add WebGL support if enabled in settings
+        if (useWebGL) {
+          try {
+            webglAddon = new WebglAddon();
+            term.loadAddon(webglAddon);
+          } catch (e) {
+            console.warn("WebGL addon failed to load", e);
+          }
         }
-      },
-      write: (data: string | Uint8Array) => {
-        if (terminal) {
-          terminal.write(data);
-        } else {
-          // Buffer the write operation
-          writeBuffer.current.push(data);
-        }
-      },
-    }),
-    [terminal],
-  );
 
-  // Initialize terminal on mount
-  useEffect(() => {
-    let fitAddon: FitAddon | null = null;
-    let webglAddon: WebglAddon | null = null;
+        setTerminal(term);
+        setFitAddon(fitAddon);
+      };
 
-    const initializeTerminal = async () => {
-      // Load font settings from Settings (matching pty_state.ts behavior)
-      const font = (await Settings.terminalFont()) || Settings.DEFAULT_FONT;
-      const fontSize = (await Settings.terminalFontSize()) || Settings.DEFAULT_FONT_SIZE;
-      const useWebGL = await Settings.terminalGL();
+      initializeTerminal();
 
-      const term = new Terminal({
-        fontFamily: `${font}, monospace`,
-        fontSize: fontSize,
-        convertEol: true,
-        rescaleOverlappingGlyphs: true,
-        letterSpacing: 0,
-        lineHeight: 1,
-      });
+      // Cleanup on unmount
+      return () => {
+        terminal?.dispose();
+        fitAddon?.dispose();
+        webglAddon?.dispose();
+      };
+    }, []);
 
-      fitAddon = new FitAddon();
-      term.loadAddon(fitAddon);
+    // Flush buffered writes when terminal is ready
+    useEffect(() => {
+      if (!terminal) return;
 
-      // Add WebGL support if enabled in settings
-      if (useWebGL) {
-        try {
-          webglAddon = new WebglAddon();
-          term.loadAddon(webglAddon);
-        } catch (e) {
-          console.warn("WebGL addon failed to load", e);
-        }
+      // Handle pending clear
+      if (clearPending.current) {
+        terminal.clear();
+        clearPending.current = false;
       }
 
-      setTerminal(term);
-      setFitAddon(fitAddon);
+      // Flush buffered writes
+      writeBuffer.current.forEach((data) => terminal.write(data));
+      writeBuffer.current = [];
+    }, [terminal]);
+
+    // Handle terminal attachment and resizing
+    useEffect(() => {
+      if (!readyToAttach || !fitAddon || !terminal) return;
+
+      terminal.open(terminalRef.current!);
+
+      // Must call fit() after opening to properly size the terminal to its container
+      fitAddon.fit();
+
+      // Report actual dimensions after terminal renders
+      // @ts-ignore - accessing internal xterm.js API for accurate cell dimensions
+      const cellHeight = terminal._core?._renderService?.dimensions?.css?.cell?.height;
+      const actualHeight = terminal.element?.offsetHeight;
+
+      if (actualHeight && cellHeight && onDimensionsReady) {
+        onDimensionsReady({ actualHeight, cellHeight });
+      }
+    }, [terminal, fitAddon, readyToAttach, onDimensionsReady]);
+
+    const compositeRef = (elem: HTMLDivElement) => {
+      terminalRef.current = elem;
+      resizeRef(elem);
+      setReadyToAttach(true);
     };
 
-    initializeTerminal();
+    const { ref: resizeRef } = useResizeObserver({
+      onResize: () => {
+        fitAddon?.fit();
+      },
+    });
 
-    // Cleanup on unmount
-    return () => {
-      terminal?.dispose();
-      fitAddon?.dispose();
-      webglAddon?.dispose();
-    };
-  }, []);
+    // Explicitly fit when height prop changes and report new dimensions
+    useEffect(() => {
+      if (!fitAddon || !terminal) return;
+      fitAddon.fit();
 
-  // Flush buffered writes when terminal is ready
-  useEffect(() => {
-    if (!terminal) return;
+      // Report updated dimensions after fit
+      // @ts-ignore - accessing internal xterm.js API
+      const cellHeight = terminal._core?._renderService?.dimensions?.css?.cell?.height;
+      const actualHeight = terminal.element?.offsetHeight;
 
-    // Handle pending clear
-    if (clearPending.current) {
-      terminal.clear();
-      clearPending.current = false;
-    }
+      if (actualHeight && cellHeight && onDimensionsReady) {
+        onDimensionsReady({ actualHeight, cellHeight });
+      }
+    }, [fitAddon, terminal, height, onDimensionsReady]);
 
-    // Flush buffered writes
-    writeBuffer.current.forEach((data) => terminal.write(data));
-    writeBuffer.current = [];
-  }, [terminal]);
-
-  // Handle terminal attachment and resizing
-  useEffect(() => {
-    if (!readyToAttach || !fitAddon || !terminal) return;
-
-    terminal.open(terminalRef.current!);
-
-    // Must call fit() after opening to properly size the terminal to its container
-    fitAddon.fit();
-
-    // Report actual dimensions after terminal renders
-    // @ts-ignore - accessing internal xterm.js API for accurate cell dimensions
-    const cellHeight = terminal._core?._renderService?.dimensions?.css?.cell?.height;
-    const actualHeight = terminal.element?.offsetHeight;
-
-    if (actualHeight && cellHeight && onDimensionsReady) {
-      onDimensionsReady({ actualHeight, cellHeight });
-    }
-  }, [terminal, fitAddon, readyToAttach, onDimensionsReady]);
-
-  const compositeRef = (elem: HTMLDivElement) => {
-    terminalRef.current = elem;
-    resizeRef(elem);
-    setReadyToAttach(true);
-  };
-
-  const { ref: resizeRef } = useResizeObserver({
-    onResize: () => {
-      fitAddon?.fit();
-    },
-  });
-
-  // Explicitly fit when height prop changes and report new dimensions
-  useEffect(() => {
-    if (!fitAddon || !terminal) return;
-    fitAddon.fit();
-
-    // Report updated dimensions after fit
-    // @ts-ignore - accessing internal xterm.js API
-    const cellHeight = terminal._core?._renderService?.dimensions?.css?.cell?.height;
-    const actualHeight = terminal.element?.offsetHeight;
-
-    if (actualHeight && cellHeight && onDimensionsReady) {
-      onDimensionsReady({ actualHeight, cellHeight });
-    }
-  }, [fitAddon, terminal, height, onDimensionsReady]);
-
-  return (
-    <div
-      ref={compositeRef}
-      className={`overflow-hidden ${className}`}
-      style={height ? { height: `${height}px` } : undefined}
-    />
-  );
-});
+    return (
+      <div
+        ref={compositeRef}
+        className={`overflow-hidden ${className}`}
+        style={height ? { height: `${height}px` } : undefined}
+      />
+    );
+  },
+);
 
 Xterm.displayName = "Xterm";
 

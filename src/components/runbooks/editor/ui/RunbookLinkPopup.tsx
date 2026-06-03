@@ -5,6 +5,7 @@ import RunbookIndexService from "@/state/runbooks/search";
 import Runbook from "@/state/runbooks/runbook";
 import { useStore } from "@/state/store";
 import { LinkIcon } from "lucide-react";
+import { useTranslation } from "@/lib/i18n";
 
 // Create a global search index instance
 const searchIndex = new RunbookIndexService();
@@ -22,6 +23,7 @@ export function RunbookLinkPopup({
   onSelect,
   onClose,
 }: RunbookLinkPopupProps) {
+  const { t } = useTranslation();
   const [query, setQuery] = useState("");
   const [runbooks, setRunbooks] = useState<Runbook[]>([]);
   const [filteredRunbooks, setFilteredRunbooks] = useState<Runbook[]>([]);
@@ -102,7 +104,7 @@ export function RunbookLinkPopup({
           e.preventDefault();
           if (filteredRunbooks[selectedIndex]) {
             const runbook = filteredRunbooks[selectedIndex];
-            onSelect(runbook.id, runbook.name || "Untitled Runbook");
+            onSelect(runbook.id, runbook.name || t("editor.blocks.sub_runbook.untitled_runbook"));
           }
           break;
         case "Escape":
@@ -135,7 +137,7 @@ export function RunbookLinkPopup({
       <div className="p-3">
         <Input
           ref={inputRef}
-          placeholder="Search runbooks..."
+          placeholder={t("editor.runbook_link.search")}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           classNames={{
@@ -148,7 +150,7 @@ export function RunbookLinkPopup({
       <div className="max-h-60 overflow-y-auto">
         {filteredRunbooks.length === 0 ? (
           <div className="p-3 text-sm text-gray-500 dark:text-gray-400 text-center">
-            No runbooks found
+            {t("editor.blocks.sub_runbook.no_runbooks_found")}
           </div>
         ) : (
           filteredRunbooks.map((runbook, index) => (
@@ -163,14 +165,14 @@ export function RunbookLinkPopup({
               onClick={() => onSelect(runbook.id, runbook.name || "Untitled Runbook")}
             >
               <LinkIcon size={14} />
-              <span className="truncate">{runbook.name || "Untitled Runbook"}</span>
+              <span className="truncate">{runbook.name || t("editor.blocks.sub_runbook.untitled_runbook")}</span>
             </div>
           ))
         )}
       </div>
 
       <div className="p-2 text-xs text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-gray-700">
-        ↑↓ to navigate • Enter to select • Esc to cancel
+        {t("editor.runbook_link.selector_help")}
       </div>
     </div>
   );

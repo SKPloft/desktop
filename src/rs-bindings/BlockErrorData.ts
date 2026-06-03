@@ -3,4 +3,4 @@
 /**
  * Data for block error lifecycle event
  */
-export type BlockErrorData = { message: string, };
+export type BlockErrorData = { message: string };

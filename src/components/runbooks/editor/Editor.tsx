@@ -30,7 +30,11 @@ import {
 } from "lucide-react";
 
 import { RunbookLinkPopup } from "./ui/RunbookLinkPopup";
-import { EditorAIFeatures, EditorAIFeaturesHandle, createAIGenerateMenuItem } from "./EditorAIFeatures";
+import {
+  EditorAIFeatures,
+  EditorAIFeaturesHandle,
+  createAIGenerateMenuItem,
+} from "./EditorAIFeatures";
 import AIAssistant, { AIContext } from "./ui/AIAssistant";
 
 import { insertSQLite } from "@/components/runbooks/editor/blocks/SQLite/SQLite";
@@ -80,6 +84,8 @@ import { DeleteBlockItem } from "./ui/DeleteBlockItem";
 import { BlockNoteEditor } from "@blocknote/core";
 import useDocumentBridge from "@/lib/hooks/useDocumentBridge";
 import { ChargeTarget } from "@/rs-bindings/ChargeTarget";
+import { t } from "@/lib/i18n";
+// t is used for non-React slash menu block definitions below
 
 // Fix for react-dnd interference with BlockNote drag-and-drop
 // React-dnd wraps dataTransfer in a proxy that blocks access during drag operations
@@ -87,8 +93,8 @@ import { ChargeTarget } from "@/rs-bindings/ChargeTarget";
 let originalDragData: any = null;
 
 const insertDirectory = (editor: typeof schema.BlockNoteEditor) => ({
-  title: "Directory",
-  subtext: "Set current working directory (synced)",
+  title: t("editor.blocks.directory.tooltip").split("(")[0].trim(),
+  subtext: t("editor.blocks.directory.tooltip"),
   onItemClick: () => {
     track_event("runbooks.block.create", { type: "directory" });
 
@@ -109,7 +115,7 @@ const insertDirectory = (editor: typeof schema.BlockNoteEditor) => ({
 
 const insertEnv = (editor: typeof schema.BlockNoteEditor) => ({
   title: "Environment Variable",
-  subtext: "Set environment variable for all subsequent code blocks",
+  subtext: t("editor.blocks.env.tooltip"),
   onItemClick: () => {
     track_event("runbooks.block.create", { type: "env" });
 
@@ -151,7 +157,7 @@ const insertVar = (editor: typeof schema.BlockNoteEditor) => ({
 
 const insertVarDisplay = (editor: typeof schema.BlockNoteEditor) => ({
   title: "Display Variable",
-  subtext: "Show the current value of a template variable",
+  subtext: t("editor.blocks.var_display.tooltip"),
   onItemClick: () => {
     track_event("runbooks.block.create", { type: "var_display" });
 
@@ -227,8 +233,8 @@ const insertHorizontalRule = (editor: typeof schema.BlockNoteEditor) => ({
 });
 
 const insertPastedBlock = (editor: typeof schema.BlockNoteEditor, copiedBlock: any) => ({
-  title: "Paste Block",
-  subtext: "Paste the previously copied block",
+  title: t("editor.blocks.paste.title"),
+  subtext: t("editor.blocks.paste.insert_subtext"),
   onItemClick: () => {
     track_event("runbooks.block.paste", { type: copiedBlock.type });
 

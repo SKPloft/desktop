@@ -18,6 +18,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { cn, exportPropMatter } from "@/lib/utils";
 import { createReactBlockSpec } from "@blocknote/react";
+import { useTranslation } from "@/lib/i18n";
+import { t as i18nT } from "@/lib/i18n";
 
 import { useStore } from "@/state/store";
 import { Settings } from "@/state/settings";
@@ -78,6 +80,7 @@ const FixedTab = ({
   onOptionsUpdate: (options: string) => void;
   delimiter: string;
 }) => {
+  const { t } = useTranslation();
   const [optionsList, setOptionsList] = useState<string[]>(() =>
     options ? options.split(",").map((opt) => opt.trim()) : [],
   );
@@ -105,25 +108,24 @@ const FixedTab = ({
   return (
     <div className="space-y-4">
       <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-        Add options as simple values or label{delimiter}value pairs (e.g., "User Friendly
-        Name{delimiter}horrible-uuid-value")
+        {t("editor.blocks.dropdown.fixed_description", { delimiter })}
       </div>
 
       <div className="flex space-x-2">
         <Input
-          placeholder={`Simple value or display label${delimiter}value`}
+          placeholder={t("editor.blocks.dropdown.fixed_placeholder", { delimiter })}
           value={newOption}
           onChange={(e) => setNewOption(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && addOption()}
           className="flex-1"
         />
-        <Button onClick={addOption}>Add</Button>
+        <Button onClick={addOption}>{t("common.add")}</Button>
       </div>
 
       <div className="max-h-60 overflow-y-auto">
         {optionsList.length === 0 ? (
           <div className="text-center text-gray-500 dark:text-gray-400 py-8">
-            No options added yet
+            {t("editor.blocks.dropdown.no_options")}
           </div>
         ) : (
           <div className="flex flex-wrap gap-2 p-2">
@@ -170,14 +172,14 @@ const VariableTab = ({
   onOptionsUpdate: (options: string) => void;
   delimiter: string;
 }) => {
+  const { t } = useTranslation();
   return (
     <div className="space-y-4 py-4">
       <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-        Variable should contain newline or comma-separated values. Supports label{delimiter}value pairs (e.g.,
-        "Display Name{delimiter}id123")
+        {t("editor.blocks.dropdown.variable_description", { delimiter })}
       </div>
       <Input
-        placeholder="Variable name"
+        placeholder={t("editor.blocks.dropdown.variable_placeholder")}
         value={options}
         onChange={(e) => onOptionsUpdate(e.target.value)}
         style={{ fontFamily: "monospace" }}
@@ -210,6 +212,7 @@ const CommandTab = ({
   delimiter,
   onCodeMirrorFocus,
 }: CommandTabProps) => {
+  const { t } = useTranslation();
   const colorMode = useStore((state) => state.functionalColorMode);
   const lightModeEditorTheme = useStore((state) => state.lightModeEditorTheme);
   const darkModeEditorTheme = useStore((state) => state.darkModeEditorTheme);
@@ -219,8 +222,7 @@ const CommandTab = ({
   return (
     <div className="space-y-4 py-4">
       <div className="text-sm text-gray-600 dark:text-gray-400">
-        Enter a shell command that will return a list of options. Supports label{delimiter}value pairs (e.g.,
-        "User Friendly Name{delimiter}horrible-uuid-value")
+        {t("editor.blocks.dropdown.command_description", { delimiter })}
       </div>
       <div className="flex justify-between items-center mb-4">
         <InterpreterSelector
@@ -265,6 +267,7 @@ const Dropdown = ({
   isEditable,
   onCodeMirrorFocus,
 }: DropdownProps) => {
+  const { t } = useTranslation();
   const [selected, setSelected] = useState(value);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [comboboxOpen, setComboboxOpen] = useState(false);
@@ -341,7 +344,7 @@ const Dropdown = ({
 
           <div className="flex-1">
             <Input
-              placeholder="Template variable name"
+              placeholder={t("editor.blocks.dropdown.template_variable_placeholder")}
               value={name}
               onChange={(e) => onNameUpdate(e.target.value)}
               style={{ fontFamily: "monospace" }}
@@ -387,16 +390,16 @@ const Dropdown = ({
                     dropdownState?.resolved?.options.find((option) => option.value === selected)
                       ?.label
                   ) : (
-                    "Select option..."
+                    {t("editor.blocks.dropdown.select_option")}
                   )}
                   <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="p-0 w-[--radix-popover-trigger-width]">
                 <Command>
-                  <CommandInput placeholder="Search options..." />
+                  <CommandInput placeholder={t("editor.blocks.dropdown.search_options")} />
                   <CommandList>
-                    <CommandEmpty>No option found.</CommandEmpty>
+                    <CommandEmpty>{t("editor.blocks.dropdown.no_option_found")}</CommandEmpty>
                     <CommandGroup>
                       {dropdownState?.resolved?.options.map((option) => (
                         <CommandItem
@@ -430,7 +433,7 @@ const Dropdown = ({
           <ModalContent className="max-h-[90vh]">
             {(_onClose) => (
               <>
-                <ModalHeader className="flex flex-col gap-1">Dropdown Options</ModalHeader>
+                <ModalHeader className="flex flex-col gap-1">{t("editor.blocks.dropdown.options_title")}</ModalHeader>
                 <ModalBody className="flex-1 overflow-hidden">
                   <Tabs
                     value={optionsType}
@@ -438,9 +441,9 @@ const Dropdown = ({
                     className="h-full flex flex-col"
                   >
                     <TabsList className="grid w-full grid-cols-3 flex-shrink-0">
-                      <TabsTrigger value="fixed">Fixed Options</TabsTrigger>
-                      <TabsTrigger value="variable">Variable Options</TabsTrigger>
-                      <TabsTrigger value="command">Command Output</TabsTrigger>
+                      <TabsTrigger value="fixed">{t("editor.blocks.dropdown.fixed_options")}</TabsTrigger>
+                      <TabsTrigger value="variable">{t("editor.blocks.dropdown.variable_options")}</TabsTrigger>
+                      <TabsTrigger value="command">{t("editor.blocks.dropdown.command_output")}</TabsTrigger>
                     </TabsList>
                     <TabsContent value="fixed" className="flex-1 overflow-auto">
                       <FixedTab
@@ -470,7 +473,7 @@ const Dropdown = ({
                   </Tabs>
                   <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
-                      Label/Value Delimiter
+                      {t("editor.blocks.dropdown.delimiter_label")}
                     </label>
                     <Input
                       value={delimiter}
@@ -479,7 +482,7 @@ const Dropdown = ({
                       className="w-24"
                     />
                     <span className="text-xs text-gray-500 dark:text-gray-400 mt-1 block">
-                      Character(s) separating label from value (e.g., ":" or "::" or "-&gt;")
+                      {t("editor.blocks.dropdown.delimiter_description")}
                     </span>
                   </div>
                 </ModalBody>
@@ -614,8 +617,8 @@ export default createReactBlockSpec(
 
 // Component to insert this block from the editor menu
 export const insertDropdown = (schema: any) => (editor: typeof schema.BlockNoteEditor) => ({
-  title: "Dropdown",
-  subtext: "Select from a list of options, sourced from a variable, command or fixed list",
+  title: i18nT("editor.blocks.dropdown.title"),
+  subtext: i18nT("editor.blocks.dropdown.insert_subtext"),
   onItemClick: async () => {
     track_event("runbooks.block.create", { type: "dropdown" });
 
@@ -635,7 +638,7 @@ export const insertDropdown = (schema: any) => (editor: typeof schema.BlockNoteE
     );
   },
   icon: <ListFilterIcon size={18} />,
-  group: "Execute", // Match the group of regular var component
+  group: i18nT("editor.blocks.group.execute"),
 });
 
 AIBlockRegistry.getInstance().addBlock({

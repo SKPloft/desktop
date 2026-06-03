@@ -1,13 +1,8 @@
 import React from "react";
-import {
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-  Button,
-} from "@heroui/react";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@heroui/react";
 import { ChevronDown } from "lucide-react";
 import { HttpVerb } from "../schema";
+import { useTranslation } from "@/lib/i18n";
 
 interface HttpVerbDropdownProps {
   selectedVerb: HttpVerb;
@@ -20,6 +15,7 @@ const HttpVerbDropdown: React.FC<HttpVerbDropdownProps> = ({
   onVerbChange,
   disabled = false,
 }) => {
+  const { t } = useTranslation();
   const verbColors: Record<HttpVerb, string> = {
     [HttpVerb.GET]: "success",
     [HttpVerb.POST]: "primary",
@@ -43,7 +39,7 @@ const HttpVerbDropdown: React.FC<HttpVerbDropdownProps> = ({
         </Button>
       </DropdownTrigger>
       <DropdownMenu
-        aria-label="HTTP Verb selection"
+        aria-label={t("http.verb_selection")}
         onAction={(key) => onVerbChange(key as HttpVerb)}
       >
         {Object.values(HttpVerb).map((verb) => (

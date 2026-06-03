@@ -22,7 +22,12 @@ export default function RepoPreview({ data }: RepoPreviewProps) {
       <CardBody className="p-4 gap-3">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
-            <Avatar src={data.owner.avatar_url} name={data.owner.username} size="sm" className="flex-shrink-0" />
+            <Avatar
+              src={data.owner.avatar_url}
+              name={data.owner.username}
+              size="sm"
+              className="flex-shrink-0"
+            />
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <span className="font-semibold text-sm truncate">{data.path_with_namespace}</span>

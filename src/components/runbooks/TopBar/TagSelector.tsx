@@ -167,9 +167,10 @@ export default function TagSelector(props: TagSelectorProps) {
             "transition-colors duration-150 text-xs",
             "text-gray-500 dark:text-gray-400",
             {
-              "cursor-pointer hover:text-gray-700 dark:hover:text-gray-300": !serialExecution.isRunning,
+              "cursor-pointer hover:text-gray-700 dark:hover:text-gray-300":
+                !serialExecution.isRunning,
               "cursor-not-allowed opacity-50": serialExecution.isRunning,
-            }
+            },
           )}
         >
           <span className="truncate">@ {tagLabel}</span>

@@ -7,6 +7,7 @@ import { CheckIcon, CircleQuestionMarkIcon, PencilIcon, SettingsIcon, XIcon } fr
 import { useMemo, useReducer, useRef } from "react";
 import * as api from "@/api/api";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/lib/i18n";
 import CollaborationManager from "@/routes/runbooks/CollaborationManager";
 import { open } from "@tauri-apps/plugin-shell";
 
@@ -186,6 +187,7 @@ function RowEditButton(props: RowEditButtonProps) {
 }
 
 export default function RunbookControls(props: RunbookControlsProps) {
+  const { t } = useTranslation();
   const connectionState = useStore((state) => state.connectionState);
   const disabled = connectionState !== ConnectionState.Online;
 
@@ -234,7 +236,7 @@ export default function RunbookControls(props: RunbookControlsProps) {
       <div className="flex items-center justify-between select-none">
         <div className="flex items-center cursor-default">
           <SettingsIcon className="w-4 h-4 inline-block mr-1" />
-          Runbook settings
+          {t("runbooks.controls.settings")}
         </div>
         <Button isIconOnly variant="faded" size="sm" onPress={props.onClose}>
           <XIcon className="w-4 h-4" />
@@ -243,31 +245,29 @@ export default function RunbookControls(props: RunbookControlsProps) {
 
       {props.isOfflineRunbook && (
         <p className="text-sm text-gray-500 dark:text-gray-400 italic ml-5 mt-1 select-none cursor-default">
-          Runbooks in offline workspaces exist only on your device, and cannot be shared via the
-          Hub.{" "}
+          {t("runbooks.controls.offline_description")}{" "}
           <a
             href="https://docs.atuin.sh/desktop/workspaces/"
             className="text-blue-500"
             onClick={handleLearnMore}
           >
-            Learn more
+            {t("common.learn_more")}
           </a>
         </p>
       )}
       {disabled && !props.isOfflineRunbook && (
         <p className="text-sm text-gray-500 dark:text-gray-400 italic ml-5 mt-1 select-none cursor-default">
-          Runbook slug, visibility, and other sharing settings can only be modified while online and
-          logged in to Atuin Hub
+          {t("runbooks.controls.online_required")}
         </p>
       )}
       <div className="grid grid-cols-[minmax(5rem,_15rem)_minmax(200px,_3fr)_8rem] w-full mt-2">
         {props.remoteRunbook && (
           <>
             <div className={tableCellRight}>
-              <Tooltip content="The runbook slug is used to generate the runbook URL" showArrow>
+              <Tooltip content={t("runbooks.controls.slug_tooltip")} showArrow>
                 <CircleQuestionMarkIcon className="w-4 h-4 inline-block mr-1 mb-1" />
               </Tooltip>
-              Runbook slug:
+              {t("runbooks.controls.slug")}
             </div>
             <div className={tableCell}>
               <Input
@@ -297,12 +297,12 @@ export default function RunbookControls(props: RunbookControlsProps) {
           <>
             <div className={tableCellRight}>
               <Tooltip
-                content="The runbook visibility determines who can view the runbook on Atuin Hub"
+                content={t("runbooks.controls.visibility_tooltip")}
                 showArrow
               >
                 <CircleQuestionMarkIcon className="w-4 h-4 inline-block mr-1 mb-1" />
               </Tooltip>
-              Runbook visibility:
+              {t("runbooks.controls.visibility")}
             </div>
             <div className={tableCell}>
               <Select
@@ -313,14 +313,14 @@ export default function RunbookControls(props: RunbookControlsProps) {
                 isDisabled={disabled || visibilityState.fieldDisabled}
                 disallowEmptySelection
               >
-                <SelectItem key="public" textValue="Public">
-                  Public
+                <SelectItem key="public" textValue={t("runbooks.visibility.public")}>
+                  {t("runbooks.visibility.public")}
                 </SelectItem>
-                <SelectItem key="unlisted" textValue="Unlisted">
-                  Unlisted
+                <SelectItem key="unlisted" textValue={t("runbooks.visibility.unlisted")}>
+                  {t("runbooks.visibility.unlisted")}
                 </SelectItem>
-                <SelectItem key="private" textValue="Private">
-                  Private
+                <SelectItem key="private" textValue={t("runbooks.visibility.private")}>
+                  {t("runbooks.visibility.private")}
                 </SelectItem>
               </Select>
             </div>
@@ -331,7 +331,7 @@ export default function RunbookControls(props: RunbookControlsProps) {
         )}
         {props.remoteRunbook && !props.isOrgOwned && (
           <>
-            <div className={tableCellRight}>Collaborators:</div>
+            <div className={tableCellRight}>{t("runbooks.controls.collaborators")}</div>
             <div className={tableCell}>
               <CollaborationManager
                 runbook={props.runbook}

@@ -31,4 +31,3 @@ export function CopyBlockItem() {
     </Components.Generic.Menu.Item>
   );
 }
-
