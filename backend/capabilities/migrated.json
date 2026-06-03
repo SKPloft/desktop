@@ -59,6 +59,7 @@
     "process:default",
     "process:allow-restart",
     "deep-link:default",
+    "i18n:default",
     "notification:default",
     "fs:default",
     "fs:allow-app-write",

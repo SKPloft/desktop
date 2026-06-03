@@ -53,7 +53,8 @@
     "resources": {
       "../resources/welcome/": "resources/welcome/",
       "../resources/images/": "resources/images/",
-      "../resources/sounds/": "resources/sounds/"
+      "../resources/sounds/": "resources/sounds/",
+      "../locales/": "locales/"
     }
   },
   "identifier": "sh.atuin.app",

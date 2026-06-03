@@ -78,6 +78,7 @@ export interface AtuinUiState {
   shellCheckEnabled: boolean;
   shellCheckPath: string;
   uiScale: number;
+  locale: string;
   aiEnabled: boolean;
   aiShareContext: boolean;
   openedRunbookAgents: Record<string, boolean>;
@@ -129,6 +130,7 @@ export interface AtuinUiState {
   setShellCheckEnabled: (enabled: boolean) => void;
   setShellCheckPath: (path: string) => void;
   setUiScale: (scale: number) => void;
+  setLocale: (locale: string) => void;
   setAiEnabled: (enabled: boolean) => void;
   setAiShareContext: (enabled: boolean) => void;
   setOpenedRunbookAgent: (runbookId: string, opened: boolean) => void;
@@ -158,6 +160,7 @@ export const persistUiKeys: (keyof AtuinUiState)[] = [
   "tabs",
   "currentTabId",
   "uiScale",
+  "locale",
   "aiEnabled",
   "aiShareContext",
   "openedRunbookAgents",
@@ -202,6 +205,7 @@ export const createUiState: StateCreator<AtuinUiState> = (set, get, _store): Atu
   shellCheckEnabled: false,
   shellCheckPath: "",
   uiScale: 100,
+  locale: "en",
   aiEnabled: true,
   aiShareContext: true,
   openedRunbookAgents: {},
@@ -457,6 +461,7 @@ export const createUiState: StateCreator<AtuinUiState> = (set, get, _store): Atu
   setShellCheckEnabled: (enabled: boolean) => set(() => ({ shellCheckEnabled: enabled })),
   setShellCheckPath: (path: string) => set(() => ({ shellCheckPath: path })),
   setUiScale: (scale: number) => set(() => ({ uiScale: scale })),
+  setLocale: (locale: string) => set(() => ({ locale })),
   setAiEnabled: (enabled: boolean) => set(() => ({ aiEnabled: enabled })),
   setAiShareContext: (enabled: boolean) => set(() => ({ aiShareContext: enabled })),
   setOpenedRunbookAgent: (runbookId: string, opened: boolean) => {

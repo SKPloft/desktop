@@ -3,6 +3,7 @@ import { invoke, Channel } from "@tauri-apps/api/core";
 import type { SessionInfo, LLMToolsEvent, SessionEvent } from "./types";
 import SessionList from "./components/SessionList";
 import SessionDetail from "./components/SessionDetail";
+import { useTranslation } from "../src/lib/i18n";
 
 type SessionEventWithId = {
   sessionId: string;
@@ -10,6 +11,7 @@ type SessionEventWithId = {
 };
 
 export default function App() {
+  const { t } = useTranslation();
   const [sessions, setSessions] = useState<SessionInfo[]>([]);
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
   const [eventsBySession, setEventsBySession] = useState<Map<string, SessionEventWithId[]>>(new Map());
@@ -72,9 +74,9 @@ export default function App() {
     <div className="h-full flex flex-col bg-background text-foreground">
       {/* Header */}
       <div className="flex-none p-4 border-b border-divider">
-        <h1 className="text-lg font-semibold">LLM Tools</h1>
+        <h1 className="text-lg font-semibold">{t("llmtools.title")}</h1>
         <p className="text-sm text-default-500">
-          {connected ? `${sessions.length} active session(s)` : "Connecting..."}
+          {connected ? t("llmtools.active_sessions", { count: sessions.length }) : t("llmtools.connecting")}
         </p>
       </div>
 
@@ -95,7 +97,7 @@ export default function App() {
             <SessionDetail session={selectedSession} events={selectedEvents} />
           ) : (
             <div className="h-full flex items-center justify-center text-default-400">
-              <p>Select a session to view details</p>
+              <p>{t("llmtools.select_session")}</p>
             </div>
           )}
         </div>

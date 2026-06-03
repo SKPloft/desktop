@@ -489,6 +489,10 @@ fn main() {
 
     let app = builder
         .plugin(tauri_plugin_deep_link::init())
+        .plugin(tauri_plugin_i18n::init(tauri_plugin_i18n::I18nConfig {
+            default_locale: "en".into(),
+            ..Default::default()
+        }))
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_updater::Builder::new().build())

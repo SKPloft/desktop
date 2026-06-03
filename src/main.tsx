@@ -24,6 +24,7 @@ import ServerNotificationManager from "./server_notification_manager";
 import { trackOnlineStatus } from "./lib/online_tracker";
 import { setupColorModes } from "./lib/color_modes";
 import { setupServerEvents } from "./lib/server_events";
+import { initI18n } from "@/lib/i18n";
 import { invoke } from "@tauri-apps/api/core";
 import { getCurrentWebview } from "@tauri-apps/api/webview";
 import { platform } from "@tauri-apps/plugin-os";
@@ -58,6 +59,7 @@ import { AdvancedSettings } from "./rs-bindings/AdvancedSettings";
 
 // If the user has opted in, we will setup sentry/posthog
 init_tracking();
+initI18n().catch((err) => console.warn("i18n init failed:", err));
 
 const socketManager = SocketManager.get();
 const notificationManager = ServerNotificationManager.get();

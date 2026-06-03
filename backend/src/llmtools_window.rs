@@ -1,5 +1,6 @@
 use tauri::webview::WebviewWindowBuilder;
 use tauri::{AppHandle, Manager, Runtime, WebviewUrl};
+use tauri_plugin_i18n::PluginI18nExt;
 
 /// Creates the LLM Tools window if it doesn't exist, or focuses it if it does.
 pub(crate) fn create_llmtools_window<R: Runtime>(app: &AppHandle<R>) -> Result<(), String> {
@@ -20,7 +21,11 @@ pub(crate) fn create_llmtools_window<R: Runtime>(app: &AppHandle<R>) -> Result<(
     }
 
     WebviewWindowBuilder::new(app, "llmtools", WebviewUrl::App("llmtools.html".into()))
-        .title("LLM Tools")
+        .title(
+            app.i18n()
+                .translate("llmtools.window.title")
+                .unwrap_or("llmtools.window.title"),
+        )
         .inner_size(900.0, 600.0)
         .min_inner_size(400.0, 300.0)
         .resizable(true)

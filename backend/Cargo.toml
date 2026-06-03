@@ -99,6 +99,11 @@ indoc = "2.0.7"
 features = ["sqlite"] # or "postgres", or "mysql"
 version = "2.3.1"
 
+[dependencies.tauri-plugin-i18n]
+#git = "https://github.com/SKPloft/tauri-plugin-i18n"
+#rev = "c2570bb8ff1df2c4125d562a223a0e5a9882f116"
+path = "/tmp/tauri-plugin-i18n"
+
 [target."cfg(target_os = \"macos\")".dependencies]
 cocoa = "0.26"
 

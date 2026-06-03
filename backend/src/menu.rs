@@ -8,6 +8,7 @@ use tauri::{
     },
     AppHandle, Emitter, Manager, Runtime,
 };
+use tauri_plugin_i18n::PluginI18nExt;
 
 struct IdWithNoColons(String);
 
@@ -38,6 +39,10 @@ impl TryFrom<&str> for IdWithNoColons {
     fn try_from(id: &str) -> Result<Self> {
         Self::new(id.to_string())
     }
+}
+
+fn tr<R: Runtime>(handle: &AppHandle<R>, key: &'static str) -> String {
+    handle.i18n().translate(key).unwrap_or(key).to_string()
 }
 
 pub(crate) fn initialize_menu_handlers<R: Runtime>(handle: &AppHandle<R>) {
@@ -109,7 +114,7 @@ pub(crate) fn initialize_menu_handlers<R: Runtime>(handle: &AppHandle<R>) {
 
 #[allow(dead_code)]
 fn update_check<R: Runtime>(handle: &AppHandle<R>) -> Result<MenuItem<R>> {
-    let update_check = MenuItemBuilder::new("Check for Updates")
+    let update_check = MenuItemBuilder::new(tr(handle, "menu.check_for_updates"))
         .id("update-check")
         .build(handle)?;
 
@@ -118,7 +123,7 @@ fn update_check<R: Runtime>(handle: &AppHandle<R>) -> Result<MenuItem<R>> {
 
 #[allow(dead_code)]
 fn start_sync<R: Runtime>(handle: &AppHandle<R>) -> Result<MenuItem<R>> {
-    let start_sync = MenuItemBuilder::new("Start Sync")
+    let start_sync = MenuItemBuilder::new(tr(handle, "menu.start_sync"))
         .id("start-sync")
         .build(handle)?;
 
@@ -127,7 +132,7 @@ fn start_sync<R: Runtime>(handle: &AppHandle<R>) -> Result<MenuItem<R>> {
 
 #[allow(dead_code)]
 fn import_runbook<R: Runtime>(handle: &AppHandle<R>) -> Result<MenuItem<R>> {
-    let import_runbook = MenuItemBuilder::new("Import Runbook")
+    let import_runbook = MenuItemBuilder::new(tr(handle, "menu.import_runbook"))
         .id("import-runbook")
         .build(handle)?;
 
@@ -136,7 +141,7 @@ fn import_runbook<R: Runtime>(handle: &AppHandle<R>) -> Result<MenuItem<R>> {
 
 #[allow(dead_code)]
 fn new_runbook<R: Runtime>(handle: &AppHandle<R>) -> Result<MenuItem<R>> {
-    let new_runbook = MenuItemBuilder::new("New Runbook")
+    let new_runbook = MenuItemBuilder::new(tr(handle, "menu.new_runbook"))
         .id("new-runbook")
         .build(handle)?;
 
@@ -145,7 +150,7 @@ fn new_runbook<R: Runtime>(handle: &AppHandle<R>) -> Result<MenuItem<R>> {
 
 #[allow(dead_code)]
 fn new_workspace<R: Runtime>(handle: &AppHandle<R>) -> Result<MenuItem<R>> {
-    let import_workspace = MenuItemBuilder::new("New Workspace")
+    let import_workspace = MenuItemBuilder::new(tr(handle, "menu.new_workspace"))
         .id("new-workspace")
         .build(handle)?;
 
@@ -154,7 +159,7 @@ fn new_workspace<R: Runtime>(handle: &AppHandle<R>) -> Result<MenuItem<R>> {
 
 #[allow(dead_code)]
 fn export_markdown<R: Runtime>(handle: &AppHandle<R>) -> Result<MenuItem<R>> {
-    let export_markdown = MenuItemBuilder::new("Markdown")
+    let export_markdown = MenuItemBuilder::new(tr(handle, "menu.markdown"))
         .id("export-markdown")
         .build(handle)?;
 
@@ -163,7 +168,7 @@ fn export_markdown<R: Runtime>(handle: &AppHandle<R>) -> Result<MenuItem<R>> {
 
 #[allow(dead_code)]
 fn show_devtools<R: Runtime>(handle: &AppHandle<R>) -> Result<MenuItem<R>> {
-    let show_devtools = MenuItemBuilder::new("Toggle DevTools")
+    let show_devtools = MenuItemBuilder::new(tr(handle, "menu.toggle_devtools"))
         .id("toggle-devtools")
         .accelerator("CmdOrCtrl+Shift+I")
         .build(handle)?;
@@ -173,7 +178,7 @@ fn show_devtools<R: Runtime>(handle: &AppHandle<R>) -> Result<MenuItem<R>> {
 
 #[allow(dead_code)]
 fn show_llmtools<R: Runtime>(handle: &AppHandle<R>) -> Result<MenuItem<R>> {
-    let show_llmtools = MenuItemBuilder::new("LLM Tools")
+    let show_llmtools = MenuItemBuilder::new(tr(handle, "menu.llm_tools"))
         .id("show-llmtools")
         .accelerator("CmdOrCtrl+Shift+L")
         .build(handle)?;
@@ -201,7 +206,7 @@ pub(crate) struct TabItem {
 
 fn open_new_runtime_explainer_runbook<R: Runtime>(handle: &AppHandle<R>) -> Result<MenuItem<R>> {
     let open_new_runtime_explainer_runbook =
-        MenuItemBuilder::new("Open New Runbook Execution Engine Docs")
+        MenuItemBuilder::new(tr(handle, "menu.open_new_runtime_docs"))
             .id("open-new-runtime-explainer-runbook")
             .build(handle)?;
 
@@ -256,18 +261,23 @@ pub fn menu<R: Runtime>(app_handle: &AppHandle<R>, tab_items: &[TabItem]) -> Res
         window_items.push(item);
     }
 
-    let window_menu =
-        Submenu::with_id_and_items(app_handle, "window_menu", "Window", true, &window_items)?;
+    let window_menu = Submenu::with_id_and_items(
+        app_handle,
+        "window_menu",
+        tr(app_handle, "menu.window"),
+        true,
+        &window_items,
+    )?;
 
     let help_menu = Submenu::with_id_and_items(
         app_handle,
         "help_menu",
-        "Help",
+        tr(app_handle, "menu.help"),
         true,
         &[
             &link_menu_item(
                 "documentation".try_into()?,
-                "Documentation",
+                &tr(app_handle, "menu.documentation"),
                 "https://docs.atuin.sh",
                 app_handle,
             )?,
@@ -275,13 +285,13 @@ pub fn menu<R: Runtime>(app_handle: &AppHandle<R>, tab_items: &[TabItem]) -> Res
             &PredefinedMenuItem::separator(app_handle)?,
             &link_menu_item(
                 "twitter".try_into()?,
-                "Atuin Twitter",
+                &tr(app_handle, "menu.atuin_twitter"),
                 "https://x.com/atuinsh",
                 app_handle,
             )?,
             &link_menu_item(
                 "mastodon".try_into()?,
-                "Atuin Mastodon",
+                &tr(app_handle, "menu.atuin_mastodon"),
                 "https://hachyderm.io/@atuin",
                 app_handle,
             )?,
@@ -301,7 +311,7 @@ pub fn menu<R: Runtime>(app_handle: &AppHandle<R>, tab_items: &[TabItem]) -> Res
                 &[
                     &PredefinedMenuItem::about(
                         app_handle,
-                        Some("About Atuin Desktop"),
+                        Some(&tr(app_handle, "menu.about_atuin_desktop")),
                         Some(about_metadata),
                     )?,
                     &update_check(app_handle)?,
@@ -309,43 +319,52 @@ pub fn menu<R: Runtime>(app_handle: &AppHandle<R>, tab_items: &[TabItem]) -> Res
                     &PredefinedMenuItem::separator(app_handle)?,
                     &PredefinedMenuItem::services(app_handle, None)?,
                     &PredefinedMenuItem::separator(app_handle)?,
-                    &PredefinedMenuItem::hide(app_handle, Some("Hide Atuin Desktop"))?,
+                    &PredefinedMenuItem::hide(
+                        app_handle,
+                        Some(&tr(app_handle, "menu.hide_atuin_desktop")),
+                    )?,
                     &PredefinedMenuItem::hide_others(app_handle, None)?,
                     &PredefinedMenuItem::separator(app_handle)?,
-                    &PredefinedMenuItem::quit(app_handle, Some("Quit Atuin Desktop"))?,
+                    &PredefinedMenuItem::quit(
+                        app_handle,
+                        Some(&tr(app_handle, "menu.quit_atuin_desktop")),
+                    )?,
                 ],
             )?,
             &Submenu::with_items(
                 app_handle,
-                "File",
+                tr(app_handle, "menu.file"),
                 true,
                 &[
                     &Submenu::with_items(
                         app_handle,
-                        "Runbooks",
+                        tr(app_handle, "menu.runbooks"),
                         true,
                         &[&new_runbook(app_handle)?, &import_runbook(app_handle)?],
                     )?,
                     &Submenu::with_items(
                         app_handle,
-                        "Workspaces",
+                        tr(app_handle, "menu.workspaces"),
                         true,
                         &[&new_workspace(app_handle)?],
                     )?,
                     &Submenu::with_items(
                         app_handle,
-                        "Export",
+                        tr(app_handle, "menu.export"),
                         true,
                         &[&export_markdown(app_handle)?],
                     )?,
                     &PredefinedMenuItem::separator(app_handle)?,
                     #[cfg(not(target_os = "macos"))]
-                    &PredefinedMenuItem::quit(app_handle, Some("Quit Atuin Desktop"))?,
+                    &PredefinedMenuItem::quit(
+                        app_handle,
+                        Some(&tr(app_handle, "menu.quit_atuin_desktop")),
+                    )?,
                 ],
             )?,
             &Submenu::with_items(
                 app_handle,
-                "Edit",
+                tr(app_handle, "menu.edit"),
                 true,
                 &[
                     &PredefinedMenuItem::undo(app_handle, None)?,
@@ -360,14 +379,14 @@ pub fn menu<R: Runtime>(app_handle: &AppHandle<R>, tab_items: &[TabItem]) -> Res
             #[cfg(debug_assertions)]
             &Submenu::with_items(
                 app_handle,
-                "Developer",
+                tr(app_handle, "menu.developer"),
                 true,
                 &[&show_devtools(app_handle)?, &show_llmtools(app_handle)?],
             )?,
             #[cfg(target_os = "macos")]
             &Submenu::with_items(
                 app_handle,
-                "View",
+                tr(app_handle, "menu.view"),
                 true,
                 &[&PredefinedMenuItem::fullscreen(app_handle, None)?],
             )?,

@@ -1,0 +1,3 @@
+[env]
+TAURI_I18N_PROJECT_DIR = { value = ".", relative = true }
+TAURI_I18N_LOCALES_PATH = "locales"
