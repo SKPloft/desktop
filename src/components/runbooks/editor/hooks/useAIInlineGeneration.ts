@@ -22,6 +22,7 @@ import AIBlockRegistry from "@/lib/ai/block_registry";
 import AtuinEnv from "@/atuin_env";
 import { SessionEvent } from "@/rs-bindings/SessionEvent";
 import { AIToolRunner, DEFAULT_AUTO_APPROVE_TOOLS } from "@/lib/ai/tools";
+import { t } from "@/lib/i18n";
 
 // =============================================================================
 // Types
@@ -597,7 +598,7 @@ export function useAIInlineGeneration({
           if (!errorToastShownRef.current) {
             errorToastShownRef.current = true;
             addToast({
-              title: "Generation failed",
+              title: t("editor.ai.generation_failed"),
               description: message,
               color: "danger",
             });
@@ -724,7 +725,7 @@ export function useAIInlineGeneration({
 
         const message = error instanceof Error ? error.message : "Failed to start generation";
         addToast({
-          title: "Generation failed",
+          title: t("editor.ai.generation_failed"),
           description: message,
           color: "danger",
         });
@@ -773,7 +774,7 @@ export function useAIInlineGeneration({
 
       const message = error instanceof Error ? error.message : "Failed to edit block";
       addToast({
-        title: "Edit failed",
+        title: t("editor.ai.edit_failed"),
         description: message,
         color: "danger",
       });
@@ -873,9 +874,8 @@ export function useAIInlineGeneration({
 
             if (generatedBlockIds.length > 1) {
               addToast({
-                title: "Multiple blocks generated",
-                description:
-                  "Running multiple blocks in series is not yet supported. Please run them individually.",
+                title: t("ai.inline.multiple_blocks_title"),
+                description: t("ai.inline.multiple_blocks_description"),
                 color: "warning",
               });
               dispatch({ type: "CLEAR" });
@@ -892,8 +892,10 @@ export function useAIInlineGeneration({
               }
             } else {
               addToast({
-                title: "Cannot run this block",
-                description: `Block type "${block?.type || "unknown"}" is not executable.`,
+                title: t("ai.inline.cannot_run_title"),
+                description: t("ai.inline.cannot_run_description", {
+                  blockType: block?.type || "unknown",
+                }),
                 color: "warning",
               });
             }

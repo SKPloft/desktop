@@ -4,6 +4,7 @@ import Logger from "@/lib/logger";
 const logger = new Logger("RunbookStore", "purple", "pink");
 
 import { StateCreator } from "zustand";
+import { t } from "@/lib/i18n";
 
 export interface AtuinRunbookState {
   runbooks: Runbook[];
@@ -54,7 +55,7 @@ export const createRunbookState: StateCreator<AtuinRunbookState> = (
       directory: false,
       filters: [
         {
-          name: "Atuin Runbooks",
+          name: t("import.file_filter.atuin_runbooks"),
           extensions: ["atrb"],
         },
       ],

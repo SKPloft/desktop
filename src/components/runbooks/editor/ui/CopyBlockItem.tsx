@@ -3,8 +3,10 @@ import { SideMenuExtension } from "@blocknote/core/extensions";
 import { ClipboardCopyIcon } from "lucide-react";
 import { useStore } from "@/state/store";
 import { uuidv7 } from "uuidv7";
+import { useTranslation } from "@/lib/i18n";
 
 export function CopyBlockItem() {
+  const { t } = useTranslation();
   const editor = useBlockNoteEditor();
   const Components = useComponentsContext()!;
   const hoveredBlock = useExtensionState(SideMenuExtension, {
@@ -27,7 +29,7 @@ export function CopyBlockItem() {
         useStore.getState().setCopiedBlock(block);
       }}
     >
-      Copy
+      {t("common.copy")}
     </Components.Generic.Menu.Item>
   );
 }

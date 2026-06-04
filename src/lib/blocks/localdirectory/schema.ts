@@ -2,6 +2,7 @@ import { DependencySpec } from "../../workflow/dependency";
 import Block from "../../workflow/blocks/block";
 import undent from "undent";
 import AIBlockRegistry from "@/lib/ai/block_registry";
+import { t } from "@/lib/i18n";
 
 export class LocalDirectoryBlock extends Block {
   path: string;
@@ -47,10 +48,9 @@ export const LOCALDIRECTORY_BLOCK_SCHEMA = {
 
 AIBlockRegistry.getInstance().addBlock({
   typeName: "local-directory",
-  friendlyName: "Local Directory",
-  shortDescription:
-    "Sets the current working directory for the runbook (local to the user's machine).",
-  description: undent`
+  friendlyName: () => t("editor.blocks.local_directory.title"),
+  shortDescription: () => t("editor.blocks.local_directory.short_desc"),
+  description: () => undent`
     Local Directory blocks set the current working directory for terminal and script blocks that follow. The path is stored locally on the user's machine and is not synced with the runbook,
     allowing different users to set different working directories for the same runbook.
 

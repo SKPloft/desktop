@@ -12,22 +12,23 @@ import {
 import clsx from "clsx";
 import { CheckIcon, ChevronDownIcon } from "lucide-react";
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
+import { t, useTranslation } from "@/lib/i18n";
 
 function validateTagName(tag: string, existingTags: string[]) {
   if (tag.length < 2) {
-    return "Tag must be at least 2 characters";
+    return t("runbooks.tag.too_short");
   }
   if (tag.length > 80) {
-    return "Tag must be at most 80 characters";
+    return t("runbooks.tag.too_long");
   }
   if (tag === "latest") {
-    return "Tag cannot be 'latest'";
+    return t("runbooks.tag.cannot_be_latest");
   }
   if (!tag.match(TAG_REGEX)) {
-    return "Tag can only contain letters, numbers, underscores, dashes, and periods";
+    return t("runbooks.tag.invalid_characters");
   }
   if (existingTags.find((t) => t == tag)) {
-    return "Tag already exists";
+    return t("runbooks.tag.already_exists");
   }
   return null;
 }
@@ -47,6 +48,7 @@ interface TagSelectorProps {
 const TAG_REGEX = /^[a-z0-9_\-\.]+$/i;
 
 export default function TagSelector(props: TagSelectorProps) {
+  const { t } = useTranslation();
   const [newTagName, setNewTagName] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [isDebounced, resetDebounce, clearDebounce] = useDebounce(1000);
@@ -60,7 +62,7 @@ export default function TagSelector(props: TagSelectorProps) {
 
   let tagLabel: string = "";
   if (tag == "latest") {
-    tagLabel = "(no tag)";
+    tagLabel = t("runbooks.tags.no_tag");
   } else if (tag) {
     tagLabel = tag;
   }
@@ -178,7 +180,7 @@ export default function TagSelector(props: TagSelectorProps) {
         </div>
       </PopoverTrigger>
       <PopoverContent>
-        <div>Select a tag to view a previously saved snapshot of this runbook</div>
+        <div>{t("tag_selector.description")}</div>
         <ScrollShadow
           size={40}
           className="my-2 overflow-y-auto pr-2 w-full max-h-[30vh]"
@@ -189,18 +191,18 @@ export default function TagSelector(props: TagSelectorProps) {
         {props.canEditTags && (
           <div>
             <Divider className="mb-2" />
-            <div className="font-bold">Create a new tag</div>
+            <div className="font-bold">{t("tag_selector.create_title")}</div>
             <div className="mb-2">
-              Create a new tag to make a permanent snapshot of the runbook in its untagged state
+              {t("tag_selector.create_description")}
             </div>
             <form onSubmit={handleFormSubmit}>
               <div className="flex flex-col">
                 <Input
-                  label="Tag name"
+                  label={t("tag_selector.tag_name")}
                   value={newTagName}
                   onChange={handleTagNameChange}
                   variant="bordered"
-                  placeholder="Tag name"
+                  placeholder={t("tag_selector.tag_name")}
                   autoComplete="off"
                   autoCapitalize="off"
                   autoCorrect="off"
@@ -215,7 +217,7 @@ export default function TagSelector(props: TagSelectorProps) {
                   className="mt-2"
                   isDisabled={!isDebounced || !!error}
                 >
-                  Create tag
+                  {t("tag_selector.create")}
                 </Button>
               </div>
             </form>

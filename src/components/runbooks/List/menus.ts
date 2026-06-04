@@ -5,6 +5,7 @@ import { MenuBuilder, ItemBuilder, AtuinMenuItem } from "@/lib/menu_builder";
 import Workspace from "@/state/runbooks/workspace";
 import { ArboristNode, ArboristTree } from "@/state/runbooks/workspace_folders";
 import { Menu, MenuOptions } from "@tauri-apps/api/menu";
+import { t } from "@/lib/i18n";
 
 type Handler = () => void;
 
@@ -35,7 +36,7 @@ export async function createNewRunbookMenu(
         buildWorkspaceItems(ws.workspace, ws.folder, (workspaceId, parentFolderId) => {
           return [
             new ItemBuilder()
-              .text("New Runbook Here")
+              .text(t("runbooks.menu.new_runbook_here"))
               .action(() => actions.onNewRunbook(workspaceId, parentFolderId))
               .build(),
           ];
@@ -49,7 +50,7 @@ export async function createNewRunbookMenu(
     .separator()
     .item(
       new ItemBuilder()
-        .text("New Workspace")
+        .text(t("runbooks.menu.new_workspace"))
         .action(() => actions.onNewWorkspace())
         .accelerator("CmdOrCtrl+N"),
     )
@@ -130,32 +131,32 @@ export async function createFolderMenu(
   const menu = await new MenuBuilder()
     .item(
       new ItemBuilder()
-        .text("New Runbook")
+        .text(t("runbooks.menu.new_runbook"))
         .action(() => actions.onNewRunbook())
         .accelerator("Shift+N"),
     )
     .separator()
     .item(
       new ItemBuilder()
-        .text("New Folder")
+        .text(t("runbooks.menu.new_folder"))
         .action(() => actions.onNewFolder())
         .accelerator("N"),
     )
     .item(
       new ItemBuilder()
-        .text("Rename Folder")
+        .text(t("runbooks.menu.rename_folder"))
         .action(() => actions.onRenameFolder())
         .accelerator("R"),
     )
     .item(
       new ItemBuilder()
-        .text("Delete Folder")
+        .text(t("runbooks.menu.delete_folder"))
         .action(() => actions.onDeleteFolder())
         .accelerator("CmdOrCtrl+Delete"),
     )
     .item(
       new ItemBuilder()
-        .text("Move To...")
+        .text(t("runbooks.menu.move_to"))
         .items(moveToItems as AtuinMenuItem[])
         .build(),
     )
@@ -183,14 +184,14 @@ export async function createRunbookMenu(
   const menu = await new MenuBuilder()
     .item(
       new ItemBuilder()
-        .text("Delete Runbook")
+        .text(t("runbooks.menu.delete_runbook"))
         .action(() => actions.onDeleteRunbook())
         .accelerator("D"),
     )
     .separator()
     .item(
       new ItemBuilder()
-        .text("Move To...")
+        .text(t("runbooks.menu.move_to"))
         .items(moveToItems as AtuinMenuItem[])
         .build(),
     )
@@ -218,7 +219,7 @@ export async function createMultiItemMenu(
   const menu = await new MenuBuilder()
     .item(
       new ItemBuilder()
-        .text("Move To...")
+        .text(t("runbooks.menu.move_to"))
         .items(moveToItems as AtuinMenuItem[])
         .build(),
     )
@@ -238,27 +239,27 @@ export async function createWorkspaceMenu(actions: {
   const menu = await new MenuBuilder()
     .item(
       new ItemBuilder()
-        .text("New Runbook")
+        .text(t("runbooks.menu.new_runbook"))
         .action(() => actions.onNewRunbook())
         .accelerator("Shift+N"),
     )
     .separator()
     .item(
       new ItemBuilder()
-        .text("New Folder")
+        .text(t("runbooks.menu.new_folder"))
         .action(() => actions.onNewFolder())
         .accelerator("N"),
     )
     .separator()
     .item(
       new ItemBuilder()
-        .text("Rename Workspace")
+        .text(t("runbooks.menu.rename_workspace"))
         .action(() => actions.onRenameWorkspace())
         .accelerator("R"),
     )
     .item(
       new ItemBuilder()
-        .text("Delete Workspace")
+        .text(t("runbooks.menu.delete_workspace"))
         .action(() => actions.onDeleteWorkspace())
         .accelerator("CmdOrCtrl+Delete"),
     );
@@ -268,7 +269,7 @@ export async function createWorkspaceMenu(actions: {
 
     menu.separator().item(
       new ItemBuilder()
-        .text(opts.os === "macos" ? "Show in Finder" : "Show in File Explorer")
+        .text(opts.os === "macos" ? t("runbooks.menu.show_in_finder") : t("runbooks.menu.show_in_file_explorer"))
         .action(() => actions.onOpenFolder!())
         .accelerator("CmdOrCtrl+O"),
     );
@@ -296,7 +297,7 @@ function createMoveToMenu(
           buildWorkspaceItems(ws.workspace, ws.folder, (workspaceId, parentFolderId) => {
             return [
               new ItemBuilder()
-                .text("Move Here")
+                .text(t("runbooks.menu.move_here"))
                 .action(() => onSelectMove(workspaceId, parentFolderId))
                 .build(),
             ];
@@ -308,7 +309,7 @@ function createMoveToMenu(
   if (currentOrgMoveToChoices.length === 0) {
     currentOrgMoveToChoices = [
       new ItemBuilder()
-        .text("No workspaces available")
+        .text(t("runbooks.menu.no_workspaces"))
         .action(() => {})
         .enabled(false)
         .build(),
@@ -316,7 +317,7 @@ function createMoveToMenu(
   }
 
   const currentOrgMoveToItem = new ItemBuilder()
-    .text(currentOrg?.name || "Personal")
+    .text(currentOrg?.name || t("common.personal"))
     .items(currentOrgMoveToChoices)
     .build();
 
@@ -334,7 +335,7 @@ function createMoveToMenu(
                 buildWorkspaceItems(ws.workspace, ws.folder, (workspaceId, parentFolderId) => {
                   return [
                     new ItemBuilder()
-                      .text("Move Here")
+                      .text(t("runbooks.menu.move_here"))
                       .action(() => onSelectMove(workspaceId, parentFolderId))
                       .build(),
                   ];
@@ -352,7 +353,7 @@ export async function createRootMenu(actions: { onNewWorkspace: Handler }) {
   const menu = await new MenuBuilder()
     .item(
       new ItemBuilder()
-        .text("New Workspace")
+        .text(t("runbooks.menu.new_workspace"))
         .action(() => actions.onNewWorkspace())
         .accelerator("CmdOrCtrl+N"),
     )
@@ -375,36 +376,36 @@ export async function createTabMenu(callback: (action: TabMenuActions) => void):
   const menu = await new MenuBuilder()
     .item(
       new ItemBuilder()
-        .text("Close Tab")
+        .text(t("runbooks.menu.close_tab"))
         .action(() => callback({ type: "close_tab" }))
         .accelerator("CmdOrCtrl+W"),
     )
     .separator()
     .item(
       new ItemBuilder()
-        .text("Close All Tabs")
+        .text(t("runbooks.menu.close_all_tabs"))
         .action(() => callback({ type: "close_all_tabs" }))
         .accelerator("CmdOrCtrl+Shift+W"),
     )
     .item(
       new ItemBuilder()
-        .text("Close Other Tabs")
+        .text(t("runbooks.menu.close_other_tabs"))
         .action(() => callback({ type: "close_other_tabs" })),
     )
     .item(
       new ItemBuilder()
-        .text("Close Tabs to the Left")
+        .text(t("runbooks.menu.close_tabs_left"))
         .action(() => callback({ type: "close_left_tabs" })),
     )
     .item(
       new ItemBuilder()
-        .text("Close Tabs to the Right")
+        .text(t("runbooks.menu.close_tabs_right"))
         .action(() => callback({ type: "close_right_tabs" })),
     )
     .separator()
     .item(
       new ItemBuilder()
-        .text("Undo Close Tab")
+        .text(t("runbooks.menu.undo_close_tab"))
         .action(() => callback({ type: "undo_close_tab" }))
         .accelerator("CmdOrCtrl+Shift+T"),
     )
@@ -423,14 +424,14 @@ export async function createTabBarMenu(
   const menu = await new MenuBuilder()
     .item(
       new ItemBuilder()
-        .text("Close All Tabs")
+        .text(t("runbooks.menu.close_all_tabs"))
         .action(() => callback({ type: "close_all_tabs" }))
         .accelerator("CmdOrCtrl+W"),
     )
     .separator()
     .item(
       new ItemBuilder()
-        .text("Undo Close Tab")
+        .text(t("runbooks.menu.undo_close_tab"))
         .action(() => callback({ type: "undo_close_tab" }))
         .accelerator("CmdOrCtrl+Shift+T"),
     )

@@ -1,4 +1,5 @@
 import { DatabaseIcon } from "lucide-react";
+import { t } from "@/lib/i18n";
 
 // @ts-ignore
 import { createReactBlockSpec } from "@blocknote/react";
@@ -162,12 +163,12 @@ export default createReactBlockSpec(
 );
 
 export const insertSQLite = (schema: any) => (editor: typeof schema.BlockNoteEditor) => ({
-  title: "SQLite",
+  title: t("editor.blocks.sqlite.title"), 
   onItemClick: () => {
     track_event("runbooks.block.create", { type: "sqlite" });
 
     let sqliteBlocks = editor.document.filter((block: any) => block.type === "sqlite");
-    let name = `SQLite ${sqliteBlocks.length + 1}`;
+    let name = t("editor.blocks.sqlite.default_name", { count: sqliteBlocks.length + 1 }); 
 
     editor.insertBlocks(
       [
@@ -184,14 +185,14 @@ export const insertSQLite = (schema: any) => (editor: typeof schema.BlockNoteEdi
     );
   },
   icon: <DatabaseIcon size={18} />,
-  group: "Database",
+  group: t("editor.blocks.group.database"), 
 });
 
 AIBlockRegistry.getInstance().addBlock({
   typeName: "sqlite",
-  friendlyName: "SQLite",
-  shortDescription: "Executes SQL queries against a SQLite database.",
-  description: undent`
+  friendlyName: () => t("editor.blocks.sqlite.title"),
+  shortDescription: () => t("editor.blocks.sqlite.short_desc"),
+  description: () => undent`
     SQLite blocks execute SQL queries against a local SQLite database file and display results in an interactive table.
 
     The available props are:

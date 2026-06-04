@@ -62,7 +62,7 @@ export default function CommandMenu(props: CommandMenuProps) {
             (workspaces || []).find((w) => w.get("id") === rb.workspaceId)?.get("name") || null,
           title: rb.name,
           type: "runbook",
-          subtitle: "edited xyz ago",
+          subtitle: t("command_menu.edited"), 
         };
       });
 

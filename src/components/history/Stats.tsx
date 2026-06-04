@@ -67,6 +67,7 @@ function TopTable({ stats }: any) {
 }
 
 export default function Stats() {
+  const { t } = useTranslation();
   const [stats, setStats]: any = useState([]);
   const [top, setTop]: any = useState([]);
   const [chart, setChart]: any = useState([]);
@@ -78,23 +79,23 @@ export default function Stats() {
       .then((s: any) => {
         setStats([
           {
-            name: "Total history",
+            name: t("history.stat.total_history"),
             stat: s.total_history.toLocaleString(),
           },
           {
-            name: "Unique history",
+            name: t("history.stat.unique_history"),
             stat: s.stats.unique_commands.toLocaleString(),
           },
           {
-            name: "Last 1d",
+            name: t("history.stat.last_1d"),
             stat: s.last_1d.toLocaleString(),
           },
           {
-            name: "Last 7d",
+            name: t("history.stat.last_7d"),
             stat: s.last_7d.toLocaleString(),
           },
           {
-            name: "Last 30d",
+            name: t("history.stat.last_30d"),
             stat: s.last_30d.toLocaleString(),
           },
         ]);

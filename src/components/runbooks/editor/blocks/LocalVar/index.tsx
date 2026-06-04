@@ -7,7 +7,7 @@ import AIBlockRegistry from "@/lib/ai/block_registry";
 import track_event from "@/tracking";
 import { exportPropMatter } from "@/lib/utils";
 import { useBlockKvValue } from "@/lib/hooks/useKvValue";
-import { useTranslation } from "@/lib/i18n";
+import { useTranslation, t } from "@/lib/i18n";
 import isValidVarName from "../../utils/varNames";
 
 interface LocalVarProps {
@@ -63,7 +63,7 @@ const LocalVar = (props: LocalVarProps) => {
         />
 
         <Input
-          placeholder="Value (private and ephemeral - only stored on your device)"
+          placeholder={t("editor.blocks.local_var.value_placeholder")}
           value={value}
           onValueChange={setValue}
           autoComplete="off"
@@ -146,8 +146,8 @@ export default createReactBlockSpec(
 
 // Component to insert this block from the editor menu
 export const insertLocalVar = (schema: any) => (editor: typeof schema.BlockNoteEditor) => ({
-  title: "Local Variable",
-  subtext: "Variable stored only on your device",
+  title: t("editor.blocks.local_var.title"),
+  subtext: t("editor.blocks.local_var.insert_subtext"),
   onItemClick: () => {
     track_event("runbooks.block.create", { type: "local-var" });
 
@@ -171,9 +171,9 @@ export const insertLocalVar = (schema: any) => (editor: typeof schema.BlockNoteE
 
 AIBlockRegistry.getInstance().addBlock({
   typeName: "local-var",
-  friendlyName: "Local Variable",
-  shortDescription: "Stores a variable locally on the user's device (not synced).",
-  description: undent`
+  friendlyName: () => t("editor.blocks.local_var.title"),
+  shortDescription: () => t("editor.blocks.local_var.short_desc"),
+  description: () => undent`
     Local Variable blocks store sensitive values locally on the user's machine. The variable name is synced with collaborators, but the value is stored only on the local device and never uploaded.
 
     The available props are:

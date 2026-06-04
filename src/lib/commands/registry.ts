@@ -18,6 +18,11 @@ import { addToast } from "@heroui/react";
 import { emit } from "@tauri-apps/api/event";
 import { invoke } from "@tauri-apps/api/core";
 import { fuzzyMatch } from "@/lib/fuzzy-matcher";
+import { t } from "@/lib/i18n";
+
+export function resolve(value: string | (() => string)): string {
+  return typeof value === "function" ? value() : value;
+}
 
 export class CommandRegistry {
   private commands: Map<string, CommandImplementation> = new Map();
@@ -59,9 +64,9 @@ export class CommandRegistry {
       if (!this.isCommandEnabled(command)) continue;
 
       const searchFields = [
-        { text: command.title, weight: 3 },
-        { text: command.description || "", weight: 2 },
-        { text: command.category || "", weight: 1 },
+        { text: resolve(command.title), weight: 3 },
+        { text: command.description ? resolve(command.description) : "", weight: 2 },
+        { text: command.category ? resolve(command.category) : "", weight: 1 },
         ...(command.keywords?.map((kw) => ({ text: kw, weight: 2 })) || []),
       ];
 
@@ -123,9 +128,9 @@ export const commandRegistry = new CommandRegistry();
 export function registerBuiltinCommands(): void {
   commandRegistry.registerCommand({
     id: "runbook.new",
-    title: "New Runbook",
-    description: "Create a new runbook in the current workspace",
-    category: "Runbook",
+    title: () => t("commands.runbook.new.title"),
+    description: () => t("commands.runbook.new.description"),
+    category: () => t("commands.category.runbook"),
     icon: FileText,
     keywords: ["create", "add", "runbook"],
     handler: async () => {
@@ -139,9 +144,9 @@ export function registerBuiltinCommands(): void {
 
   commandRegistry.registerCommand({
     id: "workspace.new",
-    title: "New Workspace",
-    description: "Create a new workspace",
-    category: "Workspace",
+    title: () => t("commands.workspace.new.title"),
+    description: () => t("commands.workspace.new.description"),
+    category: () => t("commands.category.workspace"),
     icon: FolderPlus,
     keywords: ["create", "add", "workspace", "folder"],
     handler: () => {
@@ -151,9 +156,9 @@ export function registerBuiltinCommands(): void {
 
   commandRegistry.registerCommand({
     id: "runbook.export",
-    title: "Export Runbook",
-    description: "Export the current runbook",
-    category: "Runbook",
+    title: () => t("commands.runbook.export.title"),
+    description: () => t("commands.runbook.export.description"),
+    category: () => t("commands.category.runbook"),
     icon: Download,
     keywords: ["export", "download", "save"],
     enabled: () => {
@@ -175,45 +180,45 @@ export function registerBuiltinCommands(): void {
 
   commandRegistry.registerCommand({
     id: "app.settings",
-    title: "Open Settings",
-    description: "Open application settings",
-    category: "Application",
+    title: () => t("commands.app.settings.title"),
+    description: () => t("commands.app.settings.description"),
+    category: () => t("commands.category.application"),
     icon: Settings,
     keywords: ["settings", "preferences", "config"],
     handler: () => {
-      useStore.getState().openTab("/settings", "Settings");
+      useStore.getState().openTab("/settings", t("commands.app.settings.tab_title"));
     },
   });
 
   commandRegistry.registerCommand({
     id: "app.history",
-    title: "Open History",
-    description: "Open command history",
-    category: "Application",
+    title: () => t("commands.app.history.title"),
+    description: () => t("commands.app.history.description"),
+    category: () => t("commands.category.application"),
     icon: History,
     keywords: ["history", "commands", "shell"],
     handler: () => {
-      useStore.getState().openTab("/history", "History");
+      useStore.getState().openTab("/history", t("commands.app.history.tab_title"));
     },
   });
 
   commandRegistry.registerCommand({
     id: "app.stats",
-    title: "Open Statistics",
-    description: "View your command statistics",
-    category: "Application",
+    title: () => t("commands.app.stats.title"),
+    description: () => t("commands.app.stats.description"),
+    category: () => t("commands.category.application"),
     icon: BarChart3,
     keywords: ["stats", "statistics", "analytics"],
     handler: () => {
-      useStore.getState().openTab("/stats", "Statistics");
+      useStore.getState().openTab("/stats", t("commands.app.stats.tab_title"));
     },
   });
 
   commandRegistry.registerCommand({
     id: "app.sync",
-    title: "Sync Now",
-    description: "Trigger a sync with Atuin server",
-    category: "Application",
+    title: () => t("commands.app.sync.title"),
+    description: () => t("commands.app.sync.description"),
+    category: () => t("commands.category.application"),
     icon: RefreshCw,
     keywords: ["sync", "refresh", "update"],
     handler: async () => {
@@ -227,9 +232,9 @@ export function registerBuiltinCommands(): void {
 
   commandRegistry.registerCommand({
     id: "app.toggle-dark-mode",
-    title: "Toggle Dark Mode",
-    description: "Switch between light and dark mode",
-    category: "Application",
+    title: () => t("commands.app.toggle_dark_mode.title"),
+    description: () => t("commands.app.toggle_dark_mode.description"),
+    category: () => t("commands.category.application"),
     icon: () => {
       const colorMode = useStore.getState().colorMode;
       return colorMode === "dark" ? Sun : Moon;
@@ -245,9 +250,9 @@ export function registerBuiltinCommands(): void {
 
   commandRegistry.registerCommand({
     id: "app.set-system-theme",
-    title: "Follow System Theme",
-    description: "Automatically match your system's light/dark mode",
-    category: "Application",
+    title: () => t("commands.app.set_system_theme.title"),
+    description: () => t("commands.app.set_system_theme.description"),
+    category: () => t("commands.category.application"),
     icon: RefreshCw,
     keywords: ["system", "auto", "automatic", "theme", "appearance"],
     handler: () => {
@@ -257,9 +262,9 @@ export function registerBuiltinCommands(): void {
 
   commandRegistry.registerCommand({
     id: "runbook.kill-all-terminals",
-    title: "Kill All Terminals in Current Runbook",
-    description: "Stop all running terminals in the current runbook",
-    category: "Runbook",
+    title: () => t("commands.runbook.kill_all_terminals.title"),
+    description: () => t("commands.runbook.kill_all_terminals.description"),
+    category: () => t("commands.category.runbook"),
     icon: XCircle,
     keywords: ["kill", "stop", "terminate", "terminals"],
     enabled: () => {
@@ -290,9 +295,9 @@ export function registerBuiltinCommands(): void {
 
   commandRegistry.registerCommand({
     id: "runbook.copy-deep-link",
-    title: "Copy Deep Link",
-    description: "Copy a deep link to the current runbook",
-    category: "Runbook",
+    title: () => t("commands.runbook.copy_deep_link.title"),
+    description: () => t("commands.runbook.copy_deep_link.description"),
+    category: () => t("commands.category.runbook"),
     icon: Link,
     keywords: ["copy", "deep", "link", "url", "share"],
     enabled: () => {
@@ -315,14 +320,14 @@ export function registerBuiltinCommands(): void {
       try {
         await navigator.clipboard.writeText(deepLink);
         addToast({
-          title: "Deep link copied to clipboard",
+          title: t("commands.runbook.copy_deep_link.success"),
           color: "success",
           radius: "sm",
         });
       } catch (error) {
         console.error("Failed to copy deep link:", error);
         addToast({
-          title: "Failed to copy deep link",
+          title: t("commands.runbook.copy_deep_link.error"),
           color: "danger",
           radius: "sm",
         });
@@ -330,3 +335,4 @@ export function registerBuiltinCommands(): void {
     },
   });
 }
+

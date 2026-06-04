@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/command";
 import { Dialog, DialogContent, DialogPortal, DialogTitle } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@heroui/react";
-import { commandRegistry, registerBuiltinCommands } from "@/lib/commands/registry";
+import { commandRegistry, registerBuiltinCommands, resolve } from "@/lib/commands/registry";
 import { CommandSearchResult } from "@/lib/commands/types";
 import { useStore } from "@/state/store";
 import { LucideIcon } from "lucide-react";
@@ -78,7 +78,7 @@ export default function CommandPalette() {
     const grouped: Record<string, CommandSearchResult[]> = {};
 
     results.forEach((result) => {
-      const category = result.command.category || "General";
+      const category = resolve(result.command.category ?? "") || "General"; 
       if (!grouped[category]) {
         grouped[category] = [];
       }
@@ -141,10 +141,10 @@ export default function CommandPalette() {
                           return <Icon className="h-4 w-4" />;
                         })()}
                       <div className="flex-1">
-                        <div className="font-medium">{result.command.title}</div>
+                        <div className="font-medium">{resolve(result.command.title)}</div>
                         {result.command.description && (
                           <div className="text-sm text-muted-foreground">
-                            {result.command.description}
+                            {resolve(result.command.description)}
                           </div>
                         )}
                       </div>

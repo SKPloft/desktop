@@ -4,7 +4,7 @@ import { createReactBlockSpec } from "@blocknote/react";
 import undent from "undent";
 import AIBlockRegistry from "@/lib/ai/block_registry";
 import { exportPropMatter } from "@/lib/utils";
-import { useTranslation } from "@/lib/i18n";
+import { useTranslation, t } from "@/lib/i18n";
 import { useSerialExecution } from "@/lib/hooks/useSerialExecution";
 import { useCurrentRunbookId } from "@/context/runbook_id_context";
 import track_event from "@/tracking";
@@ -162,8 +162,8 @@ export default createReactBlockSpec(
 
 // Component to insert this block from the editor menu
 export const insertPause = (schema: any) => (editor: typeof schema.BlockNoteEditor) => ({
-  title: "Pause",
-  subtext: "Pause workflow execution for manual intervention",
+  title: t("editor.blocks.pause.title"),
+  subtext: t("editor.blocks.pause.insert_subtext"),
   onItemClick: async () => {
     track_event("runbooks.block.create", { type: "pause" });
 
@@ -179,14 +179,14 @@ export const insertPause = (schema: any) => (editor: typeof schema.BlockNoteEdit
     );
   },
   icon: <PauseIcon size={18} />,
-  group: "Execute",
+  group: t("editor.blocks.group.execute"), 
 });
 
 AIBlockRegistry.getInstance().addBlock({
   typeName: "pause",
-  friendlyName: "Pause",
-  shortDescription: "Pauses workflow execution until the user continues.",
-  description: undent`
+  friendlyName: () => t("editor.blocks.pause.title"),
+  shortDescription: () => t("editor.blocks.pause.short_desc"),
+  description: () => undent`
     Pause blocks halt serial workflow execution until the user manually continues. Can be unconditional or conditional based on a template variable.
 
     The available props are:

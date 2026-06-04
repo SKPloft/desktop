@@ -44,7 +44,7 @@ import { useBlockExecution, useBlockOutput } from "@/lib/hooks/useDocumentBridge
 import { PrometheusQueryResult } from "@/rs-bindings/PrometheusQueryResult";
 import MaskedInput from "@/components/MaskedInput/MaskedInput";
 import { useInterval } from "usehooks-ts";
-import { useTranslation } from "@/lib/i18n";
+import { useTranslation, t } from "@/lib/i18n";
 
 interface PromProps {
   setName: (name: string) => void;
@@ -65,31 +65,31 @@ interface TimeFrame {
 }
 
 const timeOptions: TimeFrame[] = [
-  { name: "Last 5 mins", seconds: 5 * 60, short: "5m" },
-  { name: "Last 15 mins", seconds: 15 * 60, short: "15m" },
-  { name: "Last 30 mins", seconds: 30 * 60, short: "30m" },
-  { name: "Last 1 hr", seconds: 60 * 60, short: "1h" },
-  { name: "Last 3 hrs", seconds: 3 * 60 * 60, short: "3h" },
-  { name: "Last 6 hrs", seconds: 6 * 60 * 60, short: "6h" },
-  { name: "Last 24 hrs", seconds: 24 * 60 * 60, short: "24h" },
-  { name: "Last 2 days", seconds: 2 * 24 * 60 * 60, short: "2d" },
-  { name: "Last 7 days", seconds: 7 * 24 * 60 * 60, short: "7d" },
-  { name: "Last 30 days", seconds: 30 * 24 * 60 * 60, short: "30d" },
-  { name: "Last 90 days", seconds: 90 * 24 * 60 * 60, short: "90d" },
-  { name: "Last 180 days", seconds: 180 * 24 * 60 * 60, short: "180d" },
+  { name: t("editor.blocks.prometheus.time_frame.last_5_mins"), seconds: 5 * 60, short: "5m" },  
+  { name: t("editor.blocks.prometheus.time_frame.last_15_mins"), seconds: 15 * 60, short: "15m" }, 
+  { name: t("editor.blocks.prometheus.time_frame.last_30_mins"), seconds: 30 * 60, short: "30m" }, 
+  { name: t("editor.blocks.prometheus.time_frame.last_1_hr"), seconds: 60 * 60, short: "1h" }, 
+  { name: t("editor.blocks.prometheus.time_frame.last_3_hrs"), seconds: 3 * 60 * 60, short: "3h" }, 
+  { name: t("editor.blocks.prometheus.time_frame.last_6_hrs"), seconds: 6 * 60 * 60, short: "6h" }, 
+  { name: t("editor.blocks.prometheus.time_frame.last_24_hrs"), seconds: 24 * 60 * 60, short: "24h" }, 
+  { name: t("editor.blocks.prometheus.time_frame.last_2_days"), seconds: 2 * 24 * 60 * 60, short: "2d" }, 
+  { name: t("editor.blocks.prometheus.time_frame.last_7_days"), seconds: 7 * 24 * 60 * 60, short: "7d" }, 
+  { name: t("editor.blocks.prometheus.time_frame.last_30_days"), seconds: 30 * 24 * 60 * 60, short: "30d" }, 
+  { name: t("editor.blocks.prometheus.time_frame.last_90_days"), seconds: 90 * 24 * 60 * 60, short: "90d" }, 
+  { name: t("editor.blocks.prometheus.time_frame.last_180_days"), seconds: 180 * 24 * 60 * 60, short: "180d" }, 
 ];
 
 const autoRefreshChoices = [
-  { label: "Off", value: 0 },
-  { label: "1s", value: 1000 },
-  { label: "5s", value: 5000 },
-  { label: "10s", value: 10000 },
-  { label: "30s", value: 30000 },
-  { label: "1m", value: 60000 },
-  { label: "2m", value: 120000 },
-  { label: "5m", value: 300000 },
-  { label: "10m", value: 600000 },
-  { label: "30m", value: 1800000 },
+  { label: t("common.off"), value: 0 }, 
+  { label: t("blocks.common.refresh.1s"), value: 1000 }, 
+  { label: t("blocks.common.refresh.5s"), value: 5000 }, 
+  { label: t("blocks.common.refresh.10s"), value: 10000 }, 
+  { label: t("blocks.common.refresh.30s"), value: 30000 }, 
+  { label: t("blocks.common.refresh.1m"), value: 60000 }, 
+  { label: t("blocks.common.refresh.2m"), value: 120000 }, 
+  { label: t("blocks.common.refresh.5m"), value: 300000 }, 
+  { label: t("blocks.common.refresh.10m"), value: 600000 }, 
+  { label: t("blocks.common.refresh.30m"), value: 1800000 }, 
 ];
 
 // Note: calculateStepSize is now handled by the backend
@@ -231,7 +231,7 @@ const Prometheus = ({
             <MaskedInput
               size="sm"
               maskRegex={/(?<=:\/\/).*(?=@[^@]*$)/}
-              placeholder={"protocol://user:password@host:port/db"}
+              placeholder={t("editor.blocks.prometheus.endpoint_placeholder")}
               label={t("editor.blocks.prometheus.endpoint")}
               isRequired
               startContent={<DatabaseIcon size={18} />}
@@ -249,29 +249,29 @@ const Prometheus = ({
                 </Button>
               </DropdownTrigger>
               <DropdownMenu disabledKeys={["secret"]}>
-                <DropdownSection title="Use a local variable or script">
+                <DropdownSection title={t("blocks.common.variable_or_script")}>
                   <DropdownItem
                     key="local-var"
-                    description="Local variable - not synced"
+                    description={t("blocks.common.local_variable_description")}
                     startContent={<CloudOffIcon size={16} />}
                     onPress={addLocalVar}
                   >
-                    Variable
+                    {t("blocks.common.variable")}
                   </DropdownItem>
                   <DropdownItem
                     key="template"
-                    description="Shell command output"
+                    description={t("blocks.common.script_description")}
                     startContent={<FileTerminalIcon size={16} />}
                     onPress={addScriptForUri}
                   >
-                    Script
+                    {t("blocks.common.script")}
                   </DropdownItem>
                   <DropdownItem
                     key="secret"
-                    description="Synchronized + encrypted secret"
+                    description={t("blocks.common.secret_description")}
                     startContent={<LockIcon size={16} />}
                   >
-                    Secret
+                    {t("blocks.common.secret")}
                   </DropdownItem>
                 </DropdownSection>
               </DropdownMenu>
@@ -288,7 +288,7 @@ const Prometheus = ({
               cancellable={true}
             />
             <CodeMirror
-              placeholder={"Write your query here..."}
+              placeholder={t("blocks.sql.query_placeholder")}
               className="!pt-0 max-w-full border border-gray-300 rounded flex-grow"
               value={codeMirrorValue.value}
               onChange={codeMirrorValue.onChange}
@@ -343,17 +343,17 @@ const Prometheus = ({
                   startContent={<RefreshCwIcon size={16} />}
                   endContent={<ChevronDown size={16} />}
                 >
-                  Auto refresh:{" "}
+                  {t("blocks.common.auto_refresh")}:{" "}
                   {prometheus.autoRefresh == 0
-                    ? "Off"
+                    ? t("common.off")
                     : (
                         autoRefreshChoices.find((a) => a.value == prometheus.autoRefresh) || {
-                          label: "Off",
+                          label: t("common.off"),
                         }
                       ).label}
                 </Button>
               </DropdownTrigger>
-              <DropdownMenu variant="faded" aria-label="Select time frame for chart">
+              <DropdownMenu variant="faded" aria-label={t("blocks.common.select_refresh_interval")}>
                 {autoRefreshChoices.map((setting) => {
                   return (
                     <DropdownItem
@@ -480,12 +480,12 @@ export default createReactBlockSpec(
 );
 
 export const insertPrometheus = (schema: any) => (editor: typeof schema.BlockNoteEditor) => ({
-  title: "Prometheus",
+  title: t("editor.blocks.prometheus.title"), 
   onItemClick: () => {
     track_event("runbooks.block.create", { type: "prometheus" });
 
     let prometheusBlocks = editor.document.filter((block: any) => block.type === "prometheus");
-    let name = `Prometheus ${prometheusBlocks.length + 1}`;
+    let name = t("editor.blocks.prometheus.default_name", { count: prometheusBlocks.length + 1 }); 
 
     // fetch the default endpoint from the old settings
     Settings.runbookPrometheusUrl().then((url) => {
@@ -506,15 +506,15 @@ export const insertPrometheus = (schema: any) => (editor: typeof schema.BlockNot
     });
   },
   icon: <LineChartIcon size={18} />,
-  aliases: ["prom", "promql", "grafana"],
-  group: "Monitor",
+  aliases: ["prom", "promql", "grafana"], 
+  group: t("editor.blocks.group.monitor"), 
 });
 
 AIBlockRegistry.getInstance().addBlock({
   typeName: "prometheus",
-  friendlyName: "Prometheus",
-  shortDescription: "Queries Prometheus and displays results as a chart.",
-  description: undent`
+  friendlyName: () => t("editor.blocks.prometheus.title"),
+  shortDescription: () => t("editor.blocks.prometheus.short_desc"),
+  description: () => undent`
     Prometheus blocks execute PromQL queries against a Prometheus server and display the results as interactive line charts.
 
     The available props are:

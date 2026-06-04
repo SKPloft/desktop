@@ -676,7 +676,7 @@ export default function AIAssistant({
       <div className="flex-shrink-0 flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/20 dark:to-blue-950/20">
         <div className="flex items-center gap-2">
           <SparklesIcon className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-          <span className="font-medium text-purple-900 dark:text-purple-100">AI Assistant</span>
+          <span className="font-medium text-purple-900 dark:text-purple-100">{t("editor.ai.assistant.title")}</span>
         </div>
         <div className="flex items-center gap-2">
           <div
@@ -744,7 +744,7 @@ export default function AIAssistant({
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-medium text-purple-700 dark:text-purple-300">
-                    Assistant
+                    {t("editor.ai.assistant.role.assistant")}
                   </span>
                   <Spinner size="sm" variant="dots" className="ml-2" />
                 </div>

@@ -287,10 +287,10 @@ function App() {
       const workspace = await Workspace.get(maybeExistingLocalWorkspaceId);
       if (workspace) {
         await new DialogBuilder()
-          .title("Workspace already exists")
+          .title(t("root.dialog.workspace_exists.title"))
           .icon("error")
-          .message("The workspace in the selected folder has already been added to Atuin Desktop.")
-          .action({ label: "OK", value: "ok", variant: "flat" })
+          .message(t("root.dialog.workspace_exists.message"))
+          .action({ label: t("common.ok"), value: "ok", variant: "flat" })
           .build();
         return;
       }
@@ -308,16 +308,16 @@ function App() {
     const result = await workspaceStrategy.createWorkspace();
     if (result.isErr()) {
       let err = result.unwrapErr();
-      let message = "Failed to create workspace";
+      let message = t("root.dialog.create_workspace_failed.title");
       if ("message" in err.data) {
         message = err.data.message;
       }
 
       new DialogBuilder()
-        .title("Failed to create workspace")
+        .title(t("root.dialog.create_workspace_failed.title"))
         .icon("error")
         .message(message)
-        .action({ label: "OK", value: "ok", variant: "flat" })
+        .action({ label: t("common.ok"), value: "ok", variant: "flat" })
         .build();
       return;
     }
@@ -421,16 +421,16 @@ function App() {
 
     if (result.isErr()) {
       const err = result.unwrapErr();
-      let message = "Failed to delete runbook";
+      let message = t("root.dialog.delete_runbook_failed.title");
       if ("message" in err.data) {
         message = err.data.message;
       }
 
       await new DialogBuilder()
-        .title("Failed to delete runbook")
+        .title(t("root.dialog.delete_runbook_failed.title"))
         .icon("error")
         .message(message)
-        .action({ label: "OK", value: "ok", variant: "flat" })
+        .action({ label: t("common.ok"), value: "ok", variant: "flat" })
         .build();
     }
 
@@ -489,10 +489,10 @@ function App() {
       await savedBlock.save();
     } catch (err) {
       await new DialogBuilder()
-        .title("Failed to save block")
+        .title(t("root.dialog.save_block_failed.title"))
         .icon("error")
-        .message("Failed to save block")
-        .action({ label: "OK", value: "ok", variant: "flat" })
+        .message(t("root.dialog.save_block_failed.message"))
+        .action({ label: t("common.ok"), value: "ok", variant: "flat" })
         .build();
     }
   }
@@ -516,11 +516,11 @@ function App() {
 
     if (oldWorkspace.isOrgOwned() && oldWorkspace.get("orgId") !== newWorkspace.get("orgId")) {
       await new DialogBuilder()
-        .title("Cannot Move Items")
+        .title(t("root.dialog.cannot_move_items.title"))
         .icon("error")
-        .message("You cannot move items between workspaces in different Organizations.")
+        .message(t("root.dialog.cannot_move_items.different_orgs"))
         .action({
-          label: "OK",
+          label: t("common.ok"),
           variant: "flat",
           value: "ok",
         })
@@ -531,11 +531,11 @@ function App() {
 
     if (oldWorkspace.isOrgOwned() && !newWorkspace.isOrgOwned()) {
       await new DialogBuilder()
-        .title("Cannot Move Items")
+        .title(t("root.dialog.cannot_move_items.title"))
         .icon("error")
-        .message("You cannot move Organization items to a personal workspace.")
+        .message(t("root.dialog.cannot_move_items.org_to_personal"))
         .action({
-          label: "OK",
+          label: t("common.ok"),
           variant: "flat",
           value: "ok",
         })
@@ -546,14 +546,11 @@ function App() {
 
     if (!oldWorkspace.canManageRunbooks() || !newWorkspace.canManageRunbooks()) {
       await new DialogBuilder()
-        .title("Cannot Move Items")
+        .title(t("root.dialog.cannot_move_items.title"))
         .icon("error")
-        .message(
-          "You must have permissions to manage runbooks in both the source and destination workspaces " +
-            "in order to move items.",
-        )
+        .message(t("root.dialog.cannot_move_items.no_permission"))
         .action({
-          label: "OK",
+          label: t("common.ok"),
           variant: "flat",
           value: "ok",
         })
@@ -564,11 +561,11 @@ function App() {
 
     if (oldWorkspace.isOnline() !== newWorkspace.isOnline()) {
       await new DialogBuilder()
-        .title("Cannot Move Items")
+        .title(t("root.dialog.cannot_move_items.title"))
         .icon("error")
-        .message("Moving items between online and offline workspaces is not yet supported.")
+        .message(t("root.dialog.cannot_move_items.online_offline"))
         .action({
-          label: "OK",
+          label: t("common.ok"),
           variant: "flat",
           value: "ok",
         })
@@ -588,16 +585,16 @@ function App() {
 
       if (result.isErr()) {
         const err = result.unwrapErr();
-        let message = "Failed to move items";
+        let message = t("root.dialog.move_items_failed.generic");
         if ("message" in err.data) {
           message = err.data.message;
         }
 
         await new DialogBuilder()
-          .title("Failed to move items")
+          .title(t("root.dialog.move_items_failed.title"))
           .icon("error")
           .message(message)
-          .action({ label: "OK", value: "ok", variant: "flat" })
+          .action({ label: t("common.ok"), value: "ok", variant: "flat" })
           .build();
       }
 
@@ -672,13 +669,11 @@ function App() {
       connectionState != ConnectionState.Online
     ) {
       await new DialogBuilder()
-        .title("Cannot Move Items")
+        .title(t("root.dialog.cannot_move_items.title"))
         .icon("error")
-        .message(
-          "You must be online and logged in to move items to or from an Organization workspace.",
-        )
+        .message(t("root.dialog.cannot_move_items.offline_org"))
         .action({
-          label: "OK",
+          label: t("common.ok"),
           variant: "flat",
           value: "ok",
         })
@@ -743,10 +738,10 @@ function App() {
       }
 
       await new DialogBuilder()
-        .title("Failed to move items")
+        .title(t("root.dialog.move_items_failed.title"))
         .icon("error")
-        .message(failure || "An unknown error occurred")
-        .action({ label: "OK", value: "ok", variant: "flat" })
+        .message(failure || t("common.unknown_error"))
+        .action({ label: t("common.ok"), value: "ok", variant: "flat" })
         .build();
 
       return;
@@ -804,10 +799,10 @@ function App() {
       }
 
       await new DialogBuilder()
-        .title("Failed to move items")
+        .title(t("root.dialog.move_items_failed.title"))
         .icon("error")
-        .message("Failed to remove items from old workspace")
-        .action({ label: "OK", value: "ok", variant: "flat" })
+        .message(t("root.dialog.move_items_failed.remove_failed"))
+        .action({ label: t("common.ok"), value: "ok", variant: "flat" })
         .build();
 
       // If the move fails, we need to revert the runbook models to point to the old workspace
@@ -850,10 +845,10 @@ function App() {
       Rc.dispose(newManager);
 
       await new DialogBuilder()
-        .title("Failed to move items")
+        .title(t("root.dialog.move_items_failed.title"))
         .icon("error")
-        .message("Failed to move items")
-        .action({ label: "OK", value: "ok", variant: "flat" })
+        .message(t("root.dialog.move_items_failed.generic"))
+        .action({ label: t("common.ok"), value: "ok", variant: "flat" })
         .build();
 
       return;

@@ -90,16 +90,16 @@ interface SQLProps {
 }
 
 const autoRefreshChoices = [
-  { label: "Off", value: 0 },
-  { label: "1s", value: 1000 },
-  { label: "5s", value: 5000 },
-  { label: "10s", value: 10000 },
-  { label: "30s", value: 30000 },
-  { label: "1m", value: 60000 },
-  { label: "2m", value: 120000 },
-  { label: "5m", value: 300000 },
-  { label: "10m", value: 600000 },
-  { label: "30m", value: 1800000 },
+  { label: "common.off", value: 0 }, 
+  { label: "blocks.common.refresh.1s", value: 1000 }, 
+  { label: "blocks.common.refresh.5s", value: 5000 }, 
+  { label: "blocks.common.refresh.10s", value: 10000 }, 
+  { label: "blocks.common.refresh.30s", value: 30000 }, 
+  { label: "blocks.common.refresh.1m", value: 60000 }, 
+  { label: "blocks.common.refresh.2m", value: 120000 }, 
+  { label: "blocks.common.refresh.5m", value: 300000 }, 
+  { label: "blocks.common.refresh.10m", value: 600000 }, 
+  { label: "blocks.common.refresh.30m", value: 1800000 }, 
 ];
 
 const SQL = ({
@@ -303,7 +303,7 @@ const SQL = ({
               size="sm"
               maskRegex={/(?<=:\/\/).*(?=@[^@]*$)/}
               placeholder={placeholder || "protocol://user:password@host:port/db"}
-              label="URI"
+              label={t("blocks.sql.uri")} 
               isRequired
               startContent={<DatabaseIcon size={18} />}
               value={uri}
@@ -386,8 +386,8 @@ const SQL = ({
           <div className="flex flex-row items-center gap-2">
             {queryCount.isSome() && queryCount.unwrap() > 1 && (
               <span className="text-xs text-default-500 px-2 py-1 bg-default-100 rounded">
-                Executed {queryCount.unwrap()} queries
-                {rows && columns && " • Showing last result with data"}
+                {t("blocks.sql.executed_queries", { count: queryCount.unwrap() })}
+                {rows && columns && t("blocks.sql.showing_last_result")}
               </span>
             )}
           </div>
@@ -403,23 +403,23 @@ const SQL = ({
                   {t("blocks.common.auto_refresh")}:{" "}
                   {autoRefresh == 0
                     ? t("common.off")
-                    : (
-                        autoRefreshChoices.find((a) => a.value == autoRefresh) || {
-                          label: t("common.off"),
-                        }
-                      ).label}
+                    : t(
+                        (autoRefreshChoices.find((a) => a.value == autoRefresh) || {
+                          label: "common.off",
+                        }).label,
+                      )}
                 </Button>
               </DropdownTrigger>
-              <DropdownMenu variant="faded" aria-label="Select time frame for chart">
+              <DropdownMenu variant="faded" aria-label={t("blocks.common.select_refresh_interval")}>
                 {autoRefreshChoices.map((setting) => {
                   return (
                     <DropdownItem
-                      key={setting.label}
+                      key={String(setting.value)}
                       onPress={() => {
                         setAutoRefresh(setting.value);
                       }}
                     >
-                      {setting.label}
+                      {t(setting.label)}
                     </DropdownItem>
                   );
                 })}
@@ -473,7 +473,7 @@ const SQL = ({
                 data-tauri-drag-region
                 className="flex items-center gap-3 ml-16 w-full justify-between"
               >
-                <span className="text-sm text-default-700">{name || "SQL Query"}</span>
+                <span className="text-sm text-default-700">{name || t("blocks.sql.default_name")}</span>
               </div>
               <ButtonGroup>
                 <Button
@@ -511,7 +511,7 @@ const SQL = ({
                         size="sm"
                         maskRegex={/(?<=:\/\/).*(?=@[^@]*$)/}
                         placeholder={placeholder || "protocol://user:password@host:port/db"}
-                        label="URI"
+              label={t("blocks.sql.uri")}
                         isRequired
                         startContent={<DatabaseIcon size={18} />}
                         value={uri}
@@ -615,7 +615,7 @@ const SQL = ({
         <Modal isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} size="sm">
           <ModalContent>
             <ModalHeader className="text-base font-medium">
-              {settingsTitle || "Settings"}
+              {settingsTitle || t("common.settings")} 
             </ModalHeader>
             <ModalBody className="pb-6">{settingsContent}</ModalBody>
           </ModalContent>

@@ -11,6 +11,7 @@ import { calculateAIPopupPosition } from "./utils/popupPositioning";
 import useDocumentBridge from "@/lib/hooks/useDocumentBridge";
 import { ChargeTarget } from "@/rs-bindings/ChargeTarget";
 import track_event from "@/tracking";
+import { t } from "@/lib/i18n";
 
 // =============================================================================
 // Types
@@ -242,8 +243,8 @@ export function createAIGenerateMenuItem(
   showAIPopup: (position: { x: number; y: number }, blockId: string) => void,
 ) {
   return {
-    title: "AI Generate",
-    subtext: "Generate blocks from a natural language prompt (or press ⌘K)",
+    title: t("ai.slash_menu.title"),
+    subtext: t("ai.slash_menu.subtext"),
     onItemClick: () => {
       track_event("runbooks.ai.slash_menu_popup");
       const cursorPosition = editor.getTextCursorPosition();
@@ -251,7 +252,7 @@ export function createAIGenerateMenuItem(
       showAIPopup(position, cursorPosition.block.id);
     },
     icon: <SparklesIcon size={18} />,
-    aliases: ["ai", "generate", "prompt"],
-    group: "AI",
+    aliases: ["ai", "generate", "prompt"], 
+    group: t("ai.slash_menu.group"),
   };
 }

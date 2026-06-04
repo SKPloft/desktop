@@ -143,7 +143,7 @@ event.listen("tauri://move", debouncedSaveWindowInfo);
 event.listen("tauri://resize", debouncedSaveWindowInfo);
 
 function Application() {
-  const { refreshUser, refreshCollaborations, online, user, uiScale } = useStore();
+  const { refreshUser, refreshCollaborations, online, user, uiScale, locale } = useStore();
 
   useEffect(() => {
     if (online) {
@@ -170,7 +170,7 @@ function Application() {
   }, [uiScale]);
 
   return (
-    <HeroUIProvider>
+    <HeroUIProvider locale={locale}>
       <ToastProvider
         placement="bottom-center"
         toastOffset={40}

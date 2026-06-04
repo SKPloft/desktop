@@ -14,7 +14,7 @@ import track_event from "@/tracking";
 import SQL from "@/lib/blocks/common/SQL";
 import { exportPropMatter } from "@/lib/utils";
 import { useBlockKvValue } from "@/lib/hooks/useKvValue";
-import { useTranslation } from "@/lib/i18n";
+import { useTranslation, t } from "@/lib/i18n";
 
 interface SQLProps {
   isEditable: boolean;
@@ -198,12 +198,12 @@ export default createReactBlockSpec(
 );
 
 export const insertMySQL = (schema: any) => (editor: typeof schema.BlockNoteEditor) => ({
-  title: "MySQL",
+  title: t("editor.blocks.mysql.title"), 
   onItemClick: () => {
     track_event("runbooks.block.create", { type: "mysql" });
 
     let mysqlBlocks = editor.document.filter((block: any) => block.type === "mysql");
-    let name = `MySQL ${mysqlBlocks.length + 1}`;
+    let name = t("editor.blocks.mysql.default_name", { count: mysqlBlocks.length + 1 });  
 
     editor.insertBlocks(
       [
@@ -220,14 +220,14 @@ export const insertMySQL = (schema: any) => (editor: typeof schema.BlockNoteEdit
     );
   },
   icon: <DatabaseIcon size={18} />,
-  group: "Database",
+  group: t("editor.blocks.group.database"), 
 });
 
 AIBlockRegistry.getInstance().addBlock({
   typeName: "mysql",
-  friendlyName: "MySQL",
-  shortDescription: "Executes SQL queries against a MySQL database.",
-  description: undent`
+  friendlyName: () => t("editor.blocks.mysql.title"),
+  shortDescription: () => t("editor.blocks.mysql.short_desc"),
+  description: () => undent`
     MySQL blocks execute SQL queries against a MySQL database and display results in an interactive table.
 
     The available props are:

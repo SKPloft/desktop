@@ -5,7 +5,7 @@ import { createReactBlockSpec } from "@blocknote/react";
 import undent from "undent";
 import AIBlockRegistry from "@/lib/ai/block_registry";
 import { exportPropMatter } from "@/lib/utils";
-import { useTranslation } from "@/lib/i18n";
+import { useTranslation, t } from "@/lib/i18n";
 import isValidVarName from "../../utils/varNames";
 
 interface VarProps {
@@ -127,9 +127,9 @@ export default createReactBlockSpec(
 
 AIBlockRegistry.getInstance().addBlock({
   typeName: "var",
-  friendlyName: "Template Variable",
-  shortDescription: "Sets a template variable for use in subsequent blocks.",
-  description: undent`
+friendlyName: () => t("editor.blocks.template_var.title"),
+shortDescription: () => t("editor.blocks.template_var.short_desc"),
+  description: () => undent`
     Template Variable blocks define variables that can be referenced in other blocks using the {{ var.variable_name }} syntax. Values are synced with collaborators.
     For sensitive data, or values that should not be synced, use a Local Variable block instead.
 

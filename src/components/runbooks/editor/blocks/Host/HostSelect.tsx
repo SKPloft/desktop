@@ -8,7 +8,7 @@ import undent from "undent";
 import AIBlockRegistry from "@/lib/ai/block_registry";
 import track_event from "@/tracking";
 import { exportPropMatter } from "@/lib/utils";
-import { useTranslation } from "@/lib/i18n";
+import { useTranslation, t } from "@/lib/i18n";
 
 interface HostSelectProps {
   isEditable: boolean;
@@ -71,7 +71,7 @@ export default createReactBlockSpec(
 );
 
 export const insertHostSelect = (schema: any) => (editor: typeof schema.BlockNoteEditor) => ({
-  title: "Host",
+  title: t("editor.blocks.host.title"), 
   subtext: "Specify that commands run on localhost",
   onItemClick: () => {
     track_event("runbooks.block.create", { type: "host-select" });
@@ -87,14 +87,14 @@ export const insertHostSelect = (schema: any) => (editor: typeof schema.BlockNot
     );
   },
   icon: <HomeIcon size={18} />,
-  group: "Network",
+  group: t("editor.blocks.group.network"), 
 });
 
 AIBlockRegistry.getInstance().addBlock({
   typeName: "host-select",
-  friendlyName: "Host",
-  shortDescription: "Switches execution back to localhost.",
-  description: undent`
+  friendlyName: () => t("editor.blocks.host.title"),
+  shortDescription: () => t("editor.blocks.host.short_desc"),
+  description: () => undent`
     Host blocks specify that subsequent Terminal and Script blocks should run on the local machine. Use this after an SSH Connect block to switch back to local execution.
 
     The available props are:

@@ -64,7 +64,7 @@ function extractFromFile(filePath) {
   const keys = [];
   const warnings = [];
   const patterns = [
-    { label: ".translate", regex: /\.translate\s*\(\s*"((?:\\.|[^"\\])*)"/gs },
+    { label: ".translate", regex: /\.translate\s*\(\s*"((?:\\.|[^"\\])*)"/gs }, 
     ...helperNames.map((name) => ({ label: name, regex: helperCallPattern(name) })),
   ];
 
@@ -76,7 +76,7 @@ function extractFromFile(filePath) {
   }
 
   const dynamicPatterns = [
-    { label: ".translate", regex: /\.translate\s*\((?!\s*")/gs },
+    { label: ".translate", regex: /\.translate\s*\((?!\s*")/gs }, 
     ...helperNames.map((name) => ({ label: name, regex: dynamicHelperCallPattern(name) })),
   ];
 

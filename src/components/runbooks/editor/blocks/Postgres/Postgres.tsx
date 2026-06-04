@@ -191,9 +191,9 @@ export const insertPostgres = (schema: any) => (editor: typeof schema.BlockNoteE
 
 AIBlockRegistry.getInstance().addBlock({
   typeName: "postgres",
-  friendlyName: "PostgreSQL",
-  shortDescription: "Executes SQL queries against a PostgreSQL database.",
-  description: undent`
+  friendlyName: () => t("editor.blocks.postgres.title"),
+  shortDescription: () => t("editor.blocks.postgres.short_desc"),
+  description: () => undent`
     PostgreSQL blocks execute SQL queries against a PostgreSQL database and display results in an interactive table.
 
     The available props are:

@@ -11,7 +11,7 @@ import {
 } from "@heroui/react";
 
 import { useEffect, useState } from "react";
-import { Icon } from "@iconify/react";
+
 import { KVStore } from "@/state/kv";
 import AccountModal from "../Account/AccountModal";
 import { init_tracking } from "@/tracking";

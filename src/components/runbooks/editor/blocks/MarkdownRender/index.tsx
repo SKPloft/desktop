@@ -275,7 +275,7 @@ export const insertMarkdownRender = (editor: any) => ({
     );
   },
   icon: <FileTextIcon size={18} />,
-  aliases: ["markdown", "md", "render", "display"],
+  aliases: ["markdown", "md", "render", "display"], 
   group: t("editor.blocks.group.content"),
 });
 
@@ -335,9 +335,9 @@ export default createReactBlockSpec(
 
 AIBlockRegistry.getInstance().addBlock({
   typeName: "markdown_render",
-  friendlyName: "Markdown Render",
-  shortDescription: "Renders markdown content from a template variable.",
-  description: undent`
+  friendlyName: () => t("editor.blocks.markdown_render.title"),
+  shortDescription: () => t("editor.blocks.markdown_render.short_desc"),
+  description: () => undent`
     Markdown Render blocks display formatted markdown content from a template variable. Supports collapsing, fullscreen view, and automatic updates when the variable changes.
 
     The available props are:

@@ -1,3 +1,4 @@
+import { t } from "@/lib/i18n";
 import Workspace from "@/state/runbooks/workspace";
 import WorkspaceStrategy, { DoFolderOp } from "./strategy";
 import Operation, {
@@ -56,7 +57,7 @@ export default class OnlineStrategy implements WorkspaceStrategy {
           type: "WorkspaceCreateError",
           data: {
             workspace_id: this.workspace.get("id")!,
-            message: "An unknown error occurred while creating the workspace.",
+            message: t("workspace.online.error.unknown_create"),
           },
         } as WorkspaceError);
       }
@@ -94,7 +95,7 @@ export default class OnlineStrategy implements WorkspaceStrategy {
           type: "WorkspaceRenameError",
           data: {
             workspace_id: this.workspace.get("id")!,
-            message: "An unknown error occurred while renaming the workspace.",
+            message: t("workspace.online.error.unknown_rename"),
           },
         } as WorkspaceError);
       }
@@ -145,7 +146,7 @@ export default class OnlineStrategy implements WorkspaceStrategy {
         type: "RunbookSaveError",
         data: {
           runbook_id: rb.id,
-          message: "Failed to create runbook",
+          message: t("workspace.online.error.create_runbook_failed"),
         },
       } as WorkspaceError);
     }
@@ -203,7 +204,7 @@ export default class OnlineStrategy implements WorkspaceStrategy {
         data: {
           workspace_id: this.workspace.get("id")!,
           runbook_id: runbookId,
-          message: "Failed to delete runbook",
+          message: t("workspace.online.error.delete_runbook_failed"),
         },
       } as WorkspaceError);
     }
@@ -230,7 +231,7 @@ export default class OnlineStrategy implements WorkspaceStrategy {
         data: {
           workspace_id: this.workspace.get("id")!,
           name: name,
-          message: "Failed to create folder",
+          message: t("workspace.online.error.create_folder_failed"),
         },
       } as WorkspaceError);
     }
@@ -254,7 +255,7 @@ export default class OnlineStrategy implements WorkspaceStrategy {
         data: {
           workspace_id: this.workspace.get("id")!,
           folder_id: folderId,
-          message: "Failed to rename folder",
+          message: t("workspace.online.error.rename_folder_failed"),
         },
       } as WorkspaceError);
     }
@@ -297,7 +298,7 @@ export default class OnlineStrategy implements WorkspaceStrategy {
         data: {
           workspace_id: this.workspace.get("id")!,
           folder_id: folderId,
-          message: "Failed to delete folder",
+          message: t("workspace.online.error.delete_folder_failed"),
         },
       } as WorkspaceError);
     }
@@ -354,15 +355,15 @@ export default class OnlineStrategy implements WorkspaceStrategy {
     } catch (err) {
       if (err instanceof api.HttpResponseError) {
         new DialogBuilder()
-          .title("Failed to create online runbook")
-          .message("The API request to create the runbook failed.")
-          .action({ label: "OK", value: "ok", variant: "flat" })
+          .title(t("workspace.online.dialog.create_online_runbook.title"))
+          .message(t("workspace.online.dialog.create_online_runbook.message"))
+          .action({ label: t("common.ok"), value: "ok", variant: "flat" })
           .build();
       } else {
         new DialogBuilder()
-          .title("Failed to create runbook")
-          .message("You may be offline, or the server may be down.")
-          .action({ label: "OK", value: "ok", variant: "flat" })
+          .title(t("workspace.online.dialog.create_runbook_failed.title"))
+          .message(t("workspace.online.dialog.create_runbook_failed.message"))
+          .action({ label: t("common.ok"), value: "ok", variant: "flat" })
           .build();
       }
       console.error(err);
@@ -394,3 +395,4 @@ export default class OnlineStrategy implements WorkspaceStrategy {
     return true;
   }
 }
+

@@ -25,6 +25,8 @@ import { cn } from "@/lib/utils";
 import { resetRunbookState } from "@/lib/runtime";
 import { useSerialExecution } from "@/lib/hooks/useSerialExecution";
 import { useEffect, useRef } from "react";
+import { useTranslation } from "@/lib/i18n";
+import { translateDisplayName } from "@/lib/runbook_i18n";
 
 type TopbarProps = {
   runbook: Runbook;
@@ -55,6 +57,7 @@ function openHubRunbook(e: React.MouseEvent<HTMLAnchorElement>) {
 }
 
 export default function Topbar(props: TopbarProps) {
+  const { t, locale } = useTranslation();
   let runbook = props.runbook;
   let remoteRunbook = props.remoteRunbook;
   let { data: workspace } = useQuery(workspaceById(runbook.workspaceId));
@@ -65,7 +68,7 @@ export default function Topbar(props: TopbarProps) {
   if (remoteRunbook) {
     name = remoteRunbook.nwo;
   } else {
-    name = runbook.name;
+    name = translateDisplayName(runbook.name, locale);
   }
 
   let wasRunning = useRef(false);
@@ -77,24 +80,24 @@ export default function Topbar(props: TopbarProps) {
 
       if (serialExecution.isSuccess) {
         addToast({
-          title: "Serial execution completed",
-          description: `Runbook "${name}" completed successfully`,
+          title: t("notifications.serial.completed"),
+          description: t("notifications.serial.completed_description", { name }),
           color: "success",
           timeout: 5000,
           shouldShowTimeoutProgress: true,
         });
       } else if (serialExecution.isError) {
         addToast({
-          title: "Serial execution failed",
-          description: `Runbook "${name}" failed to complete`,
+          title: t("notifications.serial.failed"),
+          description: t("notifications.serial.failed_description", { name }),
           color: "danger",
           timeout: 5000,
           shouldShowTimeoutProgress: true,
         });
       } else if (serialExecution.isCancelled) {
         addToast({
-          title: "Serial execution cancelled",
-          description: `Runbook "${name}" was cancelled`,
+          title: t("notifications.serial.cancelled"),
+          description: t("notifications.serial.cancelled_description", { name }),
           color: "warning",
           timeout: 5000,
           shouldShowTimeoutProgress: true,
@@ -125,7 +128,7 @@ export default function Topbar(props: TopbarProps) {
     if (!remoteRunbook) return;
     navigator.clipboard.writeText(AtuinEnv.url(remoteRunbook.nwo));
     addToast({
-      title: "Runbook URL copied to clipboard",
+      title: t("runbooks.topbar.copy_url_success"),
       color: "success",
       radius: "sm",
       timeout: 2000,
@@ -197,7 +200,7 @@ export default function Topbar(props: TopbarProps) {
                 <span className="truncate">{name}</span>
               )}
               {remoteRunbook && (
-                <Tooltip content="Copy runbook URL" placement="bottom" showArrow>
+                <Tooltip content={t("runbooks.topbar.copy_url")} placement="bottom" showArrow>
                   <CopyIcon
                     size={14}
                     className="ml-2 cursor-pointer text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 shrink-0"
@@ -210,7 +213,7 @@ export default function Topbar(props: TopbarProps) {
             {/* Row 2: Updated time + Tag selector */}
             <div className="hidden md:flex items-center">
               <span className="text-gray-400 text-xs italic whitespace-nowrap">
-                Updated <RelativeTime time={DateTime.fromJSDate(runbook.updated)} />
+                {t("runbooks.topbar.updated")} <RelativeTime time={DateTime.fromJSDate(runbook.updated)} />
               </span>
 
               {/* Tag selector + related controls - positioned near content */}
@@ -230,7 +233,7 @@ export default function Topbar(props: TopbarProps) {
                 )}
                 {props.currentTag && props.currentTag !== "latest" && (
                   <>
-                    <Tooltip content="Delete this tag" placement="bottom" showArrow>
+                    <Tooltip content={t("runbooks.topbar.delete_tag")} placement="bottom" showArrow>
                       <Button
                         isIconOnly
                         variant="light"
@@ -242,7 +245,7 @@ export default function Topbar(props: TopbarProps) {
                       </Button>
                     </Tooltip>
                     <Tooltip
-                      content="This runbook is in read-only mode because you are viewing a tag"
+                      content={t("runbooks.topbar.read_only_tag")}
                       placement="bottom"
                       showArrow
                     >
@@ -286,7 +289,7 @@ export default function Topbar(props: TopbarProps) {
 
         {/* Right section: Action buttons */}
         <ButtonGroup size="sm" className="shrink-0">
-          <Tooltip content="Reset runbook state" placement="bottom">
+          <Tooltip content={t("runbooks.topbar.reset_state")} placement="bottom">
             <Button
               isIconOnly
               variant="flat"
@@ -297,7 +300,7 @@ export default function Topbar(props: TopbarProps) {
               <RefreshCcwIcon className="h-4 w-4" />
             </Button>
           </Tooltip>
-          <Tooltip content="Runbook settings" placement="bottom">
+          <Tooltip content={t("runbooks.controls.settings")} placement="bottom">
             <Button
               isIconOnly
               variant="flat"
@@ -316,8 +319,8 @@ export default function Topbar(props: TopbarProps) {
           <Tooltip
             content={
               props.isAIFeaturesEnabled
-                ? "AI assistant"
-                : "AI features disabled. Enable in Settings → AI."
+                ? t("runbooks.topbar.ai_assistant")
+                : t("runbooks.topbar.ai_disabled")
             }
             placement="bottom"
           >
@@ -342,7 +345,7 @@ export default function Topbar(props: TopbarProps) {
           <PlayButton
             isRunning={serialExecution.isRunning}
             cancellable={true}
-            tooltip="Run runbook"
+            tooltip={t("runbooks.topbar.run_runbook")}
             tooltipPlacement="bottom"
             onPlay={handleStartSerialExecution}
             onStop={handleStopSerialExecution}

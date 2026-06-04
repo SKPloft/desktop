@@ -654,7 +654,7 @@ const SubRunbook = ({
                     isDisabled={!isEditable}
                     aria-label={t("editor.blocks.sub_runbook.select_tag")}
                     items={[
-                      { key: "latest", label: "latest" },
+                      { key: "latest", label: i18nT("editor.blocks.sub_runbook.tag_latest") }, 
                       ...availableTags.map((tag) => ({ key: tag, label: tag })),
                     ]}
                   >
@@ -928,15 +928,15 @@ export const insertSubRunbook = (editor: any) => ({
     );
   },
   icon: <BookOpenIcon size={18} />,
-  aliases: ["sub", "runbook", "embed", "include", "nested"],
+  aliases: ["sub", "runbook", "embed", "include", "nested"], 
   group: i18nT("editor.blocks.group.execute"),
 });
 
 AIBlockRegistry.getInstance().addBlock({
   typeName: "sub-runbook",
-  friendlyName: "Sub-Runbook",
-  shortDescription: "Embeds and executes another runbook within the current one.",
-  description: undent`
+  friendlyName: () => i18nT("editor.blocks.sub_runbook.title"),
+  shortDescription: () => i18nT("editor.blocks.sub_runbook.short_desc"),
+  description: () => undent`
     Sub-Runbook blocks execute another runbook as part of the current workflow. This enables modular runbook design by allowing common procedures to be reused across multiple runbooks.
 
     The available props are:

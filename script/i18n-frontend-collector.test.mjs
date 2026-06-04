@@ -29,13 +29,13 @@ describe("i18n frontend collector", () => {
         export function Fixture() {
           return (
             <>
-              <button>Save runbook</button>
-              <CommandItem>Open command palette</CommandItem>
+              <button>Save runbook</button> 
+              <CommandItem>Open command palette</CommandItem> 
             </>
           );
         }
       `),
-    ).toEqual(["Open command palette", "Save runbook"]);
+    ).toEqual(["Open command palette", "Save runbook"]); 
   });
 
   test("collects user-facing JSX string props", () => {
@@ -44,26 +44,26 @@ describe("i18n frontend collector", () => {
         export function Fixture() {
           return (
             <>
-              <Input label="Workspace name" placeholder="Choose a workspace" />
-              <Tooltip content={"Run selected block"} />
-              <SelectItem textValue="Personal workspace">Personal</SelectItem>
+              <Input label="Workspace name" placeholder="Choose a workspace" /> 
+              <Tooltip content={"Run selected block"} /> 
+              <SelectItem textValue="Personal workspace">Personal</SelectItem> 
             </>
           );
         }
       `),
-    ).toEqual(["Choose a workspace", "Personal", "Personal workspace", "Run selected block", "Workspace name"]);
+    ).toEqual(["Choose a workspace", "Personal", "Personal workspace", "Run selected block", "Workspace name"]); 
   });
 
   test("collects BlockNote and custom block metadata", () => {
     expect(
       keys(`
         export const blockSpec = {
-          title: "Terminal",
-          subtext: "Run shell commands",
+          title: "Terminal",  
+          subtext: "Run shell commands", 
           type: "terminal",
         };
       `),
-    ).toEqual(["Run shell commands", "Terminal"]);
+    ).toEqual(["Run shell commands", "Terminal"]); 
   });
 
   test("warns on dynamic translation calls", () => {
@@ -91,7 +91,7 @@ describe("i18n frontend collector", () => {
           </>
         );
       }
-      const block = { label: "terminal", id: "terminal-block" };
+      const block = { label: "terminal", id: "terminal-block" }; 
     `);
 
     expect(result.keys.map((item) => item.key)).toEqual(["Save"]);

@@ -14,7 +14,8 @@ use crate::{
     secret_cache::{KeychainSecretStorage, KvDbSecretStorage, SecretCache},
 };
 use crate::{
-    shared_state::SharedStateHandle, sqlite::DbInstances, workspaces::manager::WorkspaceManager,
+    menu::TabItem, shared_state::SharedStateHandle, sqlite::DbInstances,
+    workspaces::manager::WorkspaceManager,
 };
 use atuin_desktop_runtime::{
     document::DocumentHandle,
@@ -81,6 +82,9 @@ pub(crate) struct AtuinState {
 
     // Secret cache for storing secrets (backed by keychain in prod, KV DB in dev)
     secret_cache: Mutex<Option<Arc<SecretCache>>>,
+
+    // Current tab items for menu rebuilding on locale change
+    pub tab_items: Mutex<Vec<TabItem>>,
 }
 
 impl AtuinState {
@@ -110,6 +114,7 @@ impl AtuinState {
             app_path,
             use_hub_updater_service,
             secret_cache: Mutex::new(None),
+            tab_items: Mutex::new(Vec::new()),
         }
     }
     pub async fn init<R: Runtime>(&self, _app: &AppHandle<R>) -> Result<()> {

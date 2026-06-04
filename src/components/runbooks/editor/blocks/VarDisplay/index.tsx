@@ -5,7 +5,7 @@ import undent from "undent";
 import AIBlockRegistry from "@/lib/ai/block_registry";
 import { exportPropMatter } from "@/lib/utils";
 import { useBlockContext } from "@/lib/hooks/useDocumentBridge";
-import { useTranslation } from "@/lib/i18n";
+import { useTranslation, t } from "@/lib/i18n";
 
 /**
  * Props for the VarDisplay component that shows a live preview of a template variable
@@ -123,9 +123,9 @@ export default createReactBlockSpec(
 
 AIBlockRegistry.getInstance().addBlock({
   typeName: "var_display",
-  friendlyName: "Display Variable",
-  shortDescription: "Displays the current value of a template variable.",
-  description: undent`
+friendlyName: () => t("editor.blocks.var_display.title"),
+shortDescription: () => t("editor.blocks.var_display.short_desc"),
+  description: () => undent`
     Display Variable blocks show the current value of a template variable in the runbook. The displayed value updates automatically as the variable changes.
 
     The available props are:

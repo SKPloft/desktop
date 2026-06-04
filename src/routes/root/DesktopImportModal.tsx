@@ -159,22 +159,23 @@ export default function DesktopImportModal(props: DesktopImportModalProps) {
     body = (
       <div className="flex flex-col gap-4">
         <p>
-          You already have {forkedRunbooks.length === 1 ? "a copy" : "copies"} of this runbook.
-          Would you like to open an existing copy or import a new one?
+          {forkedRunbooks.length === 1
+            ? t("desktop_import.existing_one")
+            : t("desktop_import.existing_many", { count: forkedRunbooks.length })}
         </p>
         <Select
-          label="Choose an action"
-          placeholder="Select an option"
+          label={t("desktop_import.choose_action")}
+          placeholder={t("desktop_import.select_option")}
           selectedKeys={selectedForkedRunbookId ? [selectedForkedRunbookId] : []}
           onSelectionChange={(keys) => {
             const selected = Array.from(keys)[0] as string | undefined;
             setSelectedForkedRunbookId(selected ?? null);
           }}
           items={[
-            { id: "__import_new__", name: "Import as new copy" },
+            { id: "__import_new__", name: t("desktop_import.import_new") },
             ...forkedRunbooks.map((runbook) => ({
               id: runbook.id,
-              name: `Open "${runbook.name || "Untitled"}"`,
+              name: t("desktop_import.open_existing", { name: runbook.name || t("common.untitled") }),
             })),
           ]}
         >
@@ -184,7 +185,7 @@ export default function DesktopImportModal(props: DesktopImportModalProps) {
     );
     footer = (
       <ModalFooter>
-        <Button onPress={handleClose}>Cancel</Button>
+        <Button onPress={handleClose}>{t("common.cancel")}</Button>
         <Button
           color="primary"
           isDisabled={!hasSelection}
@@ -196,7 +197,7 @@ export default function DesktopImportModal(props: DesktopImportModalProps) {
             }
           }}
         >
-          {isImportNew ? "Import" : hasSelection ? "Open" : "Continue"}
+          {isImportNew ? t("common.import") : hasSelection ? t("common.open") : t("common.continue")}
         </Button>
       </ModalFooter>
     );
@@ -209,24 +210,24 @@ export default function DesktopImportModal(props: DesktopImportModalProps) {
     footer = (
       <ModalFooter>
         <Button onPress={handleClose} isDisabled>
-          Cancel
+          {t("common.cancel")}
         </Button>
         <Button color="primary" isLoading>
-          Import
+          {t("common.import")}
         </Button>
       </ModalFooter>
     );
   } else if (importError) {
     body = (
       <p>
-        Failed to import the runbook: <strong>{importError}</strong>
+        {t("desktop_import.failed_prefix")} <strong>{importError}</strong>
       </p>
     );
     footer = (
       <ModalFooter>
-        <Button onPress={handleClose}>Close</Button>
+        <Button onPress={handleClose}>{t("common.close")}</Button>
         <Button onPress={confirmImportRunbook} color="primary">
-          Retry
+          {t("common.retry")}
         </Button>
       </ModalFooter>
     );
@@ -236,7 +237,7 @@ export default function DesktopImportModal(props: DesktopImportModalProps) {
     );
     footer = (
       <ModalFooter>
-        <Button onPress={handleClose}>Close</Button>
+        <Button onPress={handleClose}>{t("common.close")}</Button>
       </ModalFooter>
     );
   } else if (cannotImport) {
@@ -245,7 +246,7 @@ export default function DesktopImportModal(props: DesktopImportModalProps) {
     );
     footer = (
       <ModalFooter>
-        <Button onPress={handleClose}>Close</Button>
+        <Button onPress={handleClose}>{t("common.close")}</Button>
       </ModalFooter>
     );
   } else if (!ready) {
@@ -257,16 +258,16 @@ export default function DesktopImportModal(props: DesktopImportModalProps) {
     );
     footer = (
       <ModalFooter>
-        <Button onPress={handleClose}>Cancel</Button>
+        <Button onPress={handleClose}>{t("common.cancel")}</Button>
       </ModalFooter>
     );
   } else {
+    const runbookName = remoteRunbookQuery.data?.name;
     body = (
       <>
         <p>
-          To open the runbook <strong>{remoteRunbookQuery.data?.name}</strong>@
-          <strong>{props.tag}</strong>, you need to import it into a workspace. Choose a workspace
-          below to import it into.
+          {t("desktop_import.import_prompt_prefix")} <strong>{runbookName}</strong>@
+          <strong>{props.tag}</strong>{t("desktop_import.import_prompt_suffix")}
         </p>
         <WorkspaceSelector
           workspaces={workspaces.data ?? []}
@@ -277,14 +278,14 @@ export default function DesktopImportModal(props: DesktopImportModalProps) {
     );
     footer = (
       <ModalFooter>
-        <Button onPress={handleClose}>Cancel</Button>
+        <Button onPress={handleClose}>{t("common.cancel")}</Button>
         <Button
           onPress={confirmImportRunbook}
           color="primary"
           isDisabled={failed || !ready || !selectedWorkspaceId || importing || cannotImport}
           isLoading={importing}
         >
-          Import
+          {t("common.import")}
         </Button>
       </ModalFooter>
     );
@@ -333,6 +334,7 @@ function collapseReducer(state: Record<string, boolean>, action: { type: "toggle
 }
 
 function WorkspaceSelector(props: WorkspaceSelectorProps) {
+  const { t } = useTranslation();
   const orgs = useStore((state) => state.userOrgs);
 
   const [uncollapsed, dispatchCollapse] = useReducer(
@@ -341,7 +343,7 @@ function WorkspaceSelector(props: WorkspaceSelectorProps) {
   );
 
   const orgsDisplay = [
-    { name: "Personal", id: "<PERSONAL>" },
+    { name: t("common.personal"), id: "<PERSONAL>" },
     ...orgs.map((org) => ({ name: org.name, id: org.id })),
   ];
   const workspacesPerOrg = orgsDisplay.reduce(

@@ -22,6 +22,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { open } from "@tauri-apps/plugin-shell";
 import { ChevronDownIcon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "@/lib/i18n";
 
 interface CollaborationsModalProps {
   isOpen: boolean;
@@ -34,6 +35,7 @@ type Acceptance = {
 };
 
 export default function CollaborationsModal(props: CollaborationsModalProps) {
+  const { t } = useTranslation();
   const connectionState = useStore((s) => s.connectionState);
   const currentWorkspaceId = useStore((s) => s.currentWorkspaceId);
   const user = useStore((s) => s.user);
@@ -124,19 +126,19 @@ export default function CollaborationsModal(props: CollaborationsModalProps) {
         {(_onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              <h1 className="text-2xl font-bold">Collaboration Invitations</h1>
+              <h1 className="text-2xl font-bold">{t("collaborations.title")}</h1>
               <p className="text-small text-default-500">
-                Accept or decline invitations to collaborate with other users
+                {t("collaborations.description")}
               </p>
             </ModalHeader>
             <ModalBody className="block">
               {connectionState !== ConnectionState.Online && (
                 <p className="">
-                  You must be online and logged in to accept or decline collaboration invitations.
+                  {t("collaborations.online_required")}
                 </p>
               )}
               {connectionState === ConnectionState.Online && pendingCollabs.length === 0 && (
-                <p>No pending invitations</p>
+                <p>{t("collaborations.none_pending")}</p>
               )}
               {connectionState === ConnectionState.Online && pendingCollabs.length > 0 && (
                 <ul className="list-disc ml-6">
@@ -162,7 +164,7 @@ export default function CollaborationsModal(props: CollaborationsModalProps) {
                               onClick={() => acceptInvitation(collab)}
                               isDisabled={connectionState !== ConnectionState.Online}
                             >
-                              Accept into {workspace.get("name")}
+                              {t("collaborations.accept_into", { workspace: workspace.get("name") })}
                             </Button>
                             <Dropdown placement="bottom-end">
                               <DropdownTrigger>
@@ -184,7 +186,7 @@ export default function CollaborationsModal(props: CollaborationsModalProps) {
                                     key={ws.get("id")!}
                                     onClick={() => setWorkspaceForCollab(collab.id, ws)}
                                   >
-                                    Accept into {ws.get("name")}
+                                    {t("collaborations.accept_into", { workspace: ws.get("name") })}
                                   </DropdownItem>
                                 )}
                               </DropdownMenu>
@@ -197,7 +199,7 @@ export default function CollaborationsModal(props: CollaborationsModalProps) {
                             onClick={() => declineInvitation(collab)}
                             isDisabled={connectionState !== ConnectionState.Online}
                           >
-                            Decline
+                            {t("collaborations.decline")}
                           </Button>
                         </div>
                       </li>

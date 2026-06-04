@@ -109,12 +109,12 @@ const insertDirectory = (editor: typeof schema.BlockNoteEditor) => ({
     );
   },
   icon: <FolderOpenIcon size={18} />,
-  aliases: ["directory", "dir", "folder"],
-  group: "Execute",
+  aliases: ["directory", "dir", "folder"], 
+  group: t("editor.blocks.group.execute"), 
 });
 
 const insertEnv = (editor: typeof schema.BlockNoteEditor) => ({
-  title: "Environment Variable",
+  title: t("editor.blocks.env.title"),
   subtext: t("editor.blocks.env.tooltip"),
   onItemClick: () => {
     track_event("runbooks.block.create", { type: "env" });
@@ -130,13 +130,13 @@ const insertEnv = (editor: typeof schema.BlockNoteEditor) => ({
     );
   },
   icon: <VariableIcon size={18} />,
-  aliases: ["env", "environment", "variable"],
-  group: "Execute",
+  aliases: ["env", "environment", "variable"], 
+  group: t("editor.blocks.group.execute"), 
 });
 
 const insertVar = (editor: typeof schema.BlockNoteEditor) => ({
-  title: "Template Variable",
-  subtext: "Set template variable for use in subsequent blocks",
+  title: t("editor.blocks.var.title"),
+  subtext: t("editor.blocks.var.insert_subtext"),
   onItemClick: () => {
     track_event("runbooks.block.create", { type: "var" });
 
@@ -151,12 +151,12 @@ const insertVar = (editor: typeof schema.BlockNoteEditor) => ({
     );
   },
   icon: <TextCursorInputIcon size={18} />,
-  aliases: ["var", "template", "variable"],
-  group: "Execute",
+  aliases: ["var", "template", "variable"], 
+  group: t("editor.blocks.group.execute"), 
 });
 
 const insertVarDisplay = (editor: typeof schema.BlockNoteEditor) => ({
-  title: "Display Variable",
+  title: t("editor.blocks.var_display.title"),
   subtext: t("editor.blocks.var_display.tooltip"),
   onItemClick: () => {
     track_event("runbooks.block.create", { type: "var_display" });
@@ -172,16 +172,16 @@ const insertVarDisplay = (editor: typeof schema.BlockNoteEditor) => ({
     );
   },
   icon: <EyeIcon size={18} />,
-  aliases: ["show", "display", "view", "variable"],
-  group: "Execute",
+  aliases: ["show", "display", "view", "variable"], 
+  group: t("editor.blocks.group.execute"), 
 });
 
 const insertRunbookLink = (
   editor: typeof schema.BlockNoteEditor,
   showRunbookLinkPopup: (position: { x: number; y: number }) => void,
 ) => ({
-  title: "Runbook Link",
-  subtext: "Link to another runbook",
+  title: t("editor.runbook_link.title"),
+  subtext: t("editor.runbook_link.insert_subtext"),
   onItemClick: () => {
     track_event("runbooks.block.create", { type: "runbook_link" });
 
@@ -190,16 +190,16 @@ const insertRunbookLink = (
     showRunbookLinkPopup(position);
   },
   icon: <LinkIcon size={18} />,
-  aliases: ["link", "runbook", "reference"],
-  group: "Content",
+  aliases: ["link", "runbook", "reference"], 
+  group: t("editor.blocks.group.content"),
 });
 
 const insertSavedBlock = (
   editor: typeof schema.BlockNoteEditor,
   showSavedBlockPopup: (position: { x: number; y: number }) => void,
 ) => ({
-  title: "Saved Block",
-  subtext: "Insert a saved block",
+  title: t("editor.saved_blocks.title"), 
+  subtext: t("editor.saved_blocks.insert_subtext"), 
   onItemClick: () => {
     track_event("runbooks.block.create", { type: "saved_block" });
 
@@ -207,13 +207,13 @@ const insertSavedBlock = (
     showSavedBlockPopup(position);
   },
   icon: <BlocksIcon size={18} />,
-  aliases: ["saved", "block"],
-  group: "Content",
+  aliases: ["saved", "block"], 
+  group: t("editor.blocks.group.content"), 
 });
 
 const insertHorizontalRule = (editor: typeof schema.BlockNoteEditor) => ({
-  title: "Horizontal Rule",
-  subtext: "Insert a horizontal divider line",
+  title: t("editor.blocks.horizontal_rule.title"), 
+  subtext: t("editor.blocks.horizontal_rule.insert_subtext"), 
   onItemClick: () => {
     track_event("runbooks.block.create", { type: "horizontal_rule" });
 
@@ -228,8 +228,8 @@ const insertHorizontalRule = (editor: typeof schema.BlockNoteEditor) => ({
     );
   },
   icon: <MinusIcon size={18} />,
-  aliases: ["hr", "horizontal", "rule", "divider", "separator", "line"],
-  group: "Content",
+  aliases: ["hr", "horizontal", "rule", "divider", "separator", "line"], 
+  group: t("editor.blocks.group.content"), 
 });
 
 const insertPastedBlock = (editor: typeof schema.BlockNoteEditor, copiedBlock: any) => ({
@@ -241,8 +241,8 @@ const insertPastedBlock = (editor: typeof schema.BlockNoteEditor, copiedBlock: a
     editor.insertBlocks([copiedBlock], editor.getTextCursorPosition().block.id, "before");
   },
   icon: <ClipboardPasteIcon size={18} />,
-  aliases: ["paste", "insert"],
-  group: "Content",
+  aliases: ["paste", "insert"], 
+  group: t("editor.blocks.group.content"), 
 });
 
 type EditorProps = {
@@ -334,7 +334,7 @@ export default function Editor({
         defaultPath: `${runbook?.name}.md`,
         filters: [
           {
-            name: "Markdown",
+            name: t("menu.markdown"), 
             extensions: ["md"],
           },
         ],

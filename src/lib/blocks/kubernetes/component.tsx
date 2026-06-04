@@ -300,7 +300,7 @@ export function KubernetesComponent({
               <div className="flex flex-row gap-2 items-center">
                 <Input
                   size="sm"
-                  placeholder="default"
+                  placeholder="default" 
                   label={t("kubernetes.namespace")}
                   value={kubernetes.namespace}
                   onChange={(e) => setNamespace(e.target.value)}
@@ -312,7 +312,7 @@ export function KubernetesComponent({
                 />
                 <Input
                   size="sm"
-                  placeholder="current-context"
+                  placeholder="current-context" 
                   label={t("kubernetes.context")}
                   value={kubernetes.context}
                   onChange={(e) => setContext(e.target.value)}

@@ -29,7 +29,7 @@ import { findParentWorkspace } from "@/lib/workspaces/offline_strategy";
 import { uuidv7 } from "uuidv7";
 import WorkspaceManager from "@/lib/workspaces/manager";
 import { doFolderOp } from "@/state/runbooks/workspace_folder_ops";
-import { useTranslation } from "@/lib/i18n";
+import { useTranslation, t } from "@/lib/i18n";
 interface ConvertWorkspaceDialogProps {
   workspace: Workspace;
   onClose: () => void;
@@ -462,7 +462,7 @@ export default function ConvertWorkspaceDialog(props: ConvertWorkspaceDialogProp
       hideCloseButton={converting}
     >
       <ModalContent>
-        <ModalHeader>{t("workspace.convert.title")}</ModalHeader>
+        <ModalHeader>{t("workspace.convert.legacy_description")}</ModalHeader>
         <ModalBody className="flex gap-4">
           <p>
             {t("workspace.convert.legacy_description", { name: props.workspace.get("name") })}{" "}

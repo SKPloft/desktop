@@ -4,6 +4,7 @@ import type { ButtonProps } from "@heroui/react";
 import React from "react";
 import { useControlledState } from "@react-stately/utils";
 import { m, LazyMotion, domAnimation } from "framer-motion";
+import { useTranslation } from "@/lib/i18n";
 
 import { cn } from "@/lib/utils";
 
@@ -90,6 +91,7 @@ const HorizontalSteps = React.forwardRef<HTMLButtonElement, HorizontalStepsProps
     },
     ref,
   ) => {
+    const { t } = useTranslation();
     const [currentStep, setCurrentStep] = useControlledState(
       currentStepProp,
       defaultStep,
@@ -148,7 +150,7 @@ const HorizontalSteps = React.forwardRef<HTMLButtonElement, HorizontalStepsProps
     }, [color]);
 
     return (
-      <nav aria-label="Progress">
+      <nav aria-label={t("onboarding.progress")}>
         <ol
           className={cn(
             "flex flex-row flex-nowrap overflow-x-scroll justify-between",
@@ -257,6 +259,6 @@ const HorizontalSteps = React.forwardRef<HTMLButtonElement, HorizontalStepsProps
   },
 );
 
-HorizontalSteps.displayName = "HorizontalSteps";
+HorizontalSteps.displayName = "HorizontalSteps"; // React devtools display name – not user-facing, no i18n needed
 
 export default HorizontalSteps;

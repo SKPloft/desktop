@@ -246,8 +246,8 @@ pub fn menu<R: Runtime>(app_handle: &AppHandle<R>, tab_items: &[TabItem]) -> Res
         .collect();
 
     // Create a vector of all window menu items
-    let minimize = PredefinedMenuItem::minimize(app_handle, None)?;
-    let maximize = PredefinedMenuItem::maximize(app_handle, None)?;
+    let minimize = PredefinedMenuItem::minimize(app_handle, Some(&tr(app_handle, "menu.minimize")))?;
+    let maximize = PredefinedMenuItem::maximize(app_handle, Some(&tr(app_handle, "menu.zoom")))?;
     let separator1 = PredefinedMenuItem::separator(app_handle)?;
 
     let mut window_items: Vec<&dyn IsMenuItem<R>> = vec![&minimize, &maximize];
@@ -296,7 +296,7 @@ pub fn menu<R: Runtime>(app_handle: &AppHandle<R>, tab_items: &[TabItem]) -> Res
                 app_handle,
             )?,
             #[cfg(not(target_os = "macos"))]
-            &PredefinedMenuItem::about(app_handle, None, Some(about_metadata))?,
+            &PredefinedMenuItem::about(app_handle, Some(&tr(app_handle, "menu.about_atuin_desktop")), Some(about_metadata))?,
         ],
     )?;
 
@@ -317,13 +317,13 @@ pub fn menu<R: Runtime>(app_handle: &AppHandle<R>, tab_items: &[TabItem]) -> Res
                     &update_check(app_handle)?,
                     &start_sync(app_handle)?,
                     &PredefinedMenuItem::separator(app_handle)?,
-                    &PredefinedMenuItem::services(app_handle, None)?,
+                    &PredefinedMenuItem::services(app_handle, Some(&tr(app_handle, "menu.services")))?,
                     &PredefinedMenuItem::separator(app_handle)?,
                     &PredefinedMenuItem::hide(
                         app_handle,
                         Some(&tr(app_handle, "menu.hide_atuin_desktop")),
                     )?,
-                    &PredefinedMenuItem::hide_others(app_handle, None)?,
+                    &PredefinedMenuItem::hide_others(app_handle, Some(&tr(app_handle, "menu.hide_others")))?,
                     &PredefinedMenuItem::separator(app_handle)?,
                     &PredefinedMenuItem::quit(
                         app_handle,
@@ -367,13 +367,13 @@ pub fn menu<R: Runtime>(app_handle: &AppHandle<R>, tab_items: &[TabItem]) -> Res
                 tr(app_handle, "menu.edit"),
                 true,
                 &[
-                    &PredefinedMenuItem::undo(app_handle, None)?,
-                    &PredefinedMenuItem::redo(app_handle, None)?,
+                    &PredefinedMenuItem::undo(app_handle, Some(&tr(app_handle, "menu.undo")))?,
+                    &PredefinedMenuItem::redo(app_handle, Some(&tr(app_handle, "menu.redo")))?,
                     &PredefinedMenuItem::separator(app_handle)?,
-                    &PredefinedMenuItem::cut(app_handle, None)?,
-                    &PredefinedMenuItem::copy(app_handle, None)?,
-                    &PredefinedMenuItem::paste(app_handle, None)?,
-                    &PredefinedMenuItem::select_all(app_handle, None)?,
+                    &PredefinedMenuItem::cut(app_handle, Some(&tr(app_handle, "menu.cut")))?,
+                    &PredefinedMenuItem::copy(app_handle, Some(&tr(app_handle, "menu.copy")))?,
+                    &PredefinedMenuItem::paste(app_handle, Some(&tr(app_handle, "menu.paste")))?,
+                    &PredefinedMenuItem::select_all(app_handle, Some(&tr(app_handle, "menu.select_all")))?,
                 ],
             )?,
             #[cfg(debug_assertions)]
@@ -388,7 +388,7 @@ pub fn menu<R: Runtime>(app_handle: &AppHandle<R>, tab_items: &[TabItem]) -> Res
                 app_handle,
                 tr(app_handle, "menu.view"),
                 true,
-                &[&PredefinedMenuItem::fullscreen(app_handle, None)?],
+                &[&PredefinedMenuItem::fullscreen(app_handle, Some(&tr(app_handle, "menu.fullscreen")))?],
             )?,
             &window_menu,
             &help_menu,

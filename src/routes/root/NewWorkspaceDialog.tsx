@@ -27,7 +27,7 @@ interface NewWorkspaceDialogProps {
 
 export default function NewWorkspaceDialog({ onAccept, onCancel }: NewWorkspaceDialogProps) {
   const { t } = useTranslation();
-  const [name, setName] = useState("New Workspace");
+  const [name, setName] = useState(() => t("workspace.default_name"));
   const [isOnline, setIsOnline] = useState(true);
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
   const [folderHasContents, setFolderHasContents] = useState(false);
@@ -65,7 +65,7 @@ export default function NewWorkspaceDialog({ onAccept, onCancel }: NewWorkspaceD
 
   function closeAndReset() {
     onCancel();
-    setName("New Workspace");
+    setName(t("workspace.default_name"));
     setIsOnline(true);
     setSelectedFolder(null);
   }
@@ -97,13 +97,13 @@ export default function NewWorkspaceDialog({ onAccept, onCancel }: NewWorkspaceD
   return (
     <Modal isOpen={true} onClose={closeAndReset}>
       <ModalContent>
-        <ModalHeader>Create or Open a Workspace</ModalHeader>
+        <ModalHeader>{t("workspace.create_or_open")}</ModalHeader>
         <ModalBody>
           <div className="space-y-4">
-            <Input label="Workspace Name" value={name} onChange={handleNameChange} autoFocus />
+            <Input label={t("workspace.name")} value={name} onChange={handleNameChange} autoFocus />
 
             <div>
-              <label className="block text-sm font-medium mb-2">Workspace Type</label>
+              <label className="block text-sm font-medium mb-2">{t("workspace.type")}</label>
               <div className="space-y-2">
                 <div>
                   <label className="flex items-center">
@@ -113,25 +113,24 @@ export default function NewWorkspaceDialog({ onAccept, onCancel }: NewWorkspaceD
                       onChange={handleSelectOnline}
                       className="mr-2"
                     />
-                    <span>Online - Sync across devices</span>
+                    <span>{t("workspace.online")}</span>
                   </label>
                 </div>
                 {isOnline && (
                   <div className="ml-6 text-sm">
                     {connectionState === ConnectionState.Offline && (
                       <span className="text-red-500">
-                        You are offline. You must be online to create an online workspace.
+                        {t("workspace.online_requires_connection")}
                       </span>
                     )}
                     {connectionState === ConnectionState.LoggedOut && (
                       <span className="text-red-500">
-                        You must be logged in to Atuin Hub to create an online workspace.
+                        {t("workspace.online_requires_login")}
                       </span>
                     )}
                     {connectionState === ConnectionState.OutOfDate && (
                       <span className="text-red-500">
-                        You must update Atuin Desktop to the latest version to create an online
-                        workspace.
+                        {t("workspace.online_requires_update")}
                       </span>
                     )}
                   </div>
@@ -144,11 +143,11 @@ export default function NewWorkspaceDialog({ onAccept, onCancel }: NewWorkspaceD
                       onChange={handleSelectOffline}
                       className="mr-2"
                     />
-                    <div>Offline - Local only</div>
+                    <div>{t("workspace.offline")}</div>
                   </label>
                 </div>
                 <div className="flex items-center">
-                  <Tooltip content="Select a folder to store your workspace locally">
+                  <Tooltip content={t("workspace.select_folder_tooltip")}>
                     <Button
                       isIconOnly
                       isDisabled={isOnline}
@@ -166,14 +165,13 @@ export default function NewWorkspaceDialog({ onAccept, onCancel }: NewWorkspaceD
                       "flex-grow",
                     )}
                   >
-                    {!selectedFolder && "No folder selected"}
+                    {!selectedFolder && t("workspace.no_folder_selected")}
                     {selectedFolder && selectedFolder}
                   </span>
                 </div>
                 {selectedFolder && isChildOfWorkspace && (
                   <div className="text-danger-500 mt-2">
-                    The selected folder is a child of an existing workspace. Please choose a
-                    different folder.
+                    {t("workspace.child_folder_warning")}
                   </div>
                 )}
                 {selectedFolder &&
@@ -181,7 +179,7 @@ export default function NewWorkspaceDialog({ onAccept, onCancel }: NewWorkspaceD
                   !existingWorkspaceId &&
                   !isChildOfWorkspace && (
                     <div className="text-danger-500 mt-2">
-                      The selected folder is not empty. Any conflicting files will be overwritten.
+                      {t("workspace.not_empty_warning")}
                     </div>
                   )}
                 {selectedFolder && folderHasContents && existingWorkspaceId && (
@@ -206,7 +204,7 @@ export default function NewWorkspaceDialog({ onAccept, onCancel }: NewWorkspaceD
               (isOnline && connectionState !== ConnectionState.Online)
             }
           >
-            Create Workspace
+            {t("workspace.create")}
           </Button>
         </ModalFooter>
       </ModalContent>

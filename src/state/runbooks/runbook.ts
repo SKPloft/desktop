@@ -10,6 +10,7 @@ import Snapshot from "./snapshot";
 import * as commands from "@/lib/workspaces/commands";
 import WorkspaceManager from "@/lib/workspaces/manager";
 import { timeoutPromise } from "@/lib/utils";
+import { t } from "@/lib/i18n";
 
 const logger = new Logger("Runbook", "green", "green");
 
@@ -237,7 +238,7 @@ export class OnlineRunbook extends Runbook {
     }
 
     let runbook = await OnlineRunbook.create(workspace);
-    runbook.name = "Untitled";
+    runbook.name = t("common.untitled");
     runbook.content = JSON.stringify(untitledRunbook);
     if (markViewed) {
       runbook.viewed_at = new Date();
@@ -738,7 +739,7 @@ export class OfflineRunbook extends Runbook {
     workspace: Workspace,
     parentFolderId: string | null,
     persist: boolean = true,
-    name: string = "Untitled",
+    name: string = t("common.untitled"),
     content: any = [],
     forkedFrom: string | null = null,
   ): Promise<OfflineRunbook | null> {

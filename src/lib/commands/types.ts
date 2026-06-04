@@ -2,9 +2,9 @@ import { LucideIcon } from "lucide-react";
 
 export interface Command {
   id: string;
-  title: string;
-  description?: string;
-  category?: string;
+  title: string | (() => string);
+  description?: string | (() => string);
+  category?: string | (() => string);
   icon?: LucideIcon | (() => LucideIcon);
   keywords?: string[];
   shortcut?: string[];

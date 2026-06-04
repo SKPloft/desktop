@@ -116,7 +116,7 @@ export const insertKubernetes = (editor: any) => ({
 
     // Count the number of kubernetes-get blocks
     let kubernetesBlocks = editor.document.filter((block: any) => block.type === "kubernetes-get");
-    let name = `Kubernetes Get ${kubernetesBlocks.length + 1}`;
+    let name = t("kubernetes.default_name", { count: kubernetesBlocks.length + 1 }); 
 
     Settings.getEffectiveScriptShell().then((interpreter) => {
       editor.insertBlocks(
@@ -137,6 +137,6 @@ export const insertKubernetes = (editor: any) => ({
     });
   },
   icon: <Container size={18} />,
-  aliases: ["kubernetes", "kubernetes-get", "k8s", "kubectl", "pods", "get"],
+  aliases: ["kubernetes", "kubernetes-get", "k8s", "kubectl", "pods", "get"], 
   group: t("editor.blocks.group.execute"),
 });

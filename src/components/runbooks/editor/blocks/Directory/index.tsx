@@ -5,7 +5,7 @@ import undent from "undent";
 import AIBlockRegistry from "@/lib/ai/block_registry";
 import { open } from "@tauri-apps/plugin-dialog";
 import { exportPropMatter } from "@/lib/utils";
-import { useTranslation } from "@/lib/i18n";
+import { useTranslation, t } from "@/lib/i18n";
 
 interface DirectoryProps {
   path: string;
@@ -114,10 +114,9 @@ export default createReactBlockSpec(
 
 AIBlockRegistry.getInstance().addBlock({
   typeName: "directory",
-  friendlyName: "Directory",
-  shortDescription:
-    "Sets the working directory for subsequent code blocks (synced) via absolute or relative paths.",
-  description: undent`
+  friendlyName: () => t("editor.blocks.directory.title"),
+  shortDescription: () => t("editor.blocks.directory.short_desc"),
+  description: () => undent`
     Directory blocks set the working directory for all subsequent Terminal and Script blocks. The path is synced with collaborators.
 
     The available props are:

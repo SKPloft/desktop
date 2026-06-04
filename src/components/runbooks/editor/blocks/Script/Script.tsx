@@ -614,7 +614,7 @@ export const insertScript = (schema: any) => (editor: typeof schema.BlockNoteEdi
     track_event("runbooks.block.create", { type: "script" });
 
     let scriptBlocks = editor.document.filter((block: any) => block.type === "script");
-    let name = `Script ${scriptBlocks.length + 1}`;
+    let name = i18nT("editor.blocks.script.default_name", { count: scriptBlocks.length + 1 }); 
 
     // Get default shell from settings, falling back to system default
     const interpreter = await Settings.getEffectiveScriptShell();
@@ -640,10 +640,9 @@ export const insertScript = (schema: any) => (editor: typeof schema.BlockNoteEdi
 
 AIBlockRegistry.getInstance().addBlock({
   typeName: "script",
-  friendlyName: "Script",
-  shortDescription:
-    "Executes a non-interactive script and captures output - note: non-interactive shells may not load the user's shell configuration.",
-  description: undent`
+  friendlyName: () => i18nT("editor.blocks.script.title"),
+  shortDescription: () => i18nT("editor.blocks.script.short_desc"),
+  description: () => undent`
     Script blocks execute non-interactive scripts and capture their output. Unlike Terminal blocks, scripts run to completion without user interaction and can store their output in a template variable for use by other blocks.
 
     The available props are:

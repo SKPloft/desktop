@@ -2,6 +2,7 @@ import { DependencySpec } from "../../workflow/dependency";
 import Block from "../../workflow/blocks/block";
 import undent from "undent";
 import AIBlockRegistry from "@/lib/ai/block_registry";
+import { t } from "@/lib/i18n";
 
 export enum HttpVerb {
   GET = "GET",
@@ -82,9 +83,9 @@ export const HTTP_BLOCK_SCHEMA = {
 
 AIBlockRegistry.getInstance().addBlock({
   typeName: "http",
-  friendlyName: "HTTP",
-  shortDescription: "Makes HTTP requests to a URL with a given endpoint, verb, headers, and body.",
-  description: undent`
+  friendlyName: () => t("editor.blocks.http.title"),
+  shortDescription: () => t("editor.blocks.http.short_desc"),
+  description: () => undent`
     HTTP blocks are used to make HTTP requests to a URL with a given endpoint, verb, and headers. The HTTP block supports all standard HTTP verbs: GET, POST, PUT, DELETE, PATCH, HEAD, and OPTIONS.
 
     The available props are:

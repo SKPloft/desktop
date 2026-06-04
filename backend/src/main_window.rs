@@ -5,6 +5,7 @@ use tauri::{
     AppHandle, LogicalSize, Manager, PhysicalPosition, PhysicalSize, Runtime, WebviewUrl,
     WebviewWindow,
 };
+use tauri_plugin_i18n::PluginI18nExt;
 
 #[derive(Clone, serde::Serialize, serde::Deserialize, Debug)]
 pub(crate) struct WindowState {
@@ -96,10 +97,12 @@ pub(crate) async fn create_main_window<R: Runtime>(app: &AppHandle<R>) -> Result
 
     let app_url = WebviewUrl::App(format!("index.html?{query_string}").into());
 
+    let app_name = app.i18n().translate("app.title").unwrap_or("Atuin");
+
     let title = if let Some(prefix) = dev_prefix {
-        format!("Atuin - {prefix}")
+        format!("{app_name} - {prefix}")
     } else {
-        "Atuin".to_string()
+        app_name.to_string()
     };
 
     let title = if channel != "stable" {

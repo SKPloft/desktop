@@ -5,7 +5,6 @@ import {
   defaultBlockSpecs,
   defaultInlineContentSpecs,
 } from "@blocknote/core";
-import { en } from "@blocknote/core/locales";
 import Directory from "./blocks/Directory";
 import Env from "./blocks/Env";
 import Var from "./blocks/Var";
@@ -47,6 +46,7 @@ import { KubernetesBlockSpec } from "@/lib/blocks/kubernetes";
 import { RunbookLink } from "./inline/RunbookLink";
 import HorizontalRule from "./blocks/HorizontalRule";
 import { withoutProperties } from "@/lib/utils";
+import { t, getBlockNoteDictionary } from "@/lib/i18n";
 
 // Our schema with block specs, which contain the configs and implementations for blocks
 // that we want our editor to use.
@@ -106,6 +106,7 @@ export const schema = BlockNoteSchema.create({
 export function createBasicEditor(content: any) {
   let editor = BlockNoteEditor.create({
     schema,
+    dictionary: getBlockNoteDictionary(),
     initialContent: content,
   });
 
@@ -123,9 +124,7 @@ export function createLocalOnlyEditor(content: any) {
         scrollMargin: 200,
       },
     },
-    dictionary: {
-      ...en,
-    },
+    dictionary: getBlockNoteDictionary(),
     initialContent: content,
   });
 
@@ -152,13 +151,11 @@ export function createCollaborativeEditor(
       provider: provider,
       fragment: provider.doc.getXmlFragment("document-store"),
       user: {
-        name: user.username || "Anonymous",
+        name: user.username || t("common.anonymous"),
         color: presenceColor,
       },
     },
-    dictionary: {
-      ...en,
-    },
+    dictionary: getBlockNoteDictionary(),
   });
 
   DevConsole.addAppObject("editor", editor);
@@ -168,11 +165,12 @@ export function createCollaborativeEditor(
 export function createConversionEditor(doc: Y.Doc, fragment: Y.XmlFragment) {
   return BlockNoteEditor.create({
     schema,
+    dictionary: getBlockNoteDictionary(),
     collaboration: {
       provider: new NullProvider(doc),
       fragment: fragment,
       user: {
-        name: "Conversion",
+        name: t("editor.conversion"),
         color: randomColor(),
       },
     },

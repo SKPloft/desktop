@@ -7,7 +7,7 @@ import { createReactBlockSpec } from "@blocknote/react";
 import undent from "undent";
 import AIBlockRegistry from "@/lib/ai/block_registry";
 import { exportPropMatter } from "@/lib/utils";
-import { useTranslation } from "@/lib/i18n";
+import { useTranslation, t } from "@/lib/i18n";
 
 interface EnvProps {
   name: string;
@@ -122,9 +122,9 @@ export default createReactBlockSpec(
 
 AIBlockRegistry.getInstance().addBlock({
   typeName: "env",
-  friendlyName: "Environment Variable",
-  shortDescription: "Sets an environment variable for all subsequent code blocks.",
-  description: undent`
+friendlyName: () => t("editor.blocks.env.title"),
+shortDescription: () => t("editor.blocks.env.short_desc"),
+  description: () => undent`
     Environment Variable blocks set shell environment variables that are available to all subsequent Terminal and Script blocks in the runbook.
 
     The available props are:

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { isAppleDevice } from "@react-aria/utils";
 import { open } from "@tauri-apps/plugin-shell";
 import { PlusIcon, TrashIcon, PlayIcon } from "lucide-react";
@@ -388,9 +388,9 @@ const GeneralSettings = () => {
                   setUiScale(numVal);
                 }}
                 marks={[
-                  { value: 50, label: "50%" },
-                  { value: 100, label: "100%" },
-                  { value: 150, label: "150%" },
+                  { value: 50, label: t("settings.general.ui_scale.percent", { value: 50 }) }, 
+                  { value: 100, label: t("settings.general.ui_scale.percent", { value: 100 }) }, 
+                  { value: 150, label: t("settings.general.ui_scale.percent", { value: 150 }) }, 
                 ]}
                 hideValue
                 className="flex-1"
@@ -484,9 +484,9 @@ const GeneralSettings = () => {
               disabled={!backgroundSync}
               items={[
                 { label: t("settings.general.sync_concurrency.one"), key: "1" },
-                { label: "2", key: "2" },
-                { label: "5", key: "5" },
-                { label: "10", key: "10" },
+                { label: "2", key: "2" }, //TODO I18N - numeric label, not user-facing text
+                { label: "5", key: "5" }, //TODO I18N - numeric label, not user-facing text
+                { label: "10", key: "10" }, //TODO I18N - numeric label, not user-facing text
               ]}
             >
               {(item) => <SelectItem key={item.key}>{item.label}</SelectItem>}
@@ -1828,7 +1828,40 @@ const UserSettings = () => {
 
 // Main Settings component
 const SettingsPanel = () => {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
+  const [selectedTab, setSelectedTab] = useState<string>("general");
+
+  const tabs = useMemo(
+    () => [
+      {
+        key: "general",
+        title: t("settings.tabs.general"),
+        content: <GeneralSettings />,
+      },
+      {
+        key: "runbook",
+        title: t("settings.tabs.runbooks"),
+        content: <RunbookSettings />,
+      },
+      {
+        key: "notification",
+        title: t("settings.tabs.notifications"),
+        content: <NotificationSettings />,
+      },
+      {
+        key: "ai",
+        title: t("settings.tabs.ai"),
+        content: <AISettings />,
+      },
+      {
+        key: "user",
+        title: t("settings.tabs.user"),
+        content: <UserSettings />,
+      },
+    ],
+    [locale, t],
+  );
+
   return (
     <div className="flex flex-col gap-4 p-4 pt-2 w-full">
       <div className="flex flex-col gap-1">
@@ -1838,43 +1871,22 @@ const SettingsPanel = () => {
         </p>
       </div>
       <Tabs
+        key={locale}
         aria-label={t("settings.title")}
         color="primary"
+        selectedKey={`${selectedTab}-${locale}`}
+        onSelectionChange={(key) => setSelectedTab(String(key).replace(`-${locale}`, ""))}
         classNames={{
           tabList: "sticky top-4 start-0 z-20 pt-2 pb-4",
           panel: "w-full",
         }}
         isVertical
       >
-        <Tab key="general" title={t("settings.tabs.general")}>
-          <div className="flex flex-col gap-4">
-            <GeneralSettings />
-          </div>
-        </Tab>
-
-        <Tab key="runbook" title={t("settings.tabs.runbooks")}>
-          <div className="flex flex-col gap-4">
-            <RunbookSettings />
-          </div>
-        </Tab>
-
-        <Tab key="notification" title={t("settings.tabs.notifications")}>
-          <div className="flex flex-col gap-4">
-            <NotificationSettings />
-          </div>
-        </Tab>
-
-        <Tab key="ai" title={t("settings.tabs.ai")}>
-          <div className="flex flex-col gap-4">
-            <AISettings />
-          </div>
-        </Tab>
-
-        <Tab key="user" title={t("settings.tabs.user")}>
-          <div className="flex flex-col gap-4">
-            <UserSettings />
-          </div>
-        </Tab>
+        {tabs.map((tab) => (
+          <Tab key={`${tab.key}-${locale}`} title={tab.title}>
+            <div className="flex flex-col gap-4">{tab.content}</div>
+          </Tab>
+        ))}
       </Tabs>
     </div>
   );

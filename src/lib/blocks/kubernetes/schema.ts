@@ -2,6 +2,7 @@ import { DependencySpec } from "../../workflow/dependency";
 import Block from "../../workflow/blocks/block";
 import undent from "undent";
 import AIBlockRegistry from "@/lib/ai/block_registry";
+import { t } from "@/lib/i18n";
 
 export class KubernetesBlock extends Block {
   command: string;
@@ -102,9 +103,9 @@ export const KUBERNETES_BLOCK_SCHEMA = {
 
 AIBlockRegistry.getInstance().addBlock({
   typeName: "kubernetes-get",
-  friendlyName: "Kubernetes Get",
-  shortDescription: "Execute kubectl get commands with live results.",
-  description: undent`
+  friendlyName: () => t("editor.blocks.kubernetes.title"),
+  shortDescription: () => t("editor.blocks.kubernetes.short_desc"),
+  description: () => undent`
     Kubernetes Get blocks execute kubectl get commands and display the results in a rich, interactive format. They support two modes: 'preset' for common kubectl commands, or 'custom' for any kubectl command.
 
     The available props are:

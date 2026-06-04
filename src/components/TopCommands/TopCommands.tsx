@@ -1,13 +1,15 @@
 import { useStore } from "@/state/store";
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
+import { useTranslation } from "@/lib/i18n";
 
 export default function TopChart({ chartData }: any) {
   const colorMode = useStore((state) => state.functionalColorMode);
+  const { t } = useTranslation();
 
   const chartConfig = {
     command: {
-      label: "Command",
+      label: t("history.command"), 
       color: colorMode === "dark" ? "#66aaf9" : "#c4edde",
     },
   } satisfies ChartConfig;

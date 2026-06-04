@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from "react";
+import { useTranslation } from "@/lib/i18n";
 
 const STORAGE_KEY_DISMISSED = "ai-hint-dismissed";
 const STORAGE_KEY_USE_COUNT = "ai-hint-use-count";
@@ -22,6 +23,7 @@ export function incrementAIHintUseCount(): void {
 }
 
 export function AIHint({ editor, isGenerating, aiEnabled }: AIHintProps) {
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
   const [position, setPosition] = useState<{ top: number; left: number } | null>(null);
   const [permanentlyHidden, setPermanentlyHidden] = useState(!shouldShowHint());
@@ -178,11 +180,11 @@ export function AIHint({ editor, isGenerating, aiEnabled }: AIHintProps) {
         <kbd className="font-mono bg-zinc-100 dark:bg-zinc-800 px-1 py-0.5 rounded text-zinc-500 dark:text-zinc-400">
           ↵
         </kbd>
-        <span className="ml-0.5">to generate</span>
+        <span className="ml-0.5">{t("editor.ai.to_generate")}</span>
         <button
           onClick={dismissPermanently}
           className="ml-1.5 text-zinc-300 dark:text-zinc-600 hover:text-zinc-500 dark:hover:text-zinc-400 transition-colors cursor-pointer bg-transparent border-none p-0 leading-none"
-          title="Dismiss forever"
+          title={t("editor.ai.dismiss_forever")}
         >
           ×
         </button>

@@ -390,7 +390,7 @@ const Dropdown = ({
                     dropdownState?.resolved?.options.find((option) => option.value === selected)
                       ?.label
                   ) : (
-                    {t("editor.blocks.dropdown.select_option")}
+                    t("editor.blocks.dropdown.select_option")
                   )}
                   <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
@@ -643,10 +643,9 @@ export const insertDropdown = (schema: any) => (editor: typeof schema.BlockNoteE
 
 AIBlockRegistry.getInstance().addBlock({
   typeName: "dropdown",
-  friendlyName: "Dropdown",
-  shortDescription:
-    "Presents a dropdown selector that sets a template variable; choices are sourced from a fixed list, a variable, or a shell command.",
-  description: undent`
+  friendlyName: () => i18nT("editor.blocks.dropdown.title"),
+  shortDescription: () => i18nT("editor.blocks.dropdown.short_desc"),
+  description: () => undent`
     Dropdown blocks let users select from a list of options. The selected value is stored as a template variable. Options can be fixed, from a variable, or from a shell command.
 
     The available props are:

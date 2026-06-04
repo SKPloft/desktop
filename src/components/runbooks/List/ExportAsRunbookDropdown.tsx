@@ -1,6 +1,7 @@
 import Runbook from "@/state/runbooks/runbook";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/react";
 import { save } from "@tauri-apps/plugin-dialog";
+import { useTranslation } from "@/lib/i18n";
 
 interface ExportRunbookDropdownProps {
   runbook: Runbook;
@@ -13,10 +14,11 @@ export default function ExportRunbookDropdown({
   isOpen,
   onClose,
 }: ExportRunbookDropdownProps) {
+  const { t } = useTranslation();
   let exportTypes = [
     /*
     {
-      name: "Atuin Markdown",
+      name: t("export_runbook.type.atuin_markdown"), 
       extension: "atmd",
       action: async () => {
         let filePath = await save({
@@ -30,7 +32,7 @@ export default function ExportRunbookDropdown({
     },
     */
     {
-      name: "Atuin Runbook",
+      name: t("export_runbook.type.atuin_runbook"),
       extension: "atrb",
       action: async () => {
         let filePath = await save({
@@ -51,13 +53,13 @@ export default function ExportRunbookDropdown({
       placement="right-start"
       className="absolute left-[6.5rem] top-[-1rem]"
     >
-      <DropdownTrigger title="Export as">
-        <span className="w-full">Export as</span>
+      <DropdownTrigger title={t("export_runbook.export_as")}>
+        <span className="w-full">{t("export_runbook.export_as")}</span>
       </DropdownTrigger>
       <DropdownMenu
-        aria-label="Workspace selection"
+        aria-label={t("export_runbook.aria")}
         variant="flat"
-        topContent={<div className="text-default-600 font-semibold">Export</div>}
+        topContent={<div className="text-default-600 font-semibold">{t("export_runbook.title")}</div>}
         items={exportTypes}
       >
         {(exportType) => {

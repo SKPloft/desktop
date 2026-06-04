@@ -190,10 +190,10 @@ export default function Runbooks() {
     return registerTabOnClose(tab.id, async () => {
       if (serialExecution.isRunning) {
         const answer = await new DialogBuilder()
-          .title(`Cancel workflow execution?`)
+          .title(t("runbooks.dialog.cancel_execution.title"))  
           .icon("question")
           .message(
-            `You are currently executing a workflow in the Runbook "${currentRunbook.name}". Closing this tab will stop the workflow.`,
+            t("runbooks.dialog.cancel_execution.message", { name: currentRunbook.name }),  
           )
           .action({
             label: t("common.cancel"),

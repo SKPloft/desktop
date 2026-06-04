@@ -1,11 +1,13 @@
 import { forwardRef, useMemo } from "react";
 import { AvatarIcon, useAvatar, AvatarProps as BaseAvatarProps } from "@heroui/react";
+import { useTranslation } from "@/lib/i18n";
 
 export interface AvatarProps extends BaseAvatarProps {
   outlineColor: string;
 }
 
 const ColorAvatar = forwardRef<HTMLSpanElement, AvatarProps>((props, ref) => {
+  const { t } = useTranslation();
   const outlineColor = props.outlineColor;
   const updatedProps = { ...props };
   delete (updatedProps as any).outlineColor;
@@ -30,7 +32,7 @@ const ColorAvatar = forwardRef<HTMLSpanElement, AvatarProps>((props, ref) => {
   const fallback = useMemo(() => {
     if (!showFallback && src) return null;
 
-    const ariaLabel = alt || name || "avatar";
+    const ariaLabel = alt || name || t("common.avatar");
 
     if (fallbackComponent) {
       return (
@@ -63,6 +65,6 @@ const ColorAvatar = forwardRef<HTMLSpanElement, AvatarProps>((props, ref) => {
   );
 });
 
-ColorAvatar.displayName = "ColorAvatar";
+ColorAvatar.displayName = "ColorAvatar"; // React devtools display name – not user-facing, no i18n needed
 
 export default ColorAvatar;

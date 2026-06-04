@@ -3,6 +3,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import SSHBus from "@/lib/buses/ssh";
 import { addToast } from "@heroui/react";
+import { t } from "@/lib/i18n";
 
 export async function sshConnect(userHost: string): Promise<void> {
   let username: string | undefined;
@@ -32,8 +33,8 @@ export async function sshConnect(userHost: string): Promise<void> {
     console.error(error);
 
     addToast({
-      title: "SSH connection failed",
-      description: `Failed to connect to ${userHost}.`,
+      title: t("editor.blocks.ssh_connect.connection_failed"),
+      description: t("editor.blocks.ssh_connect.connection_failed_description", { host: userHost }),
       color: "danger",
     });
 

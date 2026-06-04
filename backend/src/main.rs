@@ -7,7 +7,7 @@ use std::path::PathBuf;
 use std::{env, fs};
 
 use tauri::path::BaseDirectory;
-use tauri::{http, App, AppHandle, Manager, RunEvent, Runtime};
+use tauri::{http, App, AppHandle, Listener, Manager, RunEvent, Runtime};
 use tauri_plugin_log::fern::colors::{Color, ColoredLevelConfig};
 use time::format_description::well_known::Rfc3339;
 
@@ -355,8 +355,10 @@ async fn get_platform_info() -> Result<String, String> {
 #[tauri::command]
 async fn update_window_menu_tabs<R: Runtime>(
     app: AppHandle<R>,
+    state: tauri::State<'_, state::AtuinState>,
     tabs: Vec<TabItem>,
 ) -> Result<(), String> {
+    *state.tab_items.lock().unwrap() = tabs.clone();
     let new_menu = menu::menu(&app, &tabs).map_err(|e| e.to_string())?;
     let _ = app.set_menu(new_menu);
 
@@ -718,6 +720,22 @@ fn main() {
             });
 
             handle.set_menu(menu::menu(handle, &[]).expect("Failed to build menu"))?;
+
+            let handle_clone = handle.clone();
+            handle.listen("i18n:locale_changed", move |_event| {
+                let handle = handle_clone.clone();
+                tauri::async_runtime::spawn(async move {
+                    let tabs = handle
+                        .state::<state::AtuinState>()
+                        .tab_items
+                        .lock()
+                        .unwrap()
+                        .clone();
+                    if let Ok(new_menu) = menu::menu(&handle, &tabs) {
+                        let _ = handle.set_menu(new_menu);
+                    }
+                });
+            });
 
             let handle_clone = handle.clone();
             tauri::async_runtime::spawn(async move {

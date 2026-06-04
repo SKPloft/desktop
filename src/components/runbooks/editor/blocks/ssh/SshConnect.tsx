@@ -577,9 +577,9 @@ export const insertSshConnect = (schema: any) => (editor: typeof schema.BlockNot
 
 AIBlockRegistry.getInstance().addBlock({
   typeName: "ssh-connect",
-  friendlyName: "SSH Connect",
-  shortDescription: "Establishes an SSH connection for subsequent blocks.",
-  description: undent`
+  friendlyName: () => i18nT("editor.blocks.ssh_connect.title"),
+  shortDescription: () => i18nT("editor.blocks.ssh_connect.short_desc"),
+  description: () => undent`
     SSH Connect blocks establish an SSH connection to a remote server. Subsequent Terminal and Script blocks will execute on the connected host until another SSH Connect or Host block is encountered. To switch back to local execution, insert a Host block with host set to "local".
 
     The available props are:

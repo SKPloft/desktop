@@ -1,8 +1,9 @@
 # i18n Progress Tracker
 
 **Last updated: 2026-06-04**  
-**Total sessions: 8**  
-**Extracted keys: 364 → 670 (+306, +84%)**
+**Total sessions: 9**  
+**Extracted keys: 364 → 1269 (+905, +249%)**
+**Documentation: `dev/docs/I18N.md`**
 
 ## Overall Extraction Progress
 
@@ -17,9 +18,35 @@
 | Session 6 | 631 | +74 |
 | Session 7 | 665 | +34 |
 | Session 8 | 670 | +5 |
-| **Total** | **670** | **+306** |
+| Session 9 | 1269 | +599 |
+| **Total** | **1269** | **+905** |
 
-## Files Wrapped (60 total)
+### Session 9 — Final Wiring (52 additional files)
+
+- [x] Block spec definitions (Prometheus, MySQL, SQLite, Clickhouse, Editor, Script, SSH) — titles, groups, default names, time frames
+- [x] Core/lib block specs (Terminal, Kubernetes, HTTP, LocalDirectory) — default names
+- [x] SQL common (`src/lib/blocks/common/SQL.tsx`) — refresh labels, URI, Settings fallback
+- [x] Editor slash menu (`src/components/runbooks/editor/Editor.tsx`) — all titles/subtexts/groups
+- [x] Editor sub-components (create_editor, RunbookLinkPopup, Host, LocalVar, Pause, SubRunbook, TableOfContents, MarkdownRender) — remaining TODOs
+- [x] State files (runbook.ts, runbook_state.ts, runbook_editor.ts) — "Untitled", default names
+- [x] Routes (Runbooks.tsx) — cancel execution dialog
+- [x] Lists (Workspace.tsx, ExportAsRunbookDropdown.tsx) — Personal, Delete, Cancel, Atuin Markdown
+- [x] Settings (Settings.tsx) — UI scale labels
+- [x] CommandMenu, TopCommands, ColorAvatar — remaining strings
+- [x] Locale files — 28 new keys added, en.yml + zh-CN.yml fully synced (1269/1271 lines)
+- [x] `llmtools.html` — TODO comment updated
+- [x] TypeScript verification — 0 errors in modified files
+- [x] Documentation — `dev/docs/I18N.md` comprehensive i18n reference
+
+### Intentionally Skipped (Session 9)
+- [x] Aliases arrays — search keywords, not translated
+- [x] displayName assignments — React dev hints (`src/components/ui/*.tsx`)
+- [x] `src/components/CommandMenu/mock-data.ts` — component gallery (720 occurrences)
+- [x] Test fixtures (`workspace_folders.ts`, `parseOption.test.ts`, `MarkdownRender/index.test.ts`)
+- [x] Kubernetes placeholders (`"default"`, `"current-context"`)
+- [x] Sync concurrency numeric labels (2, 5, 10)
+
+## Files Wrapped (112 total)
 
 ### Routes (6 files)
 - [x] `src/routes/runbooks/CollaborationManager.tsx`
@@ -115,20 +142,20 @@
 
 ---
 
-## Remaining Work (prioritized)
+## Remaining Work
 
-### Low Priority — Few or no user-visible strings
-- [ ] `src/components/TopCommands/TopCommands.tsx`
-- [ ] `src/components/runbooks/List/TreeView/RunbookTreeRow.tsx`
-- [ ] `src/components/history/HistoryInspect.tsx`
-- [ ] `src/api/` files (mostly error messages)
-- [ ] Settings sub-panels (main Settings.tsx already wrapped)
-- [ ] Various shadcn/ui wrapper components
-- [ ] Preview block components (LoadingState, CodePreview, RepoPreview — mostly skeleton/empty)
+### Low Priority
+- [ ] `src/api/` files (mostly error messages, backend-driven)
+- [ ] Preview block components (LoadingState, CodePreview, RepoPreview)
 
 ### Backend (Rust)
-- [ ] 69 `.rs` files — currently 25 keys extracted
-- [ ] Use `.translate()` method and `tr()`, `tr_ui()`, `translate_ui()` helpers
+- [x] Native menu bar — 25 keys translated via `tr()` wrapper
+- [x] LLM Tools window title — 1 key via `.translate()`
+- [ ] Backend error/log strings — intentionally NOT translated (developer/internal-facing)
+
+### Cleanup (post-confirmation)
+- [ ] Remove `//TODO I18N` markers from all files
+- [ ] Strip markers from intentionally-skipped items (aliases, displayName, technical placeholders)
 
 ---
 

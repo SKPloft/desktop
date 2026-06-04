@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import RunbookContext from "@/context/runbook_context";
 import { LinkIcon } from "lucide-react";
 import Runbook from "@/state/runbooks/runbook";
+import { t, useTranslation } from "@/lib/i18n";
 
 export const RunbookLink = createReactInlineContentSpec(
   {
@@ -13,13 +14,14 @@ export const RunbookLink = createReactInlineContentSpec(
         default: "",
       },
       runbookName: {
-        default: "Untitled Runbook",
+        default: t("runbooks.link.untitled_runbook"),
       },
     },
     content: "none",
   } as const,
   {
     render: (props) => {
+      const { t } = useTranslation();
       const { runbookId, runbookName } = props.inlineContent.props;
       const { activateRunbook } = useContext(RunbookContext);
       const [linkedRunbook, setLinkedRunbook] = useState<Runbook | null>(null);
@@ -33,7 +35,7 @@ export const RunbookLink = createReactInlineContentSpec(
                 type: "runbook-link",
                 props: {
                   runbookId: props.inlineContent.props.runbookId,
-                  runbookName: runbook?.name || "Unknown Runbook",
+                  runbookName: runbook?.name || t("runbooks.link.unknown_runbook"),
                 },
               });
             }
@@ -56,7 +58,7 @@ export const RunbookLink = createReactInlineContentSpec(
             "cursor-pointer transition-colors duration-150",
           )}
           onClick={handleClick}
-          title={`Link to runbook: ${linkedRunbook?.name || runbookName}`}
+          title={t("runbooks.link.tooltip", { name: linkedRunbook?.name || runbookName })}
         >
           <LinkIcon size={12} />
           <span>{runbookName}</span>

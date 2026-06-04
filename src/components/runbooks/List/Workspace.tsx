@@ -624,7 +624,7 @@ export default function WorkspaceComponent(props: WorkspaceProps) {
     }));
     let orgs = [
       {
-        name: "Personal",
+        name: i18n_t("common.personal"), 
         id: null,
         workspaces: workspaces
           .filter((ws) => ws.get("orgId") === null)
@@ -872,8 +872,8 @@ export default function WorkspaceComponent(props: WorkspaceProps) {
       const answer = await new DialogBuilder<"yes" | "no">()
         .title("Delete Workspace")
         .message("Are you sure you want to delete this workspace?")
-        .action({ label: "Delete", value: "yes", variant: "flat", color: "danger" })
-        .action({ label: "Cancel", value: "no", variant: "flat" })
+        .action({ label: i18n_t("common.delete"), value: "yes", variant: "flat", color: "danger" }) 
+        .action({ label: i18n_t("common.cancel"), value: "no", variant: "flat" }) 
         .build();
 
       if (answer === "yes") {

@@ -2,8 +2,10 @@ import { useBlockNoteEditor, useComponentsContext, useExtensionState } from "@bl
 import { SideMenuExtension } from "@blocknote/core/extensions";
 import { SaveIcon } from "lucide-react";
 import { useStore } from "@/state/store";
+import { useTranslation } from "@/lib/i18n";
 
 export function SaveBlockItem() {
+  const { t } = useTranslation();
   const editor = useBlockNoteEditor();
   const Components = useComponentsContext()!;
   const hoveredBlock = useExtensionState(SideMenuExtension, {
@@ -30,7 +32,7 @@ export function SaveBlockItem() {
         useStore.getState().setSavingBlock(block);
       }}
     >
-      Save Block
+      {t("editor.saved_blocks.save_block")}
     </Components.Generic.Menu.Item>
   );
 }

@@ -49,7 +49,7 @@ import { useCurrentRunbookId } from "@/context/runbook_id_context";
 import { useBlockKvValue } from "@/lib/hooks/useKvValue";
 import type { Extension as BlockNoteExtension } from "@blocknote/core";
 import { useBlockContext } from "@/lib/hooks/useDocumentBridge";
-import { useTranslation } from "@/lib/i18n";
+import { useTranslation, t } from "@/lib/i18n";
 
 interface LanguageLoader {
   name: string;
@@ -72,7 +72,7 @@ function languageLoaders(): LanguageLoader[] {
 
   // then append the custom languages
   languages.push({
-    name: "HCL",
+    name: t("editor.blocks.editor.language.hcl"),  
     extension: async () => hcl(),
   });
 
@@ -444,12 +444,12 @@ export default createReactBlockSpec(
 );
 
 export const insertEditor = (schema: any) => (editor: typeof schema.BlockNoteEditor) => ({
-  title: "Editor",
+  title: t("editor.blocks.editor.title"), 
   onItemClick: () => {
     track_event("runbooks.block.create", { type: "editor" });
 
     let editorBlocks = editor.document.filter((block: any) => block.type === "editor");
-    let name = `Editor ${editorBlocks.length + 1}`;
+    let name = t("editor.blocks.editor.default_name", { count: editorBlocks.length + 1 }); 
 
     editor.insertBlocks(
       [
@@ -466,15 +466,15 @@ export const insertEditor = (schema: any) => (editor: typeof schema.BlockNoteEdi
     );
   },
   icon: <CodeIcon size={18} />,
-  group: "Misc",
-  aliases: ["code"],
+  group: t("editor.blocks.group.misc"), 
+  aliases: ["code"], 
 });
 
 AIBlockRegistry.getInstance().addBlock({
   typeName: "editor",
-  friendlyName: "Editor",
-  shortDescription: "A syntax-highlighted code editor for viewing and editing code.",
-  description: undent`
+friendlyName: () => t("editor.blocks.editor.title"),
+shortDescription: () => t("editor.blocks.editor.short_desc"),
+  description: () => undent`
     Editor blocks provide a syntax-highlighted code editor with language selection. The content can optionally be stored in a template variable.
 
     The available props are:

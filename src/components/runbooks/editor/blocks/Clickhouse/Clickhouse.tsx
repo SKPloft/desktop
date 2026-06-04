@@ -66,7 +66,7 @@ export default createReactBlockSpec(
   {
     type: "clickhouse",
     propSchema: {
-      name: { default: "Clickhouse" },
+      name: { default: t("editor.blocks.clickhouse.title") }, 
       query: { default: "" },
       uri: { default: "" },
       autoRefresh: { default: 0 },
@@ -190,9 +190,9 @@ export const insertClickhouse = (schema: any) => (editor: typeof schema.BlockNot
 
 AIBlockRegistry.getInstance().addBlock({
   typeName: "clickhouse",
-  friendlyName: t("editor.blocks.clickhouse.title"),
-  shortDescription: "Executes SQL queries against a ClickHouse database.",
-  description: undent`
+  friendlyName: () => t("editor.blocks.clickhouse.title"),
+  shortDescription: () => t("editor.blocks.clickhouse.short_desc"),
+  description: () => undent`
     ClickHouse blocks execute SQL queries against a ClickHouse database and display results in an interactive table.
 
     The available props are:
@@ -224,3 +224,4 @@ AIBlockRegistry.getInstance().addBlock({
     }
   `,
 });
+

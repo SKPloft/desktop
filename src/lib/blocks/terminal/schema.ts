@@ -2,6 +2,7 @@ import { DependencySpec } from "../../workflow/dependency";
 import Block from "../../workflow/blocks/block";
 import undent from "undent";
 import AIBlockRegistry from "@/lib/ai/block_registry";
+import { t } from "@/lib/i18n";
 
 export class TerminalBlock extends Block {
   code: string;
@@ -71,9 +72,9 @@ export const TERMINAL_BLOCK_SCHEMA = {
 
 AIBlockRegistry.getInstance().addBlock({
   typeName: "run",
-  friendlyName: "Terminal",
-  shortDescription: "Executes commands in an interactive terminal.",
-  description: undent`
+  friendlyName: () => t("editor.blocks.terminal.title"),
+  shortDescription: () => t("editor.blocks.terminal.short_desc"),
+  description: () => undent`
     Terminal blocks are used to execute commands in an interactive terminal. This differs from a script block in that it allows for interactive input and output, and can be used to execute commands that require user input.
     Because of this, however, terminal blocks are slower, cannot have their output captured as a variable, and require an explicit 'exit' command for serial execution to continue. Since they execute
     in an interactive session, they are more flexible than script blocks, and since they load the user's environment, they can access the user's shell configuration and environment variables, which script blocks cannot.

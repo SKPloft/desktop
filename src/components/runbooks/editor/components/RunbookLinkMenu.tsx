@@ -2,6 +2,7 @@ import { DefaultReactSuggestionItem } from "@blocknote/react";
 import RunbookIndexService from "@/state/runbooks/search";
 import Runbook from "@/state/runbooks/runbook";
 import { useStore } from "@/state/store";
+import { t } from "@/lib/i18n";
 
 // Create a global search index instance
 const searchIndex = new RunbookIndexService();
@@ -33,14 +34,14 @@ export function getRunbookLinkMenuItems(
           .slice(0, 10);
 
         const items = recentRunbooks.map((runbook: Runbook) => ({
-          title: runbook.name || "Untitled Runbook",
+          title: runbook.name || t("runbooks.link.untitled_runbook"),
           onItemClick: () => {
             editor.insertInlineContent([
               {
                 type: "runbook-link",
                 props: {
                   runbookId: runbook.id,
-                  runbookName: runbook.name || "Untitled Runbook",
+                  runbookName: runbook.name || t("runbooks.link.untitled_runbook"),
                 },
               },
               " ", // add a space after the link
@@ -61,14 +62,14 @@ export function getRunbookLinkMenuItems(
             .filter((rb): rb is Runbook => rb !== undefined)
             .slice(0, 10) // Limit to 10 results
             .map((runbook) => ({
-              title: runbook.name || "Untitled Runbook",
+              title: runbook.name || t("runbooks.link.untitled_runbook"),
               onItemClick: () => {
                 editor.insertInlineContent([
                   {
                     type: "runbook-link",
                     props: {
                       runbookId: runbook.id,
-                      runbookName: runbook.name || "Untitled Runbook",
+                      runbookName: runbook.name || t("runbooks.link.untitled_runbook"),
                     },
                   },
                   " ", // add a space after the link

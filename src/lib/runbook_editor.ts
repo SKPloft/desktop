@@ -16,14 +16,14 @@ import Snapshot from "@/state/runbooks/snapshot";
 import Operation from "@/state/runbooks/operation";
 import { invoke } from "@tauri-apps/api/core";
 import Emittery, { UnsubscribeFunction } from "emittery";
+import { t } from "@/lib/i18n";
+import { translateBlockContent, getLoadedCatalog } from "./runbook_i18n";
+import { useStore } from "@/state/store";
 
 const SAVE_DEBOUNCE = 1000;
 const SEND_CHANGES_DEBOUNCE = 100;
 
-const RUNBOOK_EDITOR_CREATION_ERROR_MESSAGE =
-  "There was an error creating the runbook editor. This usually means that the " +
-  "runbook you're trying to open contains blocks that are not supported by your version of Atuin Desktop.";
-
+const getCreationError = () => t("editor.error.block_load_failed");
 function isContentBlank(content: any) {
   return (
     content.length === 0 ||
@@ -182,7 +182,7 @@ export default class RunbookEditor {
           try {
             editor = createBasicEditor(JSON.parse(snapshot.content)) as any as BlockNoteEditor;
           } catch (error) {
-            reject(new Error(RUNBOOK_EDITOR_CREATION_ERROR_MESSAGE));
+            reject(new Error(getCreationError()));
             return;
           }
           resolve(editor as any as BlockNoteEditor);
@@ -198,6 +198,14 @@ export default class RunbookEditor {
         }
       }
 
+      const locale = useStore.getState().locale;
+      if (locale !== "en") {
+        const catalog = getLoadedCatalog(locale);
+        if (Object.keys(catalog).length > 0) {
+          content = translateBlockContent(content, catalog);
+        }
+      }
+
       if (!this.isOnline) {
         let needsSave = false;
         if (content.length == 0) {
@@ -209,7 +217,7 @@ export default class RunbookEditor {
         try {
           editor = createLocalOnlyEditor(content) as any as BlockNoteEditor;
         } catch (error) {
-          reject(new Error(RUNBOOK_EDITOR_CREATION_ERROR_MESSAGE));
+          reject(new Error(getCreationError()));
           return;
         }
         if (needsSave) {
@@ -236,7 +244,7 @@ export default class RunbookEditor {
           this.presenceColor,
         ) as any as BlockNoteEditor;
       } catch (error) {
-        reject(new Error(RUNBOOK_EDITOR_CREATION_ERROR_MESSAGE));
+        reject(new Error(getCreationError()));
         return;
       }
 
@@ -308,7 +316,7 @@ export default class RunbookEditor {
       }
     }
 
-    return "Untitled";
+    return t("common.untitled");
   }
 
   async save(runbook: Runbook | undefined, editorArg: BlockNoteEditor) {

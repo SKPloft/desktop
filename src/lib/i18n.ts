@@ -2,6 +2,8 @@ import I18n from "@razein97/tauri-plugin-i18n";
 import { listen } from "@tauri-apps/api/event";
 import { useEffect, useState } from "react";
 import { useStore } from "@/state/store";
+import type { Dictionary } from "@blocknote/core";
+import { en as bnEn, zh as bnZh } from "@blocknote/core/locales";
 
 type TranslationParams = Record<string, string | number>;
 
@@ -50,6 +52,7 @@ export async function initI18n(): Promise<void> {
     const savedLocale = useStore.getState().locale;
     if (savedLocale && savedLocale !== currentLocale) {
       await I18n.setLocale(savedLocale);
+      (I18n.getInstance() as unknown as { locale: string }).locale = savedLocale;
       applyDocumentLocale(savedLocale);
     }
   })();
@@ -74,6 +77,7 @@ export function useTranslation() {
 
   const changeLocale = async (newLocale: string) => {
     await I18n.setLocale(newLocale);
+    (I18n.getInstance() as unknown as { locale: string }).locale = newLocale;
     setStoredLocale(newLocale);
     applyDocumentLocale(newLocale);
   };
@@ -84,6 +88,16 @@ export function useTranslation() {
     setLocale: changeLocale,
     availableLocales,
   };
+}
+
+const blockNoteLocales: Record<string, Dictionary> = {
+  en: bnEn,
+  "zh-CN": bnZh,
+};
+
+export function getBlockNoteDictionary(): Dictionary {
+  const locale = (I18n.getInstance() as unknown as { locale: string }).locale;
+  return blockNoteLocales[locale] ?? bnEn;
 }
 
 export { I18n };

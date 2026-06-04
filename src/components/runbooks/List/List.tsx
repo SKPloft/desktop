@@ -305,7 +305,7 @@ const NoteSidebar = forwardRef((props: NotesSidebarProps, ref: React.ForwardedRe
             <h2 className="text-lg font-semibold"></h2>
             <div className="flex space-x-1"></div>
           </div>
-          <div className="p-2 mt-10 text-center">Setting up...</div>
+          <div className="p-2 mt-10 text-center">{t("runbook_list.setting_up")}</div>
           <div className="flex justify-center items-center mt-6">
             <CircularProgress />
           </div>
@@ -363,7 +363,7 @@ const NoteSidebar = forwardRef((props: NotesSidebarProps, ref: React.ForwardedRe
                             {user.username}
                           </>
                         ) : (
-                          "Personal"
+                          t("common.personal")
                         )}
                       </h2>
                     )}
@@ -372,7 +372,7 @@ const NoteSidebar = forwardRef((props: NotesSidebarProps, ref: React.ForwardedRe
                 </div>
               </DropdownTrigger>
               <DropdownMenu selectedKeys={selectedOrg || "personal"}>
-                <DropdownSection title="Choose an Organization">
+                <DropdownSection title={t("runbook_list.choose_organization")}>
                   <DropdownItem
                     key="personal"
                     startContent={
@@ -401,7 +401,7 @@ const NoteSidebar = forwardRef((props: NotesSidebarProps, ref: React.ForwardedRe
                     }
                     onPress={handleSelectPersonalOrg}
                   >
-                    {user.isLoggedIn() ? <h3>{user.username} (Personal)</h3> : <h3>Personal</h3>}
+                    {user.isLoggedIn() ? <h3>{t("runbook_list.personal_user", { username: user.username })}</h3> : <h3>{t("common.personal")}</h3>}
                   </DropdownItem>
                   <>
                     {userOrgs.map((org) => (
@@ -442,20 +442,20 @@ const NoteSidebar = forwardRef((props: NotesSidebarProps, ref: React.ForwardedRe
                   </>
                 </DropdownSection>
                 {user.isLoggedIn() ? (
-                  <DropdownSection title="Management">
+                  <DropdownSection title={t("runbook_list.management")}>
                     <DropdownItem
                       key="create-org"
                       onPress={handleCreateOrg}
                       startContent={<PlusIcon size={18} className="mx-1" />}
                     >
-                      Create an Organization
+                      {t("runbook_list.create_organization")}
                     </DropdownItem>
                     <DropdownItem
                       key="manage-org-memberships"
                       onPress={handleManageOrgMemberships}
                       startContent={<UsersIcon size={18} className="mx-1" />}
                     >
-                      Manage Memberships
+                      {t("runbook_list.manage_memberships")}
                     </DropdownItem>
                   </DropdownSection>
                 ) : null}
@@ -467,7 +467,7 @@ const NoteSidebar = forwardRef((props: NotesSidebarProps, ref: React.ForwardedRe
               <Tooltip
                 content={
                   <span className="flex items-center gap-1.5">
-                    Search <kbd className="px-1 py-0.5 text-[10px] bg-gray-600/50 rounded">⌘P</kbd>
+                    {t("runbook_list.search")} <kbd className="px-1 py-0.5 text-[10px] bg-gray-600/50 rounded">⌘P</kbd>
                   </span>
                 }
                 placement="bottom"
@@ -484,7 +484,7 @@ const NoteSidebar = forwardRef((props: NotesSidebarProps, ref: React.ForwardedRe
               <Tooltip
                 content={
                   <span className="flex items-center gap-1.5">
-                    Commands{" "}
+                    {t("runbook_list.commands")}{" "}
                     <kbd className="px-1 py-0.5 text-[10px] bg-gray-600/50 rounded">⇧⌘P</kbd>
                   </span>
                 }
