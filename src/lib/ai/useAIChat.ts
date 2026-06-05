@@ -11,6 +11,7 @@ import {
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { State } from "@/rs-bindings/State";
 import { ModelSelection } from "@/rs-bindings/ModelSelection";
+import { t } from "@/lib/i18n";
 
 export interface AIChatAPI {
   sessionId: string;
@@ -148,7 +149,7 @@ export default function useAIChat(sessionId: string): AIChatAPI {
                       type: "toolResponse" as const,
                       data: {
                         callId: call.id,
-                        result: "User cancelled this operation", // I18N: translate - AI-visible tool result
+                        result: t("ai.agent.tool_result_user_cancelled"), // I18N: translate - AI-visible tool result
                       },
                     },
                   ],

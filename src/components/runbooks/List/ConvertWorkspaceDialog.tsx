@@ -99,7 +99,7 @@ async function migrateWorkspace(
     // If the workspace is detected to contain all offline runbooks,
     // we can just move them to the selected path.
     if (!selectedPath) {
-      throw new Error("Selected path is required for offline workspaces");// I18N: translate - rendered conversion validation
+      throw new Error(t("workspace.convert.validation_path_required_offline")); // I18N: translate - rendered conversion validation
     }
 
     const result = await commands.createWorkspace(
@@ -143,7 +143,7 @@ async function migrateWorkspace(
     }
   } else if (workspaceType === WorkspaceType.Hybrid) {
     if (!selectedPath) {
-      throw new Error("Selected path is required for converting hybrid workspaces");// I18N: translate - rendered conversion validation
+      throw new Error(t("workspace.convert.validation_path_required_hybrid")); // I18N: translate - rendered conversion validation
     }
 
     // Ensure the workspace exists on the server

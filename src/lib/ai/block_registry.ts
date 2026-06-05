@@ -1,4 +1,5 @@
 import { BlockInfo } from "@/rs-bindings/BlockInfo";
+import { t } from "@/lib/i18n";
 
 export interface BlockRegistryDefinition {
   typeName: string;
@@ -31,17 +32,14 @@ export default class AIBlockRegistry {
   public getBlockDocs(blockType: string): string {
     const block = this.blocks.get(blockType);
     if (!block) {
-      return `No documentation found for block type: ${blockType}`; // I18N: translate - AI-visible block documentation text
+      return t("ai.agent.block_documentation_not_found", { blockType }); // I18N: translate - AI-visible block documentation text
     }
 
-    return (
-      "Docs for '" + // I18N: translate - AI-visible block documentation text
-      blockType + // I18N: translate - AI-visible block documentation text
-      "' block (known to users as: " + // I18N: translate - AI-visible block documentation text
-      resolve(block.friendlyName) + // I18N: translate - AI-visible block documentation text
-      "):\n" + // I18N: translate - AI-visible block documentation text
-      resolve(block.description) // I18N: translate - AI-visible block documentation text
-    );
+    return t("ai.agent.block_documentation", {
+      blockType,
+      friendlyName: resolve(block.friendlyName),
+      description: resolve(block.description),
+    }); // I18N: translate - AI-visible block documentation text
   }
 
   public getBlockInfos(): Array<BlockInfo> {

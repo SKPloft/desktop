@@ -1179,3 +1179,51 @@ _version: 1
 "workspace.legacy_hybrid.convert": "转换工作区"
 "workspace.convert.title": "转换旧版工作区"
 
+"common.fallback_unknown_error": "未知错误"
+"common.fallback_failed_to_start_generation": "生成启动失败"
+"common.fallback_failed_to_edit_block": "编辑块失败"
+
+"workspace.convert.validation_path_required_offline": "离线工作区需要选择路径"
+"workspace.convert.validation_path_required_hybrid": "转换混合工作区需要选择路径"
+"workspace.validation_cannot_create_folder_empty_path": "无法使用空路径创建文件夹"
+"workspace.validation_unexpected_path_traversal": "意外的路径遍历结束"
+
+"settings.ai.provider.label_claude_direct_api": "Claude（Anthropic 直连 API）"
+
+"ai.agent.block_documentation_not_found": "未找到块类型 {{blockType}} 的文档"
+"ai.agent.block_documentation": "“{{blockType}}”块的文档（用户可见名为：{{friendlyName}}）：\n{{description}}"
+"ai.agent.tool_error_ref_block_id_required": "“before”或“after”定位需要 reference_block_id"
+"ai.agent.tool_error_block_ids_empty": "block_ids 不能为空"
+"ai.agent.tool_error_no_blocks_found": "未找到指定 ID 的块"
+"ai.agent.tool_result_no_editor": "无可用编辑器"
+"ai.agent.tool_error_unknown_tool": "未知工具：{{toolName}}"
+"ai.agent.tool_error_fallback": "未知错误"
+"ai.agent.tool_result_user_cancelled": "用户取消了此操作"
+
+"blocks.preview.fetch_error": "获取失败：{{status}} {{statusText}}"
+"blocks.preview.fetch_fallback": "获取数据失败"
+"blocks.preview.error_unknown_url_type": "未知 URL 类型：{{urlType}}"
+
+"editor.completion.label_first_block": "第一个块"
+"editor.completion.label_last_block": "最后一个块"
+"editor.completion.label_previous_block": "上一个块"
+"editor.completion.label_named_block": "已命名块"
+"editor.completion.label_runbook_blocks": "runbook 块"
+"editor.completion.label_workspace_root": "工作区根目录"
+"editor.completion.detail_template_variables": "模板变量"
+"editor.completion.detail_document_properties": "文档属性"
+"editor.completion.detail_environment_variables": "环境变量"
+"editor.completion.detail_workspace_properties": "工作区属性"
+"editor.completion.section_properties": "属性"
+"editor.completion.section_template_variables": "模板变量"
+"editor.completion.section_document_properties": "文档属性"
+"editor.completion.section_environment_variables": "环境变量"
+"editor.completion.section_workspace_properties": "工作区属性"
+
+"desktop_import.error_cannot_load_target_workspace": "无法加载目标工作区"
+"desktop_import.error_no_permission_manage_runbooks": "您没有在目标工作区中管理 Runbook 的权限"
+"desktop_import.error_failed_to_create_runbook": "无法在目标工作区中创建 Runbook"
+
+"runbooks.tag_selector.error_no_runbook_selected_create": "尝试创建新标签时未选择 Runbook"
+"runbooks.tag_selector.error_no_runbook_selected_delete": "尝试删除标签时未选择 Runbook"
+

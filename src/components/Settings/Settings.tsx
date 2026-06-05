@@ -1490,7 +1490,7 @@ const AIClaudeSettings = () => {
           isSelected={claudeSettings.enabled}
           onValueChange={(enabled) => setClaudeSettings({ ...claudeSettings, enabled })}
           description={t("settings.ai.provider.toggle", {
-            provider: "Claude (Anthropic direct API)",// I18N: translate - visible provider label
+            provider: t("settings.ai.provider.label_claude_direct_api"), // I18N: translate - visible provider label
           })}
         />
 

@@ -8,6 +8,7 @@
 import { BlockNoteEditor } from "@blocknote/core";
 import AIBlockRegistry from "./block_registry";
 import { Settings } from "@/state/settings";
+import { t } from "@/lib/i18n";
 import { AIToolCall } from "@/rs-bindings/AIToolCall";
 
 // =============================================================================
@@ -76,7 +77,7 @@ async function executeInsertBlocks(
   } else if (reference_block_id) {
     editor.insertBlocks(blocks, reference_block_id, position);
   } else {
-    throw new Error("reference_block_id required for 'before' or 'after' position"); // I18N: translate - AI-visible tool result/error
+      throw new Error(t("ai.agent.tool_error_ref_block_id_required")); // I18N: translate - AI-visible tool result/error
   }
 
   return { success: true };
@@ -103,12 +104,12 @@ async function executeReplaceBlocks(
   const { block_ids, new_blocks } = params;
 
   if (block_ids.length === 0) {
-    throw new Error("block_ids cannot be empty"); // I18N: translate - AI-visible tool result/error
+      throw new Error(t("ai.agent.tool_error_block_ids_empty")); // I18N: translate - AI-visible tool result/error
   }
 
   const blocksToReplace = editor.document.filter((b: any) => block_ids.includes(b.id));
   if (blocksToReplace.length === 0) {
-    throw new Error("No blocks found with the specified IDs"); // I18N: translate - AI-visible tool result/error
+      throw new Error(t("ai.agent.tool_error_no_blocks_found")); // I18N: translate - AI-visible tool result/error
   }
 
   editor.replaceBlocks(blocksToReplace, new_blocks);
@@ -200,7 +201,7 @@ export class AIToolRunner {
    */
   async executeTool(toolName: string, params: any): Promise<ToolResult> {
     if (!this.editor) {
-      return { success: false, result: "No editor available" }; // I18N: translate - AI-visible tool result/error
+        return { success: false, result: t("ai.agent.tool_result_no_editor") }; // I18N: translate - AI-visible tool result/error
     }
 
     try {
@@ -225,11 +226,11 @@ export class AIToolRunner {
           result = await executeReplaceBlocks(this.editor, params);
           break;
         default:
-          throw new Error(`Unknown tool: ${toolName}`); // I18N: translate - AI-visible tool result/error
+          throw new Error(t("ai.agent.tool_error_unknown_tool", { toolName })); // I18N: translate - AI-visible tool result/error
       }
       return { success: true, result: JSON.stringify(result) };
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unknown error"; // I18N: translate - AI-visible tool result/error
+      const message = error instanceof Error ? error.message : t("ai.agent.tool_error_fallback"); // I18N: translate - AI-visible tool result/error
       return { success: false, result: message };
     }
   }

@@ -1,5 +1,6 @@
 import { fetch } from "@tauri-apps/plugin-http";
 import { extensionToLanguage } from "../shared/language-detection";
+import { t } from "@/lib/i18n";
 
 export interface GitLabRepoData {
   name: string;
@@ -69,7 +70,7 @@ export async function fetchGitLabRepoData(projectPath: string): Promise<GitLabRe
   });
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch project: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error
+    throw new Error(t("blocks.preview.fetch_error", { status: response.status, statusText: response.statusText })); // I18N: translate - rendered preview error
   }
 
   const data = await response.json();
@@ -102,7 +103,7 @@ export async function fetchGitLabMRData(
   );
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch MR: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error
+    throw new Error(t("blocks.preview.fetch_error", { status: response.status, statusText: response.statusText })); // I18N: translate - rendered preview error
   }
 
   const data = await response.json();
@@ -135,7 +136,7 @@ export async function fetchGitLabIssueData(
   );
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch issue: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error
+    throw new Error(t("blocks.preview.fetch_error", { status: response.status, statusText: response.statusText })); // I18N: translate - rendered preview error
   }
 
   const data = await response.json();
@@ -171,7 +172,7 @@ export async function fetchGitLabCodeData(
   );
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch code: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error
+    throw new Error(t("blocks.preview.fetch_error", { status: response.status, statusText: response.statusText })); // I18N: translate - rendered preview error
   }
 
   const fullContent = await response.text();

@@ -1,5 +1,6 @@
 // Based on the basicSetup extension, as suggested by the source. Customized for Atuin.
 
+import { t } from "@/lib/i18n";
 import {
   KeyBinding,
   lineNumbers,
@@ -109,15 +110,15 @@ export function buildJinjaAutocomplete(blockContext: ResolvedContext): JinjaComp
     var: blockContext.variables as Record<string, string>,
     varSource: blockContext.variablesSources as Record<string, JinjaVarSource>,
     doc: {
-      first: "first block", // I18N: translate - visible completion/help label
-      last: "last block", // I18N: translate - visible completion/help label
-      previous: "previous block", // I18N: translate - visible completion/help label
-      named: "named block", // I18N: translate - visible completion/help label
-      content: "runbook blocks", // I18N: translate - visible completion/help label
+    first: t("editor.completion.label_first_block"), // I18N: translate - visible completion/help label
+    last: t("editor.completion.label_last_block"), // I18N: translate - visible completion/help label
+    previous: t("editor.completion.label_previous_block"), // I18N: translate - visible completion/help label
+    named: t("editor.completion.label_named_block"), // I18N: translate - visible completion/help label
+    content: t("editor.completion.label_runbook_blocks"), // I18N: translate - visible completion/help label
     },
     env: blockContext.envVars as Record<string, string>,
     workspace: {
-      root: "workspace root", // I18N: translate - visible completion/help label
+      root: t("editor.completion.label_workspace_root"), // I18N: translate - visible completion/help label
     },
   };
 
@@ -126,13 +127,13 @@ export function buildJinjaAutocomplete(blockContext: ResolvedContext): JinjaComp
     variables: Object.keys(withoutProperties(jinjaVariables, ["varSource"])).map((v) => {
       let detail = "properties";
       if (v === "var") {
-        detail = "template variables"; // I18N: translate - visible completion/help label
+        detail = t("editor.completion.detail_template_variables"); // I18N: translate - visible completion/help label
       } else if (v === "doc") {
-        detail = "document properties"; // I18N: translate - visible completion/help label
+        detail = t("editor.completion.detail_document_properties"); // I18N: translate - visible completion/help label
       } else if (v === "env") {
-        detail = "environment variables"; // I18N: translate - visible completion/help label
+        detail = t("editor.completion.detail_environment_variables"); // I18N: translate - visible completion/help label
       } else if (v === "workspace") {
-        detail = "workspace properties"; // I18N: translate - visible completion/help label
+        detail = t("editor.completion.detail_workspace_properties"); // I18N: translate - visible completion/help label
       }
 
       return {
@@ -167,15 +168,15 @@ export function buildJinjaAutocomplete(blockContext: ResolvedContext): JinjaComp
         }
       }
       if (current && typeof current === "object" && !Array.isArray(current)) {
-        let sectionName = "Properties"; // I18N: translate - visible completion/help label
+        let sectionName = t("editor.completion.section_properties"); // I18N: translate - visible completion/help label
         if (path[0] === "var") {
-          sectionName = "Template Variables"; // I18N: translate - visible completion/help label
+          sectionName = t("editor.completion.section_template_variables"); // I18N: translate - visible completion/help label
         } else if (path[0] === "doc") {
-          sectionName = "Document Properties"; // I18N: translate - visible completion/help label
+          sectionName = t("editor.completion.section_document_properties"); // I18N: translate - visible completion/help label
         } else if (path[0] === "env") {
-          sectionName = "Environment Variables"; // I18N: translate - visible completion/help label
+          sectionName = t("editor.completion.section_environment_variables"); // I18N: translate - visible completion/help label
         } else if (path[0] === "workspace") {
-          sectionName = "Workspace Properties"; // I18N: translate - visible completion/help label
+          sectionName = t("editor.completion.section_workspace_properties"); // I18N: translate - visible completion/help label
         }
 
         return Object.keys(current).map((v) => ({

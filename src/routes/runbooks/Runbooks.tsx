@@ -362,7 +362,7 @@ export default function Runbooks() {
 
   async function handleCreateTag(tag: string) {
     if (!currentRunbook) {
-      throw new Error("Tried to create a new tag with no runbook selected"); // I18N: translate - shown by tag selector form error
+      throw new Error(t("runbooks.tag_selector.error_no_runbook_selected_create")); // I18N: translate - shown by tag selector form error
     }
 
     let snapshot = await Snapshot.create({
@@ -390,7 +390,7 @@ export default function Runbooks() {
 
   async function handleDeleteTag(tag: string) {
     if (!currentRunbook) {
-      throw new Error("Tried to delete a tag with no runbook selected"); // I18N: translate - shown by tag selector form error
+      throw new Error(t("runbooks.tag_selector.error_no_runbook_selected_delete")); // I18N: translate - shown by tag selector form error
     }
 
     let snaps = snapshots || [];

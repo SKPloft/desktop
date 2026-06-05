@@ -1,5 +1,6 @@
 import { fetch } from "@tauri-apps/plugin-http";
 import { extensionToLanguage } from "../shared/language-detection";
+import { t } from "@/lib/i18n";
 
 export interface CodebergRepoData {
   name: string;
@@ -74,7 +75,7 @@ export async function fetchCodebergRepoData(
   });
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch repo: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error
+    throw new Error(t("blocks.preview.fetch_error", { status: response.status, statusText: response.statusText })); // I18N: translate - rendered preview error
   }
 
   const data = await response.json();
@@ -106,7 +107,7 @@ export async function fetchCodebergPRData(
   });
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch PR: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error
+    throw new Error(t("blocks.preview.fetch_error", { status: response.status, statusText: response.statusText })); // I18N: translate - rendered preview error
   }
 
   const data = await response.json();
@@ -143,7 +144,7 @@ export async function fetchCodebergIssueData(
   );
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch issue: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error
+    throw new Error(t("blocks.preview.fetch_error", { status: response.status, statusText: response.statusText })); // I18N: translate - rendered preview error
   }
 
   const data = await response.json();
@@ -180,7 +181,7 @@ export async function fetchCodebergCodeData(
   );
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch code: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error
+    throw new Error(t("blocks.preview.fetch_error", { status: response.status, statusText: response.statusText })); // I18N: translate - rendered preview error
   }
 
   const fullContent = await response.text();

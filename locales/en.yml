@@ -1178,3 +1178,51 @@ _version: 1
 "settings.general.ui_scale.percent": "{{value}}%"
 "command_menu.edited": "edited xyz ago"
 
+"common.fallback_unknown_error": "Unknown error"
+"common.fallback_failed_to_start_generation": "Failed to start generation"
+"common.fallback_failed_to_edit_block": "Failed to edit block"
+
+"workspace.convert.validation_path_required_offline": "Selected path is required for offline workspaces"
+"workspace.convert.validation_path_required_hybrid": "Selected path is required for converting hybrid workspaces"
+"workspace.validation_cannot_create_folder_empty_path": "Cannot create folder with empty path"
+"workspace.validation_unexpected_path_traversal": "Unexpected end of path traversal"
+
+"settings.ai.provider.label_claude_direct_api": "Claude (Anthropic direct API)"
+
+"ai.agent.block_documentation_not_found": "No documentation found for block type: {{blockType}}"
+"ai.agent.block_documentation": "Docs for '{{blockType}}' block (known to users as: {{friendlyName}}):\n{{description}}"
+"ai.agent.tool_error_ref_block_id_required": "reference_block_id required for 'before' or 'after' position"
+"ai.agent.tool_error_block_ids_empty": "block_ids cannot be empty"
+"ai.agent.tool_error_no_blocks_found": "No blocks found with the specified IDs"
+"ai.agent.tool_result_no_editor": "No editor available"
+"ai.agent.tool_error_unknown_tool": "Unknown tool: {{toolName}}"
+"ai.agent.tool_error_fallback": "Unknown error"
+"ai.agent.tool_result_user_cancelled": "User cancelled this operation"
+
+"blocks.preview.fetch_error": "Failed to fetch: {{status}} {{statusText}}"
+"blocks.preview.fetch_fallback": "Failed to fetch data"
+"blocks.preview.error_unknown_url_type": "Unknown URL type: {{urlType}}"
+
+"editor.completion.label_first_block": "first block"
+"editor.completion.label_last_block": "last block"
+"editor.completion.label_previous_block": "previous block"
+"editor.completion.label_named_block": "named block"
+"editor.completion.label_runbook_blocks": "runbook blocks"
+"editor.completion.label_workspace_root": "workspace root"
+"editor.completion.detail_template_variables": "template variables"
+"editor.completion.detail_document_properties": "document properties"
+"editor.completion.detail_environment_variables": "environment variables"
+"editor.completion.detail_workspace_properties": "workspace properties"
+"editor.completion.section_properties": "Properties"
+"editor.completion.section_template_variables": "Template Variables"
+"editor.completion.section_document_properties": "Document Properties"
+"editor.completion.section_environment_variables": "Environment Variables"
+"editor.completion.section_workspace_properties": "Workspace Properties"
+
+"desktop_import.error_cannot_load_target_workspace": "Not able to load target workspace"
+"desktop_import.error_no_permission_manage_runbooks": "You do not have permission to manage runbooks in the target workspace"
+"desktop_import.error_failed_to_create_runbook": "Failed to create runbook in the target workspace"
+
+"runbooks.tag_selector.error_no_runbook_selected_create": "Tried to create a new tag with no runbook selected"
+"runbooks.tag_selector.error_no_runbook_selected_delete": "Tried to delete a tag with no runbook selected"
+

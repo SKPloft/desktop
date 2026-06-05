@@ -585,7 +585,7 @@ export function useAIInlineGeneration({
         }
 
         case "error": {
-          const message = event.message || "Unknown error"; // I18N: translate - toast fallback
+          const message = event.message || t("common.fallback_unknown_error"); // I18N: translate - toast fallback
           console.error("[AIInlineGeneration] Session error:", message); // I18N: no-translate - developer diagnostic
 
           if (currentState.status === "generating") {
@@ -723,7 +723,7 @@ export function useAIInlineGeneration({
         console.error("[AIInlineGeneration] Failed to create session:", error); // I18N: no-translate - developer diagnostic
         dispatch({ type: "GENERATION_ERROR" });
 
-        const message = error instanceof Error ? error.message : "Failed to start generation"; // I18N: translate - toast fallback
+        const message = error instanceof Error ? error.message : t("common.fallback_failed_to_start_generation"); // I18N: translate - toast fallback
         addToast({
           title: t("editor.ai.generation_failed"),
           description: message,
@@ -772,7 +772,7 @@ export function useAIInlineGeneration({
     } catch (error) {
       dispatch({ type: "EDIT_ERROR" });
 
-      const message = error instanceof Error ? error.message : "Failed to edit block"; // I18N: translate - toast fallback
+      const message = error instanceof Error ? error.message : t("common.fallback_failed_to_edit_block"); // I18N: translate - toast fallback
       addToast({
         title: t("editor.ai.edit_failed"),
         description: message,

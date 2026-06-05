@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from "react";
+import { useTranslation } from "@/lib/i18n";
 import { Card, CardBody, Button } from "@heroui/react";
 import { RefreshCwIcon, AlertCircleIcon } from "lucide-react";
 import LoadingState from "./LoadingState";
@@ -30,6 +31,7 @@ export default function GitHubPreview({ props, updateProps }: GitHubPreviewProps
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<RepoData | PRData | IssueData | CodeData | null>(null);
   const mountedRef = useRef(true);
+  const { t } = useTranslation();
 
   // Check if cache is still valid
   const isCacheValid = useCallback(() => {
@@ -68,7 +70,7 @@ export default function GitHubPreview({ props, updateProps }: GitHubPreviewProps
           );
           break;
         default:
-          throw new Error(`Unknown URL type: ${props.urlType}`);// I18N: translate - rendered preview error
+          throw new Error(t("blocks.preview.error_unknown_url_type", { urlType: props.urlType })); // I18N: translate - rendered preview error
       }
 
       if (!mountedRef.current) return;
@@ -82,7 +84,7 @@ export default function GitHubPreview({ props, updateProps }: GitHubPreviewProps
       });
     } catch (err) {
       if (!mountedRef.current) return;
-      setError(err instanceof Error ? err.message : "Failed to fetch data");// I18N: translate - rendered preview fallback
+      setError(err instanceof Error ? err.message : t("blocks.preview.fetch_fallback")); // I18N: translate - rendered preview fallback
     } finally {
       if (mountedRef.current) {
         setLoading(false);

@@ -123,7 +123,7 @@ function transformDirEntriesToArboristTree(
     children: ArboristTree;
   } {
     if (pathParts.length === 0) {
-      throw new Error("Cannot create folder with empty path");// I18N: translate - rendered workspace validation
+      throw new Error(i18n_t("workspace.validation_cannot_create_folder_empty_path")); // I18N: translate - rendered workspace validation
     }
 
     // Start from root and traverse down the path
@@ -160,7 +160,7 @@ function transformDirEntriesToArboristTree(
       currentLevel = folder.children;
     }
 
-    throw new Error("Unexpected end of path traversal");// I18N: translate - rendered workspace validation
+    throw new Error(i18n_t("workspace.validation_unexpected_path_traversal")); // I18N: translate - rendered workspace validation
   }
 
   for (const entry of sortedEntries) {

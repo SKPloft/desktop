@@ -257,7 +257,7 @@ function walk(dir, filePatterns, excludePatterns = []) {
 
   _walk(dir);
 
-  return results.filter(f => matchesGlob(f, filePatterns, excludePatterns));
+  return results.filter(f => matchesGlob(relative(root, f), filePatterns, excludePatterns));
 }
 
 function yamlQuote(value) {
