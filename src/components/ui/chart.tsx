@@ -235,7 +235,7 @@ const ChartTooltipContent = React.forwardRef<
     );
   },
 );
-ChartTooltipContent.displayName = "ChartTooltip";
+ChartTooltipContent.displayName = "ChartTooltip"; // I18N: no-translate - React component displayName
 
 const ChartLegend = RechartsPrimitive.Legend;
 
@@ -290,7 +290,7 @@ const ChartLegendContent = React.forwardRef<
     </div>
   );
 });
-ChartLegendContent.displayName = "ChartLegend";
+ChartLegendContent.displayName = "ChartLegend"; // I18N: no-translate - React component displayName
 
 // Helper to extract item config from a payload.
 function getPayloadConfigFromPayload(config: ChartConfig, payload: unknown, key: string) {

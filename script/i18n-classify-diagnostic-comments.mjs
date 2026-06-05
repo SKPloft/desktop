@@ -169,6 +169,7 @@ function isCandidateLine(file, line) {
   if (isGeneratedOrVendorPath(rel)) return false;
 
   return (
+    /\.displayName\s*=\s*["'`]/.test(line) ||
     /\bconsole\.[A-Za-z_][A-Za-z0-9_]*\s*\(/.test(line) ||
     /\.catch\s*\(\s*console\.[A-Za-z_][A-Za-z0-9_]*\s*\)/.test(line) ||
     /\bthrow\s+new\s+[A-Za-z_$][A-Za-z0-9_$]*\s*\(/.test(line) ||

@@ -179,6 +179,6 @@ const Xterm = forwardRef<XtermHandle, XtermProps>(
   },
 );
 
-Xterm.displayName = "Xterm";
+Xterm.displayName = "Xterm"; // I18N: no-translate - React component displayName
 
 export default Xterm;
