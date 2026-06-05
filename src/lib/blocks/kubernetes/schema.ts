@@ -103,10 +103,9 @@ export const KUBERNETES_BLOCK_SCHEMA = {
 
 AIBlockRegistry.getInstance().addBlock({
   typeName: "kubernetes-get",
-  friendlyName: () => t("editor.blocks.kubernetes.title"),
-  shortDescription: () => t("editor.blocks.kubernetes.short_desc"),
-  // Description is not recommended for i18n — AI-facing developer docs, maintain in English.
-  description: () => undent`
+  friendlyName: "Kubernetes Get",
+  shortDescription: "Execute kubectl get commands with live results.",
+  description: undent`
     Kubernetes Get blocks execute kubectl get commands and display the results in a rich, interactive format. They support two modes: 'preset' for common kubectl commands, or 'custom' for any kubectl command.
 
     The available props are:

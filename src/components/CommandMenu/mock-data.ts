@@ -1,3 +1,4 @@
+// I18N: no-translate - unknown usage, dont 18n yet
 const searchData = {
   ai: [
     {
