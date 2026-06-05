@@ -134,7 +134,8 @@ function reducer(
 
     case "GENERATION_CANCELLED":
       if (state.status !== "generating") {
-        console.warn( // I18N: no-translate - developer diagnostic
+        console.warn(
+          // I18N: no-translate - developer diagnostic
           `[AIInlineGeneration] Cannot GENERATION_CANCELLED from state: ${state.status}`,
         );
         return state;
@@ -162,7 +163,8 @@ function reducer(
 
     case "FINISH_CANCELLED_DISPLAY":
       if (state.status !== "cancelled") {
-        console.warn( // I18N: no-translate - developer diagnostic
+        console.warn(
+          // I18N: no-translate - developer diagnostic
           `[AIInlineGeneration] Cannot FINISH_CANCELLED_DISPLAY from state: ${state.status}`,
         );
         return state;
@@ -438,7 +440,8 @@ export function useAIInlineGeneration({
       switch (event.type) {
         case "blocksGenerated": {
           if (currentState.status !== "generating" && currentState.status !== "submittingEdit") {
-            console.warn( // I18N: no-translate - developer diagnostic
+            console.warn(
+              // I18N: no-translate - developer diagnostic
               "[AIInlineGeneration] Received blocksGenerated in unexpected state:",
               currentState.status,
             );
@@ -640,16 +643,19 @@ export function useAIInlineGeneration({
                   );
                 })
                 .catch((err) => {
-                  console.error( // I18N: no-translate - developer diagnostic
+                  console.error(
+                    // I18N: no-translate - developer diagnostic
                     `[AIInlineGeneration] Failed to execute tool ${toolCall.name}:`,
                     err,
                   );
-                  sendToolResult(sessionId, toolCall.id, false, err.message).catch((err2) =>
-                    console.error("[AIInlineGeneration] Failed to send error result:", err2), // I18N: no-translate - developer diagnostic
+                  sendToolResult(sessionId, toolCall.id, false, err.message).catch(
+                    (err2) =>
+                      console.error("[AIInlineGeneration] Failed to send error result:", err2), // I18N: no-translate - developer diagnostic
                   );
                 });
             } else {
-              console.warn( // I18N: no-translate - developer diagnostic
+              console.warn(
+                // I18N: no-translate - developer diagnostic
                 `[AIInlineGeneration] Tool ${toolCall.name} is not auto-approvable, sending error`,
               );
               sendToolResult(
@@ -657,8 +663,8 @@ export function useAIInlineGeneration({
                 toolCall.id,
                 false,
                 `Tool ${toolCall.name} is not available for inline generation`,
-              ).catch((err) =>
-                console.error("[AIInlineGeneration] Failed to send error result:", err), // I18N: no-translate - developer diagnostic
+              ).catch(
+                (err) => console.error("[AIInlineGeneration] Failed to send error result:", err), // I18N: no-translate - developer diagnostic
               );
             }
           }
@@ -723,7 +729,8 @@ export function useAIInlineGeneration({
         console.error("[AIInlineGeneration] Failed to create session:", error); // I18N: no-translate - developer diagnostic
         dispatch({ type: "GENERATION_ERROR" });
 
-        const message = error instanceof Error ? error.message : t("common.fallback_failed_to_start_generation"); // I18N: translate - toast fallback
+        const message =
+          error instanceof Error ? error.message : t("common.fallback_failed_to_start_generation"); // I18N: translate - toast fallback
         addToast({
           title: t("editor.ai.generation_failed"),
           description: message,
@@ -772,7 +779,8 @@ export function useAIInlineGeneration({
     } catch (error) {
       dispatch({ type: "EDIT_ERROR" });
 
-      const message = error instanceof Error ? error.message : t("common.fallback_failed_to_edit_block"); // I18N: translate - toast fallback
+      const message =
+        error instanceof Error ? error.message : t("common.fallback_failed_to_edit_block"); // I18N: translate - toast fallback
       addToast({
         title: t("editor.ai.edit_failed"),
         description: message,

@@ -164,7 +164,7 @@ const DropdownMenuShortcut = ({ className, ...props }: React.HTMLAttributes<HTML
     <span className={cn("ml-auto text-xs tracking-widest opacity-60", className)} {...props} />
   );
 };
-DropdownMenuShortcut.displayName = "DropdownMenuShortcut";// I18N: no-translate - React component displayName
+DropdownMenuShortcut.displayName = "DropdownMenuShortcut"; // I18N: no-translate - React component displayName
 
 export {
   DropdownMenu,

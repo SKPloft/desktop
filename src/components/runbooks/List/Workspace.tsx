@@ -501,9 +501,7 @@ export default function WorkspaceComponent(props: WorkspaceProps) {
       } else {
         new DialogBuilder()
           .title(t("workspace.error.delete_folder"))
-          .message(
-            t("workspace.error.unknown_delete_folder"),
-          )
+          .message(t("workspace.error.unknown_delete_folder"))
           .action({ label: t("common.ok"), value: "ok" })
           .build();
       }
@@ -930,9 +928,7 @@ export default function WorkspaceComponent(props: WorkspaceProps) {
             <div>
               <CircleAlertIcon className="w-8 h-8 stroke-gray-500 dark:stroke-gray-400" />
             </div>
-            <p className="text-sm text-muted-foreground">
-              {t("workspace.error.details_prompt")}
-            </p>
+            <p className="text-sm text-muted-foreground">{t("workspace.error.details_prompt")}</p>
           </div>
           <div className="flex flex-row flex-wrap gap-2 justify-center">
             <Button variant="flat" size="sm" color="danger" onPress={confirmDeleteWorkspace}>

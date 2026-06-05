@@ -491,6 +491,8 @@ _version: 1
 "kubernetes.namespace": "Namespace"
 "kubernetes.context": "Context"
 "kubernetes.command_failed": "kubectl command failed"
+"kubernetes.mode.preset": "Preset"
+"kubernetes.mode.custom": "Custom"
 "kubernetes.command_error_description": "An error occurred while executing the kubectl command. Please check your cluster connection and try again."
 "kubernetes.resources_returned_one": "{{count}} resource returned"
 "kubernetes.resources_returned_many": "{{count}} resources returned"

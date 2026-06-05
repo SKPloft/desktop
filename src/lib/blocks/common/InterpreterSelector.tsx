@@ -99,7 +99,7 @@ const InterpreterSelector: React.FC<InterpreterSelectorProps> = ({
       const interpreters = await Settings.scriptInterpreters();
       setScriptInterpreters(interpreters);
     } catch (error) {
-      console.error("Failed to load script interpreters:", error);// I18N: no-translate - developer diagnostic
+      console.error("Failed to load script interpreters:", error); // I18N: no-translate - developer diagnostic
     }
   }, []);
 
@@ -133,7 +133,7 @@ const InterpreterSelector: React.FC<InterpreterSelectorProps> = ({
                 break;
               }
             } catch (e) {
-              console.error(`Error checking ${path}:`, e);// I18N: no-translate - developer diagnostic
+              console.error(`Error checking ${path}:`, e); // I18N: no-translate - developer diagnostic
             }
           }
 
@@ -149,7 +149,7 @@ const InterpreterSelector: React.FC<InterpreterSelectorProps> = ({
           setIsShellMissing(false);
         }
       } catch (error) {
-        console.error("Failed to check available shells:", error);// I18N: no-translate - developer diagnostic
+        console.error("Failed to check available shells:", error); // I18N: no-translate - developer diagnostic
       }
     };
 

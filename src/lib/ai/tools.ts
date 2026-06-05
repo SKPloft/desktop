@@ -77,7 +77,7 @@ async function executeInsertBlocks(
   } else if (reference_block_id) {
     editor.insertBlocks(blocks, reference_block_id, position);
   } else {
-      throw new Error(t("ai.agent.tool_error_ref_block_id_required")); // I18N: translate - AI-visible tool result/error
+    throw new Error(t("ai.agent.tool_error_ref_block_id_required")); // I18N: translate - AI-visible tool result/error
   }
 
   return { success: true };
@@ -104,12 +104,12 @@ async function executeReplaceBlocks(
   const { block_ids, new_blocks } = params;
 
   if (block_ids.length === 0) {
-      throw new Error(t("ai.agent.tool_error_block_ids_empty")); // I18N: translate - AI-visible tool result/error
+    throw new Error(t("ai.agent.tool_error_block_ids_empty")); // I18N: translate - AI-visible tool result/error
   }
 
   const blocksToReplace = editor.document.filter((b: any) => block_ids.includes(b.id));
   if (blocksToReplace.length === 0) {
-      throw new Error(t("ai.agent.tool_error_no_blocks_found")); // I18N: translate - AI-visible tool result/error
+    throw new Error(t("ai.agent.tool_error_no_blocks_found")); // I18N: translate - AI-visible tool result/error
   }
 
   editor.replaceBlocks(blocksToReplace, new_blocks);
@@ -201,7 +201,7 @@ export class AIToolRunner {
    */
   async executeTool(toolName: string, params: any): Promise<ToolResult> {
     if (!this.editor) {
-        return { success: false, result: t("ai.agent.tool_result_no_editor") }; // I18N: translate - AI-visible tool result/error
+      return { success: false, result: t("ai.agent.tool_result_no_editor") }; // I18N: translate - AI-visible tool result/error
     }
 
     try {

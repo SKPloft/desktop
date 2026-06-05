@@ -17,6 +17,6 @@ const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
     );
   },
 );
-Input.displayName = "Input";// I18N: no-translate - React component displayName
+Input.displayName = "Input"; // I18N: no-translate - React component displayName
 
 export { Input };

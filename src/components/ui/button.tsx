@@ -43,6 +43,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     );
   },
 );
-Button.displayName = "Button";// I18N: no-translate - React component displayName
+Button.displayName = "Button"; // I18N: no-translate - React component displayName
 
 export { Button, buttonVariants };

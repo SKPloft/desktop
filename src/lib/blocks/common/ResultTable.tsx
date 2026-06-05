@@ -175,10 +175,10 @@ export default function ResultTable({ columns, results, setColumns, width }: Res
             navigator.clipboard
               .writeText(textToCopy)
               .then(() => {
-                console.log("Cell content copied to clipboard:", textToCopy);// I18N: no-translate - developer diagnostic
+                console.log("Cell content copied to clipboard:", textToCopy); // I18N: no-translate - developer diagnostic
               })
               .catch((err) => {
-                console.error("Failed to copy to clipboard:", err);// I18N: no-translate - developer diagnostic
+                console.error("Failed to copy to clipboard:", err); // I18N: no-translate - developer diagnostic
               });
           }
         }

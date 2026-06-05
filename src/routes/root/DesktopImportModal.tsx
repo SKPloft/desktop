@@ -99,11 +99,11 @@ export default function DesktopImportModal(props: DesktopImportModalProps) {
     try {
       const workspace = await Workspace.get(selectedWorkspaceId);
       if (!workspace) {
-          throw new Error(t("desktop_import.error_cannot_load_target_workspace")); // I18N: translate - rendered import error
+        throw new Error(t("desktop_import.error_cannot_load_target_workspace")); // I18N: translate - rendered import error
       }
 
       if (workspace.isOnline() && !workspace.canManageRunbooks()) {
-          throw new Error(t("desktop_import.error_no_permission_manage_runbooks")); // I18N: translate - rendered import error
+        throw new Error(t("desktop_import.error_no_permission_manage_runbooks")); // I18N: translate - rendered import error
       }
 
       const strategy = getWorkspaceStrategy(workspace);
@@ -117,7 +117,7 @@ export default function DesktopImportModal(props: DesktopImportModalProps) {
         if ("message" in err.data) {
           throw new Error(err.data.message); // I18N: no-translate - internal exception
         }
-          throw new Error(t("desktop_import.error_failed_to_create_runbook")); // I18N: translate - rendered import error
+        throw new Error(t("desktop_import.error_failed_to_create_runbook")); // I18N: translate - rendered import error
       }
 
       props.onClose();
@@ -127,7 +127,7 @@ export default function DesktopImportModal(props: DesktopImportModalProps) {
           ? error.message
           : typeof error === "string"
             ? error
-                    : t("common.unknown_error"), // I18N: translate - rendered import error fallback
+            : t("common.unknown_error"), // I18N: translate - rendered import error fallback
       );
     } finally {
       setImporting(false);

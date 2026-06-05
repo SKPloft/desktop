@@ -263,7 +263,7 @@ export function KubernetesComponent({
                 }}
                 disabled={!isEditable}
               >
-                {kubernetes.mode === "preset" ? "Custom" : "Preset"}{/* I18N: translate - visible button label */}
+                {kubernetes.mode === "preset" ? t("kubernetes.mode.custom") : t("kubernetes.mode.preset")}{/* I18N: translate - visible button label */}
               </Button>
               {kubernetes.mode === "custom" && (
                 <Button

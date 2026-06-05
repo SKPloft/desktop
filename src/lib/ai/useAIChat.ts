@@ -163,7 +163,8 @@ export default function useAIChat(sessionId: string): AIChatAPI {
 
         case "history":
           // Set messages and pending tool calls from session history
-          console.log("[useAIChat] Received history event:", { // I18N: no-translate - developer diagnostic
+          console.log("[useAIChat] Received history event:", {
+            // I18N: no-translate - developer diagnostic
             // I18N: no-translate - developer/internal string
             messageCount: event.messages.length,
             pendingToolCalls: event.pendingToolCalls,

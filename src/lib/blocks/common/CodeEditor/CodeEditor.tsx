@@ -158,7 +158,7 @@ export default function CodeEditor({
         radius: "sm",
       });
     } catch (err) {
-      console.error("Failed to copy to clipboard:", err);// I18N: no-translate - developer diagnostic
+      console.error("Failed to copy to clipboard:", err); // I18N: no-translate - developer diagnostic
       addToast({
         title: t("blocks.common.copy_code_failed"),
         color: "danger",

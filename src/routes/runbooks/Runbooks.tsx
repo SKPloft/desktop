@@ -140,7 +140,8 @@ export default function Runbooks() {
           setSyncingRunbook(false);
         } catch (err) {
           setFailedToSyncRunbook(true);
-          console.warn( // I18N: no-translate - developer diagnostic
+          console.warn(
+            // I18N: no-translate - developer diagnostic
             "Error syncing runbook; this could be normal if the runbook is offline",
             err,
           );

@@ -259,6 +259,6 @@ const HorizontalSteps = React.forwardRef<HTMLButtonElement, HorizontalStepsProps
   },
 );
 
-HorizontalSteps.displayName = "HorizontalSteps";  // I18N: no-translate - React component displayName
+HorizontalSteps.displayName = "HorizontalSteps"; // I18N: no-translate - React component displayName
 
 export default HorizontalSteps;

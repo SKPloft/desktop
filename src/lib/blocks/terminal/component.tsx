@@ -213,7 +213,7 @@ export const RunBlock = ({
       try {
         await execution.execute();
       } catch (error) {
-        console.error("handlePlay error", error);// I18N: no-translate - developer diagnostic
+        console.error("handlePlay error", error); // I18N: no-translate - developer diagnostic
       } finally {
         setIsLoading(false);
       }

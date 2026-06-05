@@ -493,6 +493,8 @@ _version: 1
 "kubernetes.context": "上下文"
 "kubernetes.default_name": "Kubernetes 获取 {{count}}"
 "kubernetes.command_failed": "kubectl 命令失败"
+"kubernetes.mode.preset": "预设"
+"kubernetes.mode.custom": "自定义"
 "kubernetes.command_error_description": "执行 kubectl 命令时出错。请检查集群连接后重试。"
 "kubernetes.resources_returned_one": "返回 {{count}} 个资源"
 "kubernetes.resources_returned_many": "返回 {{count}} 个资源"

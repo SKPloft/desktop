@@ -110,11 +110,11 @@ export function buildJinjaAutocomplete(blockContext: ResolvedContext): JinjaComp
     var: blockContext.variables as Record<string, string>,
     varSource: blockContext.variablesSources as Record<string, JinjaVarSource>,
     doc: {
-    first: t("editor.completion.label_first_block"), // I18N: translate - visible completion/help label
-    last: t("editor.completion.label_last_block"), // I18N: translate - visible completion/help label
-    previous: t("editor.completion.label_previous_block"), // I18N: translate - visible completion/help label
-    named: t("editor.completion.label_named_block"), // I18N: translate - visible completion/help label
-    content: t("editor.completion.label_runbook_blocks"), // I18N: translate - visible completion/help label
+      first: t("editor.completion.label_first_block"), // I18N: translate - visible completion/help label
+      last: t("editor.completion.label_last_block"), // I18N: translate - visible completion/help label
+      previous: t("editor.completion.label_previous_block"), // I18N: translate - visible completion/help label
+      named: t("editor.completion.label_named_block"), // I18N: translate - visible completion/help label
+      content: t("editor.completion.label_runbook_blocks"), // I18N: translate - visible completion/help label
     },
     env: blockContext.envVars as Record<string, string>,
     workspace: {

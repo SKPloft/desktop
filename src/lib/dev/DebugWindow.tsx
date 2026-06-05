@@ -29,7 +29,7 @@ export default function DebugWindow(props: DebugWindowProps) {
           const parsed = JSON.parse(savedPosition) as Position;
           setPosition(parsed);
         } catch (error) {
-          console.warn("Failed to parse saved debug window position:", error);// I18N: no-translate - developer diagnostic
+          console.warn("Failed to parse saved debug window position:", error); // I18N: no-translate - developer diagnostic
         }
       }
 
@@ -38,7 +38,7 @@ export default function DebugWindow(props: DebugWindowProps) {
           const parsed = JSON.parse(savedCollapsed) as boolean;
           setIsCollapsed(parsed);
         } catch (error) {
-          console.warn("Failed to parse saved debug window collapsed state:", error);// I18N: no-translate - developer diagnostic
+          console.warn("Failed to parse saved debug window collapsed state:", error); // I18N: no-translate - developer diagnostic
         }
       }
     },
@@ -47,14 +47,14 @@ export default function DebugWindow(props: DebugWindowProps) {
 
   useEffect(
     function savePosition() {
-      localStorage.setItem(`debug-window-${props.id}`, JSON.stringify(position));// I18N: no-translate - storage key
+      localStorage.setItem(`debug-window-${props.id}`, JSON.stringify(position)); // I18N: no-translate - storage key
     },
     [position, props.id],
   );
 
   useEffect(
     function saveCollapsedState() {
-      localStorage.setItem(`debug-window-${props.id}-collapsed`, JSON.stringify(isCollapsed));// I18N: no-translate - storage key
+      localStorage.setItem(`debug-window-${props.id}-collapsed`, JSON.stringify(isCollapsed)); // I18N: no-translate - storage key
     },
     [isCollapsed, props.id],
   );

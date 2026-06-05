@@ -41,14 +41,14 @@ export default createReactBlockSpec(KUBERNETES_BLOCK_SCHEMA, {
     };
 
     const setAutoRefresh = (autoRefresh: boolean) => {
-      console.log("setting auto refresh in spec", autoRefresh);// I18N: no-translate - developer diagnostic
+      console.log("setting auto refresh in spec", autoRefresh); // I18N: no-translate - developer diagnostic
       editor.updateBlock(block, {
         props: { ...block.props, autoRefresh: autoRefresh },
       });
     };
 
     const setRefreshInterval = (refreshInterval: number) => {
-      console.log("setting refresh interval in spec", refreshInterval);// I18N: no-translate - developer diagnostic
+      console.log("setting refresh interval in spec", refreshInterval); // I18N: no-translate - developer diagnostic
       editor.updateBlock(block, {
         props: { ...block.props, refreshInterval: refreshInterval },
       });
@@ -99,7 +99,8 @@ export default createReactBlockSpec(KUBERNETES_BLOCK_SCHEMA, {
   toExternalHTML: ({ block }) => {
     return (
       <div>
-        <h3>Kubernetes Get {block?.props?.mode === "preset" ? "Command" : "Custom Command"}</h3>{/* I18N: translate - exported HTML heading */}
+        <h3>Kubernetes Get {block?.props?.mode === "preset" ? "Command" : "Custom Command"}</h3>
+        {/* I18N: translate - exported HTML heading */}
         <pre>
           <code>{block?.props?.command}</code>
         </pre>

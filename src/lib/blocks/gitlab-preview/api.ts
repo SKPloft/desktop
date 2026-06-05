@@ -70,7 +70,9 @@ export async function fetchGitLabRepoData(projectPath: string): Promise<GitLabRe
   });
 
   if (!response.ok) {
-    throw new Error(t("blocks.preview.fetch_error", { status: response.status, statusText: response.statusText })); // I18N: translate - rendered preview error
+    throw new Error(
+      t("blocks.preview.fetch_error", { status: response.status, statusText: response.statusText }),
+    ); // I18N: translate - rendered preview error
   }
 
   const data = await response.json();
@@ -103,7 +105,9 @@ export async function fetchGitLabMRData(
   );
 
   if (!response.ok) {
-    throw new Error(t("blocks.preview.fetch_error", { status: response.status, statusText: response.statusText })); // I18N: translate - rendered preview error
+    throw new Error(
+      t("blocks.preview.fetch_error", { status: response.status, statusText: response.statusText }),
+    ); // I18N: translate - rendered preview error
   }
 
   const data = await response.json();
@@ -136,7 +140,9 @@ export async function fetchGitLabIssueData(
   );
 
   if (!response.ok) {
-    throw new Error(t("blocks.preview.fetch_error", { status: response.status, statusText: response.statusText })); // I18N: translate - rendered preview error
+    throw new Error(
+      t("blocks.preview.fetch_error", { status: response.status, statusText: response.statusText }),
+    ); // I18N: translate - rendered preview error
   }
 
   const data = await response.json();
@@ -172,7 +178,9 @@ export async function fetchGitLabCodeData(
   );
 
   if (!response.ok) {
-    throw new Error(t("blocks.preview.fetch_error", { status: response.status, statusText: response.statusText })); // I18N: translate - rendered preview error
+    throw new Error(
+      t("blocks.preview.fetch_error", { status: response.status, statusText: response.statusText }),
+    ); // I18N: translate - rendered preview error
   }
 
   const fullContent = await response.text();

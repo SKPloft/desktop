@@ -89,7 +89,7 @@ async function migrateWorkspace(
       try {
         await createServerWorkspace(workspace);
       } catch (err) {
-        console.error("Failed to create server workspace during conversion", err);// I18N: no-translate - developer diagnostic
+        console.error("Failed to create server workspace during conversion", err); // I18N: no-translate - developer diagnostic
       }
     }
 
@@ -123,8 +123,9 @@ async function migrateWorkspace(
       if (!oldRb) {
         // If the local runbook is not found, it's likely because there is a non-shared
         // "legacy" offline runbook in the workspace (from another machine).
-        console.error( // I18N: no-translate - developer diagnostic
-          "Couldn't move offline runbook to new workspace; local runbook not found",// I18N: no-translate - developer diagnostic
+        console.error(
+          // I18N: no-translate - developer diagnostic
+          "Couldn't move offline runbook to new workspace; local runbook not found", // I18N: no-translate - developer diagnostic
           rbId,
         );
         continue;
@@ -137,7 +138,7 @@ async function migrateWorkspace(
         JSON.parse(oldRb!.content || "[]"),
       );
       if (result.isErr()) {
-        console.error("Failed to create runbook during conversion", result.unwrapErr());// I18N: no-translate - developer diagnostic
+        console.error("Failed to create runbook during conversion", result.unwrapErr()); // I18N: no-translate - developer diagnostic
         continue;
       }
     }
@@ -156,7 +157,7 @@ async function migrateWorkspace(
       try {
         await createServerWorkspace(workspace);
       } catch (err) {
-        console.error("Failed to create server workspace during conversion", err);// I18N: no-translate - developer diagnostic
+        console.error("Failed to create server workspace during conversion", err); // I18N: no-translate - developer diagnostic
       }
     }
 
@@ -201,7 +202,7 @@ async function migrateWorkspace(
           await manager.expireOptimisticUpdates([result.changeRef]);
         }
       } catch (err) {
-        console.error("Failed to delete runbook during conversion", err);// I18N: no-translate - developer diagnostic
+        console.error("Failed to delete runbook during conversion", err); // I18N: no-translate - developer diagnostic
       }
 
       if (!oldRb) {
@@ -381,7 +382,7 @@ export default function ConvertWorkspaceDialog(props: ConvertWorkspaceDialogProp
         }
       })
       .catch((err) => {
-        console.error("Failed to read directory", err);// I18N: no-translate - developer diagnostic
+        console.error("Failed to read directory", err); // I18N: no-translate - developer diagnostic
       });
 
     findParentWorkspacePromise
@@ -393,7 +394,7 @@ export default function ConvertWorkspaceDialog(props: ConvertWorkspaceDialogProp
         }
       })
       .catch((err) => {
-        console.error("Failed to find parent workspace", err);// I18N: no-translate - developer diagnostic
+        console.error("Failed to find parent workspace", err); // I18N: no-translate - developer diagnostic
       });
 
     return () => {

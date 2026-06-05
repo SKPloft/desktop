@@ -126,7 +126,7 @@ const CommandShortcut = ({ className, ...props }: React.HTMLAttributes<HTMLSpanE
     />
   );
 };
-CommandShortcut.displayName = "CommandShortcut";// I18N: no-translate - React component displayName
+CommandShortcut.displayName = "CommandShortcut"; // I18N: no-translate - React component displayName
 
 export {
   Command,

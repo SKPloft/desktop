@@ -101,7 +101,8 @@ export default async function track_event(event: string, properties: any = {}) {
   const orgContext = selectedOrg ? "org" : "personal";
 
   if (AtuinEnv.isDev) {
-    console.log( // I18N: no-translate - developer diagnostic
+    console.log(
+      // I18N: no-translate - developer diagnostic
       `[dev] track_event: ${event} -> ${JSON.stringify({
         ...properties,
         platform: platformInfo,

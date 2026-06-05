@@ -72,7 +72,9 @@ export async function fetchRepoData(owner: string, repo: string): Promise<RepoDa
   });
 
   if (!response.ok) {
-    throw new Error(t("blocks.preview.fetch_error", { status: response.status, statusText: response.statusText })); // I18N: translate - rendered preview error
+    throw new Error(
+      t("blocks.preview.fetch_error", { status: response.status, statusText: response.statusText }),
+    ); // I18N: translate - rendered preview error
   }
 
   return response.json();
@@ -87,7 +89,9 @@ export async function fetchPRData(owner: string, repo: string, prNumber: number)
   });
 
   if (!response.ok) {
-    throw new Error(t("blocks.preview.fetch_error", { status: response.status, statusText: response.statusText })); // I18N: translate - rendered preview error
+    throw new Error(
+      t("blocks.preview.fetch_error", { status: response.status, statusText: response.statusText }),
+    ); // I18N: translate - rendered preview error
   }
 
   return response.json();
@@ -106,7 +110,9 @@ export async function fetchIssueData(
   });
 
   if (!response.ok) {
-    throw new Error(t("blocks.preview.fetch_error", { status: response.status, statusText: response.statusText })); // I18N: translate - rendered preview error
+    throw new Error(
+      t("blocks.preview.fetch_error", { status: response.status, statusText: response.statusText }),
+    ); // I18N: translate - rendered preview error
   }
 
   return response.json();
@@ -127,7 +133,9 @@ export async function fetchCodeData(
   });
 
   if (!response.ok) {
-    throw new Error(t("blocks.preview.fetch_error", { status: response.status, statusText: response.statusText })); // I18N: translate - rendered preview error
+    throw new Error(
+      t("blocks.preview.fetch_error", { status: response.status, statusText: response.statusText }),
+    ); // I18N: translate - rendered preview error
   }
 
   const fullContent = await response.text();

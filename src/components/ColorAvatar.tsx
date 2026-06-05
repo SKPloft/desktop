@@ -65,6 +65,6 @@ const ColorAvatar = forwardRef<HTMLSpanElement, AvatarProps>((props, ref) => {
   );
 });
 
-ColorAvatar.displayName = "ColorAvatar";  // I18N: no-translate - React component displayName
+ColorAvatar.displayName = "ColorAvatar"; // I18N: no-translate - React component displayName
 
 export default ColorAvatar;

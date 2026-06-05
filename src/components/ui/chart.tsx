@@ -27,7 +27,7 @@ function useChart() {
   const context = React.useContext(ChartContext);
 
   if (!context) {
-    throw new Error("useChart must be used within a <ChartContainer />") // I18N: no-translate - internal exception
+    throw new Error("useChart must be used within a <ChartContainer />"); // I18N: no-translate - internal exception
   }
 
   return context;
@@ -60,7 +60,7 @@ const ChartContainer = React.forwardRef<
     </ChartContext.Provider>
   );
 });
-ChartContainer.displayName = "Chart";// I18N: no-translate - React component displayName
+ChartContainer.displayName = "Chart"; // I18N: no-translate - React component displayName
 
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
   const colorConfig = Object.entries(config).filter(([_, config]) => config.theme || config.color);
