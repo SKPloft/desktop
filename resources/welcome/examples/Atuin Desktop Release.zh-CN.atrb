@@ -1,0 +1,591 @@
+id: 019e96d7-0de2-7236-b607-89a0cfe5ed0e
+name: Atuin Desktop 发布
+version: 1
+content:
+  - id: f6596d68-4414-48f3-b502-eb54c9a00b17
+    type: heading
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+      level: 1
+      isToggleable: false
+    content:
+      - type: text
+        text: Atuin Desktop 发布
+        styles: {}
+    children: []
+  - id: 4313dc8a-5868-4fa1-9fe8-35d76a5261e4
+    type: paragraph
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+    content:
+      - type: text
+        text: 此 Runbook 是我们在 Atuin 用于发布 Atuin Desktop 新版本的 Runbook 的副本。
+        styles: {}
+      - type: text
+        text: 斜体文本
+        styles:
+          italic: true
+      - type: text
+        text: " 部分已添加以提供额外上下文。"
+        styles: {}
+    children: []
+  - id: db03956a-4166-46a4-b389-a6110adedf09
+    type: paragraph
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+    content: []
+    children: []
+  - id: 62b3150a-a850-4290-a3a8-5d8e12532391
+    type: paragraph
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+    content:
+      - type: text
+        text: ---
+        styles: {}
+    children: []
+  - id: 732489ef-d1a6-4389-a461-2bd3d9e63b99
+    type: paragraph
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+    content: []
+    children: []
+  - id: a8e79c6b-0246-4e40-b4fb-f50df76d62ba
+    type: paragraph
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+    content:
+      - type: text
+        text: 选择你的 Desktop 仓库路径：
+        styles: {}
+    children: []
+  - id: a8321183-7c48-45cf-8217-e7e54454d32b
+    type: local-directory
+    props: {}
+    children: []
+  - id: 75d7f280-6bdc-4217-a344-139410adfa3c
+    type: quote
+    props:
+      textColor: default
+      backgroundColor: default
+    content:
+      - type: text
+        text: 这是一个本地目录块；你选择的路径仅存储在你的机器上。非常适合与团队共享 Runbooks！
+        styles:
+          italic: true
+    children: []
+  - id: 6fe07bef-3fe3-4c6b-a7d0-84d05f1f2a82
+    type: paragraph
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+    content: []
+    children: []
+  - id: cc15736e-94af-4353-8ebb-d7b7ce66be0c
+    type: heading
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+      level: 2
+      isToggleable: false
+    content:
+      - type: text
+        text: 依赖
+        styles: {}
+    children: []
+  - id: 7c140ce8-dd0a-4570-b6d8-cc04a14248bf
+    type: paragraph
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+    content:
+      - type: text
+        text: 如果你还没有安装，请安装 rustup。这将为你配置好 Rust 工具链。
+        styles: {}
+    children: []
+  - id: 73a76b28-f343-4997-b17b-70e93b66ac46
+    type: run
+    props:
+      type: bash
+      name: 安装依赖
+      code: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+      pty: ""
+      global: false
+      outputVisible: true
+      dependency: "{}"
+    children: []
+  - id: 2f550d62-cbf5-4336-86e1-198ac38982c3
+    type: paragraph
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+    content: []
+    children: []
+  - id: 84c9b350-8eb3-4836-9e41-44f87957612d
+    type: paragraph
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+    content:
+      - type: text
+        text: 然后安装 cargo-bump。它用于自动升级 crate 版本，非常有用！
+        styles: {}
+    children: []
+  - id: 45be14cf-d477-4262-aad5-8b0ae2176efa
+    type: run
+    props:
+      type: bash
+      name: 安装 cargo-bump
+      code: cargo install cargo-bump
+      pty: ""
+      global: false
+      outputVisible: true
+      dependency: "{}"
+    children: []
+  - id: 114b108e-4659-4b4b-a3c9-df90342b7ffb
+    type: paragraph
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+    content: []
+    children: []
+  - id: 2275b522-faae-4bd7-a813-0790ffd2100f
+    type: heading
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+      level: 2
+      isToggleable: false
+    content:
+      - type: text
+        text: 发布
+        styles: {}
+    children: []
+  - id: 908259b3-6448-4fcd-8912-205c7f3f9a3f
+    type: heading
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+      level: 3
+      isToggleable: false
+    content:
+      - type: text
+        text: 克隆仓库到临时目录
+        styles: {}
+    children: []
+  - id: 22554ab7-cb11-4f90-9b59-67f9ca514421
+    type: script
+    props:
+      interpreter: zsh
+      outputVariable: dir
+      name: 创建临时目录
+      code: mktemp -d
+      outputVisible: false
+      dependency: "{}"
+    children: []
+  - id: e7f1fb74-d0f0-4a6e-805e-695e0b29284a
+    type: directory
+    props:
+      path: "{{ var.dir }}"
+    children: []
+  - id: b67e736c-77b1-4345-b9d7-863575c56a80
+    type: var_display
+    props:
+      name: dir
+    children: []
+  - id: a4067ad5-f9de-4379-8b86-abe48d568596
+    type: quote
+    props:
+      textColor: default
+      backgroundColor: default
+    content:
+      - type: text
+        text: "脚本块将 "
+        styles:
+          italic: true
+      - type: text
+        text: mktemp -d
+        styles:
+          code: true
+      - type: text
+        text: " 的输出存储在 "
+        styles:
+          italic: true
+      - type: text
+        text: dir
+        styles:
+          code: true
+      - type: text
+        text: " 变量中，其下方的目录块将其设为当前工作目录。"
+        styles:
+          italic: true
+    children: []
+  - id: f9351a17-5184-45d2-847e-3f300e97a4c5
+    type: paragraph
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+    content: []
+    children: []
+  - id: c5f7c9dd-9db7-4c4f-a11c-93c6fb179fa7
+    type: script
+    props:
+      interpreter: zsh
+      outputVariable: ""
+      name: 克隆
+      code: git clone --depth 1 git@github.com:atuinsh/desktop.git .
+      outputVisible: false
+      dependency: "{}"
+    children: []
+  - id: 01d8ab06-d5f7-4d9a-aa68-985db1973155
+    type: paragraph
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+    content: []
+    children: []
+  - id: 734c5f37-c2ff-47cb-8f5a-32a339dd0369
+    type: heading
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+      level: 3
+      isToggleable: false
+    content:
+      - type: text
+        text: 升级版本并提交更改
+        styles: {}
+    children: []
+  - id: 65ab7654-a875-435f-8617-ec3d2d1ee1ad
+    type: paragraph
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+    content:
+      - type: text
+        text: 我们只需升级 Rust crate 的版本
+        styles: {}
+    children: []
+  - id: df4ddda7-133f-4a57-97e3-b678f9c2d50a
+    type: script
+    props:
+      interpreter: zsh
+      outputVariable: ""
+      name: 升级版本
+      code: |-
+        cd backend
+        cargo bump
+        cargo build
+      outputVisible: false
+      dependency: "{}"
+    children: []
+  - id: 582e2fb6-7226-4b8e-81b4-a74daa1987dd
+    type: paragraph
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+    content: []
+    children: []
+  - id: e8e20b9d-51d0-4f85-8aae-04498bb971c7
+    type: script
+    props:
+      interpreter: zsh
+      outputVariable: new_version
+      name: 获取新版本
+      code: grep '^version' backend/Cargo.toml | head -n1 | cut -d'=' -f2  | xargs | tr -d '\n'
+      outputVisible: false
+      dependency: "{}"
+    children: []
+  - id: 38ccf8b1-7d88-4a54-b67d-ac9e15fa9a73
+    type: var_display
+    props:
+      name: new_version
+    children: []
+  - id: f36e4563-ea46-40f0-b69d-344b48bbbbd0
+    type: quote
+    props:
+      textColor: default
+      backgroundColor: default
+    content:
+      - type: text
+        text: "我们再次运行命令从 "
+        styles:
+          italic: true
+      - type: text
+        text: Cargo.toml
+        styles:
+          code: true
+      - type: text
+        text: " 中提取新版本号，并在变量展示块中显示以确认其正确。"
+        styles:
+          italic: true
+    children: []
+  - id: db668e8e-93cf-4bea-8176-8207e1d34e33
+    type: paragraph
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+    content: []
+    children: []
+  - id: a191f525-6aa1-4e1f-a40e-ce22610b4a88
+    type: script
+    props:
+      interpreter: zsh
+      outputVariable: ""
+      name: 提交并打标签
+      code: |-
+        git add backend
+        git commit -m "Prepare v{{ var.new_version | trim }} release"
+        git tag -a "v{{ var.new_version | trim }}" -m "v{{ var.new_version | trim }}"
+        git push && git push --tags
+      outputVisible: true
+      dependency: "{}"
+    children: []
+  - id: 0e967180-ec09-4c48-8ca7-b7d8acaa5f76
+    type: paragraph
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+    content: []
+    children: []
+  - id: a2b2b28b-ba9d-48f4-8c8f-597d9ef9c3b3
+    type: paragraph
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+    content:
+      - type: text
+        text: GitHub 将检测到新标签并启动发布工作流。你可以在此处查看状态：
+        styles: {}
+      - type: link
+        href: https://github.com/atuinsh/desktop/actions/workflows/tauri-release.yaml
+        content:
+          - type: text
+            text: https://github.com/atuinsh/desktop/actions/workflows/tauri-release.yaml
+            styles: {}
+    children: []
+  - id: 8b16223e-3c39-43b2-a9d5-1125be0dcc5e
+    type: paragraph
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+    content: []
+    children: []
+  - id: aea5ca27-87a8-4bac-8d01-f229ad26c399
+    type: heading
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+      level: 3
+      isToggleable: false
+    content:
+      - type: text
+        text: 发布说明与自动更新文件
+        styles: {}
+    children: []
+  - id: ba6e3ac6-f826-4e0b-a79e-29abbcd6a0ef
+    type: paragraph
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+    content:
+      - type: text
+        text: 发布工作流完成后，运行下方的块以在编辑器中填充自动生成的发布说明。清理重复项和不应包含的内容，并在适当位置补充信息。遇到重复内容时，优先保留包含 PR 链接的行。
+        styles: {}
+    children: []
+  - id: 5a23fd8f-b153-46d8-b78b-50829c494aed
+    type: script
+    props:
+      interpreter: zsh
+      outputVariable: release_notes
+      name: 获取发布说明
+      code: gh release view "v{{ var.new_version | trim }}" --json body | jq -r .body
+      outputVisible: false
+      dependency: "{}"
+    children: []
+  - id: 316de852-a401-48ed-b815-f2ea9ffca24f
+    type: editor
+    props:
+      name: 发布说明
+      code: ""
+      language: markdown
+      variableName: release_notes
+      syncVariable: true
+    children: []
+  - id: d9d5261d-6c4c-4843-b0a4-768b445e24de
+    type: quote
+    props:
+      textColor: default
+      backgroundColor: default
+    content:
+      - type: text
+        text: 上方的脚本块从 CI 创建的 GitHub Release 中获取当前发布说明并存储到变量中，其下方的编辑器块被设置为使用同一变量。启用变量名旁边的开关后，编辑器块内容会随变量内容变化自动更新。
+        styles:
+          italic: true
+    children: []
+  - id: 04c9fa1b-3724-4071-b779-9fe92d6b1baf
+    type: paragraph
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+    content: []
+    children: []
+  - id: 24bfab6c-2d3d-4610-9b90-37780660d5f9
+    type: paragraph
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+    content:
+      - type: text
+        text: 确认发布说明无误后，使用下方块以上述内容更新 GH Release，并生成 Tauri 自动更新文件。
+        styles: {}
+    children: []
+  - id: c0088e54-4dc0-4168-a235-289613c2a7f5
+    type: paragraph
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+    content:
+      - type: text
+        text: 注意：
+        styles:
+          bold: true
+      - type: text
+        text: " 如果发布已公开，此操作将将其重新保存为草稿。"
+        styles: {}
+    children: []
+  - id: d1447964-7a9d-4d2c-bbda-9da33520b4bc
+    type: script
+    props:
+      interpreter: zsh
+      outputVariable: ""
+      name: 更新说明并生成 latest.json
+      code: |-
+        echo "{{ var.release_notes | replace("\"", "\\\"") }}" > notes.md
+        gh release edit "v{{ var.new_version | trim }}" --verify-tag --draft --notes-file notes.md
+
+        signature=$(gh release download "v{{ var.new_version | trim }}" --pattern "Atuin.app.tar.gz.sig" -O -)
+        jq -n \
+          --rawfile notes notes.md \
+          --arg version "v{{ var.new_version | trim }}" \
+          --arg signature "$signature" \
+          --arg url "https://github.com/atuinsh/desktop/releases/v{{ var.new_version | trim }}/Atuin.app.tar.gz" \
+          '{ $version, $notes, platforms: { "darwin-aarch64": { $signature, $url } } }' > latest.json
+        gh release upload "v{{ var.new_version | trim }}" latest.json --clobber
+      outputVisible: false
+      dependency: "{}"
+    children: []
+  - id: 29249982-a2d4-4a9f-8751-b01d193656b5
+    type: paragraph
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+    content: []
+    children: []
+  - id: 3b88b685-a7c6-4ed5-ba07-a067fb69f174
+    type: paragraph
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+    content:
+      - type: text
+        text: 访问各个发布页面，验证所有预期文件均已存在且发布说明符合预期：
+        styles: {}
+    children: []
+  - id: 233ef40f-2fe4-478e-a65f-8d4ab1faa764
+    type: bulletListItem
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+    content:
+      - type: text
+        text: CrabNebula：
+        styles: {}
+      - type: link
+        href: https://web.crabnebula.cloud/atuin/atuin-desktop
+        content:
+          - type: text
+            text: https://web.crabnebula.cloud/atuin/atuin-desktop
+            styles: {}
+    children: []
+  - id: 0d64d4af-7605-4daa-ab50-71a829e1d1c6
+    type: bulletListItem
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+    content:
+      - type: text
+        text: GitHub：
+        styles: {}
+      - type: link
+        href: https://github.com/atuinsh/desktop/releases
+        content:
+          - type: text
+            text: https://github.com/atuinsh/desktop/releases
+            styles: {}
+    children: []
+  - id: 2ce85084-1964-4545-83fd-9cb3e76bc6f0
+    type: paragraph
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+    content: []
+    children: []
+  - id: 37cc7b8f-89f2-40ab-a1d6-64f7059408cf
+    type: paragraph
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+    content:
+      - type: text
+        text: 验证通过后，发布两个 Release。大功告成！
+        styles: {}
+    children: []
+  - id: 2321ffb0-a313-4be6-a345-a22e590e098c
+    type: paragraph
+    props:
+      textColor: default
+      backgroundColor: default
+      textAlignment: left
+    content: []
+    children: []

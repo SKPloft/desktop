@@ -33,6 +33,7 @@ import { openPath } from "@tauri-apps/plugin-opener";
 import * as commands from "@/lib/workspaces/commands";
 import WorkspaceManager from "@/lib/workspaces/manager";
 import { useTranslation, t as i18n_t } from "@/lib/i18n";
+import { filterRunbooksByLocale } from "@/lib/runbook_locale";
 //there is a standalone function cannot simply use t type, so create a alias
 
 interface WorkspaceProps {
@@ -220,7 +221,7 @@ function transformDirEntriesToArboristTree(
 }
 
 export default function WorkspaceComponent(props: WorkspaceProps) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const treeRef = useRef<TreeApi<TreeRowData> | null>(null);
   const [showConvertWorkspaceDialog, setShowConvertWorkspaceDialog] = useState(false);
 
@@ -254,13 +255,14 @@ export default function WorkspaceComponent(props: WorkspaceProps) {
       }
 
       const info = workspaceInfo.unwrap().unwrap();
+      const filteredRunbooks = filterRunbooksByLocale(info.runbooks, locale);
       return transformDirEntriesToArboristTree(
         info.entries,
         props.workspace.get("folder")!,
-        info.runbooks,
+        filteredRunbooks,
       );
     }
-  }, [workspaceFolder, workspaceInfo]);
+  }, [workspaceFolder, workspaceInfo, locale]);
 
   useEffect(() => {
     // Update offline workspaces from the FS info

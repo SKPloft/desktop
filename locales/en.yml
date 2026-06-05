@@ -824,6 +824,7 @@ _version: 1
 "runbook_list.manage_memberships": "Manage Memberships"
 "runbook_list.search": "Search"
 "runbook_list.commands": "Commands"
+"runbook_list.settings": "History"
 "runbook_list.history": "History"
 "runbook_list.stats": "Stats"
 "runbook_list.help_menu": "Help menu"

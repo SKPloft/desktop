@@ -17,8 +17,6 @@ import Operation from "@/state/runbooks/operation";
 import { invoke } from "@tauri-apps/api/core";
 import Emittery, { UnsubscribeFunction } from "emittery";
 import { t } from "@/lib/i18n";
-import { translateBlockContent, getLoadedCatalog } from "./runbook_i18n";
-import { useStore } from "@/state/store";
 
 const SAVE_DEBOUNCE = 1000;
 const SEND_CHANGES_DEBOUNCE = 100;
@@ -195,14 +193,6 @@ export default class RunbookEditor {
       for (var i = 0; i < content.length; i++) {
         if (content[i].type == "sql") {
           content[i].type = "sqlite";
-        }
-      }
-
-      const locale = useStore.getState().locale;
-      if (locale !== "en") {
-        const catalog = getLoadedCatalog(locale);
-        if (Object.keys(catalog).length > 0) {
-          content = translateBlockContent(content, catalog);
         }
       }
 

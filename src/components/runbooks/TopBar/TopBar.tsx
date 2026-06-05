@@ -26,7 +26,6 @@ import { resetRunbookState } from "@/lib/runtime";
 import { useSerialExecution } from "@/lib/hooks/useSerialExecution";
 import { useEffect, useRef } from "react";
 import { useTranslation } from "@/lib/i18n";
-import { translateDisplayName } from "@/lib/runbook_i18n";
 
 type TopbarProps = {
   runbook: Runbook;
@@ -57,7 +56,7 @@ function openHubRunbook(e: React.MouseEvent<HTMLAnchorElement>) {
 }
 
 export default function Topbar(props: TopbarProps) {
-  const { t, locale } = useTranslation();
+  const { t } = useTranslation();
   let runbook = props.runbook;
   let remoteRunbook = props.remoteRunbook;
   let { data: workspace } = useQuery(workspaceById(runbook.workspaceId));
@@ -68,7 +67,7 @@ export default function Topbar(props: TopbarProps) {
   if (remoteRunbook) {
     name = remoteRunbook.nwo;
   } else {
-    name = translateDisplayName(runbook.name, locale);
+    name = runbook.name;
   }
 
   let wasRunning = useRef(false);

@@ -218,7 +218,7 @@ const NoteSidebar = forwardRef((props: NotesSidebarProps, ref: React.ForwardedRe
   }
 
   function handleOpenSettings() {
-    openTab("/settings", "Settings", TabIcon.SETTINGS);
+    openTab("/settings", t("runbook_list.settings"), TabIcon.SETTINGS);
   }
 
   async function handleLogout() {
@@ -570,7 +570,7 @@ const NoteSidebar = forwardRef((props: NotesSidebarProps, ref: React.ForwardedRe
                 </DropdownMenu>
               </Dropdown>
               <Tooltip
-                content={t("common.settings")}
+                content={t("runbook_list.settings")}
                 placement="bottom"
                 delay={300}
                 classNames={{

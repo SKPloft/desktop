@@ -1,0 +1,239 @@
+id: 019e96d7-0df1-71f0-9a54-970bb1d245d3
+name: Atuin Desktop 开发
+version: 1
+forkedFrom: null
+content:
+  - id: f6596d68-4414-48f3-b502-eb54c9a00b17
+    type: heading
+    props:
+      backgroundColor: default
+      textColor: default
+      textAlignment: left
+      level: 1
+      isToggleable: false
+    content:
+      - type: text
+        text: Atuin Desktop 开发
+        styles: {}
+    children: []
+  - id: 8c274860-0918-485c-8366-8182fd56ec63
+    type: paragraph
+    props:
+      backgroundColor: default
+      textColor: default
+      textAlignment: left
+    content:
+      - type: text
+        text: 选择你克隆的 Atuin Desktop 仓库路径
+        styles: {}
+    children: []
+  - id: 8ea80183-937a-4d77-bc2a-bdd9729464c0
+    type: local-directory
+    props: {}
+    children: []
+  - id: e1e209e2-a436-463f-a8b1-f1937e223ea4
+    type: paragraph
+    props:
+      backgroundColor: default
+      textColor: default
+      textAlignment: left
+    content: []
+    children: []
+  - id: d50ec704-8687-4732-9522-e98b47104e1c
+    type: paragraph
+    props:
+      backgroundColor: default
+      textColor: default
+      textAlignment: left
+    content:
+      - type: text
+        text: 请确保已安装开发依赖；
+        styles: {}
+      - type: link
+        href: https://github.com/atuinsh/desktop/blob/main/CONTRIBUTING.md
+        content:
+          - type: text
+            text: 请参阅仓库中的 CONTRIBUTING.md 文件
+            styles: {}
+      - type: text
+        text: " 了解更多信息。"
+        styles: {}
+    children: []
+  - id: 04c4a3d4-6cd3-4449-a845-60fe11f03066
+    type: heading
+    props:
+      backgroundColor: default
+      textColor: default
+      textAlignment: left
+      level: 2
+      isToggleable: false
+    content:
+      - type: text
+        text: 以开发模式启动应用
+        styles: {}
+    children: []
+  - id: 45e75266-b94c-4cda-ae20-b7763dcc7db6
+    type: paragraph
+    props:
+      backgroundColor: default
+      textColor: default
+      textAlignment: left
+    content:
+      - type: text
+        text: "你可以通过在此处设置 profile 或启动 "
+        styles: {}
+      - type: text
+        text: ./script/dev
+        styles:
+          code: true
+      - type: text
+        text: " 并添加 "
+        styles: {}
+      - type: text
+        text: -p <配置文件名称>
+        styles:
+          code: true
+      - type: text
+        text: ' 标志来以其他 profile 启动应用。默认值为"dev"。传递 '
+        styles: {}
+      - type: text
+        text: -d
+        styles:
+          code: true
+      - type: text
+        text: " 将以打开开发者工具的方式启动应用。"
+        styles: {}
+    children: []
+  - id: 352e0ec7-e30a-4ee8-b136-7a99ce1ce879
+    type: var
+    props:
+      name: profile_name
+      value: dev
+    children: []
+  - id: 32481663-5638-451f-b3c2-b1a0c3e5ad4d
+    type: run
+    props:
+      type: bash
+      name: 启动应用
+      code: ./script/dev -d -p {{ var.profile_name }}
+      pty: ""
+      global: false
+      outputVisible: true
+      dependency: "{}"
+      terminalRows: 20
+    children: []
+  - id: bb30519d-9d25-4526-b87f-22214e316603
+    type: paragraph
+    props:
+      backgroundColor: default
+      textColor: default
+      textAlignment: left
+    content: []
+    children: []
+  - id: 30bd3f34-0288-43fe-9045-c58b71305e9d
+    type: heading
+    props:
+      backgroundColor: default
+      textColor: default
+      textAlignment: left
+      level: 2
+      isToggleable: false
+    content:
+      - type: text
+        text: 运行 Rust 测试
+        styles: {}
+    children: []
+  - id: d9739ce8-7819-463d-8705-bc00ce1665d6
+    type: run
+    props:
+      type: bash
+      name: Rust 测试
+      code: cd backend && cargo test
+      pty: ""
+      global: false
+      outputVisible: true
+      dependency: "{}"
+      terminalRows: 20
+    children: []
+  - id: 51b26691-3a80-4c0a-b420-149d839d394b
+    type: paragraph
+    props:
+      backgroundColor: default
+      textColor: default
+      textAlignment: left
+    content: []
+    children: []
+  - id: 04047a62-c42e-461f-9c18-8a2cbe7334c3
+    type: heading
+    props:
+      backgroundColor: default
+      textColor: default
+      textAlignment: left
+      level: 2
+      isToggleable: false
+    content:
+      - type: text
+        text: 运行 JavaScript 测试
+        styles: {}
+    children: []
+  - id: b61919e4-6956-415b-8b29-0ebec9691b50
+    type: run
+    props:
+      type: bash
+      name: JS 测试
+      code: bun test
+      pty: ""
+      global: false
+      outputVisible: true
+      dependency: "{}"
+      terminalRows: 20
+    children: []
+  - id: b534a45a-c2fd-49d4-aaca-025682d093b3
+    type: paragraph
+    props:
+      backgroundColor: default
+      textColor: default
+      textAlignment: left
+    content: []
+    children: []
+  - id: 487d88bf-d2fc-41fd-bf07-3755ec2d0c73
+    type: heading
+    props:
+      backgroundColor: default
+      textColor: default
+      textAlignment: left
+      level: 2
+      isToggleable: false
+    content:
+      - type: text
+        text: 基于 Rust 结构体重新生成 TS 类型（通过 ts-rs）
+        styles: {}
+    children: []
+  - id: a7258512-b71d-4c74-b2c5-2aa3996c5bf7
+    type: run
+    props:
+      type: bash
+      name: 重新生成绑定
+      code: bun run generate-bindings
+      pty: ""
+      global: false
+      outputVisible: true
+      dependency: "{}"
+      terminalRows: 20
+    children: []
+  - id: 01fb8fdf-62bb-4070-85ed-02ac21bb1fab
+    type: paragraph
+    props:
+      backgroundColor: default
+      textColor: default
+      textAlignment: left
+    content: []
+    children: []
+  - id: 38947d27-a48b-4e4b-86ab-5cb235993a6e
+    type: paragraph
+    props:
+      backgroundColor: default
+      textColor: default
+      textAlignment: left
+    content: []
+    children: []

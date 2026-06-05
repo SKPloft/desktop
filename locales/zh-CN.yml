@@ -828,6 +828,7 @@ _version: 1
 "runbook_list.create_organization": "创建组织"
 "runbook_list.manage_memberships": "管理成员资格"
 "runbook_list.search": "搜索"
+"runbook_list.settings": "设置"
 "runbook_list.commands": "命令"
 "runbook_list.history": "历史"
 "runbook_list.stats": "统计"

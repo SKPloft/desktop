@@ -106,4 +106,18 @@ export default class WorkspaceManager {
   public getWorkspaceInfo(workspaceId: string): Option<Result<WorkspaceState, WorkspaceError>> {
     return Some(this.workspaces.get(workspaceId));
   }
+
+  public getAllRunbooks(): Record<string, { id: string; path: string; name: string }> {
+    const all: Record<string, { id: string; path: string; name: string }> = {};
+    for (const result of this.workspaces.values()) {
+      if (result.isErr()) continue;
+      const state = result.unwrap();
+      for (const [id, rb] of Object.entries(state.runbooks)) {
+        if (rb) {
+          all[id] = { id: rb.id, path: rb.path, name: rb.name };
+        }
+      }
+    }
+    return all;
+  }
 }

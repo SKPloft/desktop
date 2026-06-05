@@ -1,0 +1,136 @@
+id: 019e96d7-0df7-7812-b712-8235a3cbb232
+name: 运行 Rust 测试
+version: 1
+forkedFrom: null
+content:
+  - id: f6596d68-4414-48f3-b502-eb54c9a00b17
+    type: heading
+    props:
+      backgroundColor: default
+      textColor: default
+      textAlignment: left
+      level: 1
+      isToggleable: false
+    content:
+      - type: text
+        text: 运行 Rust 测试
+        styles: {}
+    children: []
+  - id: b823b764-102f-4b5f-a353-44e96a4d1c5e
+    type: paragraph
+    props:
+      backgroundColor: default
+      textColor: default
+      textAlignment: left
+    content:
+      - type: text
+        text: 安装最新的 Rust。此处我们为 Rustup 传递了 headless 标志，因此无需交互。这假设你是在包含最新 Desktop 代码的目录中运行此 Runbook。
+        styles: {}
+    children: []
+  - id: d51a1d1f-49a1-4b2e-9f3d-c86d7eff070e
+    type: script
+    props:
+      interpreter: bash
+      outputVariable: ""
+      name: 安装 Rust
+      code: curl https://sh.rustup.rs -sSf | sh -s -- -y
+      outputVisible: true
+      dependency: "{}"
+      terminalRows: 10
+    children: []
+  - id: 569b1f84-e637-4b3a-94af-2909e710b6aa
+    type: paragraph
+    props:
+      backgroundColor: default
+      textColor: default
+      textAlignment: left
+    content: []
+    children: []
+  - id: 666f5791-5f8e-454b-8b27-5385353dc29f
+    type: paragraph
+    props:
+      backgroundColor: default
+      textColor: default
+      textAlignment: left
+    content:
+      - type: text
+        text: 对于 Linux，需要安装一系列 webkitgtk 包。假设你运行的是类 Ubuntu 系统，或至少能使用 apt。
+        styles: {}
+    children: []
+  - id: cce0cfcc-2037-4bcc-88f6-d53fa2f73d83
+    type: paragraph
+    props:
+      backgroundColor: default
+      textColor: default
+      textAlignment: left
+    content: []
+    children: []
+  - id: 90e51f0c-b90a-41b7-a900-fdc638670808
+    type: script
+    props:
+      interpreter: bash
+      outputVariable: ""
+      name: Linux 依赖
+      code: |-
+        if [[ $(uname) == 'Linux' ]]; then
+           sudo apt install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libasound2-dev
+
+        fi
+      outputVisible: true
+      dependency: "{}"
+      terminalRows: 12
+    children: []
+  - id: 194dde68-da80-4e75-a6f9-346212a8591d
+    type: paragraph
+    props:
+      backgroundColor: default
+      textColor: default
+      textAlignment: left
+    content: []
+    children: []
+  - id: 6aa36cc7-9fed-404f-b4a1-8cbb591d691a
+    type: paragraph
+    props:
+      backgroundColor: default
+      textColor: default
+      textAlignment: left
+    content:
+      - type: text
+        text: 现在直接运行测试即可！
+        styles: {}
+    children: []
+  - id: 08902d90-bf83-4cf0-8c39-b10a7bae0523
+    type: paragraph
+    props:
+      backgroundColor: default
+      textColor: default
+      textAlignment: left
+    content: []
+    children: []
+  - id: 5a48a967-06cf-47a5-8ec7-b27f82cd6366
+    type: script
+    props:
+      interpreter: bash
+      outputVariable: ""
+      name: 测试
+      code: cargo test
+      outputVisible: true
+      dependency: "{}"
+      terminalRows: 12
+    children: []
+  - id: cbb7c79f-4b05-497d-bf95-cc880a77fc15
+    type: paragraph
+    props:
+      backgroundColor: default
+      textColor: default
+      textAlignment: left
+    content: []
+    children: []
+  - id: b6a46b42-c2a2-430f-a494-615113bed6b9
+    type: paragraph
+    props:
+      backgroundColor: default
+      textColor: default
+      textAlignment: left
+    content: []
+    children: []

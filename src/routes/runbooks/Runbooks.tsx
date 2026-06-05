@@ -34,6 +34,7 @@ import { useSerialExecution } from "@/lib/hooks/useSerialExecution";
 import { Button, Spinner } from "@heroui/react";
 import AtuinEnv from "@/atuin_env";
 import { useTranslation } from "@/lib/i18n";
+import { resolveLocaleRunbookId } from "@/lib/runbook_locale";
 
 const Editor = React.lazy(() => import("@/components/runbooks/editor/Editor"));
 const Topbar = React.lazy(() => import("@/components/runbooks/TopBar/TopBar"));
@@ -49,8 +50,14 @@ function useMarkRunbookRead(runbook: Runbook | null, refreshRunbooks: () => void
 }
 
 export default function Runbooks() {
-  const { t } = useTranslation();
-  const { runbookId } = useParams();
+  const { t, locale } = useTranslation();
+  const { runbookId: routeRunbookId } = useParams();
+
+  const runbookId = useMemo(() => {
+    if (!routeRunbookId) return routeRunbookId;
+    const all = WorkspaceManager.getInstance().getAllRunbooks();
+    return resolveLocaleRunbookId(all, routeRunbookId, locale);
+  }, [routeRunbookId, locale]);
 
   const user = useStore((store) => store.user);
   const connectionState = useStore((store) => store.connectionState);

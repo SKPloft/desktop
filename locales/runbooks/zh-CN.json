@@ -122,5 +122,10 @@
   "For Linux, we require that you have a bunch of webkitgtk packages installed. We're assuming you're running ubuntu-ish, or at least have apt available.": "对于 Linux，需要安装一系列 webkitgtk 包。假设你运行的是类 Ubuntu 系统，或至少能使用 apt。",
   "Linux deps": "Linux 依赖",
   "Now just run the tests!": "现在直接运行测试即可！",
-  "Test": "测试"
+  "Test": "测试",
+  "Fetch release notes": "获取发布说明",
+  "Release": "发布",
+  "NOTE:": "注意：",
+  "here": "此处",
+  "italic text": "斜体文本"
 }

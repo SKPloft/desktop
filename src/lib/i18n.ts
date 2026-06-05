@@ -15,6 +15,7 @@ function applyDocumentLocale(locale: string) {
 }
 
 export function t(key: string, params?: TranslationParams): string {
+  (I18n.getInstance() as unknown as { locale: string }).locale = useStore.getState().locale;
   let text = I18n.getInstance().translate(key);
 
   if (import.meta.env.DEV && text === key && key.includes(".")) {
@@ -96,7 +97,7 @@ const blockNoteLocales: Record<string, Dictionary> = {
 };
 
 export function getBlockNoteDictionary(): Dictionary {
-  const locale = (I18n.getInstance() as unknown as { locale: string }).locale;
+  const locale = useStore.getState().locale;
   return blockNoteLocales[locale] ?? bnEn;
 }
 

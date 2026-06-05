@@ -52,7 +52,7 @@ export const TabsContext = React.createContext<{
 });
 
 export default function Tabs() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   // Use individual selectors to avoid creating new object references on every store update
   const tabs = useStore((state: AtuinState) => state.tabs);
   const currentTabId = useStore((state: AtuinState) => state.currentTabId);
@@ -73,14 +73,23 @@ export default function Tabs() {
 
   const updateWindowMenuTabs = useCallback(
     debounce(async (tabs: TabType[]) => {
-      invoke<void>("update_window_menu_tabs", { tabs: tabs });
+      const translated = tabs.map((tab) => ({
+        url: tab.url,
+        title: (() => {
+          if (tab.url === "/settings") return t("runbook_list.settings");
+          if (tab.url === "/stats") return t("runbook_list.stats");
+          if (tab.url === "/history") return t("runbook_list.history");
+          return tab.title;
+        })(),
+      }));
+      invoke<void>("update_window_menu_tabs", { tabs: translated });
     }, 250),
     [],
   );
 
   useEffect(() => {
     updateWindowMenuTabs(tabs);
-  }, [tabs]);
+  }, [tabs, locale]);
 
   const listRef = useRef<HTMLUListElement>(null);
   const [activeDragId, setActiveDragId] = useState<string | null>(null);
@@ -185,7 +194,7 @@ export default function Tabs() {
             <SortableContext items={tabs} strategy={horizontalListSortingStrategy}>
               {tabs.map((tab, index) => (
                 <Tab
-                  key={tab.id}
+                  key={tab.url.startsWith("/runbook/") ? tab.id : `${tab.id}-${locale}`}
                   id={tab.id}
                   url={tab.url}
                   title={tab.title}
@@ -294,6 +303,7 @@ type TabDisplayProps = TabProps & {
 
 const TabDisplay = React.forwardRef(
   (props: TabDisplayProps, ref: React.ForwardedRef<HTMLLIElement>) => {
+  const { t } = useTranslation();
     const [hovered, setHovered] = useState(false);
     const elementRef = useRef<HTMLLIElement>(null);
     const combinedRef = (node: HTMLLIElement | null) => {
@@ -374,6 +384,13 @@ const TabDisplay = React.forwardRef(
       Icon = SettingsIcon;
     }
 
+    const title = (() => {
+      if (props.url === "/settings") return t("runbook_list.settings");
+      if (props.url === "/stats") return t("runbook_list.stats");
+      if (props.url === "/history") return t("runbook_list.history");
+      return props.title;
+    })();
+
     return (
       <li
         ref={combinedRef}
@@ -389,7 +406,7 @@ const TabDisplay = React.forwardRef(
         onContextMenu={handleTabContextMenu}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        title={props.title}
+        title={title}
         style={props.style}
         {...props.attributes}
         {...props.listeners}
@@ -401,7 +418,7 @@ const TabDisplay = React.forwardRef(
           className="overflow-hidden text-ellipsis whitespace-nowrap"
           style={{ pointerEvents: "none" }}
         >
-          {props.title}
+          {title}
         </span>
         <div
           className={cn(
@@ -419,6 +436,7 @@ const TabDisplay = React.forwardRef(
 interface TabContentProps {
   url: string;
   active: boolean;
+  resetKey?: string;
 }
 
 const LazyHistory = React.lazy(() => import("@/routes/history/History"));
@@ -461,6 +479,7 @@ function TabContent(props: TabContentProps) {
 
   return (
     <div
+      key={props.resetKey}
       className={cn(props.active && "block", !props.active && "hidden", "h-full overflow-y-auto")}
     >
       <RouterProvider router={router} />
@@ -489,6 +508,7 @@ function TabContextProvider({
   closeTab,
   openTab,
 }: TabContextProviderProps) {
+  const { locale } = useTranslation();
   const setTitle = useCallback(
     (title: string) => setTabTitle(tab.id, title),
     [tab.id, setTabTitle],
@@ -534,7 +554,12 @@ function TabContextProvider({
 
   return (
     <TabsContext.Provider value={contextValue}>
-      <TabContent url={tab.url} active={active} />
+      <TabContent
+        url={tab.url}
+        active={active}
+        key={`${tab.id}-${locale}`}
+        resetKey={`${tab.id}-${locale}`}
+      />
     </TabsContext.Provider>
   );
 }

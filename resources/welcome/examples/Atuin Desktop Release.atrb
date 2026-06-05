@@ -1,5 +1,5 @@
 id: 01998822-b94b-74a3-bdf6-c2ddefa03d02
-name: Atuin Desktop Release 
+name: Atuin Desktop Release
 version: 1
 content:
 - id: f6596d68-4414-48f3-b502-eb54c9a00b17
@@ -12,7 +12,7 @@ content:
     isToggleable: false
   content:
   - type: text
-    text: Atuin Desktop Release 
+    text: Atuin Desktop Release
     styles: {}
   children: []
 - id: 4313dc8a-5868-4fa1-9fe8-35d76a5261e4
@@ -23,14 +23,14 @@ content:
     textAlignment: left
   content:
   - type: text
-    text: 'This runbook is a copy of the runbook we at Atuin use to ship a new release of Atuin Desktop. Items in ' 
+    text: 'This runbook is a copy of the runbook we at Atuin use to ship a new release of Atuin Desktop. Items in '
     styles: {}
   - type: text
     text: italic text
     styles:
       italic: true
   - type: text
-    text: ' have been added to provide additional context.' 
+    text: ' have been added to provide additional context.'
     styles: {}
   children: []
 - id: db03956a-4166-46a4-b389-a6110adedf09
