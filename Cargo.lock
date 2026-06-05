@@ -548,7 +548,7 @@ dependencies = [
 
 [[package]]
 name = "atuin-desktop"
-version = "0.2.20"
+version = "0.3.0-beta.1"
 dependencies = [
  "async-trait",
  "atuin-client",
@@ -622,7 +622,7 @@ dependencies = [
 
 [[package]]
 name = "atuin-desktop-runtime"
-version = "0.2.20"
+version = "0.3.0-beta.1"
 dependencies = [
  "async-trait",
  "base64 0.22.1",
@@ -693,7 +693,7 @@ dependencies = [
 
 [[package]]
 name = "atuin-run"
-version = "0.2.20"
+version = "0.3.0-beta.1"
 dependencies = [
  "async-trait",
  "atuin-desktop-runtime",
@@ -9169,6 +9169,7 @@ dependencies = [
 [[package]]
 name = "tauri-plugin-i18n"
 version = "2.0.2"
+source = "git+https://github.com/SKPloft/tauri-plugin-i18n?rev=09462ee45eb709d1b7b9aec20e9143ac9104b5cc#09462ee45eb709d1b7b9aec20e9143ac9104b5cc"
 dependencies = [
  "globwalk",
  "normpath",

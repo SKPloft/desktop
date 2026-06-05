@@ -1,0 +1,682 @@
+# I18N Key Assignment Analysis
+# Generated: 2026-06-05T18:47:10.692Z
+#
+# Legend:
+#   [REUSE]  = existing key can be reused as-is
+#   [NEW]    = new key needed (no matching existing key)
+#   [RENAME] = existing key found but rename suggested for better readability
+#
+# Format: file:line | status | string_value | assigned_key | existing_key_matched | reason
+#
+---
+
+src/components/runbooks/editor/hooks/useAIInlineGeneration.ts:588 | [NEW] | "Unknown error" | `common.fallback_unknown_error` | none | no existing key matches the string value "Unknown error..."
+src/components/runbooks/editor/hooks/useAIInlineGeneration.ts:726 | [NEW] | "Failed to start generation" | `common.fallback_failed_to_start_generation` | none | no existing key matches the string value "Failed to start generation..."
+src/components/runbooks/editor/hooks/useAIInlineGeneration.ts:775 | [NEW] | "Failed to edit block" | `common.fallback_failed_to_edit_block` | none | no existing key matches the string value "Failed to edit block..."
+src/components/runbooks/List/ConvertWorkspaceDialog.tsx:102 | [NEW] | "Selected path is required for offline workspaces" | `workspace.convert.validation_selected_path_is_required_for_offline_wo` | none | no existing key matches the string value "Selected path is required for offline workspaces..."
+src/components/runbooks/List/ConvertWorkspaceDialog.tsx:146 | [NEW] | "Selected path is required for converting hybrid workspaces" | `workspace.convert.validation_selected_path_is_required_for_converting` | none | no existing key matches the string value "Selected path is required for converting hybrid workspaces..."
+src/components/runbooks/List/Workspace.tsx:126 | [NEW] | "Cannot create folder with empty path" | `workspace.validation_cannot_create_folder_with_empty_path` | none | no existing key matches the string value "Cannot create folder with empty path..."
+src/components/runbooks/List/Workspace.tsx:163 | [NEW] | "Unexpected end of path traversal" | `workspace.validation_unexpected_end_of_path_traversal` | none | no existing key matches the string value "Unexpected end of path traversal..."
+src/components/Settings/Settings.tsx:1493 | [NEW] | "Claude (Anthropic direct API)" | `settings.ai.provider.label_claude_anthropic_direct_api` | none | no existing key matches the string value "Claude (Anthropic direct API)..."
+src/lib/ai/block_registry.ts:34 | [NEW] | "" | `ai.agent.block_documentation_` | none | no existing key matches the string value "..."
+src/lib/ai/block_registry.ts:38 | [NEW] | "Docs for" | `ai.agent.block_documentation_docs_for` | none | no existing key matches the string value "Docs for..."
+src/lib/ai/block_registry.ts:39 | [NEW] | "" | `ai.agent.block_documentation_` | none | no existing key matches the string value "..."
+src/lib/ai/block_registry.ts:40 | [NEW] | "block (known to users as:" | `ai.agent.block_documentation_block_known_to_users_as` | none | no existing key matches the string value "block (known to users as:..."
+src/lib/ai/block_registry.ts:41 | [NEW] | "" | `ai.agent.block_documentation_` | none | no existing key matches the string value "..."
+src/lib/ai/block_registry.ts:42 | [NEW] | "):\n" | `ai.agent.block_documentation_n` | none | no existing key matches the string value "):\n..."
+src/lib/ai/block_registry.ts:43 | [NEW] | "" | `ai.agent.block_documentation_` | none | no existing key matches the string value "..."
+src/lib/ai/tools.ts:79 | [NEW] | "reference_block_id required for 'before' or 'after' position" | `ai.agent.tool_error_referenceblockid_required_for_before_or_` | none | no existing key matches the string value "reference_block_id required for 'before' or 'after' position..."
+src/lib/ai/tools.ts:106 | [NEW] | "block_ids cannot be empty" | `ai.agent.tool_error_blockids_cannot_be_empty` | none | no existing key matches the string value "block_ids cannot be empty..."
+src/lib/ai/tools.ts:111 | [NEW] | "No blocks found with the specified IDs" | `ai.agent.tool_error_no_blocks_found_with_the_specified_ids` | none | no existing key matches the string value "No blocks found with the specified IDs..."
+src/lib/ai/tools.ts:203 | [NEW] | "No editor available" | `ai.agent.tool_error_no_editor_available` | none | no existing key matches the string value "No editor available..."
+src/lib/ai/tools.ts:228 | [NEW] | "Unknown tool: ${toolName}" | `ai.agent.tool_error_unknown_tool_toolname` | none | no existing key matches the string value "Unknown tool: ${toolName}..."
+src/lib/ai/tools.ts:232 | [NEW] | "Unknown error" | `ai.agent.tool_error_unknown_error` | none | no existing key matches the string value "Unknown error..."
+src/lib/ai/useAIChat.ts:151 | [NEW] | "User cancelled this operation" | `ai.agent.tool_result_user_cancelled_this_operation` | none | no existing key matches the string value "User cancelled this operation..."
+src/lib/blocks/codeberg-preview/api.ts:77 | [NEW] | "Failed to fetch repo: ${response.status} ${response.statusText}" | `blocks.preview.fetch_error_failed_to_fetch_repo_responsestatus_resp` | none | no existing key matches the string value "Failed to fetch repo: ${response.status} ${response.statusTe..."
+src/lib/blocks/codeberg-preview/api.ts:109 | [NEW] | "Failed to fetch PR: ${response.status} ${response.statusText}" | `blocks.preview.fetch_error_failed_to_fetch_pr_responsestatus_respon` | none | no existing key matches the string value "Failed to fetch PR: ${response.status} ${response.statusText..."
+src/lib/blocks/codeberg-preview/api.ts:146 | [NEW] | "Failed to fetch issue: ${response.status} ${response.statusText}" | `blocks.preview.fetch_error_failed_to_fetch_issue_responsestatus_res` | none | no existing key matches the string value "Failed to fetch issue: ${response.status} ${response.statusT..."
+src/lib/blocks/codeberg-preview/api.ts:183 | [NEW] | "Failed to fetch code: ${response.status} ${response.statusText}" | `blocks.preview.fetch_error_failed_to_fetch_code_responsestatus_resp` | none | no existing key matches the string value "Failed to fetch code: ${response.status} ${response.statusTe..."
+src/lib/blocks/codeberg-preview/components/CodebergPreview.tsx:76 | [NEW] | "Unknown URL type: ${props.urlType}" | `blocks.preview.fetch_error_unknown_url_type_propsurltype` | none | no existing key matches the string value "Unknown URL type: ${props.urlType}..."
+src/lib/blocks/codeberg-preview/components/CodebergPreview.tsx:89 | [NEW] | "Failed to fetch data" | `blocks.preview.fetch_fallback` | none | no existing key matches the string value "Failed to fetch data..."
+src/lib/blocks/common/CodeEditor/extensions.ts:112 | [NEW] | "first block" | `editor.completion.label_first_block` | none | no existing key matches the string value "first block..."
+src/lib/blocks/common/CodeEditor/extensions.ts:113 | [NEW] | "last block" | `editor.completion.label_last_block` | none | no existing key matches the string value "last block..."
+src/lib/blocks/common/CodeEditor/extensions.ts:114 | [NEW] | "previous block" | `editor.completion.label_previous_block` | none | no existing key matches the string value "previous block..."
+src/lib/blocks/common/CodeEditor/extensions.ts:115 | [NEW] | "named block" | `editor.completion.label_named_block` | none | no existing key matches the string value "named block..."
+src/lib/blocks/common/CodeEditor/extensions.ts:116 | [NEW] | "runbook blocks" | `editor.completion.label_runbook_blocks` | none | no existing key matches the string value "runbook blocks..."
+src/lib/blocks/common/CodeEditor/extensions.ts:120 | [NEW] | "workspace root" | `editor.completion.label_workspace_root` | none | no existing key matches the string value "workspace root..."
+src/lib/blocks/common/CodeEditor/extensions.ts:129 | [NEW] | "template variables" | `editor.completion.label_template_variables` | none | no existing key matches the string value "template variables..."
+src/lib/blocks/common/CodeEditor/extensions.ts:131 | [NEW] | "document properties" | `editor.completion.label_document_properties` | none | no existing key matches the string value "document properties..."
+src/lib/blocks/common/CodeEditor/extensions.ts:133 | [NEW] | "environment variables" | `editor.completion.label_environment_variables` | none | no existing key matches the string value "environment variables..."
+src/lib/blocks/common/CodeEditor/extensions.ts:135 | [NEW] | "workspace properties" | `editor.completion.label_workspace_properties` | none | no existing key matches the string value "workspace properties..."
+src/lib/blocks/common/CodeEditor/extensions.ts:170 | [NEW] | "Properties" | `editor.completion.label_properties` | none | no existing key matches the string value "Properties..."
+src/lib/blocks/common/CodeEditor/extensions.ts:172 | [NEW] | "Template Variables" | `editor.completion.label_template_variables` | none | no existing key matches the string value "Template Variables..."
+src/lib/blocks/common/CodeEditor/extensions.ts:174 | [NEW] | "Document Properties" | `editor.completion.label_document_properties` | none | no existing key matches the string value "Document Properties..."
+src/lib/blocks/common/CodeEditor/extensions.ts:176 | [NEW] | "Environment Variables" | `editor.completion.label_environment_variables` | none | no existing key matches the string value "Environment Variables..."
+src/lib/blocks/common/CodeEditor/extensions.ts:178 | [NEW] | "Workspace Properties" | `editor.completion.label_workspace_properties` | none | no existing key matches the string value "Workspace Properties..."
+src/lib/blocks/github-preview/api.ts:74 | [NEW] | "Failed to fetch repo: ${response.status} ${response.statusText}" | `blocks.preview.fetch_error_failed_to_fetch_repo_responsestatus_resp` | none | no existing key matches the string value "Failed to fetch repo: ${response.status} ${response.statusTe..."
+src/lib/blocks/github-preview/api.ts:89 | [NEW] | "Failed to fetch PR: ${response.status} ${response.statusText}" | `blocks.preview.fetch_error_failed_to_fetch_pr_responsestatus_respon` | none | no existing key matches the string value "Failed to fetch PR: ${response.status} ${response.statusText..."
+src/lib/blocks/github-preview/api.ts:108 | [NEW] | "Failed to fetch issue: ${response.status} ${response.statusText}" | `blocks.preview.fetch_error_failed_to_fetch_issue_responsestatus_res` | none | no existing key matches the string value "Failed to fetch issue: ${response.status} ${response.statusT..."
+src/lib/blocks/github-preview/api.ts:129 | [NEW] | "Failed to fetch code: ${response.status} ${response.statusText}" | `blocks.preview.fetch_error_failed_to_fetch_code_responsestatus_resp` | none | no existing key matches the string value "Failed to fetch code: ${response.status} ${response.statusTe..."
+src/lib/blocks/github-preview/components/GitHubPreview.tsx:71 | [NEW] | "Unknown URL type: ${props.urlType}" | `blocks.preview.fetch_error_unknown_url_type_propsurltype` | none | no existing key matches the string value "Unknown URL type: ${props.urlType}..."
+src/lib/blocks/github-preview/components/GitHubPreview.tsx:85 | [NEW] | "Failed to fetch data" | `blocks.preview.fetch_fallback` | none | no existing key matches the string value "Failed to fetch data..."
+src/lib/blocks/gitlab-preview/api.ts:72 | [NEW] | "Failed to fetch project: ${response.status} ${response.statusText}" | `blocks.preview.fetch_error_failed_to_fetch_project_responsestatus_r` | none | no existing key matches the string value "Failed to fetch project: ${response.status} ${response.statu..."
+src/lib/blocks/gitlab-preview/api.ts:105 | [NEW] | "Failed to fetch MR: ${response.status} ${response.statusText}" | `blocks.preview.fetch_error_failed_to_fetch_mr_responsestatus_respon` | none | no existing key matches the string value "Failed to fetch MR: ${response.status} ${response.statusText..."
+src/lib/blocks/gitlab-preview/api.ts:138 | [NEW] | "Failed to fetch issue: ${response.status} ${response.statusText}" | `blocks.preview.fetch_error_failed_to_fetch_issue_responsestatus_res` | none | no existing key matches the string value "Failed to fetch issue: ${response.status} ${response.statusT..."
+src/lib/blocks/gitlab-preview/api.ts:174 | [NEW] | "Failed to fetch code: ${response.status} ${response.statusText}" | `blocks.preview.fetch_error_failed_to_fetch_code_responsestatus_resp` | none | no existing key matches the string value "Failed to fetch code: ${response.status} ${response.statusTe..."
+src/lib/blocks/gitlab-preview/components/GitLabPreview.tsx:71 | [NEW] | "Unknown URL type: ${props.urlType}" | `blocks.preview.fetch_error_unknown_url_type_propsurltype` | none | no existing key matches the string value "Unknown URL type: ${props.urlType}..."
+src/lib/blocks/gitlab-preview/components/GitLabPreview.tsx:84 | [NEW] | "Failed to fetch data" | `blocks.preview.fetch_fallback` | none | no existing key matches the string value "Failed to fetch data..."
+src/routes/root/DesktopImportModal.tsx:102 | [NEW] | "Not able to load target workspace" | `desktop_import.error_not_able_to_load_target_workspace` | none | no existing key matches the string value "Not able to load target workspace..."
+src/routes/root/DesktopImportModal.tsx:106 | [NEW] | "You do not have permission to manage runbooks in the target workspace" | `desktop_import.error_you_do_not_have_permission_to_manage_run` | none | no existing key matches the string value "You do not have permission to manage runbooks in the target ..."
+src/routes/root/DesktopImportModal.tsx:120 | [NEW] | "Failed to create runbook in the target workspace" | `desktop_import.error_failed_to_create_runbook_in_the_target_w` | none | no existing key matches the string value "Failed to create runbook in the target workspace..."
+src/routes/root/DesktopImportModal.tsx:130 | [REUSE] | "An unknown error occurred" | `common.unknown_error` | common.unknown_error | existing key value exactly matches, key name fits context, used 2 time(s) in 2 file(s)
+src/routes/runbooks/Runbooks.tsx:365 | [NEW] | "Tried to create a new tag with no runbook selected" | `tag_selector.error_tried_to_create_a_new_tag_with_no_runboo` | none | no existing key matches the string value "Tried to create a new tag with no runbook selected..."
+src/routes/runbooks/Runbooks.tsx:393 | [NEW] | "Tried to delete a tag with no runbook selected" | `tag_selector.error_tried_to_delete_a_tag_with_no_runbook_se` | none | no existing key matches the string value "Tried to delete a tag with no runbook selected..."
+
+---
+
+## Summary by Description Category
+
+### toast fallback (3 entries)
+  REUSE: 0, NEW: 3, RENAME: 0
+  Suggested keys: common.fallback_unknown_error, common.fallback_failed_to_start_generation, common.fallback_failed_to_edit_block
+
+### rendered conversion validation (2 entries)
+  REUSE: 0, NEW: 2, RENAME: 0
+  Suggested keys: workspace.convert.validation_selected_path_is_required_for_offline_wo, workspace.convert.validation_selected_path_is_required_for_converting
+
+### rendered workspace validation (2 entries)
+  REUSE: 0, NEW: 2, RENAME: 0
+  Suggested keys: workspace.validation_cannot_create_folder_with_empty_path, workspace.validation_unexpected_end_of_path_traversal
+
+### visible provider label (1 entries)
+  REUSE: 0, NEW: 1, RENAME: 0
+  Suggested keys: settings.ai.provider.label_claude_anthropic_direct_api
+
+### AI-visible block documentation text (7 entries)
+  REUSE: 0, NEW: 7, RENAME: 0
+  Suggested keys: ai.agent.block_documentation_, ai.agent.block_documentation_docs_for, ai.agent.block_documentation_block_known_to_users_as, ai.agent.block_documentation_n
+
+### AI-visible tool result/error (6 entries)
+  REUSE: 0, NEW: 6, RENAME: 0
+  Suggested keys: ai.agent.tool_error_referenceblockid_required_for_before_or_, ai.agent.tool_error_blockids_cannot_be_empty, ai.agent.tool_error_no_blocks_found_with_the_specified_ids, ai.agent.tool_error_no_editor_available, ai.agent.tool_error_unknown_tool_toolname, ai.agent.tool_error_unknown_error
+
+### AI-visible tool result (1 entries)
+  REUSE: 0, NEW: 1, RENAME: 0
+  Suggested keys: ai.agent.tool_result_user_cancelled_this_operation
+
+### rendered preview error (15 entries)
+  REUSE: 0, NEW: 15, RENAME: 0
+  Suggested keys: blocks.preview.fetch_error_failed_to_fetch_repo_responsestatus_resp, blocks.preview.fetch_error_failed_to_fetch_pr_responsestatus_respon, blocks.preview.fetch_error_failed_to_fetch_issue_responsestatus_res, blocks.preview.fetch_error_failed_to_fetch_code_responsestatus_resp, blocks.preview.fetch_error_unknown_url_type_propsurltype, blocks.preview.fetch_error_failed_to_fetch_project_responsestatus_r, blocks.preview.fetch_error_failed_to_fetch_mr_responsestatus_respon
+
+### rendered preview fallback (3 entries)
+  REUSE: 0, NEW: 3, RENAME: 0
+  Suggested keys: blocks.preview.fetch_fallback
+
+### visible completion/help label (15 entries)
+  REUSE: 0, NEW: 15, RENAME: 0
+  Suggested keys: editor.completion.label_first_block, editor.completion.label_last_block, editor.completion.label_previous_block, editor.completion.label_named_block, editor.completion.label_runbook_blocks, editor.completion.label_workspace_root, editor.completion.label_template_variables, editor.completion.label_document_properties, editor.completion.label_environment_variables, editor.completion.label_workspace_properties, editor.completion.label_properties
+
+### rendered import error (3 entries)
+  REUSE: 0, NEW: 3, RENAME: 0
+  Suggested keys: desktop_import.error_not_able_to_load_target_workspace, desktop_import.error_you_do_not_have_permission_to_manage_run, desktop_import.error_failed_to_create_runbook_in_the_target_w
+
+### rendered import error fallback (1 entries)
+  REUSE: 1, NEW: 0, RENAME: 0
+  Suggested keys: common.unknown_error
+
+### shown by tag selector form error (2 entries)
+  REUSE: 0, NEW: 2, RENAME: 0
+  Suggested keys: tag_selector.error_tried_to_create_a_new_tag_with_no_runboo, tag_selector.error_tried_to_delete_a_tag_with_no_runbook_se
+
+---
+
+## Detailed Entries
+
+### src/components/runbooks/editor/hooks/useAIInlineGeneration.ts:588
+  Status:       [NEW]
+  String:       "Unknown error"
+  Description:  toast fallback
+  Suggested Key: `common.fallback_unknown_error`
+  Existing:     none
+  Reason:       no existing key matches the string value "Unknown error..."
+  Source:       `const message = event.message || "Unknown error"; // I18N: translate - toast fallback`
+
+### src/components/runbooks/editor/hooks/useAIInlineGeneration.ts:726
+  Status:       [NEW]
+  String:       "Failed to start generation"
+  Description:  toast fallback
+  Suggested Key: `common.fallback_failed_to_start_generation`
+  Existing:     none
+  Reason:       no existing key matches the string value "Failed to start generation..."
+  Source:       `const message = error instanceof Error ? error.message : "Failed to start generation"; // I18N: translate - toast fallback`
+
+### src/components/runbooks/editor/hooks/useAIInlineGeneration.ts:775
+  Status:       [NEW]
+  String:       "Failed to edit block"
+  Description:  toast fallback
+  Suggested Key: `common.fallback_failed_to_edit_block`
+  Existing:     none
+  Reason:       no existing key matches the string value "Failed to edit block..."
+  Source:       `const message = error instanceof Error ? error.message : "Failed to edit block"; // I18N: translate - toast fallback`
+
+### src/components/runbooks/List/ConvertWorkspaceDialog.tsx:102
+  Status:       [NEW]
+  String:       "Selected path is required for offline workspaces"
+  Description:  rendered conversion validation
+  Suggested Key: `workspace.convert.validation_selected_path_is_required_for_offline_wo`
+  Existing:     none
+  Reason:       no existing key matches the string value "Selected path is required for offline workspaces..."
+  Source:       `throw new Error("Selected path is required for offline workspaces");// I18N: translate - rendered conversion validation`
+
+### src/components/runbooks/List/ConvertWorkspaceDialog.tsx:146
+  Status:       [NEW]
+  String:       "Selected path is required for converting hybrid workspaces"
+  Description:  rendered conversion validation
+  Suggested Key: `workspace.convert.validation_selected_path_is_required_for_converting`
+  Existing:     none
+  Reason:       no existing key matches the string value "Selected path is required for converting hybrid workspaces..."
+  Source:       `throw new Error("Selected path is required for converting hybrid workspaces");// I18N: translate - rendered conversion validation`
+
+### src/components/runbooks/List/Workspace.tsx:126
+  Status:       [NEW]
+  String:       "Cannot create folder with empty path"
+  Description:  rendered workspace validation
+  Suggested Key: `workspace.validation_cannot_create_folder_with_empty_path`
+  Existing:     none
+  Reason:       no existing key matches the string value "Cannot create folder with empty path..."
+  Source:       `throw new Error("Cannot create folder with empty path");// I18N: translate - rendered workspace validation`
+
+### src/components/runbooks/List/Workspace.tsx:163
+  Status:       [NEW]
+  String:       "Unexpected end of path traversal"
+  Description:  rendered workspace validation
+  Suggested Key: `workspace.validation_unexpected_end_of_path_traversal`
+  Existing:     none
+  Reason:       no existing key matches the string value "Unexpected end of path traversal..."
+  Source:       `throw new Error("Unexpected end of path traversal");// I18N: translate - rendered workspace validation`
+
+### src/components/Settings/Settings.tsx:1493
+  Status:       [NEW]
+  String:       "Claude (Anthropic direct API)"
+  Description:  visible provider label
+  Suggested Key: `settings.ai.provider.label_claude_anthropic_direct_api`
+  Existing:     none
+  Reason:       no existing key matches the string value "Claude (Anthropic direct API)..."
+  Source:       `provider: "Claude (Anthropic direct API)",// I18N: translate - visible provider label`
+
+### src/lib/ai/block_registry.ts:34
+  Status:       [NEW]
+  String:       ""
+  Description:  AI-visible block documentation text
+  Suggested Key: `ai.agent.block_documentation_`
+  Existing:     none
+  Reason:       no existing key matches the string value "..."
+  Source:       `return `No documentation found for block type: ${blockType}`; // I18N: translate - AI-visible block documentation text`
+
+### src/lib/ai/block_registry.ts:38
+  Status:       [NEW]
+  String:       "Docs for"
+  Description:  AI-visible block documentation text
+  Suggested Key: `ai.agent.block_documentation_docs_for`
+  Existing:     none
+  Reason:       no existing key matches the string value "Docs for..."
+  Source:       `"Docs for '" + // I18N: translate - AI-visible block documentation text`
+
+### src/lib/ai/block_registry.ts:39
+  Status:       [NEW]
+  String:       ""
+  Description:  AI-visible block documentation text
+  Suggested Key: `ai.agent.block_documentation_`
+  Existing:     none
+  Reason:       no existing key matches the string value "..."
+  Source:       `blockType + // I18N: translate - AI-visible block documentation text`
+
+### src/lib/ai/block_registry.ts:40
+  Status:       [NEW]
+  String:       "block (known to users as:"
+  Description:  AI-visible block documentation text
+  Suggested Key: `ai.agent.block_documentation_block_known_to_users_as`
+  Existing:     none
+  Reason:       no existing key matches the string value "block (known to users as:..."
+  Source:       `"' block (known to users as: " + // I18N: translate - AI-visible block documentation text`
+
+### src/lib/ai/block_registry.ts:41
+  Status:       [NEW]
+  String:       ""
+  Description:  AI-visible block documentation text
+  Suggested Key: `ai.agent.block_documentation_`
+  Existing:     none
+  Reason:       no existing key matches the string value "..."
+  Source:       `resolve(block.friendlyName) + // I18N: translate - AI-visible block documentation text`
+
+### src/lib/ai/block_registry.ts:42
+  Status:       [NEW]
+  String:       "):\n"
+  Description:  AI-visible block documentation text
+  Suggested Key: `ai.agent.block_documentation_n`
+  Existing:     none
+  Reason:       no existing key matches the string value "):\n..."
+  Source:       `"):\n" + // I18N: translate - AI-visible block documentation text`
+
+### src/lib/ai/block_registry.ts:43
+  Status:       [NEW]
+  String:       ""
+  Description:  AI-visible block documentation text
+  Suggested Key: `ai.agent.block_documentation_`
+  Existing:     none
+  Reason:       no existing key matches the string value "..."
+  Source:       `resolve(block.description) // I18N: translate - AI-visible block documentation text`
+
+### src/lib/ai/tools.ts:79
+  Status:       [NEW]
+  String:       "reference_block_id required for 'before' or 'after' position"
+  Description:  AI-visible tool result/error
+  Suggested Key: `ai.agent.tool_error_referenceblockid_required_for_before_or_`
+  Existing:     none
+  Reason:       no existing key matches the string value "reference_block_id required for 'before' or 'after' position..."
+  Source:       `throw new Error("reference_block_id required for 'before' or 'after' position"); // I18N: translate - AI-visible tool result/error`
+
+### src/lib/ai/tools.ts:106
+  Status:       [NEW]
+  String:       "block_ids cannot be empty"
+  Description:  AI-visible tool result/error
+  Suggested Key: `ai.agent.tool_error_blockids_cannot_be_empty`
+  Existing:     none
+  Reason:       no existing key matches the string value "block_ids cannot be empty..."
+  Source:       `throw new Error("block_ids cannot be empty"); // I18N: translate - AI-visible tool result/error`
+
+### src/lib/ai/tools.ts:111
+  Status:       [NEW]
+  String:       "No blocks found with the specified IDs"
+  Description:  AI-visible tool result/error
+  Suggested Key: `ai.agent.tool_error_no_blocks_found_with_the_specified_ids`
+  Existing:     none
+  Reason:       no existing key matches the string value "No blocks found with the specified IDs..."
+  Source:       `throw new Error("No blocks found with the specified IDs"); // I18N: translate - AI-visible tool result/error`
+
+### src/lib/ai/tools.ts:203
+  Status:       [NEW]
+  String:       "No editor available"
+  Description:  AI-visible tool result/error
+  Suggested Key: `ai.agent.tool_error_no_editor_available`
+  Existing:     none
+  Reason:       no existing key matches the string value "No editor available..."
+  Source:       `return { success: false, result: "No editor available" }; // I18N: translate - AI-visible tool result/error`
+
+### src/lib/ai/tools.ts:228
+  Status:       [NEW]
+  String:       "Unknown tool: ${toolName}"
+  Description:  AI-visible tool result/error
+  Suggested Key: `ai.agent.tool_error_unknown_tool_toolname`
+  Existing:     none
+  Reason:       no existing key matches the string value "Unknown tool: ${toolName}..."
+  Source:       `throw new Error(`Unknown tool: ${toolName}`); // I18N: translate - AI-visible tool result/error`
+
+### src/lib/ai/tools.ts:232
+  Status:       [NEW]
+  String:       "Unknown error"
+  Description:  AI-visible tool result/error
+  Suggested Key: `ai.agent.tool_error_unknown_error`
+  Existing:     none
+  Reason:       no existing key matches the string value "Unknown error..."
+  Source:       `const message = error instanceof Error ? error.message : "Unknown error"; // I18N: translate - AI-visible tool result/error`
+
+### src/lib/ai/useAIChat.ts:151
+  Status:       [NEW]
+  String:       "User cancelled this operation"
+  Description:  AI-visible tool result
+  Suggested Key: `ai.agent.tool_result_user_cancelled_this_operation`
+  Existing:     none
+  Reason:       no existing key matches the string value "User cancelled this operation..."
+  Source:       `result: "User cancelled this operation", // I18N: translate - AI-visible tool result`
+
+### src/lib/blocks/codeberg-preview/api.ts:77
+  Status:       [NEW]
+  String:       "Failed to fetch repo: ${response.status} ${response.statusText}"
+  Description:  rendered preview error
+  Suggested Key: `blocks.preview.fetch_error_failed_to_fetch_repo_responsestatus_resp`
+  Existing:     none
+  Reason:       no existing key matches the string value "Failed to fetch repo: ${response.status} ${response.statusTe..."
+  Source:       `throw new Error(`Failed to fetch repo: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error`
+
+### src/lib/blocks/codeberg-preview/api.ts:109
+  Status:       [NEW]
+  String:       "Failed to fetch PR: ${response.status} ${response.statusText}"
+  Description:  rendered preview error
+  Suggested Key: `blocks.preview.fetch_error_failed_to_fetch_pr_responsestatus_respon`
+  Existing:     none
+  Reason:       no existing key matches the string value "Failed to fetch PR: ${response.status} ${response.statusText..."
+  Source:       `throw new Error(`Failed to fetch PR: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error`
+
+### src/lib/blocks/codeberg-preview/api.ts:146
+  Status:       [NEW]
+  String:       "Failed to fetch issue: ${response.status} ${response.statusText}"
+  Description:  rendered preview error
+  Suggested Key: `blocks.preview.fetch_error_failed_to_fetch_issue_responsestatus_res`
+  Existing:     none
+  Reason:       no existing key matches the string value "Failed to fetch issue: ${response.status} ${response.statusT..."
+  Source:       `throw new Error(`Failed to fetch issue: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error`
+
+### src/lib/blocks/codeberg-preview/api.ts:183
+  Status:       [NEW]
+  String:       "Failed to fetch code: ${response.status} ${response.statusText}"
+  Description:  rendered preview error
+  Suggested Key: `blocks.preview.fetch_error_failed_to_fetch_code_responsestatus_resp`
+  Existing:     none
+  Reason:       no existing key matches the string value "Failed to fetch code: ${response.status} ${response.statusTe..."
+  Source:       `throw new Error(`Failed to fetch code: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error`
+
+### src/lib/blocks/codeberg-preview/components/CodebergPreview.tsx:76
+  Status:       [NEW]
+  String:       "Unknown URL type: ${props.urlType}"
+  Description:  rendered preview error
+  Suggested Key: `blocks.preview.fetch_error_unknown_url_type_propsurltype`
+  Existing:     none
+  Reason:       no existing key matches the string value "Unknown URL type: ${props.urlType}..."
+  Source:       `throw new Error(`Unknown URL type: ${props.urlType}`);// I18N: translate - rendered preview error`
+
+### src/lib/blocks/codeberg-preview/components/CodebergPreview.tsx:89
+  Status:       [NEW]
+  String:       "Failed to fetch data"
+  Description:  rendered preview fallback
+  Suggested Key: `blocks.preview.fetch_fallback`
+  Existing:     none
+  Reason:       no existing key matches the string value "Failed to fetch data..."
+  Source:       `setError(err instanceof Error ? err.message : "Failed to fetch data");// I18N: translate - rendered preview fallback`
+
+### src/lib/blocks/common/CodeEditor/extensions.ts:112
+  Status:       [NEW]
+  String:       "first block"
+  Description:  visible completion/help label
+  Suggested Key: `editor.completion.label_first_block`
+  Existing:     none
+  Reason:       no existing key matches the string value "first block..."
+  Source:       `first: "first block", // I18N: translate - visible completion/help label`
+
+### src/lib/blocks/common/CodeEditor/extensions.ts:113
+  Status:       [NEW]
+  String:       "last block"
+  Description:  visible completion/help label
+  Suggested Key: `editor.completion.label_last_block`
+  Existing:     none
+  Reason:       no existing key matches the string value "last block..."
+  Source:       `last: "last block", // I18N: translate - visible completion/help label`
+
+### src/lib/blocks/common/CodeEditor/extensions.ts:114
+  Status:       [NEW]
+  String:       "previous block"
+  Description:  visible completion/help label
+  Suggested Key: `editor.completion.label_previous_block`
+  Existing:     none
+  Reason:       no existing key matches the string value "previous block..."
+  Source:       `previous: "previous block", // I18N: translate - visible completion/help label`
+
+### src/lib/blocks/common/CodeEditor/extensions.ts:115
+  Status:       [NEW]
+  String:       "named block"
+  Description:  visible completion/help label
+  Suggested Key: `editor.completion.label_named_block`
+  Existing:     none
+  Reason:       no existing key matches the string value "named block..."
+  Source:       `named: "named block", // I18N: translate - visible completion/help label`
+
+### src/lib/blocks/common/CodeEditor/extensions.ts:116
+  Status:       [NEW]
+  String:       "runbook blocks"
+  Description:  visible completion/help label
+  Suggested Key: `editor.completion.label_runbook_blocks`
+  Existing:     none
+  Reason:       no existing key matches the string value "runbook blocks..."
+  Source:       `content: "runbook blocks", // I18N: translate - visible completion/help label`
+
+### src/lib/blocks/common/CodeEditor/extensions.ts:120
+  Status:       [NEW]
+  String:       "workspace root"
+  Description:  visible completion/help label
+  Suggested Key: `editor.completion.label_workspace_root`
+  Existing:     none
+  Reason:       no existing key matches the string value "workspace root..."
+  Source:       `root: "workspace root", // I18N: translate - visible completion/help label`
+
+### src/lib/blocks/common/CodeEditor/extensions.ts:129
+  Status:       [NEW]
+  String:       "template variables"
+  Description:  visible completion/help label
+  Suggested Key: `editor.completion.label_template_variables`
+  Existing:     none
+  Reason:       no existing key matches the string value "template variables..."
+  Source:       `detail = "template variables"; // I18N: translate - visible completion/help label`
+
+### src/lib/blocks/common/CodeEditor/extensions.ts:131
+  Status:       [NEW]
+  String:       "document properties"
+  Description:  visible completion/help label
+  Suggested Key: `editor.completion.label_document_properties`
+  Existing:     none
+  Reason:       no existing key matches the string value "document properties..."
+  Source:       `detail = "document properties"; // I18N: translate - visible completion/help label`
+
+### src/lib/blocks/common/CodeEditor/extensions.ts:133
+  Status:       [NEW]
+  String:       "environment variables"
+  Description:  visible completion/help label
+  Suggested Key: `editor.completion.label_environment_variables`
+  Existing:     none
+  Reason:       no existing key matches the string value "environment variables..."
+  Source:       `detail = "environment variables"; // I18N: translate - visible completion/help label`
+
+### src/lib/blocks/common/CodeEditor/extensions.ts:135
+  Status:       [NEW]
+  String:       "workspace properties"
+  Description:  visible completion/help label
+  Suggested Key: `editor.completion.label_workspace_properties`
+  Existing:     none
+  Reason:       no existing key matches the string value "workspace properties..."
+  Source:       `detail = "workspace properties"; // I18N: translate - visible completion/help label`
+
+### src/lib/blocks/common/CodeEditor/extensions.ts:170
+  Status:       [NEW]
+  String:       "Properties"
+  Description:  visible completion/help label
+  Suggested Key: `editor.completion.label_properties`
+  Existing:     none
+  Reason:       no existing key matches the string value "Properties..."
+  Source:       `let sectionName = "Properties"; // I18N: translate - visible completion/help label`
+
+### src/lib/blocks/common/CodeEditor/extensions.ts:172
+  Status:       [NEW]
+  String:       "Template Variables"
+  Description:  visible completion/help label
+  Suggested Key: `editor.completion.label_template_variables`
+  Existing:     none
+  Reason:       no existing key matches the string value "Template Variables..."
+  Source:       `sectionName = "Template Variables"; // I18N: translate - visible completion/help label`
+
+### src/lib/blocks/common/CodeEditor/extensions.ts:174
+  Status:       [NEW]
+  String:       "Document Properties"
+  Description:  visible completion/help label
+  Suggested Key: `editor.completion.label_document_properties`
+  Existing:     none
+  Reason:       no existing key matches the string value "Document Properties..."
+  Source:       `sectionName = "Document Properties"; // I18N: translate - visible completion/help label`
+
+### src/lib/blocks/common/CodeEditor/extensions.ts:176
+  Status:       [NEW]
+  String:       "Environment Variables"
+  Description:  visible completion/help label
+  Suggested Key: `editor.completion.label_environment_variables`
+  Existing:     none
+  Reason:       no existing key matches the string value "Environment Variables..."
+  Source:       `sectionName = "Environment Variables"; // I18N: translate - visible completion/help label`
+
+### src/lib/blocks/common/CodeEditor/extensions.ts:178
+  Status:       [NEW]
+  String:       "Workspace Properties"
+  Description:  visible completion/help label
+  Suggested Key: `editor.completion.label_workspace_properties`
+  Existing:     none
+  Reason:       no existing key matches the string value "Workspace Properties..."
+  Source:       `sectionName = "Workspace Properties"; // I18N: translate - visible completion/help label`
+
+### src/lib/blocks/github-preview/api.ts:74
+  Status:       [NEW]
+  String:       "Failed to fetch repo: ${response.status} ${response.statusText}"
+  Description:  rendered preview error
+  Suggested Key: `blocks.preview.fetch_error_failed_to_fetch_repo_responsestatus_resp`
+  Existing:     none
+  Reason:       no existing key matches the string value "Failed to fetch repo: ${response.status} ${response.statusTe..."
+  Source:       `throw new Error(`Failed to fetch repo: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error`
+
+### src/lib/blocks/github-preview/api.ts:89
+  Status:       [NEW]
+  String:       "Failed to fetch PR: ${response.status} ${response.statusText}"
+  Description:  rendered preview error
+  Suggested Key: `blocks.preview.fetch_error_failed_to_fetch_pr_responsestatus_respon`
+  Existing:     none
+  Reason:       no existing key matches the string value "Failed to fetch PR: ${response.status} ${response.statusText..."
+  Source:       `throw new Error(`Failed to fetch PR: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error`
+
+### src/lib/blocks/github-preview/api.ts:108
+  Status:       [NEW]
+  String:       "Failed to fetch issue: ${response.status} ${response.statusText}"
+  Description:  rendered preview error
+  Suggested Key: `blocks.preview.fetch_error_failed_to_fetch_issue_responsestatus_res`
+  Existing:     none
+  Reason:       no existing key matches the string value "Failed to fetch issue: ${response.status} ${response.statusT..."
+  Source:       `throw new Error(`Failed to fetch issue: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error`
+
+### src/lib/blocks/github-preview/api.ts:129
+  Status:       [NEW]
+  String:       "Failed to fetch code: ${response.status} ${response.statusText}"
+  Description:  rendered preview error
+  Suggested Key: `blocks.preview.fetch_error_failed_to_fetch_code_responsestatus_resp`
+  Existing:     none
+  Reason:       no existing key matches the string value "Failed to fetch code: ${response.status} ${response.statusTe..."
+  Source:       `throw new Error(`Failed to fetch code: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error`
+
+### src/lib/blocks/github-preview/components/GitHubPreview.tsx:71
+  Status:       [NEW]
+  String:       "Unknown URL type: ${props.urlType}"
+  Description:  rendered preview error
+  Suggested Key: `blocks.preview.fetch_error_unknown_url_type_propsurltype`
+  Existing:     none
+  Reason:       no existing key matches the string value "Unknown URL type: ${props.urlType}..."
+  Source:       `throw new Error(`Unknown URL type: ${props.urlType}`);// I18N: translate - rendered preview error`
+
+### src/lib/blocks/github-preview/components/GitHubPreview.tsx:85
+  Status:       [NEW]
+  String:       "Failed to fetch data"
+  Description:  rendered preview fallback
+  Suggested Key: `blocks.preview.fetch_fallback`
+  Existing:     none
+  Reason:       no existing key matches the string value "Failed to fetch data..."
+  Source:       `setError(err instanceof Error ? err.message : "Failed to fetch data");// I18N: translate - rendered preview fallback`
+
+### src/lib/blocks/gitlab-preview/api.ts:72
+  Status:       [NEW]
+  String:       "Failed to fetch project: ${response.status} ${response.statusText}"
+  Description:  rendered preview error
+  Suggested Key: `blocks.preview.fetch_error_failed_to_fetch_project_responsestatus_r`
+  Existing:     none
+  Reason:       no existing key matches the string value "Failed to fetch project: ${response.status} ${response.statu..."
+  Source:       `throw new Error(`Failed to fetch project: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error`
+
+### src/lib/blocks/gitlab-preview/api.ts:105
+  Status:       [NEW]
+  String:       "Failed to fetch MR: ${response.status} ${response.statusText}"
+  Description:  rendered preview error
+  Suggested Key: `blocks.preview.fetch_error_failed_to_fetch_mr_responsestatus_respon`
+  Existing:     none
+  Reason:       no existing key matches the string value "Failed to fetch MR: ${response.status} ${response.statusText..."
+  Source:       `throw new Error(`Failed to fetch MR: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error`
+
+### src/lib/blocks/gitlab-preview/api.ts:138
+  Status:       [NEW]
+  String:       "Failed to fetch issue: ${response.status} ${response.statusText}"
+  Description:  rendered preview error
+  Suggested Key: `blocks.preview.fetch_error_failed_to_fetch_issue_responsestatus_res`
+  Existing:     none
+  Reason:       no existing key matches the string value "Failed to fetch issue: ${response.status} ${response.statusT..."
+  Source:       `throw new Error(`Failed to fetch issue: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error`
+
+### src/lib/blocks/gitlab-preview/api.ts:174
+  Status:       [NEW]
+  String:       "Failed to fetch code: ${response.status} ${response.statusText}"
+  Description:  rendered preview error
+  Suggested Key: `blocks.preview.fetch_error_failed_to_fetch_code_responsestatus_resp`
+  Existing:     none
+  Reason:       no existing key matches the string value "Failed to fetch code: ${response.status} ${response.statusTe..."
+  Source:       `throw new Error(`Failed to fetch code: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error`
+
+### src/lib/blocks/gitlab-preview/components/GitLabPreview.tsx:71
+  Status:       [NEW]
+  String:       "Unknown URL type: ${props.urlType}"
+  Description:  rendered preview error
+  Suggested Key: `blocks.preview.fetch_error_unknown_url_type_propsurltype`
+  Existing:     none
+  Reason:       no existing key matches the string value "Unknown URL type: ${props.urlType}..."
+  Source:       `throw new Error(`Unknown URL type: ${props.urlType}`);// I18N: translate - rendered preview error`
+
+### src/lib/blocks/gitlab-preview/components/GitLabPreview.tsx:84
+  Status:       [NEW]
+  String:       "Failed to fetch data"
+  Description:  rendered preview fallback
+  Suggested Key: `blocks.preview.fetch_fallback`
+  Existing:     none
+  Reason:       no existing key matches the string value "Failed to fetch data..."
+  Source:       `setError(err instanceof Error ? err.message : "Failed to fetch data");// I18N: translate - rendered preview fallback`
+
+### src/routes/root/DesktopImportModal.tsx:102
+  Status:       [NEW]
+  String:       "Not able to load target workspace"
+  Description:  rendered import error
+  Suggested Key: `desktop_import.error_not_able_to_load_target_workspace`
+  Existing:     none
+  Reason:       no existing key matches the string value "Not able to load target workspace..."
+  Source:       `throw new Error("Not able to load target workspace"); // I18N: translate - rendered import error`
+
+### src/routes/root/DesktopImportModal.tsx:106
+  Status:       [NEW]
+  String:       "You do not have permission to manage runbooks in the target workspace"
+  Description:  rendered import error
+  Suggested Key: `desktop_import.error_you_do_not_have_permission_to_manage_run`
+  Existing:     none
+  Reason:       no existing key matches the string value "You do not have permission to manage runbooks in the target ..."
+  Source:       `throw new Error("You do not have permission to manage runbooks in the target workspace"); // I18N: translate - rendered import error`
+
+### src/routes/root/DesktopImportModal.tsx:120
+  Status:       [NEW]
+  String:       "Failed to create runbook in the target workspace"
+  Description:  rendered import error
+  Suggested Key: `desktop_import.error_failed_to_create_runbook_in_the_target_w`
+  Existing:     none
+  Reason:       no existing key matches the string value "Failed to create runbook in the target workspace..."
+  Source:       `throw new Error("Failed to create runbook in the target workspace"); // I18N: translate - rendered import error`
+
+### src/routes/root/DesktopImportModal.tsx:130
+  Status:       [REUSE]
+  String:       "An unknown error occurred"
+  Description:  rendered import error fallback
+  Suggested Key: `common.unknown_error`
+  Existing:     common.unknown_error
+  Reason:       existing key value exactly matches, key name fits context, used 2 time(s) in 2 file(s)
+  Source:       `: "An unknown error occurred", // I18N: translate - rendered import error fallback`
+
+### src/routes/runbooks/Runbooks.tsx:365
+  Status:       [NEW]
+  String:       "Tried to create a new tag with no runbook selected"
+  Description:  shown by tag selector form error
+  Suggested Key: `tag_selector.error_tried_to_create_a_new_tag_with_no_runboo`
+  Existing:     none
+  Reason:       no existing key matches the string value "Tried to create a new tag with no runbook selected..."
+  Source:       `throw new Error("Tried to create a new tag with no runbook selected"); // I18N: translate - shown by tag selector form error`
+
+### src/routes/runbooks/Runbooks.tsx:393
+  Status:       [NEW]
+  String:       "Tried to delete a tag with no runbook selected"
+  Description:  shown by tag selector form error
+  Suggested Key: `tag_selector.error_tried_to_delete_a_tag_with_no_runbook_se`
+  Existing:     none
+  Reason:       no existing key matches the string value "Tried to delete a tag with no runbook selected..."
+  Source:       `throw new Error("Tried to delete a tag with no runbook selected"); // I18N: translate - shown by tag selector form error`

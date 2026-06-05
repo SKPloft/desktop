@@ -2,4 +2,4 @@
 import type { AIMessageContent } from "./AIMessageContent";
 import type { AIMessageRole } from "./AIMessageRole";
 
-export type AIMessage = { role: AIMessageRole; content: AIMessageContent };
+export type AIMessage = { role: AIMessageRole, content: AIMessageContent, };

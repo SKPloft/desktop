@@ -1,0 +1,81 @@
+# I18N Key Assignment Report
+# Generated: 2026-06-06
+# Format: file:line | STATUS | assigned_key | description | string_value
+# STATUS: [REUSE]=existing key fits, [NEW]=new key needed, [RENAME]=existing key found but name should change
+#
+# EXISTING KEY REUSE: 1 found (common.unknown_error)
+# NEW KEYS NEEDED: 60
+# RENAMES SUGGESTED: 0
+---
+src/components/runbooks/editor/hooks/useAIInlineGeneration.ts:588 | [NEW] | common.fallback_unknown_error | toast fallback | "Unknown error"
+src/components/runbooks/editor/hooks/useAIInlineGeneration.ts:726 | [NEW] | common.fallback_failed_to_start_generation | toast fallback | "Failed to start generation"
+src/components/runbooks/editor/hooks/useAIInlineGeneration.ts:775 | [NEW] | common.fallback_failed_to_edit_block | toast fallback | "Failed to edit block"
+src/components/runbooks/List/ConvertWorkspaceDialog.tsx:102 | [NEW] | workspace.convert.validation_path_required_offline | rendered conversion validation | "Selected path is required for offline workspaces"
+src/components/runbooks/List/ConvertWorkspaceDialog.tsx:146 | [NEW] | workspace.convert.validation_path_required_hybrid | rendered conversion validation | "Selected path is required for converting hybrid workspaces"
+src/components/runbooks/List/Workspace.tsx:126 | [NEW] | workspace.validation_cannot_create_folder_empty_path | rendered workspace validation | "Cannot create folder with empty path"
+src/components/runbooks/List/Workspace.tsx:163 | [NEW] | workspace.validation_unexpected_path_traversal | rendered workspace validation | "Unexpected end of path traversal"
+src/components/Settings/Settings.tsx:1493 | [NEW] | settings.ai.provider.label_claude_direct_api | visible provider label | "Claude (Anthropic direct API)"
+src/lib/ai/block_registry.ts:34 | [NEW] | ai.agent.block_documentation | AI-visible block documentation text | "No documentation found for block type: ..." (varies)
+src/lib/ai/block_registry.ts:38 | [NEW] | ai.agent.block_documentation | AI-visible block documentation text | "Docs for '...' block (known to users as: ...)" (concatenated)
+src/lib/ai/block_registry.ts:39 | [NEW] | ai.agent.block_documentation | AI-visible block documentation text | (concatenated fragment)
+src/lib/ai/block_registry.ts:40 | [NEW] | ai.agent.block_documentation | AI-visible block documentation text | (concatenated fragment)
+src/lib/ai/block_registry.ts:41 | [NEW] | ai.agent.block_documentation | AI-visible block documentation text | (concatenated fragment)
+src/lib/ai/block_registry.ts:42 | [NEW] | ai.agent.block_documentation | AI-visible block documentation text | (concatenated fragment)
+src/lib/ai/block_registry.ts:43 | [NEW] | ai.agent.block_documentation | AI-visible block documentation text | (concatenated fragment)
+src/lib/ai/tools.ts:79 | [NEW] | ai.agent.tool_error_ref_block_id_required | AI-visible tool result/error | "reference_block_id required for 'before' or 'after' position"
+src/lib/ai/tools.ts:106 | [NEW] | ai.agent.tool_error_block_ids_empty | AI-visible tool result/error | "block_ids cannot be empty"
+src/lib/ai/tools.ts:111 | [NEW] | ai.agent.tool_error_no_blocks_found | AI-visible tool result/error | "No blocks found with the specified IDs"
+src/lib/ai/tools.ts:203 | [NEW] | ai.agent.tool_result_no_editor | AI-visible tool result/error | "No editor available"
+src/lib/ai/tools.ts:228 | [NEW] | ai.agent.tool_error_unknown_tool | AI-visible tool result/error | "Unknown tool: ..."
+src/lib/ai/tools.ts:232 | [NEW] | ai.agent.tool_error_fallback | AI-visible tool result/error | "Unknown error"
+src/lib/ai/useAIChat.ts:151 | [NEW] | ai.agent.tool_result_user_cancelled | AI-visible tool result | "User cancelled this operation"
+src/lib/blocks/codeberg-preview/api.ts:77 | [NEW] | blocks.preview.fetch_error | rendered preview error | "Failed to fetch repo: ..."
+src/lib/blocks/codeberg-preview/api.ts:109 | [NEW] | blocks.preview.fetch_error | rendered preview error | "Failed to fetch PR: ..."
+src/lib/blocks/codeberg-preview/api.ts:146 | [NEW] | blocks.preview.fetch_error | rendered preview error | "Failed to fetch issue: ..."
+src/lib/blocks/codeberg-preview/api.ts:183 | [NEW] | blocks.preview.fetch_error | rendered preview error | "Failed to fetch code: ..."
+src/lib/blocks/codeberg-preview/components/CodebergPreview.tsx:76 | [NEW] | blocks.preview.error_unknown_url_type | rendered preview error | "Unknown URL type: ..."
+src/lib/blocks/codeberg-preview/components/CodebergPreview.tsx:89 | [NEW] | blocks.preview.fetch_fallback | rendered preview fallback | "Failed to fetch data"
+src/lib/blocks/common/CodeEditor/extensions.ts:112 | [NEW] | editor.completion.label_first_block | visible completion/help label | "first block"
+src/lib/blocks/common/CodeEditor/extensions.ts:113 | [NEW] | editor.completion.label_last_block | visible completion/help label | "last block"
+src/lib/blocks/common/CodeEditor/extensions.ts:114 | [NEW] | editor.completion.label_previous_block | visible completion/help label | "previous block"
+src/lib/blocks/common/CodeEditor/extensions.ts:115 | [NEW] | editor.completion.label_named_block | visible completion/help label | "named block"
+src/lib/blocks/common/CodeEditor/extensions.ts:116 | [NEW] | editor.completion.label_runbook_blocks | visible completion/help label | "runbook blocks"
+src/lib/blocks/common/CodeEditor/extensions.ts:120 | [NEW] | editor.completion.label_workspace_root | visible completion/help label | "workspace root"
+src/lib/blocks/common/CodeEditor/extensions.ts:129 | [NEW] | editor.completion.detail_template_variables | visible completion/help label | "template variables"
+src/lib/blocks/common/CodeEditor/extensions.ts:131 | [NEW] | editor.completion.detail_document_properties | visible completion/help label | "document properties"
+src/lib/blocks/common/CodeEditor/extensions.ts:133 | [NEW] | editor.completion.detail_environment_variables | visible completion/help label | "environment variables"
+src/lib/blocks/common/CodeEditor/extensions.ts:135 | [NEW] | editor.completion.detail_workspace_properties | visible completion/help label | "workspace properties"
+src/lib/blocks/common/CodeEditor/extensions.ts:170 | [NEW] | editor.completion.section_properties | visible completion/help label | "Properties"
+src/lib/blocks/common/CodeEditor/extensions.ts:172 | [NEW] | editor.completion.section_template_variables | visible completion/help label | "Template Variables"
+src/lib/blocks/common/CodeEditor/extensions.ts:174 | [NEW] | editor.completion.section_document_properties | visible completion/help label | "Document Properties"
+src/lib/blocks/common/CodeEditor/extensions.ts:176 | [NEW] | editor.completion.section_environment_variables | visible completion/help label | "Environment Variables"
+src/lib/blocks/common/CodeEditor/extensions.ts:178 | [NEW] | editor.completion.section_workspace_properties | visible completion/help label | "Workspace Properties"
+src/lib/blocks/github-preview/api.ts:74 | [NEW] | blocks.preview.fetch_error | rendered preview error | "Failed to fetch repo: ..."
+src/lib/blocks/github-preview/api.ts:89 | [NEW] | blocks.preview.fetch_error | rendered preview error | "Failed to fetch PR: ..."
+src/lib/blocks/github-preview/api.ts:108 | [NEW] | blocks.preview.fetch_error | rendered preview error | "Failed to fetch issue: ..."
+src/lib/blocks/github-preview/api.ts:129 | [NEW] | blocks.preview.fetch_error | rendered preview error | "Failed to fetch code: ..."
+src/lib/blocks/github-preview/components/GitHubPreview.tsx:71 | [NEW] | blocks.preview.error_unknown_url_type | rendered preview error | "Unknown URL type: ..."
+src/lib/blocks/github-preview/components/GitHubPreview.tsx:85 | [NEW] | blocks.preview.fetch_fallback | rendered preview fallback | "Failed to fetch data"
+src/lib/blocks/gitlab-preview/api.ts:72 | [NEW] | blocks.preview.fetch_error | rendered preview error | "Failed to fetch project: ..."
+src/lib/blocks/gitlab-preview/api.ts:105 | [NEW] | blocks.preview.fetch_error | rendered preview error | "Failed to fetch MR: ..."
+src/lib/blocks/gitlab-preview/api.ts:138 | [NEW] | blocks.preview.fetch_error | rendered preview error | "Failed to fetch issue: ..."
+src/lib/blocks/gitlab-preview/api.ts:174 | [NEW] | blocks.preview.fetch_error | rendered preview error | "Failed to fetch code: ..."
+src/lib/blocks/gitlab-preview/components/GitLabPreview.tsx:71 | [NEW] | blocks.preview.error_unknown_url_type | rendered preview error | "Unknown URL type: ..."
+src/lib/blocks/gitlab-preview/components/GitLabPreview.tsx:84 | [NEW] | blocks.preview.fetch_fallback | rendered preview fallback | "Failed to fetch data"
+src/routes/root/DesktopImportModal.tsx:102 | [NEW] | desktop_import.error_cannot_load_target_workspace | rendered import error | "Not able to load target workspace"
+src/routes/root/DesktopImportModal.tsx:106 | [NEW] | desktop_import.error_no_permission_manage_runbooks | rendered import error | "You do not have permission to manage runbooks in the target workspace"
+src/routes/root/DesktopImportModal.tsx:120 | [NEW] | desktop_import.error_failed_to_create_runbook | rendered import error | "Failed to create runbook in the target workspace"
+src/routes/root/DesktopImportModal.tsx:130 | [REUSE] | common.unknown_error | rendered import error fallback | "An unknown error occurred"
+src/routes/runbooks/Runbooks.tsx:365 | [NEW] | tag_selector.error_no_runbook_selected | shown by tag selector form error | "Tried to create a new tag with no runbook selected"
+src/routes/runbooks/Runbooks.tsx:393 | [NEW] | tag_selector.error_no_runbook_selected | shown by tag selector form error | "Tried to delete a tag with no runbook selected"
+---
+# KEY COLLISION NOTES:
+# - `blocks.preview.fetch_error` used 12x across 3 providers (codeberg/github/gitlab) — 
+#   same key can be used everywhere since the string template is identical pattern
+# - `blocks.preview.error_unknown_url_type` used 3x — same key across all providers
+# - `blocks.preview.fetch_fallback` used 3x — same key since same string "Failed to fetch data"
+# - `editor.completion.section_template_variables` (line 172) collides with 
+#   `editor.completion.detail_template_variables` (line 129-135) — different casing,
+#   marked as distinct keys (section vs detail) since they serve different contexts
+#
+# DETAILED ANALYSIS: /tmp/i18n-translate-lines-assigned.txt

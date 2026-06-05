@@ -1,0 +1,548 @@
+# I18N Replacement Plan
+# =====================
+# How to replace each source line containing "// I18N: translate - ..."
+# with an i18n key call (t() / useTranslation).
+#
+# Generated: 2026-06-06
+# Based on analysis of 61 marked lines across 16 files.
+#
+# LEGEND:
+#   [ADD_IMPORT]     = file currently has NO i18n import; must add one
+#   [HAS_IMPORT]     = file already imports t()/useTranslation
+#   [HOOK]           = use `const { t } = useTranslation()` (inside React component)
+#   [DIRECT]         = use `import { t } from "@/lib/i18n"` (outside component)
+#   [INTERPOLATED]   = template literal needs `t("key", { var: value })`
+#   [CONCATENATED]   = multi-line concatenation needs single t() call
+# ====================================================================================
+
+---
+
+## FILE 1: src/components/runbooks/editor/hooks/useAIInlineGeneration.ts
+  Import status: [HAS_IMPORT] — already has `import { t } from "@/lib/i18n"`
+  Calling convention: [DIRECT] — non-React hook scope (inline generation callbacks)
+
+### Line 588
+  Current:
+    const message = event.message || "Unknown error"; // I18N: translate - toast fallback
+  Replace with:
+    const message = event.message || t("common.fallback_unknown_error");
+
+### Line 726
+  Current:
+    const message = error instanceof Error ? error.message : "Failed to start generation"; // I18N: translate - toast fallback
+  Replace with:
+    const message = error instanceof Error ? error.message : t("common.fallback_failed_to_start_generation");
+
+### Line 775
+  Current:
+    const message = error instanceof Error ? error.message : "Failed to edit block"; // I18N: translate - toast fallback
+  Replace with:
+    const message = error instanceof Error ? error.message : t("common.fallback_failed_to_edit_block");
+
+---
+
+## FILE 2: src/components/runbooks/List/ConvertWorkspaceDialog.tsx
+  Import status: [HAS_IMPORT] — already has `import { useTranslation, t } from "@/lib/i18n"`
+  Calling convention: [DIRECT] — both lines are inside `migrateWorkspace()` standalone function (not inside React component)
+  Note: The standalone `migrateWorkspace` function already uses `t("common.untitled")` at line 136
+
+### Line 102
+  Current:
+    throw new Error("Selected path is required for offline workspaces");// I18N: translate - rendered conversion validation
+  Replace with:
+    throw new Error(t("workspace.convert.validation_path_required_offline"));
+
+### Line 146
+  Current:
+    throw new Error("Selected path is required for converting hybrid workspaces");// I18N: translate - rendered conversion validation
+  Replace with:
+    throw new Error(t("workspace.convert.validation_path_required_hybrid"));
+
+---
+
+## FILE 3: src/components/runbooks/List/Workspace.tsx
+  Import status: [HAS_IMPORT] — already has `import { useTranslation, t as i18n_t } from "@/lib/i18n"`
+  Calling convention: [HOOK] — both lines are inside `findOrCreateFolder()` which is a nested function within the `WorkspaceComponent` React component (line 119). The component already has `const { t } = useTranslation()` at line 223, but `findOrCreateFolder` is defined ABOVE that at line 119.
+  
+  IMPORTANT: The `const { t }` assignment is at line 223, but `findOrCreateFolder()` is defined starting at line 119. The function is called later in the render scope, but the destructured `t` is not available at the definition site in the closure. Two options:
+  
+  Option A (recommended): Move `const { t } = useTranslation()` ABOVE the `findOrCreateFolder` definition (before line 119)
+  Option B: Use the already-imported `i18n_t` (alias for direct t) since this is a closures issue
+
+### Line 126
+  Current:
+    throw new Error("Cannot create folder with empty path");// I18N: translate - rendered workspace validation
+  Replace with (Option B):
+    throw new Error(i18n_t("workspace.validation_cannot_create_folder_empty_path"));
+
+### Line 163
+  Current:
+    throw new Error("Unexpected end of path traversal");// I18N: translate - rendered workspace validation
+  Replace with (Option B):
+    throw new Error(i18n_t("workspace.validation_unexpected_path_traversal"));
+
+---
+
+## FILE 4: src/components/Settings/Settings.tsx
+  Import status: [HAS_IMPORT] — already has `import { useTranslation } from "@/lib/i18n"`
+  Calling convention: [HOOK] — inside a React component that already calls `const { t } = useTranslation()`
+
+### Line 1493
+  Current:
+    provider: "Claude (Anthropic direct API)",// I18N: translate - visible provider label
+  Replace with:
+    provider: t("settings.ai.provider.label_claude_direct_api"),
+
+---
+
+## FILE 5: src/lib/ai/block_registry.ts
+  Import status: [ADD_IMPORT] — no i18n import currently
+  Add import:
+    import { t } from "@/lib/i18n";
+  Calling convention: [DIRECT] — class method `getBlockDocs()`, not a React component
+
+### Lines 34
+  Current:
+    return `No documentation found for block type: ${blockType}`; // I18N: translate - AI-visible block documentation text
+  Replace with:
+    return t("ai.agent.block_documentation_not_found", { blockType });
+
+### Lines 38-43 (CONCATENATED STRING → single t() call with template):
+
+  Current:
+    return (
+      "Docs for '" + // I18N: translate - AI-visible block documentation text
+      blockType + // I18N: translate - AI-visible block documentation text
+      "' block (known to users as: " + // I18N: translate - AI-visible block documentation text
+      resolve(block.friendlyName) + // I18N: translate - AI-visible block documentation text
+      "):\n" + // I18N: translate - AI-visible block documentation text
+      resolve(block.description) // I18N: translate - AI-visible block documentation text
+    );
+
+  Replace with:
+    return t("ai.agent.block_documentation", {
+      blockType,
+      friendlyName: resolve(block.friendlyName),
+      description: resolve(block.description),
+    });
+
+  NOTE: This replacement is for the ENTIRE return statement (lines 37-44).
+  The en.yml entry would be:
+    "ai.agent.block_documentation": "Docs for '{{blockType}}' block (known to users as: {{friendlyName}}):\n{{description}}"
+
+---
+
+## FILE 6: src/lib/ai/tools.ts
+  Import status: [ADD_IMPORT] — no i18n import currently
+  Add import:
+    import { t } from "@/lib/i18n";
+  Calling convention: [DIRECT] — class methods, not React components
+
+### Line 79
+  Current:
+    throw new Error("reference_block_id required for 'before' or 'after' position"); // I18N: translate - AI-visible tool result/error
+  Replace with:
+    throw new Error(t("ai.agent.tool_error_ref_block_id_required"));
+
+### Line 106
+  Current:
+    throw new Error("block_ids cannot be empty"); // I18N: translate - AI-visible tool result/error
+  Replace with:
+    throw new Error(t("ai.agent.tool_error_block_ids_empty"));
+
+### Line 111
+  Current:
+    throw new Error("No blocks found with the specified IDs"); // I18N: translate - AI-visible tool result/error
+  Replace with:
+    throw new Error(t("ai.agent.tool_error_no_blocks_found"));
+
+### Line 203
+  Current:
+    return { success: false, result: "No editor available" }; // I18N: translate - AI-visible tool result/error
+  Replace with:
+    return { success: false, result: t("ai.agent.tool_result_no_editor") };
+
+### Line 228 [INTERPOLATED]
+  Current:
+    throw new Error(`Unknown tool: ${toolName}`); // I18N: translate - AI-visible tool result/error
+  Replace with:
+    throw new Error(t("ai.agent.tool_error_unknown_tool", { toolName }));
+
+### Line 232
+  Current:
+    const message = error instanceof Error ? error.message : "Unknown error"; // I18N: translate - AI-visible tool result/error
+  Replace with:
+    const message = error instanceof Error ? error.message : t("ai.agent.tool_error_fallback");
+
+---
+
+## FILE 7: src/lib/ai/useAIChat.ts
+  Import status: [ADD_IMPORT] — no i18n import currently
+  Add import:
+    import { t } from "@/lib/i18n";
+  Calling convention: [DIRECT] — React hook, but this is a non-JSX callback where direct t() works
+
+### Line 151
+  Current:
+    result: "User cancelled this operation", // I18N: translate - AI-visible tool result
+  Replace with:
+    result: t("ai.agent.tool_result_user_cancelled"),
+
+---
+
+## FILE 8: src/lib/blocks/codeberg-preview/api.ts
+  Import status: [ADD_IMPORT] — no i18n import currently
+  Add import:
+    import { t } from "@/lib/i18n";
+  Calling convention: [DIRECT] — standalone async functions
+
+### Line 77 [INTERPOLATED]
+  Current:
+    throw new Error(`Failed to fetch repo: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error
+  Replace with:
+    throw new Error(t("blocks.preview.fetch_error", { status: response.status, statusText: response.statusText }));
+
+### Line 109 [INTERPOLATED]
+  Current:
+    throw new Error(`Failed to fetch PR: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error
+  Replace with:
+    throw new Error(t("blocks.preview.fetch_error", { status: response.status, statusText: response.statusText }));
+
+### Line 146 [INTERPOLATED]
+  Current:
+    throw new Error(`Failed to fetch issue: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error
+  Replace with:
+    throw new Error(t("blocks.preview.fetch_error", { status: response.status, statusText: response.statusText }));
+
+### Line 183 [INTERPOLATED]
+  Current:
+    throw new Error(`Failed to fetch code: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error
+  Replace with:
+    throw new Error(t("blocks.preview.fetch_error", { status: response.status, statusText: response.statusText }));
+
+---
+
+## FILE 9: src/lib/blocks/codeberg-preview/components/CodebergPreview.tsx
+  Import status: [ADD_IMPORT] — no i18n import currently
+  Add import:
+    import { useTranslation } from "@/lib/i18n";
+  Calling convention: [HOOK] — add `const { t } = useTranslation()` inside the component
+
+### Line 76 [INTERPOLATED]
+  Current:
+    throw new Error(`Unknown URL type: ${props.urlType}`);// I18N: translate - rendered preview error
+  Replace with:
+    throw new Error(t("blocks.preview.error_unknown_url_type", { urlType: props.urlType }));
+
+### Line 89
+  Current:
+    setError(err instanceof Error ? err.message : "Failed to fetch data");// I18N: translate - rendered preview fallback
+  Replace with:
+    setError(err instanceof Error ? err.message : t("blocks.preview.fetch_fallback"));
+
+---
+
+## FILE 10: src/lib/blocks/common/CodeEditor/extensions.ts
+  Import status: [ADD_IMPORT] — no i18n import currently
+  Add import:
+    import { t } from "@/lib/i18n";
+  Calling convention: [DIRECT] — module-level functions, not React components
+
+### Lines 112-116 (Object literal)
+  Current:
+    first: "first block", // I18N: translate - visible completion/help label
+    last: "last block", // I18N: translate - visible completion/help label
+    previous: "previous block", // I18N: translate - visible completion/help label
+    named: "named block", // I18N: translate - visible completion/help label
+    content: "runbook blocks", // I18N: translate - visible completion/help label
+  Replace with:
+    first: t("editor.completion.label_first_block"),
+    last: t("editor.completion.label_last_block"),
+    previous: t("editor.completion.label_previous_block"),
+    named: t("editor.completion.label_named_block"),
+    content: t("editor.completion.label_runbook_blocks"),
+
+### Line 120
+  Current:
+    root: "workspace root", // I18N: translate - visible completion/help label
+  Replace with:
+    root: t("editor.completion.label_workspace_root"),
+
+### Lines 129-135
+  Current:
+    detail = "template variables"; // I18N: translate - visible completion/help label
+    detail = "document properties"; // I18N: translate - visible completion/help label
+    detail = "environment variables"; // I18N: translate - visible completion/help label
+    detail = "workspace properties"; // I18N: translate - visible completion/help label
+  Replace with:
+    detail = t("editor.completion.detail_template_variables");
+    detail = t("editor.completion.detail_document_properties");
+    detail = t("editor.completion.detail_environment_variables");
+    detail = t("editor.completion.detail_workspace_properties");
+
+### Lines 170-178
+  Current:
+    let sectionName = "Properties"; // I18N: translate - visible completion/help label
+    sectionName = "Template Variables"; // I18N: translate - visible completion/help label
+    sectionName = "Document Properties"; // I18N: translate - visible completion/help label
+    sectionName = "Environment Variables"; // I18N: translate - visible completion/help label
+    sectionName = "Workspace Properties"; // I18N: translate - visible completion/help label
+  Replace with:
+    let sectionName = t("editor.completion.section_properties");
+    sectionName = t("editor.completion.section_template_variables");
+    sectionName = t("editor.completion.section_document_properties");
+    sectionName = t("editor.completion.section_environment_variables");
+    sectionName = t("editor.completion.section_workspace_properties");
+
+---
+
+## FILE 11: src/lib/blocks/github-preview/api.ts
+  Import status: [ADD_IMPORT] — no i18n import currently
+  Add import:
+    import { t } from "@/lib/i18n";
+  Calling convention: [DIRECT] — standalone async functions
+
+### Lines 74, 89, 108, 129 [INTERPOLATED]
+  Current:
+    throw new Error(`Failed to fetch repo: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error
+    throw new Error(`Failed to fetch PR: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error
+    throw new Error(`Failed to fetch issue: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error
+    throw new Error(`Failed to fetch code: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error
+  Replace with:
+    throw new Error(t("blocks.preview.fetch_error", { status: response.status, statusText: response.statusText }));
+  (All 4 use the same key — the exact resource type is determined by the caller context)
+
+---
+
+## FILE 12: src/lib/blocks/github-preview/components/GitHubPreview.tsx
+  Import status: [ADD_IMPORT] — no i18n import currently
+  Add import:
+    import { useTranslation } from "@/lib/i18n";
+  Calling convention: [HOOK] — add `const { t } = useTranslation()` inside the component
+
+### Line 71 [INTERPOLATED]
+  Current:
+    throw new Error(`Unknown URL type: ${props.urlType}`);// I18N: translate - rendered preview error
+  Replace with:
+    throw new Error(t("blocks.preview.error_unknown_url_type", { urlType: props.urlType }));
+
+### Line 85
+  Current:
+    setError(err instanceof Error ? err.message : "Failed to fetch data");// I18N: translate - rendered preview fallback
+  Replace with:
+    setError(err instanceof Error ? err.message : t("blocks.preview.fetch_fallback"));
+
+---
+
+## FILE 13: src/lib/blocks/gitlab-preview/api.ts
+  Import status: [ADD_IMPORT] — no i18n import currently
+  Add import:
+    import { t } from "@/lib/i18n";
+  Calling convention: [DIRECT] — standalone async functions
+
+### Lines 72, 105, 138, 174 [INTERPOLATED]
+  Current:
+    throw new Error(`Failed to fetch project: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error
+    throw new Error(`Failed to fetch MR: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error
+    throw new Error(`Failed to fetch issue: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error
+    throw new Error(`Failed to fetch code: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error
+  Replace with:
+    throw new Error(t("blocks.preview.fetch_error", { status: response.status, statusText: response.statusText }));
+  (All 4 use the same key)
+
+---
+
+## FILE 14: src/lib/blocks/gitlab-preview/components/GitLabPreview.tsx
+  Import status: [ADD_IMPORT] — no i18n import currently
+  Add import:
+    import { useTranslation } from "@/lib/i18n";
+  Calling convention: [HOOK] — add `const { t } = useTranslation()` inside the component
+
+### Line 71 [INTERPOLATED]
+  Current:
+    throw new Error(`Unknown URL type: ${props.urlType}`);// I18N: translate - rendered preview error
+  Replace with:
+    throw new Error(t("blocks.preview.error_unknown_url_type", { urlType: props.urlType }));
+
+### Line 84
+  Current:
+    setError(err instanceof Error ? err.message : "Failed to fetch data");// I18N: translate - rendered preview fallback
+  Replace with:
+    setError(err instanceof Error ? err.message : t("blocks.preview.fetch_fallback"));
+
+---
+
+## FILE 15: src/routes/root/DesktopImportModal.tsx
+  Import status: [HAS_IMPORT] — already has `import { useTranslation } from "@/lib/i18n"`
+  Calling convention: [HOOK] — inside React component that already has `const { t } = useTranslation()`
+
+### Line 102
+  Current:
+    throw new Error("Not able to load target workspace"); // I18N: translate - rendered import error
+  Replace with:
+    throw new Error(t("desktop_import.error_cannot_load_target_workspace"));
+
+### Line 106
+  Current:
+    throw new Error("You do not have permission to manage runbooks in the target workspace"); // I18N: translate - rendered import error
+  Replace with:
+    throw new Error(t("desktop_import.error_no_permission_manage_runbooks"));
+
+### Line 120
+  Current:
+    throw new Error("Failed to create runbook in the target workspace"); // I18N: translate - rendered import error
+  Replace with:
+    throw new Error(t("desktop_import.error_failed_to_create_runbook"));
+
+### Line 130 [REUSE — existing key `common.unknown_error`]
+  Current:
+    : "An unknown error occurred", // I18N: translate - rendered import error fallback
+  Replace with:
+    : t("common.unknown_error"),
+  (This key already exists in en.yml and is used in 2 other files)
+
+---
+
+## FILE 16: src/routes/runbooks/Runbooks.tsx
+  Import status: [HAS_IMPORT] — already has `import { useTranslation } from "@/lib/i18n"`
+  Calling convention: [HOOK] — inside React component that already has `const { t } = useTranslation()`
+
+### Line 365
+  Current:
+    throw new Error("Tried to create a new tag with no runbook selected"); // I18N: translate - shown by tag selector form error
+  Replace with:
+    throw new Error(t("tag_selector.error_no_runbook_selected_create"));
+
+### Line 393
+  Current:
+    throw new Error("Tried to delete a tag with no runbook selected"); // I18N: translate - shown by tag selector form error
+  Replace with:
+    throw new Error(t("tag_selector.error_no_runbook_selected_delete"));
+
+---
+
+====================================================================================
+## IMPORT SUMMARY
+
+Files needing `import { t } from "@/lib/i18n"` ADDED:
+  - src/lib/ai/block_registry.ts         [ADD_IMPORT]
+  - src/lib/ai/tools.ts                  [ADD_IMPORT]
+  - src/lib/ai/useAIChat.ts              [ADD_IMPORT]
+  - src/lib/blocks/codeberg-preview/api.ts      [ADD_IMPORT]
+  - src/lib/blocks/codeberg-preview/components/CodebergPreview.tsx  [ADD_IMPORT] useTranslation
+  - src/lib/blocks/common/CodeEditor/extensions.ts  [ADD_IMPORT]
+  - src/lib/blocks/github-preview/api.ts         [ADD_IMPORT]
+  - src/lib/blocks/github-preview/components/GitHubPreview.tsx     [ADD_IMPORT] useTranslation
+  - src/lib/blocks/gitlab-preview/api.ts         [ADD_IMPORT]
+  - src/lib/blocks/gitlab-preview/components/GitLabPreview.tsx     [ADD_IMPORT] useTranslation
+
+Files needing NO import change:
+  - src/components/runbooks/editor/hooks/useAIInlineGeneration.ts  (already has `import { t }`)
+  - src/components/runbooks/List/ConvertWorkspaceDialog.tsx        (already has `import { useTranslation, t }`)
+  - src/components/runbooks/List/Workspace.tsx                     (already has `import { useTranslation, t as i18n_t }`)
+  - src/components/Settings/Settings.tsx                           (already has `import { useTranslation }`)
+  - src/routes/root/DesktopImportModal.tsx                         (already has `import { useTranslation }`)
+  - src/routes/runbooks/Runbooks.tsx                               (already has `import { useTranslation }`)
+
+====================================================================================
+## SPECIAL CASES
+
+### Case A: Concatenated string → single t() call
+  file: src/lib/ai/block_registry.ts, lines 37-44
+  7 marked lines combine into 1 t() call with interpolation.
+  Requires rewriting the entire return statement (6 lines).
+
+### Case B: Template literal with interpolation → t() with params
+  Affects: tools.ts:228, all preview api.ts files (codeberg/github/gitlab),
+           CodebergPreview.tsx:76, GitHubPreview.tsx:71, GitLabPreview.tsx:71
+  Pattern: `` `String with ${variable}` `` → `t("key", { variable })`
+
+### Case C: Shared keys across sibling files
+  - `blocks.preview.fetch_error` used in 3 api.ts files (12 lines total)
+  - `blocks.preview.fetch_fallback` used in 3 component files (3 lines)
+  - `blocks.preview.error_unknown_url_type` used in 3 component files (3 lines)
+  Each group shares the same key; only 1 en.yml entry needed per group.
+
+### Case D: Workspace.tsx closure issue
+  `findOrCreateFolder()` at line 119 is defined BEFORE `const { t }` at line 223.
+  Solution: use the already-imported `i18n_t` alias, OR move the hook destructuring above line 119.
+
+### Case E: Existing key reuse
+  Line 130 in DesktopImportModal.tsx: `"An unknown error occurred"` exactly matches
+  `common.unknown_error` in en.yml (used in src/lib/blocks/gitlab-preview/api.ts
+  and src/components/runbooks/List/ConvertWorkspaceDialog.tsx). REUSE without change.
+
+====================================================================================
+## EN.YML ADDITIONS REQUIRED
+
+All new keys to add to locales/en.yml (and zh-CN.yml):
+
+# ---- Common fallbacks ----
+"common.fallback_unknown_error": "Unknown error"
+"common.fallback_failed_to_start_generation": "Failed to start generation"
+"common.fallback_failed_to_edit_block": "Failed to edit block"
+
+# ---- Workspace validation ----
+"workspace.convert.validation_path_required_offline": "Selected path is required for offline workspaces"
+"workspace.convert.validation_path_required_hybrid": "Selected path is required for converting hybrid workspaces"
+"workspace.validation_cannot_create_folder_empty_path": "Cannot create folder with empty path"
+"workspace.validation_unexpected_path_traversal": "Unexpected end of path traversal"
+
+# ---- Settings ----
+"settings.ai.provider.label_claude_direct_api": "Claude (Anthropic direct API)"
+
+# ---- AI Agent ----
+"ai.agent.block_documentation_not_found": "No documentation found for block type: {{blockType}}"
+"ai.agent.block_documentation": "Docs for '{{blockType}}' block (known to users as: {{friendlyName}}):\n{{description}}"
+"ai.agent.tool_error_ref_block_id_required": "reference_block_id required for 'before' or 'after' position"
+"ai.agent.tool_error_block_ids_empty": "block_ids cannot be empty"
+"ai.agent.tool_error_no_blocks_found": "No blocks found with the specified IDs"
+"ai.agent.tool_result_no_editor": "No editor available"
+"ai.agent.tool_error_unknown_tool": "Unknown tool: {{toolName}}"
+"ai.agent.tool_error_fallback": "Unknown error"
+"ai.agent.tool_result_user_cancelled": "User cancelled this operation"
+
+# ---- Block previews ----
+"blocks.preview.fetch_error": "Failed to fetch: {{status}} {{statusText}}"
+"blocks.preview.fetch_fallback": "Failed to fetch data"
+"blocks.preview.error_unknown_url_type": "Unknown URL type: {{urlType}}"
+
+# ---- Code editor completions ----
+"editor.completion.label_first_block": "first block"
+"editor.completion.label_last_block": "last block"
+"editor.completion.label_previous_block": "previous block"
+"editor.completion.label_named_block": "named block"
+"editor.completion.label_runbook_blocks": "runbook blocks"
+"editor.completion.label_workspace_root": "workspace root"
+"editor.completion.detail_template_variables": "template variables"
+"editor.completion.detail_document_properties": "document properties"
+"editor.completion.detail_environment_variables": "environment variables"
+"editor.completion.detail_workspace_properties": "workspace properties"
+"editor.completion.section_properties": "Properties"
+"editor.completion.section_template_variables": "Template Variables"
+"editor.completion.section_document_properties": "Document Properties"
+"editor.completion.section_environment_variables": "Environment Variables"
+"editor.completion.section_workspace_properties": "Workspace Properties"
+
+# ---- Desktop import ----
+"desktop_import.error_cannot_load_target_workspace": "Not able to load target workspace"
+"desktop_import.error_no_permission_manage_runbooks": "You do not have permission to manage runbooks in the target workspace"
+"desktop_import.error_failed_to_create_runbook": "Failed to create runbook in the target workspace"
+
+# ---- Tag selector ----
+"tag_selector.error_no_runbook_selected_create": "Tried to create a new tag with no runbook selected"
+"tag_selector.error_no_runbook_selected_delete": "Tried to delete a tag with no runbook selected"
+
+====================================================================================
+## EXECUTION ORDER
+
+Recommended order of operations:
+
+1. Add new keys to locales/en.yml (34 new keys, 1 existing reused)
+2. Add keys to locales/zh-CN.yml (translations needed)
+3. Add imports to files marked [ADD_IMPORT] (10 files)
+4. Apply replacements file by file, verifying each change
+5. For Workspace.tsx: consider moving useTranslation() destructuring OR use i18n_t
+6. For block_registry.ts: handle the concatenated string carefully (replace entire return)
+7. Run `npm run typecheck` or equivalent to verify no type errors
+8. Run the app to verify strings render correctly
