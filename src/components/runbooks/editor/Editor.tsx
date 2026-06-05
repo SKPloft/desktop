@@ -346,7 +346,7 @@ export default function Editor({
 
       track_event("runbooks.export.markdown", { runbookId: runbook?.id || "" });
     } catch (error) {
-      console.error("Failed to export markdown:", error);
+      console.error("Failed to export markdown:", error); // I18N: no-translate - developer diagnostic
     }
   };
 
@@ -433,7 +433,7 @@ export default function Editor({
             restoreScrollPosition(scrollContainerRef.current, runbook.id);
           }
         } catch (error) {
-          console.warn("Failed to restore scroll position:", error);
+          console.warn("Failed to restore scroll position:", error); // I18N: no-translate - developer diagnostic
         } finally {
           // Always restore visibility regardless of scroll restoration success
           setIsVisible(true);
@@ -469,7 +469,7 @@ export default function Editor({
     if (!runbookEditor) return;
 
     return runbookEditor.onUnsupportedBlock((unknownTypes: string[]) => {
-      console.log(">> unsupported block", unknownTypes);
+      console.log(">> unsupported block", unknownTypes); // I18N: no-translate - developer diagnostic
       setUnsupportedBlocks(unknownTypes);
     });
   }, [runbookEditor]);

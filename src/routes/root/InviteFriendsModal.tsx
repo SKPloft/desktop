@@ -96,7 +96,7 @@ export default function InviteFriendsModal(props: InviteFriendsModalProps) {
     const emailsToSend = emails.map((e) => e.email);
     try {
       const result = await inviteFriends(emailsToSend);
-      console.log(result);
+      console.log(result); // I18N: no-translate - developer diagnostic
       addToast({
         title: t("common.success"),
         description: t("invite_friends.sent_success"),

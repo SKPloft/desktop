@@ -122,15 +122,15 @@ export default class ServerNotificationManager extends Emittery {
     callback: (event: "created" | "updated" | "deleted", runbookId: string) => void,
   ) {
     const unsub1 = this.on("runbook_updated", (runbookId: string) => {
-      console.log("runbook_updated", runbookId);
+      console.log("runbook_updated", runbookId); // I18N: no-translate - developer diagnostic
       callback("updated", runbookId);
     });
     const unsub2 = this.on("runbook_deleted", (runbookId: string) => {
-      console.log("runbook_deleted", runbookId);
+      console.log("runbook_deleted", runbookId); // I18N: no-translate - developer diagnostic
       callback("deleted", runbookId);
     });
     const unsub3 = this.on("runbook_created", (runbookId: string) => {
-      console.log("runbook_created", runbookId);
+      console.log("runbook_created", runbookId); // I18N: no-translate - developer diagnostic
       callback("created", runbookId);
     });
 

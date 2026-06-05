@@ -7,7 +7,7 @@ import { Rc } from "@binarymuse/ts-stdlib";
 async function defaultUpdateOptimistic<T>(
   _callback: (data: T, cancel: () => undefined) => T | undefined,
 ): Promise<string | undefined> {
-  throw new Error("Shared state is not ready");
+  throw new Error("Shared state is not ready"); // I18N: no-translate - internal exception
 }
 
 /**
@@ -48,12 +48,12 @@ export default function useSharedState<T extends SharableState>(
       new AtuinSharedStateAdapter<T>(stateId),
     );
     const unsub = manager.subscribe((data) => {
-      console.log("folder data", data);
+      console.log("folder data", data); // I18N: no-translate - developer diagnostic
       setData(data);
     });
 
     manager.getDataOnce().then((data) => {
-      console.log("folder initial data", data);
+      console.log("folder initial data", data); // I18N: no-translate - developer diagnostic
       if (!disposed) {
         setData(data);
       }

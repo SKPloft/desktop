@@ -114,14 +114,14 @@ writeFileSync(
   ["_version: 1", ...sortedKeys.map((key) => `${yamlQuote(key)}: ${yamlQuote(key)}`), ""].join("\n"),
 );
 
-console.log(`i18n backend extractor: wrote ${sortedKeys.length} keys to .i18n-extract/backend.yml`);
+console.log(`i18n backend extractor: wrote ${sortedKeys.length} keys to .i18n-extract/backend.yml`); // I18N: no-translate - developer diagnostic
 
 if (warnings.length > 0) {
-  console.warn("i18n backend extractor: dynamic translation calls need manual review:");
+  console.warn("i18n backend extractor: dynamic translation calls need manual review:"); // I18N: no-translate - developer diagnostic
   for (const warning of warnings.slice(0, 20)) {
-    console.warn(`- ${warning.file}:${warning.line} ${warning.call}(...)`);
+    console.warn(`- ${warning.file}:${warning.line} ${warning.call}(...)`); // I18N: no-translate - developer diagnostic
   }
   if (warnings.length > 20) {
-    console.warn(`- ...and ${warnings.length - 20} more`);
+    console.warn(`- ...and ${warnings.length - 20} more`); // I18N: no-translate - developer diagnostic
   }
 }

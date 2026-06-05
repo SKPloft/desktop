@@ -84,7 +84,7 @@ function editStateReducer<T>(state: EditState<T>, action: EditStateAction<T>): E
       return { ...state, error: action.error, fieldDisabled: false };
     default:
       const x: never = action;
-      console.error("Unknown action", x);
+      console.error("Unknown action", x); // I18N: no-translate - developer diagnostic
       return state;
   }
 }

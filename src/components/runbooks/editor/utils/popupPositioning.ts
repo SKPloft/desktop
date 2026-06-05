@@ -31,7 +31,7 @@ export const calculateAIPopupPosition = (editor: any, blockId?: string): Positio
       return { x: 50, y: 50 };
     }
   } catch (error) {
-    console.warn("Could not calculate AI popup position, using fallback:", error);
+    console.warn("Could not calculate AI popup position, using fallback:", error); // I18N: no-translate - developer diagnostic
     return { x: 250, y: 100 };
   }
 };
@@ -86,7 +86,7 @@ export const calculateLinkPopupPosition = (editor: any, blockId?: string): Posit
       return { x: 50, y: 50 };
     }
   } catch (error) {
-    console.warn("Could not calculate link popup position, using fallback:", error);
+    console.warn("Could not calculate link popup position, using fallback:", error); // I18N: no-translate - developer diagnostic
     return { x: 250, y: 100 };
   }
 };

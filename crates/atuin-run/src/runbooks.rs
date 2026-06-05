@@ -55,7 +55,7 @@ async fn load_runbook_from_file(path: impl AsRef<Path>) -> Result<Runbook> {
 
 // TODO: handle API credentials
 async fn load_runbook_from_id(_id: &str) -> Result<Runbook> {
-    todo!()
+    todo!() // I18N: no-translate - Rust panic/internal diagnostic
 }
 
 fn load_runbook_from_json_value(

@@ -11,7 +11,7 @@ async fn var_store() -> eyre::Result<VarStore> {
 
     let encryption_key: [u8; 32] = encryption::load_key(&settings)?.into();
 
-    let host_id = Settings::host_id().expect("failed to get host_id");
+    let host_id = Settings::host_id().expect("failed to get host_id"); // I18N: no-translate - internal expectation message
 
     Ok(VarStore::new(sqlite_store, host_id, encryption_key))
 }

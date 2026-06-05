@@ -62,7 +62,7 @@ pub async fn subscribe_to_events<R: Runtime>(
             let channel = state.gc_frontend_channel.lock().await;
             if let Some(channel) = channel.as_ref() {
                 if let Err(e) = channel.send(event) {
-                    log::error!("Failed to send event to frontend: {}", e);
+                    log::error!("Failed to send event to frontend: {}", e); // I18N: no-translate - Rust diagnostic log
                     break;
                 }
             }

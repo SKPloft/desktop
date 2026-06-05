@@ -335,11 +335,11 @@ mod tests {
         });
 
         let sqlite = SQLite::from_document(&json_data).unwrap();
-        assert_eq!(sqlite.id, id);
-        assert_eq!(sqlite.name, "Test Query");
-        assert_eq!(sqlite.query, "SELECT * FROM users");
-        assert_eq!(sqlite.uri, "sqlite::memory:");
-        assert_eq!(sqlite.auto_refresh, 5);
+        assert_eq!(sqlite.id, id); // I18N: no-translate - Rust assertion
+        assert_eq!(sqlite.name, "Test Query"); // I18N: no-translate - Rust assertion
+        assert_eq!(sqlite.query, "SELECT * FROM users"); // I18N: no-translate - Rust assertion
+        assert_eq!(sqlite.uri, "sqlite::memory:"); // I18N: no-translate - Rust assertion
+        assert_eq!(sqlite.auto_refresh, 5); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -352,11 +352,11 @@ mod tests {
         });
 
         let sqlite = SQLite::from_document(&json_data).unwrap();
-        assert_eq!(sqlite.id, id);
-        assert_eq!(sqlite.name, "SQLite Query");
-        assert_eq!(sqlite.query, "");
-        assert_eq!(sqlite.uri, "");
-        assert_eq!(sqlite.auto_refresh, 0);
+        assert_eq!(sqlite.id, id); // I18N: no-translate - Rust assertion
+        assert_eq!(sqlite.name, "SQLite Query"); // I18N: no-translate - Rust assertion
+        assert_eq!(sqlite.query, ""); // I18N: no-translate - Rust assertion
+        assert_eq!(sqlite.uri, ""); // I18N: no-translate - Rust assertion
+        assert_eq!(sqlite.auto_refresh, 0); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -368,8 +368,8 @@ mod tests {
         });
 
         let result = SQLite::from_document(&json_data);
-        assert!(result.is_err());
-        assert!(result.unwrap_err().contains("no id"));
+        assert!(result.is_err()); // I18N: no-translate - Rust assertion
+        assert!(result.unwrap_err().contains("no id")); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -380,7 +380,7 @@ mod tests {
         });
 
         let result = SQLite::from_document(&json_data);
-        assert!(result.is_err());
+        assert!(result.is_err()); // I18N: no-translate - Rust assertion
     }
 
     // Execution tests
@@ -397,8 +397,8 @@ mod tests {
             let status = handle.status.read().await.clone();
             match status {
                 ExecutionStatus::Success => break,
-                ExecutionStatus::Failed(e) => panic!("Query failed: {}", e),
-                ExecutionStatus::Cancelled => panic!("Query was cancelled"),
+                ExecutionStatus::Failed(e) => panic!("Query failed: {}", e), // I18N: no-translate - Rust panic/internal diagnostic
+                ExecutionStatus::Cancelled => panic!("Query was cancelled"), // I18N: no-translate - Rust panic/internal diagnostic
                 ExecutionStatus::Running => continue,
             }
         }
@@ -421,8 +421,8 @@ mod tests {
             let status = handle.status.read().await.clone();
             match status {
                 ExecutionStatus::Success => break,
-                ExecutionStatus::Failed(e) => panic!("Query failed: {}", e),
-                ExecutionStatus::Cancelled => panic!("Query was cancelled"),
+                ExecutionStatus::Failed(e) => panic!("Query failed: {}", e), // I18N: no-translate - Rust panic/internal diagnostic
+                ExecutionStatus::Cancelled => panic!("Query was cancelled"), // I18N: no-translate - Rust panic/internal diagnostic
                 ExecutionStatus::Running => continue,
             }
         }
@@ -441,11 +441,11 @@ mod tests {
             let status = handle.status.read().await.clone();
             match status {
                 ExecutionStatus::Failed(e) => {
-                    assert!(e.contains("SQL"));
+                    assert!(e.contains("SQL")); // I18N: no-translate - Rust assertion
                     break;
                 }
-                ExecutionStatus::Success => panic!("Query should have failed"),
-                ExecutionStatus::Cancelled => panic!("Query was cancelled"),
+                ExecutionStatus::Success => panic!("Query should have failed"), // I18N: no-translate - Rust panic/internal diagnostic
+                ExecutionStatus::Cancelled => panic!("Query was cancelled"), // I18N: no-translate - Rust panic/internal diagnostic
                 ExecutionStatus::Running => continue,
             }
         }
@@ -464,11 +464,11 @@ mod tests {
             let status = handle.status.read().await.clone();
             match status {
                 ExecutionStatus::Failed(e) => {
-                    assert!(e.contains("Query is empty"));
+                    assert!(e.contains("Query is empty")); // I18N: no-translate - Rust assertion
                     break;
                 }
-                ExecutionStatus::Success => panic!("Query should have failed"),
-                ExecutionStatus::Cancelled => panic!("Query was cancelled"),
+                ExecutionStatus::Success => panic!("Query should have failed"), // I18N: no-translate - Rust panic/internal diagnostic
+                ExecutionStatus::Cancelled => panic!("Query was cancelled"), // I18N: no-translate - Rust panic/internal diagnostic
                 ExecutionStatus::Running => continue,
             }
         }
@@ -488,8 +488,8 @@ mod tests {
             let status = handle.status.read().await.clone();
             match status {
                 ExecutionStatus::Success => break,
-                ExecutionStatus::Failed(e) => panic!("Query failed: {}", e),
-                ExecutionStatus::Cancelled => panic!("Query was cancelled"),
+                ExecutionStatus::Failed(e) => panic!("Query failed: {}", e), // I18N: no-translate - Rust panic/internal diagnostic
+                ExecutionStatus::Cancelled => panic!("Query was cancelled"), // I18N: no-translate - Rust panic/internal diagnostic
                 ExecutionStatus::Running => continue,
             }
         }
@@ -508,8 +508,8 @@ mod tests {
             let status = handle.status.read().await.clone();
             match status {
                 ExecutionStatus::Failed(_) => break,
-                ExecutionStatus::Success => panic!("Query should have failed with invalid URI"),
-                ExecutionStatus::Cancelled => panic!("Query was cancelled"),
+                ExecutionStatus::Success => panic!("Query should have failed with invalid URI"), // I18N: no-translate - Rust panic/internal diagnostic
+                ExecutionStatus::Cancelled => panic!("Query was cancelled"), // I18N: no-translate - Rust panic/internal diagnostic
                 ExecutionStatus::Running => continue,
             }
         }
@@ -532,15 +532,15 @@ mod tests {
             let status = handle.status.read().await.clone();
             match status {
                 ExecutionStatus::Success => break,
-                ExecutionStatus::Failed(e) => panic!("Query failed: {}", e),
-                ExecutionStatus::Cancelled => panic!("Query was cancelled"),
+                ExecutionStatus::Failed(e) => panic!("Query failed: {}", e), // I18N: no-translate - Rust panic/internal diagnostic
+                ExecutionStatus::Cancelled => panic!("Query was cancelled"), // I18N: no-translate - Rust panic/internal diagnostic
                 ExecutionStatus::Running => continue,
             }
         }
 
         // Verify events were emitted
         let events = event_bus.events();
-        assert_eq!(events.len(), 2);
+        assert_eq!(events.len(), 2); // I18N: no-translate - Rust assertion
 
         // Check BlockStarted event
         match &events[0] {
@@ -548,10 +548,10 @@ mod tests {
                 block_id,
                 runbook_id: rb_id,
             } => {
-                assert_eq!(*block_id, sqlite_id);
-                assert_eq!(*rb_id, runbook_id);
+                assert_eq!(*block_id, sqlite_id); // I18N: no-translate - Rust assertion
+                assert_eq!(*rb_id, runbook_id); // I18N: no-translate - Rust assertion
             }
-            _ => panic!("Expected BlockStarted event, got: {:?}", events[0]),
+            _ => panic!("Expected BlockStarted event, got: {:?}", events[0]), // I18N: no-translate - Rust panic/internal diagnostic
         }
 
         // Check BlockFinished event
@@ -561,11 +561,11 @@ mod tests {
                 runbook_id: rb_id,
                 success,
             } => {
-                assert_eq!(*block_id, sqlite_id);
-                assert_eq!(*rb_id, runbook_id);
-                assert_eq!(*success, true);
+                assert_eq!(*block_id, sqlite_id); // I18N: no-translate - Rust assertion
+                assert_eq!(*rb_id, runbook_id); // I18N: no-translate - Rust assertion
+                assert_eq!(*success, true); // I18N: no-translate - Rust assertion
             }
-            _ => panic!("Expected BlockFinished event, got: {:?}", events[1]),
+            _ => panic!("Expected BlockFinished event, got: {:?}", events[1]), // I18N: no-translate - Rust panic/internal diagnostic
         }
     }
 
@@ -585,15 +585,15 @@ mod tests {
             let status = handle.status.read().await.clone();
             match status {
                 ExecutionStatus::Failed(_) => break,
-                ExecutionStatus::Success => panic!("Query should have failed"),
-                ExecutionStatus::Cancelled => panic!("Query was cancelled"),
+                ExecutionStatus::Success => panic!("Query should have failed"), // I18N: no-translate - Rust panic/internal diagnostic
+                ExecutionStatus::Cancelled => panic!("Query was cancelled"), // I18N: no-translate - Rust panic/internal diagnostic
                 ExecutionStatus::Running => continue,
             }
         }
 
         // Verify events were emitted
         let events = event_bus.events();
-        assert_eq!(events.len(), 2);
+        assert_eq!(events.len(), 2); // I18N: no-translate - Rust assertion
 
         // Check BlockStarted event
         match &events[0] {
@@ -601,10 +601,10 @@ mod tests {
                 block_id,
                 runbook_id: rb_id,
             } => {
-                assert_eq!(*block_id, sqlite_id);
-                assert_eq!(*rb_id, runbook_id);
+                assert_eq!(*block_id, sqlite_id); // I18N: no-translate - Rust assertion
+                assert_eq!(*rb_id, runbook_id); // I18N: no-translate - Rust assertion
             }
-            _ => panic!("Expected BlockStarted event, got: {:?}", events[0]),
+            _ => panic!("Expected BlockStarted event, got: {:?}", events[0]), // I18N: no-translate - Rust panic/internal diagnostic
         }
 
         // Check BlockFailed event
@@ -614,11 +614,11 @@ mod tests {
                 runbook_id: rb_id,
                 error,
             } => {
-                assert_eq!(*block_id, sqlite_id);
-                assert_eq!(*rb_id, runbook_id);
-                assert!(error.contains("no such table"));
+                assert_eq!(*block_id, sqlite_id); // I18N: no-translate - Rust assertion
+                assert_eq!(*rb_id, runbook_id); // I18N: no-translate - Rust assertion
+                assert!(error.contains("no such table")); // I18N: no-translate - Rust assertion
             }
-            _ => panic!("Expected BlockFailed event, got: {:?}", events[1]),
+            _ => panic!("Expected BlockFailed event, got: {:?}", events[1]), // I18N: no-translate - Rust panic/internal diagnostic
         }
     }
 
@@ -661,10 +661,10 @@ mod tests {
         let json = serde_json::to_string(&original).unwrap();
         let deserialized: SQLite = serde_json::from_str(&json).unwrap();
 
-        assert_eq!(original.id, deserialized.id);
-        assert_eq!(original.name, deserialized.name);
-        assert_eq!(original.query, deserialized.query);
-        assert_eq!(original.uri, deserialized.uri);
-        assert_eq!(original.auto_refresh, deserialized.auto_refresh);
+        assert_eq!(original.id, deserialized.id); // I18N: no-translate - Rust assertion
+        assert_eq!(original.name, deserialized.name); // I18N: no-translate - Rust assertion
+        assert_eq!(original.query, deserialized.query); // I18N: no-translate - Rust assertion
+        assert_eq!(original.uri, deserialized.uri); // I18N: no-translate - Rust assertion
+        assert_eq!(original.auto_refresh, deserialized.auto_refresh); // I18N: no-translate - Rust assertion
     }
 }

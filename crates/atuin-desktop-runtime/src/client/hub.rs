@@ -262,7 +262,7 @@ pub async fn load_runbook_from_uri(
 
     // Default to "latest" tag if none specified
     let tag = parsed.tag.as_deref().or(Some("latest"));
-    tracing::debug!("Fetching runbook from hub: {} (tag: {:?})", parsed.nwo, tag);
+    tracing::debug!("Fetching runbook from hub: {} (tag: {:?})", parsed.nwo, tag); // I18N: no-translate - Rust diagnostic log
 
     let (runbook, snapshot) =
         client
@@ -286,10 +286,10 @@ pub async fn load_runbook_from_uri(
 
     // Prefer snapshot content if available, otherwise use runbook content
     let content = if let Some(snapshot) = snapshot {
-        tracing::debug!("Using snapshot '{}' content", snapshot.tag);
+        tracing::debug!("Using snapshot '{}' content", snapshot.tag); // I18N: no-translate - Rust diagnostic log
         snapshot.content
     } else if let Some(content) = runbook.content {
-        tracing::debug!("Using runbook content (no snapshot)");
+        tracing::debug!("Using runbook content (no snapshot)"); // I18N: no-translate - Rust diagnostic log
         content
     } else {
         return Err(RunbookLoadError::LoadFailed {
@@ -313,7 +313,7 @@ pub async fn load_runbook_from_id(
     use super::RunbookLoadError;
     use uuid::Uuid;
 
-    tracing::debug!("Fetching runbook from hub by ID: {}", hub_id);
+    tracing::debug!("Fetching runbook from hub by ID: {}", hub_id); // I18N: no-translate - Rust diagnostic log
 
     let runbook = client
         .get_runbook_by_id(hub_id)

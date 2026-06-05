@@ -115,7 +115,7 @@ const SshConnect = ({
           }
         } catch (err) {
           if (!cancelled) {
-            console.error("Failed to load SSH keys:", err);
+            console.error("Failed to load SSH keys:", err); // I18N: no-translate - developer diagnostic
           }
         } finally {
           if (!cancelled) {
@@ -142,7 +142,7 @@ const SshConnect = ({
         await setIdentityKey({ ...identityKey, value: selectedPath });
       }
     } catch (err) {
-      console.error("Failed to select key file:", err);
+      console.error("Failed to select key file:", err); // I18N: no-translate - developer diagnostic
     }
   };
 
@@ -157,7 +157,7 @@ const SshConnect = ({
         await setCertificate({ ...certificate, value: selectedPath });
       }
     } catch (err) {
-      console.error("Failed to select certificate file:", err);
+      console.error("Failed to select certificate file:", err); // I18N: no-translate - developer diagnostic
     }
   };
 

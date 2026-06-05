@@ -15,14 +15,14 @@ pub async fn serial_execute(
     // 3. Repeat until the workflow is complete
     // 4. Listen on the cancel channel for a stop event. Terminate the current block and exit.
     let mut iter = workflow.iter();
-    println!("serial workflow: {workflow:?}");
+    println!("serial workflow: {workflow:?}"); // I18N: no-translate - Rust console output
 
     if let Some(block) = iter.next() {
-        println!("running block: {block:?}");
+        println!("running block: {block:?}"); // I18N: no-translate - Rust console output
         send_command
             .send(WorkflowCommand::RunBlock { id: block.id() })
             .await
-            .expect("Failed to send run block event");
+            .expect("Failed to send run block event"); // I18N: no-translate - internal expectation message
     }
 
     let mut cancel_fut = cancel_channel;
@@ -30,12 +30,12 @@ pub async fn serial_execute(
     loop {
         tokio::select! {
             Ok(()) = &mut cancel_fut => {
-                println!("Workflow cancelled");
+                println!("Workflow cancelled"); // I18N: no-translate - Rust console output
 
                 // Send stop command to all blocks
                 for block in workflow.iter() {
                     send_command.send(WorkflowCommand::StopBlock { id: block.id() }).await
-                        .expect("Failed to send stop block event");
+                        .expect("Failed to send stop block event"); // I18N: no-translate - internal expectation message
                 }
 
                 // Terminate the workflow
@@ -45,15 +45,15 @@ pub async fn serial_execute(
             Ok(event) = recv_event.recv() => {
                 match event {
                     WorkflowEvent::BlockStarted { id } => {
-                        println!("block {id} started");
+                        println!("block {id} started"); // I18N: no-translate - Rust console output
                     }
                     WorkflowEvent::BlockFinished { id } => {
-                        println!("block {id} finished");
+                        println!("block {id} finished"); // I18N: no-translate - Rust console output
 
                         // Get the next block in the workflow
                         if let Some(block) = iter.next() {
                             send_command.send(WorkflowCommand::RunBlock { id: block.id() }).await
-                                .expect("Failed to send run block event");
+                                .expect("Failed to send run block event"); // I18N: no-translate - internal expectation message
                         } else {
                             // The workflow is complete
                             break;

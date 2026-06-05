@@ -31,16 +31,16 @@ export default class AIBlockRegistry {
   public getBlockDocs(blockType: string): string {
     const block = this.blocks.get(blockType);
     if (!block) {
-      return `No documentation found for block type: ${blockType}`;
+      return `No documentation found for block type: ${blockType}`; // I18N: translate - AI-visible block documentation text
     }
 
     return (
-      "Docs for '" +
-      blockType +
-      "' block (known to users as: " +
-      resolve(block.friendlyName) +
-      "):\n" +
-      resolve(block.description)
+      "Docs for '" + // I18N: translate - AI-visible block documentation text
+      blockType + // I18N: translate - AI-visible block documentation text
+      "' block (known to users as: " + // I18N: translate - AI-visible block documentation text
+      resolve(block.friendlyName) + // I18N: translate - AI-visible block documentation text
+      "):\n" + // I18N: translate - AI-visible block documentation text
+      resolve(block.description) // I18N: translate - AI-visible block documentation text
     );
   }
 

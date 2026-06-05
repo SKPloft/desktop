@@ -90,7 +90,7 @@ mod tests {
 
         let context = ResolvedContext::from_block(&host, None).await.unwrap();
 
-        assert!(context.ssh_host.is_none());
+        assert!(context.ssh_host.is_none()); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -98,7 +98,7 @@ mod tests {
         let host = Host::builder().id(Uuid::new_v4()).host("").build();
 
         let context = ResolvedContext::from_block(&host, None).await.unwrap();
-        assert!(context.ssh_host.is_none());
+        assert!(context.ssh_host.is_none()); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -109,7 +109,7 @@ mod tests {
             .build();
 
         let context = ResolvedContext::from_block(&host, None).await.unwrap();
-        assert!(context.ssh_host.is_some());
+        assert!(context.ssh_host.is_some()); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -120,7 +120,7 @@ mod tests {
             .build();
 
         let context = ResolvedContext::from_block(&host, None).await.unwrap();
-        assert_eq!(context.ssh_host, Some("user@host.com".to_string()));
+        assert_eq!(context.ssh_host, Some("user@host.com".to_string())); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -138,7 +138,7 @@ mod tests {
             let context = ResolvedContext::from_block(&host_block, None)
                 .await
                 .unwrap();
-            assert_eq!(context.ssh_host, expected_ssh_host.map(|s| s.to_string()));
+            assert_eq!(context.ssh_host, expected_ssh_host.map(|s| s.to_string())); // I18N: no-translate - Rust assertion
         }
     }
 
@@ -153,8 +153,8 @@ mod tests {
         });
 
         let host = Host::from_document(&block).unwrap();
-        assert_eq!(host.host, "user@example.com");
-        assert_eq!(host.id.to_string(), "550e8400-e29b-41d4-a716-446655440000");
+        assert_eq!(host.host, "user@example.com"); // I18N: no-translate - Rust assertion
+        assert_eq!(host.id.to_string(), "550e8400-e29b-41d4-a716-446655440000"); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -166,7 +166,7 @@ mod tests {
         });
 
         let host = Host::from_document(&block).unwrap();
-        assert_eq!(host.host, "localhost");
+        assert_eq!(host.host, "localhost"); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -179,8 +179,8 @@ mod tests {
         });
 
         let result = Host::from_document(&block);
-        assert!(result.is_err());
-        assert!(result
+        assert!(result.is_err()); // I18N: no-translate - Rust assertion
+        assert!(result // I18N: no-translate - Rust assertion
             .unwrap_err()
             .to_string()
             .contains("Missing or invalid id field"));
@@ -194,8 +194,8 @@ mod tests {
         });
 
         let result = Host::from_document(&block);
-        assert!(result.is_err());
-        assert!(result
+        assert!(result.is_err()); // I18N: no-translate - Rust assertion
+        assert!(result // I18N: no-translate - Rust assertion
             .unwrap_err()
             .to_string()
             .contains("Missing or invalid props field"));
@@ -211,8 +211,8 @@ mod tests {
         let json = serde_json::to_string(&original).unwrap();
         let deserialized: Host = serde_json::from_str(&json).unwrap();
 
-        assert_eq!(original.id, deserialized.id);
-        assert_eq!(original.host, deserialized.host);
+        assert_eq!(original.id, deserialized.id); // I18N: no-translate - Rust assertion
+        assert_eq!(original.host, deserialized.host); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -233,7 +233,7 @@ mod tests {
             let context = ResolvedContext::from_block(&host_block, None)
                 .await
                 .unwrap();
-            assert_eq!(context.ssh_host, expected_ssh_host.map(|s| s.to_string()));
+            assert_eq!(context.ssh_host, expected_ssh_host.map(|s| s.to_string())); // I18N: no-translate - Rust assertion
         }
     }
 }

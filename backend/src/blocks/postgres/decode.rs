@@ -81,7 +81,7 @@ pub(crate) fn to_json(v: PgValueRef) -> Result<JsonValue> {
 
                     let days_as_secs = i64::from(v.days)
                         .checked_mul(24 * 60 * 60)
-                        .expect("pginterval day overflow"); // 24 hours * 60 minutes * 60 seconds
+                        .expect("pginterval day overflow"); // 24 hours * 60 minutes * 60 seconds // I18N: no-translate - internal expectation message
 
                     // Convert microseconds to seconds and nanoseconds
                     let micros_as_secs = v.microseconds.div_euclid(1_000_000);
@@ -90,7 +90,7 @@ pub(crate) fn to_json(v: PgValueRef) -> Result<JsonValue> {
                     // Combine all seconds
                     let total_secs = days_as_secs
                         .checked_add(micros_as_secs)
-                        .expect("pginterval day/second overflow");
+                        .expect("pginterval day/second overflow"); // I18N: no-translate - internal expectation message
 
                     let duration = std::time::Duration::new(total_secs as u64, remaining_nanos);
 

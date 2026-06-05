@@ -69,7 +69,7 @@ export default function DesktopImportModal(props: DesktopImportModalProps) {
           setStep("import");
         }
       } catch (error) {
-        console.error("Error checking for forked runbooks:", error);
+        console.error("Error checking for forked runbooks:", error); // I18N: no-translate - developer diagnostic
         setStep("import");
       }
     }
@@ -99,11 +99,11 @@ export default function DesktopImportModal(props: DesktopImportModalProps) {
     try {
       const workspace = await Workspace.get(selectedWorkspaceId);
       if (!workspace) {
-        throw new Error("Not able to load target workspace");
+        throw new Error("Not able to load target workspace"); // I18N: translate - rendered import error
       }
 
       if (workspace.isOnline() && !workspace.canManageRunbooks()) {
-        throw new Error("You do not have permission to manage runbooks in the target workspace");
+        throw new Error("You do not have permission to manage runbooks in the target workspace"); // I18N: translate - rendered import error
       }
 
       const strategy = getWorkspaceStrategy(workspace);
@@ -115,9 +115,9 @@ export default function DesktopImportModal(props: DesktopImportModalProps) {
       if (result.isErr()) {
         const err = result.unwrapErr();
         if ("message" in err.data) {
-          throw new Error(err.data.message);
+          throw new Error(err.data.message); // I18N: no-translate - internal exception
         }
-        throw new Error("Failed to create runbook in the target workspace");
+        throw new Error("Failed to create runbook in the target workspace"); // I18N: translate - rendered import error
       }
 
       props.onClose();
@@ -127,7 +127,7 @@ export default function DesktopImportModal(props: DesktopImportModalProps) {
           ? error.message
           : typeof error === "string"
             ? error
-            : "An unknown error occurred",
+            : "An unknown error occurred", // I18N: translate - rendered import error fallback
       );
     } finally {
       setImporting(false);

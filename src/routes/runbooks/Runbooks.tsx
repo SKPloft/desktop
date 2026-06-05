@@ -135,12 +135,12 @@ export default function Runbooks() {
             setCurrentWorkspaceId(runbook.workspaceId);
           } else {
             setFailedToSyncRunbook(true);
-            console.warn("Runbook not found after sync:", runbookId);
+            console.warn("Runbook not found after sync:", runbookId); // I18N: no-translate - developer diagnostic
           }
           setSyncingRunbook(false);
         } catch (err) {
           setFailedToSyncRunbook(true);
-          console.warn(
+          console.warn( // I18N: no-translate - developer diagnostic
             "Error syncing runbook; this could be normal if the runbook is offline",
             err,
           );
@@ -162,7 +162,7 @@ export default function Runbooks() {
 
   const [focusedBlockId, setFocusedBlockId] = useState<string | null>(null);
   const onBlockFocus = (blockId: string) => {
-    console.log("block focus", blockId);
+    console.log("block focus", blockId); // I18N: no-translate - developer diagnostic
     setFocusedBlockId(blockId);
   };
 
@@ -208,7 +208,7 @@ export default function Runbooks() {
           try {
             serialExecution.stop();
           } catch (error) {
-            console.error("Error stopping workflow", error);
+            console.error("Error stopping workflow", error); // I18N: no-translate - developer diagnostic
             return false;
           }
           await timeoutPromise(250, undefined);
@@ -239,7 +239,7 @@ export default function Runbooks() {
           setDocumentOpened(true);
         })
         .catch((err) => {
-          console.error("Error opening document in runtime backend", err);
+          console.error("Error opening document in runtime backend", err); // I18N: no-translate - developer diagnostic
         });
     }
   }, [currentRunbook?.id, documentBridge?.channel]);
@@ -258,7 +258,7 @@ export default function Runbooks() {
 
   useEffect(() => {
     if (remoteRunbook && !remoteRunbook.owner) {
-      console.log("Refreshing remote runbook");
+      console.log("Refreshing remote runbook"); // I18N: no-translate - developer diagnostic
       refreshRemoteRunbook();
     }
   }, [remoteRunbook]);
@@ -281,10 +281,10 @@ export default function Runbooks() {
       return api.createSnapshot(snapshot);
     },
     onSuccess: (_data, snapshot) => {
-      console.info(`Successfully created snapshot ${snapshot.tag}`);
+      console.info(`Successfully created snapshot ${snapshot.tag}`); // I18N: no-translate - developer diagnostic
     },
     onError: (err: any) => {
-      console.error("Error creating snapshot", err);
+      console.error("Error creating snapshot", err); // I18N: no-translate - developer diagnostic
     },
     scope: { id: `runbook` },
   });
@@ -362,7 +362,7 @@ export default function Runbooks() {
 
   async function handleCreateTag(tag: string) {
     if (!currentRunbook) {
-      throw new Error("Tried to create a new tag with no runbook selected");
+      throw new Error("Tried to create a new tag with no runbook selected"); // I18N: translate - shown by tag selector form error
     }
 
     let snapshot = await Snapshot.create({
@@ -390,7 +390,7 @@ export default function Runbooks() {
 
   async function handleDeleteTag(tag: string) {
     if (!currentRunbook) {
-      throw new Error("Tried to delete a tag with no runbook selected");
+      throw new Error("Tried to delete a tag with no runbook selected"); // I18N: translate - shown by tag selector form error
     }
 
     let snaps = snapshots || [];
@@ -433,7 +433,7 @@ export default function Runbooks() {
 
   useEffect(() => {
     const unsub = AppBus.get().onResetEditor((rbId: string) => {
-      console.log("Resetting editor instance", rbId, currentRunbook?.id);
+      console.log("Resetting editor instance", rbId, currentRunbook?.id); // I18N: no-translate - developer diagnostic
       if (rbId == currentRunbook?.id) {
         lastRunbookEditor.current?.resetEditor();
         updateEditorKey();

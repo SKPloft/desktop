@@ -71,7 +71,7 @@ export function useSerialExecution(runbookId: string | undefined | null) {
 
     unsubs.push(
       onSerialExecutionCompleted((data) => {
-        console.log("onSerialExecutionCompleted", data);
+        console.log("onSerialExecutionCompleted", data); // I18N: no-translate - developer diagnostic
         if (data.runbook_id === runbookId) {
           setIsRunning(false);
           setIsSuccess(true);
@@ -86,7 +86,7 @@ export function useSerialExecution(runbookId: string | undefined | null) {
 
     unsubs.push(
       onSerialExecutionCancelled((data) => {
-        console.log("onSerialExecutionCancelled", data);
+        console.log("onSerialExecutionCancelled", data); // I18N: no-translate - developer diagnostic
         if (data.runbook_id === runbookId) {
           setIsRunning(false);
           setIsSuccess(false);
@@ -101,7 +101,7 @@ export function useSerialExecution(runbookId: string | undefined | null) {
 
     unsubs.push(
       onSerialExecutionFailed((data) => {
-        console.log("onSerialExecutionFailed", data);
+        console.log("onSerialExecutionFailed", data); // I18N: no-translate - developer diagnostic
         if (data.runbook_id === runbookId) {
           setIsRunning(false);
           setIsSuccess(false);
@@ -116,7 +116,7 @@ export function useSerialExecution(runbookId: string | undefined | null) {
 
     unsubs.push(
       onSerialExecutionPaused((data) => {
-        console.log("onSerialExecutionPaused", data);
+        console.log("onSerialExecutionPaused", data); // I18N: no-translate - developer diagnostic
         if (data.runbook_id === runbookId) {
           setIsRunning(false);
           setIsSuccess(false);

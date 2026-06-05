@@ -86,7 +86,7 @@ impl AISessionManager {
             .llmtools_tx
             .send(LLMToolsEvent::SessionDestroyed { session_id });
 
-        log::info!("Destroyed AI session {}", session_id);
+        log::info!("Destroyed AI session {}", session_id); // I18N: no-translate - Rust diagnostic log
     }
 
     /// Subscribe to events from a session.
@@ -109,7 +109,7 @@ impl AISessionManager {
         let replay = self.pending_replays.write().await.remove(&session_id);
         self.send_initial_state(session_id, &channel, replay).await;
 
-        log::debug!("Frontend subscribed to session {}", session_id);
+        log::debug!("Frontend subscribed to session {}", session_id); // I18N: no-translate - Rust diagnostic log
         Ok(())
     }
 
@@ -174,7 +174,7 @@ impl AISessionManager {
         let (output_tx, output_rx) = mpsc::channel::<SessionEvent>(32);
 
         let (session, handle, replay_data, session_info) = if let Some(saved) = existing {
-            log::info!(
+            log::info!( // I18N: no-translate - Rust diagnostic log
                 "Restoring AI session {} for runbook {}",
                 saved.id,
                 kind.runbook_id()
@@ -191,7 +191,7 @@ impl AISessionManager {
 
             (session, handle, Some(replay), info)
         } else {
-            log::info!("Creating new AI session for runbook {}", kind.runbook_id());
+            log::info!("Creating new AI session for runbook {}", kind.runbook_id()); // I18N: no-translate - Rust diagnostic log
 
             // Capture session info before kind is moved
             let info = SessionInfo::from_session_kind(Uuid::new_v4(), &kind);
@@ -288,14 +288,14 @@ impl AISessionManager {
                 let channels = channels.read().await;
                 if let Some(channel) = channels.get(&session_id) {
                     if let Err(e) = channel.send(event) {
-                        log::error!("Failed to send event to frontend: {}", e);
+                        log::error!("Failed to send event to frontend: {}", e); // I18N: no-translate - Rust diagnostic log
                         break;
                     }
                 }
             }
 
             // Session ended, clean up
-            log::debug!("Session {session_id} output channel closed, cleaning up");
+            log::debug!("Session {session_id} output channel closed, cleaning up"); // I18N: no-translate - Rust diagnostic log
             sessions.write().await.remove(&session_id);
             channels.write().await.remove(&session_id);
             session_infos.write().await.remove(&session_id);
@@ -323,7 +323,7 @@ impl AISessionManager {
 
         let pending_tool_calls = replay.map(|r| r.pending_tools.clone()).unwrap_or_default();
 
-        log::debug!(
+        log::debug!( // I18N: no-translate - Rust diagnostic log
             "Sending state {:?}, {} history messages, and {} pending tool calls for session {}",
             fsm_state,
             history.len(),
@@ -332,14 +332,14 @@ impl AISessionManager {
         );
 
         if let Err(e) = channel.send(SessionEvent::StateChanged { state: fsm_state }) {
-            log::error!("Failed to send state to frontend: {}", e);
+            log::error!("Failed to send state to frontend: {}", e); // I18N: no-translate - Rust diagnostic log
         }
 
         if let Err(e) = channel.send(SessionEvent::History {
             messages: history,
             pending_tool_calls,
         }) {
-            log::error!("Failed to send history to frontend: {}", e);
+            log::error!("Failed to send history to frontend: {}", e); // I18N: no-translate - Rust diagnostic log
         }
     }
 }

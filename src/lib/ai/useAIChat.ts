@@ -148,7 +148,7 @@ export default function useAIChat(sessionId: string): AIChatAPI {
                       type: "toolResponse" as const,
                       data: {
                         callId: call.id,
-                        result: "User cancelled this operation",
+                        result: "User cancelled this operation", // I18N: translate - AI-visible tool result
                       },
                     },
                   ],
@@ -162,7 +162,8 @@ export default function useAIChat(sessionId: string): AIChatAPI {
 
         case "history":
           // Set messages and pending tool calls from session history
-          console.log("[useAIChat] Received history event:", {
+          console.log("[useAIChat] Received history event:", { // I18N: no-translate - developer diagnostic
+            // I18N: no-translate - developer/internal string
             messageCount: event.messages.length,
             pendingToolCalls: event.pendingToolCalls,
           });

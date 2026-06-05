@@ -396,7 +396,7 @@ export class Settings {
       // If not a known shell, return the full path
       return shellPath;
     } catch (e) {
-      console.error("Failed to get system default shell:", e);
+      console.error("Failed to get system default shell:", e); // I18N: no-translate - developer diagnostic
       return "bash";
     }
   }

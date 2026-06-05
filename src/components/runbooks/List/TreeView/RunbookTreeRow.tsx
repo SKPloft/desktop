@@ -88,7 +88,7 @@ export default function RunbookTreeRow(props: RunbookTreeRowProps) {
       if (lastClick.current) {
         const delta = Date.now() - lastClick.current;
         if (delta < 500) {
-          console.log("double click");
+          console.log("double click"); // I18N: no-translate - developer diagnostic
           props.node.activate();
         }
       }

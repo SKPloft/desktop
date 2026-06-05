@@ -3,8 +3,9 @@ import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 const root = process.cwd();
-const scanRoots = ["src", "src-llmtools", "script"];
-const extensions = new Set([".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs"]);
+const scanRoots = ["src", "src-llmtools", "script", "backend", "crates"];
+const extensions = new Set([".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".rs"]);
+const selfScript = "script/i18n-classify-diagnostic-comments.mjs";
 
 const manualMarkers = [
   {
@@ -88,11 +89,20 @@ function walk(dir) {
     const stat = statSync(full);
     if (stat.isDirectory()) {
       if (!["node_modules", "dist", "target"].includes(entry)) entries.push(...walk(full));
-    } else if (extensions.has(path.extname(entry))) {
+    } else if (extensions.has(path.extname(entry)) || path.relative(root, full).startsWith("script/")) {
       entries.push(full);
     }
   }
   return entries;
+}
+
+function isGeneratedOrVendorPath(rel) {
+  return (
+    rel === selfScript ||
+    rel.includes("/node_modules/") ||
+    rel.includes("/dist/") ||
+    rel.includes("/target/")
+  );
 }
 
 function classify(file, line) {
@@ -105,6 +115,19 @@ function classify(file, line) {
   if (line.includes('source: "ShellCheck"')) return ["no-translate", "tool/source name"];
   if (line.includes("console.")) return ["no-translate", "developer diagnostic"];
   if (line.includes("reject(new Error")) return ["no-translate", "internal async guard"];
+  if (/\b(log|tracing)::(error|warn|info|debug|trace)!/.test(line)) {
+    return ["no-translate", "Rust diagnostic log"];
+  }
+  if (/(?<!::)\b(error|warn|info|debug|trace)!/.test(line)) {
+    return ["no-translate", "Rust diagnostic log"];
+  }
+  if (/\b(eprintln!|println!|print!)\s*\(/.test(line)) return ["no-translate", "Rust console output"];
+  if (/\b(panic!|todo!|unimplemented!|unreachable!)\s*\(/.test(line)) {
+    return ["no-translate", "Rust panic/internal diagnostic"];
+  }
+  if (/\b(assert!|assert_eq!|assert_ne!)\s*\(/.test(line)) return ["no-translate", "Rust assertion"];
+  if (/\.(expect)\s*\(/.test(line)) return ["no-translate", "internal expectation message"];
+  if (/\b(anyhow!|bail!|ensure!)\s*\(/.test(line)) return ["no-translate", "Rust internal error construction"];
 
   if (rel === "src/components/Settings/Settings.tsx" && line.includes("Claude (Anthropic direct API)")) {
     return ["translate", "visible provider label"];
@@ -137,13 +160,48 @@ function classify(file, line) {
   return ["no-translate", "developer/internal string"];
 }
 
-function replaceTodoComments(file, content) {
+function isCandidateLine(file, line) {
+  const rel = path.relative(root, file);
+  const trimmed = line.trim();
+
+  if (!trimmed || trimmed.startsWith("//") || trimmed.startsWith("*")) return false;
+  if (line.includes("I18N:")) return false;
+  if (isGeneratedOrVendorPath(rel)) return false;
+
+  return (
+    /\bconsole\.[A-Za-z_][A-Za-z0-9_]*\s*\(/.test(line) ||
+    /\.catch\s*\(\s*console\.[A-Za-z_][A-Za-z0-9_]*\s*\)/.test(line) ||
+    /\bthrow\s+new\s+[A-Za-z_$][A-Za-z0-9_$]*\s*\(/.test(line) ||
+    /\breject\s*\(\s*new\s+Error\s*\(/.test(line) ||
+    /\.(expect)\s*\(/.test(line) ||
+    /\b(log|tracing)::(error|warn|info|debug|trace)!/.test(line) ||
+    /(?<!::)\b(error|warn|info|debug|trace)!/.test(line) ||
+    /\b(eprintln!|println!|print!)\s*\(/.test(line) ||
+    /\b(panic!|todo!|unimplemented!|unreachable!)\s*\(/.test(line) ||
+    /\b(assert!|assert_eq!|assert_ne!)\s*\(/.test(line) ||
+    /\b(anyhow!|bail!|ensure!)\s*\(/.test(line)
+  );
+}
+
+function appendClassificationComments(file, content) {
   return content
     .split("\n")
     .map((line) => {
-      if (!/\/\/\s*TODO I18N/.test(line)) return line;
+      if (!isCandidateLine(file, line)) return line;
       const [decision, reason] = classify(file, line);
-      return line.replace(/\/\/\s*TODO I18N(?:\s*-\s*.*)?/, `// I18N: ${decision} - ${reason}`);
+      return `${line} // I18N: ${decision} - ${reason}`;
+    })
+    .join("\n");
+}
+
+function replaceTodoComments(file, content) {
+  const legacyTodoPattern = new RegExp(`//\\s*TODO\\s+I18N(?:\\s*-\\s*.*)?`);
+  return content
+    .split("\n")
+    .map((line) => {
+      if (!legacyTodoPattern.test(line)) return line;
+      const [decision, reason] = classify(file, line);
+      return line.replace(legacyTodoPattern, `// I18N: ${decision} - ${reason}`);
     })
     .join("\n");
 }
@@ -163,6 +221,14 @@ function applyExactReplacements(replacements) {
 
 function markerType(line) {
   if (line.includes("console.")) return "console/log";
+  if (/\b(log|tracing)::(error|warn|info|debug|trace)!|(?<!::)\b(error|warn|info|debug|trace)!/.test(line)) {
+    return "rust-log";
+  }
+  if (/\b(eprintln!|println!|print!)\s*\(/.test(line)) return "rust-print";
+  if (/\b(panic!|todo!|unimplemented!|unreachable!)\s*\(/.test(line)) return "rust-panic";
+  if (/\b(assert!|assert_eq!|assert_ne!)\s*\(/.test(line)) return "assertion";
+  if (/\.(expect)\s*\(/.test(line)) return "expectation";
+  if (/\b(anyhow!|bail!|ensure!)\s*\(/.test(line)) return "rust-error";
   if (line.includes("throw new Error") || line.includes("reject(new Error")) return "exception";
   if (line.includes("displayName")) return "displayName";
   if (line.includes("localStorage.")) return "storage";
@@ -178,7 +244,7 @@ function writeReport() {
   for (const rootName of scanRoots) {
     for (const file of walk(path.join(root, rootName))) {
       const rel = path.relative(root, file);
-      if (rel === "script/i18n-classify-diagnostic-comments.mjs") continue;
+      if (isGeneratedOrVendorPath(rel)) continue;
       const lines = readFileSync(file, "utf8").split("\n");
       lines.forEach((line, index) => {
         const marker = line.match(/I18N:\s*(translate|no-translate)\s*-\s*(.*)$/);
@@ -240,7 +306,8 @@ function writeReport() {
 for (const rootName of scanRoots) {
   for (const file of walk(path.join(root, rootName))) {
     const content = readFileSync(file, "utf8");
-    const next = replaceTodoComments(file, content);
+    const markedTodos = replaceTodoComments(file, content);
+    const next = appendClassificationComments(file, markedTodos);
     if (next !== content) writeFileSync(file, next);
   }
 }

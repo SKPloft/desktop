@@ -285,7 +285,7 @@ impl AISession {
         let (cancel_tx, _cancel_rx) = watch::channel(false);
 
         // Restore agent with saved state and context
-        log::debug!("Restoring session {} from storage", saved.id);
+        log::debug!("Restoring session {} from storage", saved.id); // I18N: no-translate - Rust diagnostic log
 
         let system_prompt = saved
             .kind
@@ -339,7 +339,7 @@ impl AISession {
             (agent.state().clone(), agent.context().clone())
         };
 
-        log::debug!("Saving session {} to storage", self.id);
+        log::debug!("Saving session {} to storage", self.id); // I18N: no-translate - Rust diagnostic log
 
         let config = self.config.read().await.clone();
         let kind = self.kind.read().await.clone();
@@ -354,9 +354,9 @@ impl AISession {
         };
 
         if let Err(e) = self.storage.save(&runbook_id, &serialized).await {
-            log::error!("Failed to save session state: {}", e);
+            log::error!("Failed to save session state: {}", e); // I18N: no-translate - Rust diagnostic log
         } else {
-            log::debug!("Saved session {} state", self.id);
+            log::debug!("Saved session {} state", self.id); // I18N: no-translate - Rust diagnostic log
         }
     }
 
@@ -364,14 +364,14 @@ impl AISession {
     ///
     /// This processes events and executes effects until the channel is closed.
     pub async fn run(mut self) {
-        log::debug!("Starting session event loop for {}", self.id);
+        log::debug!("Starting session event loop for {}", self.id); // I18N: no-translate - Rust diagnostic log
 
         // Save immediately so this session becomes the most recent for the runbook
         // This ensures "clear chat" followed by quit will restore a blank session
         self.save_if_persisted().await;
 
         while let Some(event) = self.event_rx.recv().await {
-            log::trace!("Session {} received event: {:?}", self.id, event);
+            log::trace!("Session {} received event: {:?}", self.id, event); // I18N: no-translate - Rust diagnostic log
 
             // Feed event to FSM
             let transition = {
@@ -382,7 +382,7 @@ impl AISession {
             // Execute effects
             for effect in transition.effects {
                 if let Err(e) = self.execute_effect(effect).await {
-                    log::error!("Session {} effect execution failed: {}", self.id, e);
+                    log::error!("Session {} effect execution failed: {}", self.id, e); // I18N: no-translate - Rust diagnostic log
                     let _ = self
                         .output_tx
                         .send(SessionEvent::Error {
@@ -400,7 +400,7 @@ impl AISession {
                 .await;
         }
 
-        log::debug!("Session {} event loop ended", self.id);
+        log::debug!("Session {} event loop ended", self.id); // I18N: no-translate - Rust diagnostic log
     }
 
     /// Execute a single effect.
@@ -496,7 +496,7 @@ impl AISession {
 
     /// Start a new request to the model.
     async fn start_request(&self) -> Result<(), AISessionError> {
-        log::debug!("Starting request for session {}", self.id);
+        log::debug!("Starting request for session {}", self.id); // I18N: no-translate - Rust diagnostic log
 
         // Build the request from conversation history (FSM uses ChatMessage directly)
         let messages = {
@@ -568,7 +568,7 @@ impl AISession {
         drop(config);
         drop(kind);
 
-        log::debug!(
+        log::debug!( // I18N: no-translate - Rust diagnostic log
             "Executing chat stream for session {} with model {model_str}",
             self.id
         );
@@ -585,7 +585,7 @@ impl AISession {
         let cancel_rx = self.cancel_tx.subscribe();
 
         tokio::spawn(async move {
-            log::debug!("Processing stream for session {}", session_id);
+            log::debug!("Processing stream for session {}", session_id); // I18N: no-translate - Rust diagnostic log
             Self::process_stream(session_id, stream, event_tx, cancel_rx).await;
         });
 
@@ -604,7 +604,7 @@ impl AISession {
 
         // Send StreamStart
         if event_tx.send(Event::StreamStart).await.is_err() {
-            log::warn!("Session {} channel closed during stream", session_id);
+            log::warn!("Session {} channel closed during stream", session_id); // I18N: no-translate - Rust diagnostic log
             return;
         }
 
@@ -613,7 +613,7 @@ impl AISession {
                 // Check for cancellation
                 _ = cancel_rx.changed() => {
                     if *cancel_rx.borrow() {
-                        log::debug!("Session {} stream cancelled", session_id);
+                        log::debug!("Session {} stream cancelled", session_id); // I18N: no-translate - Rust diagnostic log
                         // Don't send StreamEnd - the FSM already handled the Cancel event
                         return;
                     }
@@ -627,7 +627,7 @@ impl AISession {
 
                     match result {
                         Err(e) => {
-                            log::error!("Session {} stream error: {}", session_id, e);
+                            log::error!("Session {} stream error: {}", session_id, e); // I18N: no-translate - Rust diagnostic log
                             let mut message = e.to_string();
 
                             if let genai::Error::WebStream { error, .. } = e {
@@ -656,11 +656,11 @@ impl AISession {
                             return;
                         }
                         Ok(ChatStreamEvent::Start) => {
-                            log::trace!("Session {} received stream start", session_id);
+                            log::trace!("Session {} received stream start", session_id); // I18N: no-translate - Rust diagnostic log
                             // Already sent StreamStart above
                         }
                         Ok(ChatStreamEvent::Chunk(chunk)) => {
-                            log::trace!("Session {} received chunk", session_id);
+                            log::trace!("Session {} received chunk", session_id); // I18N: no-translate - Rust diagnostic log
                             let _ = event_tx
                                 .send(Event::StreamChunk(StreamChunk {
                                     content: chunk.content,
@@ -668,19 +668,19 @@ impl AISession {
                                 .await;
                         }
                         Ok(ChatStreamEvent::ThoughtSignatureChunk(_)) => {
-                            log::trace!("Session {} received thought signature chunk", session_id,);
+                            log::trace!("Session {} received thought signature chunk", session_id,); // I18N: no-translate - Rust diagnostic log
                         }
                         Ok(ChatStreamEvent::ToolCallChunk(_tc_chunk)) => {
                             // Tool call chunks are accumulated by genai internally
                             // We'll get the complete tool calls in the End event
-                            log::trace!("Session {} received tool call chunk", session_id);
+                            log::trace!("Session {} received tool call chunk", session_id); // I18N: no-translate - Rust diagnostic log
                         }
                         Ok(ChatStreamEvent::ReasoningChunk(_)) => {
-                            log::trace!("Session {} received reasoning chunk", session_id);
+                            log::trace!("Session {} received reasoning chunk", session_id); // I18N: no-translate - Rust diagnostic log
                             // Ignore reasoning chunks for now
                         }
                         Ok(ChatStreamEvent::End(end)) => {
-                            log::trace!("Session {} received stream end", session_id);
+                            log::trace!("Session {} received stream end", session_id); // I18N: no-translate - Rust diagnostic log
                             // Extract tool calls from captured content
                             if let Some(content) = end.captured_content {
                                 for part in content.into_parts() {

@@ -66,23 +66,23 @@ impl Pool {
 
         let key = format!("{username}@{host}");
 
-        tracing::debug!("connecting to {key}");
+        tracing::debug!("connecting to {key}"); // I18N: no-translate - Rust diagnostic log
 
         if let Some(session) = self.get(host, &username) {
-            tracing::debug!("found existing ssh session in pool");
+            tracing::debug!("found existing ssh session in pool"); // I18N: no-translate - Rust diagnostic log
             if session.send_keepalive().await {
-                tracing::debug!("session keepalive success");
+                tracing::debug!("session keepalive success"); // I18N: no-translate - Rust diagnostic log
                 // Existing connection, no new warnings
                 return Ok((session, AuthResult::default()));
             } else {
-                tracing::debug!("Removing dead SSH connection for {key}");
+                tracing::debug!("Removing dead SSH connection for {key}"); // I18N: no-translate - Rust diagnostic log
                 self.connections.remove(&key);
             }
         }
 
         let identity_key_config = ssh_config_override.and_then(|cfg| cfg.identity_key.as_ref());
         let certificate_config = ssh_config_override.and_then(|cfg| cfg.certificate.as_ref());
-        tracing::debug!(
+        tracing::debug!( // I18N: no-translate - Rust diagnostic log
             "Pool connect_with_config: ssh_config_override={:?}, identity_key_config={:?}, certificate_config={:?}",
             ssh_config_override,
             identity_key_config,
@@ -102,14 +102,14 @@ impl Pool {
             Ok::<_, eyre::Report>((session, auth_result))
         };
 
-        tracing::debug!("Creating new SSH connection for {key}");
+        tracing::debug!("Creating new SSH connection for {key}"); // I18N: no-translate - Rust diagnostic log
         let (session, auth_result) = if let Some(mut cancellation_rx) = cancellation_rx {
             tokio::select! {
                 result = async_session => {
                     result?
                 }
                 _ = &mut cancellation_rx => {
-                    tracing::debug!("SSH connection {key} cancelled");
+                    tracing::debug!("SSH connection {key} cancelled"); // I18N: no-translate - Rust diagnostic log
                     return Err(eyre::eyre!("SSH connection cancelled"));
                 }
             }

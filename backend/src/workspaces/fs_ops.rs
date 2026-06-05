@@ -654,22 +654,22 @@ mod tests {
         let entries = read_dir_recursive(base).await?;
 
         // Verify we found all directories and files
-        assert_eq!(entries.len(), 7); // 3 dirs + 4 files
+        assert_eq!(entries.len(), 7); // 3 dirs + 4 files // I18N: no-translate - Rust assertion
 
         // Check for directories
         let dirs: Vec<_> = entries.iter().filter(|e| e.is_dir).collect();
-        assert_eq!(dirs.len(), 3);
-        assert!(dirs.iter().any(|d| d.path == dir1));
-        assert!(dirs.iter().any(|d| d.path == dir2));
-        assert!(dirs.iter().any(|d| d.path == dir3));
+        assert_eq!(dirs.len(), 3); // I18N: no-translate - Rust assertion
+        assert!(dirs.iter().any(|d| d.path == dir1)); // I18N: no-translate - Rust assertion
+        assert!(dirs.iter().any(|d| d.path == dir2)); // I18N: no-translate - Rust assertion
+        assert!(dirs.iter().any(|d| d.path == dir3)); // I18N: no-translate - Rust assertion
 
         // Check for files
         let files: Vec<_> = entries.iter().filter(|e| !e.is_dir).collect();
-        assert_eq!(files.len(), 4);
-        assert!(files.iter().any(|f| f.path == base.join("root.txt")));
-        assert!(files.iter().any(|f| f.path == dir1.join("file1.txt")));
-        assert!(files.iter().any(|f| f.path == dir2.join("file2.txt")));
-        assert!(files.iter().any(|f| f.path == dir3.join("file3.txt")));
+        assert_eq!(files.len(), 4); // I18N: no-translate - Rust assertion
+        assert!(files.iter().any(|f| f.path == base.join("root.txt"))); // I18N: no-translate - Rust assertion
+        assert!(files.iter().any(|f| f.path == dir1.join("file1.txt"))); // I18N: no-translate - Rust assertion
+        assert!(files.iter().any(|f| f.path == dir2.join("file2.txt"))); // I18N: no-translate - Rust assertion
+        assert!(files.iter().any(|f| f.path == dir3.join("file3.txt"))); // I18N: no-translate - Rust assertion
 
         Ok(())
     }
@@ -682,24 +682,24 @@ mod tests {
         // Test when file doesn't exist - should return same path
         let test_path = base.join("test.txt");
         let unique_path = find_unique_path(&test_path)?;
-        assert_eq!(unique_path, test_path);
+        assert_eq!(unique_path, test_path); // I18N: no-translate - Rust assertion
 
         // Create the file and test again - should return incremented path
         fs::write(&test_path, "content")?;
         let unique_path = find_unique_path(&test_path)?;
-        assert_eq!(unique_path, base.join("test-1.txt"));
+        assert_eq!(unique_path, base.join("test-1.txt")); // I18N: no-translate - Rust assertion
 
         // Create multiple files and verify incrementing behavior
         fs::write(base.join("test-1.txt"), "content")?;
         fs::write(base.join("test-2.txt"), "content")?;
         let unique_path = find_unique_path(&test_path)?;
-        assert_eq!(unique_path, base.join("test-3.txt"));
+        assert_eq!(unique_path, base.join("test-3.txt")); // I18N: no-translate - Rust assertion
 
         // Test with file that has no extension
         let no_ext = base.join("noext");
         fs::write(&no_ext, "content")?;
         let unique_path = find_unique_path(&no_ext)?;
-        assert_eq!(unique_path, base.join("noext-1"));
+        assert_eq!(unique_path, base.join("noext-1")); // I18N: no-translate - Rust assertion
 
         Ok(())
     }

@@ -44,46 +44,46 @@ mod tests {
 
     #[test]
     fn test_shell_escape_simple_value() {
-        assert_eq!(shell_escape_value("hello"), "'hello'");
+        assert_eq!(shell_escape_value("hello"), "'hello'"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
     fn test_shell_escape_empty_value() {
-        assert_eq!(shell_escape_value(""), "''");
+        assert_eq!(shell_escape_value(""), "''"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
     fn test_shell_escape_value_with_single_quotes() {
-        assert_eq!(shell_escape_value("it's"), "'it'\\''s'");
+        assert_eq!(shell_escape_value("it's"), "'it'\\''s'"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
     fn test_shell_escape_value_with_special_chars() {
-        assert_eq!(shell_escape_value("$HOME"), "'$HOME'");
-        assert_eq!(shell_escape_value("`cmd`"), "'`cmd`'");
-        assert_eq!(shell_escape_value("a\nb"), "'a\nb'");
-        assert_eq!(shell_escape_value("a b"), "'a b'");
-        assert_eq!(shell_escape_value("a\"b"), "'a\"b'");
+        assert_eq!(shell_escape_value("$HOME"), "'$HOME'"); // I18N: no-translate - Rust assertion
+        assert_eq!(shell_escape_value("`cmd`"), "'`cmd`'"); // I18N: no-translate - Rust assertion
+        assert_eq!(shell_escape_value("a\nb"), "'a\nb'"); // I18N: no-translate - Rust assertion
+        assert_eq!(shell_escape_value("a b"), "'a b'"); // I18N: no-translate - Rust assertion
+        assert_eq!(shell_escape_value("a\"b"), "'a\"b'"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
     fn test_build_env_exports_empty_map() {
         let map = HashMap::new();
-        assert_eq!(build_env_exports(&map), "");
+        assert_eq!(build_env_exports(&map), ""); // I18N: no-translate - Rust assertion
     }
 
     #[test]
     fn test_build_env_exports_single_var() {
         let mut map = HashMap::new();
         map.insert("FOO".to_string(), "bar".to_string());
-        assert_eq!(build_env_exports(&map), "export FOO='bar'\n");
+        assert_eq!(build_env_exports(&map), "export FOO='bar'\n"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
     fn test_build_env_exports_special_value() {
         let mut map = HashMap::new();
         map.insert("VAR".to_string(), "it's $complex".to_string());
-        assert_eq!(build_env_exports(&map), "export VAR='it'\\''s $complex'\n");
+        assert_eq!(build_env_exports(&map), "export VAR='it'\\''s $complex'\n"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -94,9 +94,9 @@ mod tests {
 
         let result = build_env_exports(&map);
         // HashMap order is not guaranteed, so check both lines are present
-        assert!(result.contains("export A='1'\n"));
-        assert!(result.contains("export B='2'\n"));
+        assert!(result.contains("export A='1'\n")); // I18N: no-translate - Rust assertion
+        assert!(result.contains("export B='2'\n")); // I18N: no-translate - Rust assertion
         // Should have exactly 2 lines
-        assert_eq!(result.lines().count(), 2);
+        assert_eq!(result.lines().count(), 2); // I18N: no-translate - Rust assertion
     }
 }

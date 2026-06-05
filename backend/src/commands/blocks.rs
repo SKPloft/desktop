@@ -36,14 +36,14 @@ impl MessageChannel<DocumentBridgeMessage> for DocumentBridgeChannel {
         &self,
         message: DocumentBridgeMessage,
     ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-        log::trace!(
+        log::trace!( // I18N: no-translate - Rust diagnostic log
             "Sending message to document bridge for runbook {runbook_id}",
             runbook_id = self.runbook_id
         );
         let result = self.channel.send(message).map_err(|e| e.into());
 
         if let Err(e) = &result {
-            log::error!("Failed to send message to document bridge: {e}");
+            log::error!("Failed to send message to document bridge: {e}"); // I18N: no-translate - Rust diagnostic log
         }
 
         result
@@ -244,7 +244,7 @@ pub async fn execute_block(
     match execution_handle_result {
         Ok(Some(handle)) => {
             let id = handle.id;
-            log::trace!(
+            log::trace!( // I18N: no-translate - Rust diagnostic log
                 "Block {block_id} in runbook {runbook_id} returned an execution handle; handle ID: {id}",
             );
             let mut executions = state.block_executions.write().await;
@@ -252,13 +252,13 @@ pub async fn execute_block(
             Ok(Some(id.to_string()))
         }
         Ok(None) => {
-            log::trace!(
+            log::trace!( // I18N: no-translate - Rust diagnostic log
                 "Block {block_id} in runbook {runbook_id} did not return an execution handle",
             );
             Ok(None)
         }
         Err(e) => {
-            log::error!(
+            log::error!( // I18N: no-translate - Rust diagnostic log
                 "Failed to execute block {block_id} in runbook {runbook_id}: {e}",
                 e = e
             );
@@ -276,12 +276,12 @@ pub async fn cancel_block_execution(
 
     let mut executions = state.block_executions.write().await;
     if let Some(handle) = executions.remove(&execution_uuid) {
-        log::debug!("Cancelling block execution {execution_id}");
+        log::debug!("Cancelling block execution {execution_id}"); // I18N: no-translate - Rust diagnostic log
         // Cancel the execution
         handle.cancellation_token.cancel();
         Ok(())
     } else {
-        log::error!("Cannot cancel execution; execution ID not found: {execution_id}");
+        log::error!("Cannot cancel execution; execution ID not found: {execution_id}"); // I18N: no-translate - Rust diagnostic log
         Err("Execution not found".to_string())
     }
 }
@@ -301,7 +301,7 @@ pub async fn open_document<R: Runtime>(
 
     let mut documents = state.documents.write().await;
     if let Some(document) = documents.get(&document_id) {
-        log::debug!("Updating document bridge channel for document {document_id}");
+        log::debug!("Updating document bridge channel for document {document_id}"); // I18N: no-translate - Rust diagnostic log
 
         document
             .update_bridge_channel(document_bridge)
@@ -310,7 +310,7 @@ pub async fn open_document<R: Runtime>(
         return Ok(());
     }
 
-    log::debug!("Opening document {document_id}");
+    log::debug!("Opening document {document_id}"); // I18N: no-translate - Rust diagnostic log
 
     // Get workspace root if this document belongs to an offline workspace
     let workspace_root = if let Some(workspace_manager) = state.workspaces.lock().await.as_ref() {
@@ -385,7 +385,7 @@ pub async fn notify_block_kv_value_changed(
     key: String,
     _value: serde_json::Value,
 ) -> Result<(), String> {
-    log::debug!(
+    log::debug!( // I18N: no-translate - Rust diagnostic log
         "notify_block_kv_value_changed: document={document_id}, block={block_id}, key={key}"
     );
 
@@ -397,12 +397,12 @@ pub async fn notify_block_kv_value_changed(
     if key == "identityKey" {
         if let Some(block) = document.get_block(block_uuid).await {
             if let Some((_user, host, _port)) = block.ssh_connect_host_info() {
-                log::debug!(
+                log::debug!( // I18N: no-translate - Rust diagnostic log
                     "Identity key changed for SSH host {host}, disconnecting existing connections"
                 );
                 let ssh_pool = state.ssh_pool();
                 if let Err(e) = ssh_pool.disconnect_by_host(&host).await {
-                    log::warn!("Failed to disconnect SSH connections for host {host}: {e}");
+                    log::warn!("Failed to disconnect SSH connections for host {host}: {e}"); // I18N: no-translate - Rust diagnostic log
                 }
             }
         }
@@ -532,7 +532,7 @@ pub async fn start_serial_execution<R: Runtime>(
         return Err("Serial execution already started".to_string());
     }
 
-    log::debug!("Starting serial execution for document {document_id}");
+    log::debug!("Starting serial execution for document {document_id}"); // I18N: no-translate - Rust diagnostic log
 
     let documents = state.documents.read().await;
     let document = documents.get(&document_id).ok_or("Document not found")?;
@@ -596,9 +596,9 @@ pub async fn start_serial_execution<R: Runtime>(
         let mut extra_template_context = HashMap::new();
         extra_template_context.insert("workspace".to_string(), workspace_context);
 
-        log::trace!("Starting serial execution for document {document_id}; blocks: {block_ids:?}");
+        log::trace!("Starting serial execution for document {document_id}; blocks: {block_ids:?}"); // I18N: no-translate - Rust diagnostic log
         'outer: for block_id in &block_ids {
-            log::trace!("Executing block {block_id} in document {document_id}");
+            log::trace!("Executing block {block_id} in document {document_id}"); // I18N: no-translate - Rust diagnostic log
             let handle = execute_single_block(
                 document_id.clone(),
                 &document,
@@ -618,7 +618,7 @@ pub async fn start_serial_execution<R: Runtime>(
 
             match handle {
                 Ok(Some(handle)) => {
-                    log::trace!("Block {block_id} in document {document_id} returned an execution handle; handle ID: {id}", id = handle.id);
+                    log::trace!("Block {block_id} in document {document_id} returned an execution handle; handle ID: {id}", id = handle.id); // I18N: no-translate - Rust diagnostic log
                     let mut finished_channel = handle.finished_channel();
                     let state = app.state::<AtuinState>();
                     let mut executions = state.block_executions.write().await;
@@ -630,23 +630,23 @@ pub async fn start_serial_execution<R: Runtime>(
                         _ = finished_channel.changed() => {
                             match *(finished_channel.borrow_and_update()) {
                                 None => {
-                                    log::debug!("Block {block_id} in document {document_id} still running");
+                                    log::debug!("Block {block_id} in document {document_id} still running"); // I18N: no-translate - Rust diagnostic log
                                 }
                                 Some(ExecutionResult::Success) => {
-                                    log::debug!("Block {block_id} in document {document_id} finished successfully");
+                                    log::debug!("Block {block_id} in document {document_id} finished successfully"); // I18N: no-translate - Rust diagnostic log
                                 }
                                 Some(ExecutionResult::Failure) => {
-                                    log::debug!("Block {block_id} in document {document_id} failed");
+                                    log::debug!("Block {block_id} in document {document_id} failed"); // I18N: no-translate - Rust diagnostic log
                                     exit_type = ExecutionResult::Failure;
                                     stop_serial_exec = true;
                                 }
                                 Some(ExecutionResult::Cancelled) => {
-                                    log::debug!("Block {block_id} in document {document_id} cancelled");
+                                    log::debug!("Block {block_id} in document {document_id} cancelled"); // I18N: no-translate - Rust diagnostic log
                                     exit_type = ExecutionResult::Cancelled;
                                     stop_serial_exec = true;
                                 }
                                 Some(ExecutionResult::Paused) => {
-                                    log::debug!("Block {block_id} in document {document_id} paused execution");
+                                    log::debug!("Block {block_id} in document {document_id} paused execution"); // I18N: no-translate - Rust diagnostic log
                                     // Paused is not a failure - the SerialExecutionPaused event
                                     // is emitted by the block itself, so we don't emit any
                                     // additional completion/failure event
@@ -655,16 +655,16 @@ pub async fn start_serial_execution<R: Runtime>(
                                 }
                             }
 
-                            log::trace!("Cleaning up execution handle for block {block_id} in document {document_id}");
+                            log::trace!("Cleaning up execution handle for block {block_id} in document {document_id}"); // I18N: no-translate - Rust diagnostic log
                             cleanup(handle.id).await;
                             if stop_serial_exec {
-                                log::trace!("Stopping serial execution for document {document_id} because block {block_id} failed or was cancelled");
+                                log::trace!("Stopping serial execution for document {document_id} because block {block_id} failed or was cancelled"); // I18N: no-translate - Rust diagnostic log
                                 break 'outer;
                             }
                         }
                         _ = &mut rx => {
                             handle.cancellation_token.cancel();
-                            log::debug!("Serial execution cancelled for document {document_id}");
+                            log::debug!("Serial execution cancelled for document {document_id}"); // I18N: no-translate - Rust diagnostic log
                             cleanup(handle.id).await;
                             exit_type = ExecutionResult::Cancelled;
                             break 'outer;
@@ -672,14 +672,14 @@ pub async fn start_serial_execution<R: Runtime>(
                     }
                 }
                 Err(e) => {
-                    log::error!(
+                    log::error!( // I18N: no-translate - Rust diagnostic log
                         "Failed to execute block {block_id} in document {document_id}: {e}"
                     );
                     exit_type = ExecutionResult::Failure;
                     break 'outer;
                 }
                 Ok(None) => {
-                    log::trace!("Block {block_id} in document {document_id} did not return an execution handle; moving to the next block");
+                    log::trace!("Block {block_id} in document {document_id} did not return an execution handle; moving to the next block"); // I18N: no-translate - Rust diagnostic log
                     // Block did not return an execution handle; move to the next block.
                 }
             }
@@ -718,16 +718,16 @@ pub async fn start_serial_execution<R: Runtime>(
                 // The SerialExecutionPaused event is already emitted by the pause block
                 // itself, so we don't emit any additional event here. This ensures we
                 // don't get both a "paused" and "completed" notification.
-                log::debug!("Serial execution paused for document {document_id}");
+                log::debug!("Serial execution paused for document {document_id}"); // I18N: no-translate - Rust diagnostic log
             }
         };
 
-        log::trace!("Serial execution for document {document_id} completed; blocks: {block_ids:?}");
+        log::trace!("Serial execution for document {document_id} completed; blocks: {block_ids:?}"); // I18N: no-translate - Rust diagnostic log
         let state = app.state::<AtuinState>();
         let mut serial_executions = state.serial_executions.write().await;
         serial_executions.remove(&document_id);
 
-        log::debug!("Serial execution for document {document_id} completed");
+        log::debug!("Serial execution for document {document_id} completed"); // I18N: no-translate - Rust diagnostic log
     });
 
     Ok(())
@@ -785,7 +785,7 @@ async fn execute_single_block(
     pty_store: PtyStoreHandle,
     extra_template_context: HashMap<String, HashMap<String, String>>,
 ) -> Result<Option<ExecutionHandle>, Box<dyn std::error::Error + Send + Sync>> {
-    log::debug!("Starting block execution for block {block_id} in document {document_id}");
+    log::debug!("Starting block execution for block {block_id} in document {document_id}"); // I18N: no-translate - Rust diagnostic log
 
     // Get execution context
     let context = document
@@ -835,14 +835,14 @@ mod tests {
             v => Some(v.to_string()),
         };
 
-        assert_eq!(result, Some("/Users/test/path".to_string()));
+        assert_eq!(result, Some("/Users/test/path".to_string())); // I18N: no-translate - Rust assertion
         // Verify it doesn't have extra quotes that would break path resolution
         let value = result.unwrap();
-        assert!(
+        assert!( // I18N: no-translate - Rust assertion
             !value.starts_with('"'),
             "Path should not start with quote: {value}"
         );
-        assert!(
+        assert!( // I18N: no-translate - Rust assertion
             !value.ends_with('"'),
             "Path should not end with quote: {value}"
         );
@@ -857,8 +857,8 @@ mod tests {
         let wrong_result = json_string.to_string();
 
         // to_string() on a Value::String produces JSON, which includes quotes
-        assert_eq!(wrong_result, "\"/Users/test/path\"");
-        assert!(
+        assert_eq!(wrong_result, "\"/Users/test/path\""); // I18N: no-translate - Rust assertion
+        assert!( // I18N: no-translate - Rust assertion
             wrong_result.starts_with('"'),
             "to_string() adds leading quote"
         );

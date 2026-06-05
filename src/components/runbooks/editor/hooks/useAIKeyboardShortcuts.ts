@@ -64,7 +64,7 @@ export function useAIKeyboardShortcuts({
         // Cmd+K on non-text blocks does nothing (use AI sidebar instead)
         // Cmd+Enter for generation is handled by useAIInlineGeneration
       } catch (error) {
-        console.warn("Could not get cursor position:", error);
+        console.warn("Could not get cursor position:", error); // I18N: no-translate - developer diagnostic
       }
     },
     [editor],

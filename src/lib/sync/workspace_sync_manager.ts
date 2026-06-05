@@ -99,7 +99,7 @@ export default class WorkspaceSyncManager {
 
   public async startSync() {
     if (this.syncing) {
-      throw new Error("Sync already in progress");
+      throw new Error("Sync already in progress"); // I18N: no-translate - internal exception
     }
 
     if (this.connectionState !== ConnectionState.Online) return;

@@ -115,7 +115,7 @@ export default abstract class Runbook {
     }
 
     if (throwIfMissing) {
-      throw new Error(`Runbook ${id} not found`);
+      throw new Error(`Runbook ${id} not found`); // I18N: no-translate - internal exception
     }
 
     return null;
@@ -232,7 +232,7 @@ export class OnlineRunbook extends Runbook {
 
   public static async createUntitled(workspace: Workspace, markViewed: boolean = false) {
     if (!workspace.isOnline()) {
-      throw new Error(
+      throw new Error( // I18N: no-translate - internal exception
         "Creation of runbooks in an offline workspace needs to be done via the WorkspaceStrategy adapter",
       );
     }
@@ -282,7 +282,7 @@ export class OnlineRunbook extends Runbook {
     workspace: Workspace,
   ): Promise<Runbook> {
     if (!workspace || !workspace.get("id") || !workspace.canManageRunbooks()) {
-      throw new Error("Must pass a workspace with manage_runbooks permissions");
+      throw new Error("Must pass a workspace with manage_runbooks permissions"); // I18N: no-translate - internal exception
     }
 
     let content = typeof obj.content === "object" ? obj.content : JSON.parse(obj.content);
@@ -566,11 +566,11 @@ export class OnlineRunbook extends Runbook {
   public async moveTo(targetWorkspace: Workspace) {
     const currentWorkspace = await Workspace.get(this.workspaceId);
     if (!currentWorkspace || !currentWorkspace.canManageRunbooks()) {
-      throw new Error("Cannot move runbook out of a workspace without manage_runbooks permissions");
+      throw new Error("Cannot move runbook out of a workspace without manage_runbooks permissions"); // I18N: no-translate - internal exception
     }
 
     if (!targetWorkspace || !targetWorkspace.get("id") || !targetWorkspace.canManageRunbooks()) {
-      throw new Error("Cannot move runbook to a workspace without manage_runbooks permissions");
+      throw new Error("Cannot move runbook to a workspace without manage_runbooks permissions"); // I18N: no-translate - internal exception
     }
 
     const db = await AtuinDB.load("runbooks");
@@ -746,7 +746,7 @@ export class OfflineRunbook extends Runbook {
     const MAX_FS_WAIT_TIME = 5000;
 
     if (!persist) {
-      throw new Error("Cannot create offline runbook without persisting");
+      throw new Error("Cannot create offline runbook without persisting"); // I18N: no-translate - internal exception
     }
 
     const idResult = await commands.createRunbook(
@@ -757,7 +757,7 @@ export class OfflineRunbook extends Runbook {
       forkedFrom,
     );
     if (idResult.isErr()) {
-      console.error("Failed to create runbook", idResult.unwrapErr());
+      console.error("Failed to create runbook", idResult.unwrapErr()); // I18N: no-translate - developer diagnostic
       return null;
     }
 
@@ -773,7 +773,7 @@ export class OfflineRunbook extends Runbook {
         return runbook;
       }
       if (Date.now() - startAttempts > 5000) {
-        console.error(`Failed to load runbook after ${MAX_FS_WAIT_TIME} ms`);
+        console.error(`Failed to load runbook after ${MAX_FS_WAIT_TIME} ms`); // I18N: no-translate - developer diagnostic
         return null;
       }
       await timeoutPromise(100, null);

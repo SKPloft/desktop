@@ -255,18 +255,18 @@ version: 2
         let root = setup().await;
         let state = WorkspaceState::new("test", root.path()).await.unwrap();
 
-        assert_eq!(state.id, "test");
+        assert_eq!(state.id, "test"); // I18N: no-translate - Rust assertion
 
-        assert_eq!(state.runbooks.len(), 2);
+        assert_eq!(state.runbooks.len(), 2); // I18N: no-translate - Rust assertion
 
         let rb1 = state.runbooks.get("rb1").unwrap();
-        assert_eq!(rb1.id, "rb1");
-        assert_eq!(rb1.name, "Runbook 1");
-        assert_eq!(rb1.version, 1);
+        assert_eq!(rb1.id, "rb1"); // I18N: no-translate - Rust assertion
+        assert_eq!(rb1.name, "Runbook 1"); // I18N: no-translate - Rust assertion
+        assert_eq!(rb1.version, 1); // I18N: no-translate - Rust assertion
 
         let rb2 = state.runbooks.get("rb2").unwrap();
-        assert_eq!(rb2.id, "rb2");
-        assert_eq!(rb2.name, "Runbook 2");
-        assert_eq!(rb2.version, 2);
+        assert_eq!(rb2.id, "rb2"); // I18N: no-translate - Rust assertion
+        assert_eq!(rb2.name, "Runbook 2"); // I18N: no-translate - Rust assertion
+        assert_eq!(rb2.version, 2); // I18N: no-translate - Rust assertion
     }
 }

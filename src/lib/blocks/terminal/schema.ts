@@ -74,6 +74,7 @@ AIBlockRegistry.getInstance().addBlock({
   typeName: "run",
   friendlyName: () => t("editor.blocks.terminal.title"),
   shortDescription: () => t("editor.blocks.terminal.short_desc"),
+  // Description is not recommended for i18n — AI-facing developer docs, maintain in English.
   description: () => undent`
     Terminal blocks are used to execute commands in an interactive terminal. This differs from a script block in that it allows for interactive input and output, and can be used to execute commands that require user input.
     Because of this, however, terminal blocks are slower, cannot have their output captured as a variable, and require an explicit 'exit' command for serial execution to continue. Since they execute

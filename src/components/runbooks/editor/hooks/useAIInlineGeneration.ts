@@ -121,7 +121,7 @@ function reducer(
     case "START_GENERATE":
       // Can only start generating from idle
       if (state.status !== "idle") {
-        console.warn(`[AIInlineGeneration] Cannot START_GENERATE from state: ${state.status}`);
+        console.warn(`[AIInlineGeneration] Cannot START_GENERATE from state: ${state.status}`); // I18N: no-translate - developer diagnostic
         return state;
       }
       return {
@@ -134,7 +134,7 @@ function reducer(
 
     case "GENERATION_CANCELLED":
       if (state.status !== "generating") {
-        console.warn(
+        console.warn( // I18N: no-translate - developer diagnostic
           `[AIInlineGeneration] Cannot GENERATION_CANCELLED from state: ${state.status}`,
         );
         return state;
@@ -143,7 +143,7 @@ function reducer(
 
     case "GENERATION_SUCCESS":
       if (state.status !== "generating") {
-        console.warn(`[AIInlineGeneration] Cannot GENERATION_SUCCESS from state: ${state.status}`);
+        console.warn(`[AIInlineGeneration] Cannot GENERATION_SUCCESS from state: ${state.status}`); // I18N: no-translate - developer diagnostic
         return state;
       }
       return {
@@ -155,14 +155,14 @@ function reducer(
 
     case "GENERATION_ERROR":
       if (state.status !== "generating") {
-        console.warn(`[AIInlineGeneration] Cannot GENERATION_ERROR from state: ${state.status}`);
+        console.warn(`[AIInlineGeneration] Cannot GENERATION_ERROR from state: ${state.status}`); // I18N: no-translate - developer diagnostic
         return state;
       }
       return [{ status: "idle" }, [{ type: "destroySession", sessionId: state.sessionId }]];
 
     case "FINISH_CANCELLED_DISPLAY":
       if (state.status !== "cancelled") {
-        console.warn(
+        console.warn( // I18N: no-translate - developer diagnostic
           `[AIInlineGeneration] Cannot FINISH_CANCELLED_DISPLAY from state: ${state.status}`,
         );
         return state;
@@ -171,7 +171,7 @@ function reducer(
 
     case "START_EDITING":
       if (state.status !== "postGeneration") {
-        console.warn(`[AIInlineGeneration] Cannot START_EDITING from state: ${state.status}`);
+        console.warn(`[AIInlineGeneration] Cannot START_EDITING from state: ${state.status}`); // I18N: no-translate - developer diagnostic
         return state;
       }
       return {
@@ -184,7 +184,7 @@ function reducer(
 
     case "UPDATE_EDIT_PROMPT":
       if (state.status !== "editing") {
-        console.warn(`[AIInlineGeneration] Cannot UPDATE_EDIT_PROMPT from state: ${state.status}`);
+        console.warn(`[AIInlineGeneration] Cannot UPDATE_EDIT_PROMPT from state: ${state.status}`); // I18N: no-translate - developer diagnostic
         return state;
       }
       return {
@@ -194,7 +194,7 @@ function reducer(
 
     case "CANCEL_EDITING":
       if (state.status !== "editing") {
-        console.warn(`[AIInlineGeneration] Cannot CANCEL_EDITING from state: ${state.status}`);
+        console.warn(`[AIInlineGeneration] Cannot CANCEL_EDITING from state: ${state.status}`); // I18N: no-translate - developer diagnostic
         return state;
       }
       return [
@@ -209,11 +209,11 @@ function reducer(
 
     case "SUBMIT_EDIT":
       if (state.status !== "editing") {
-        console.warn(`[AIInlineGeneration] Cannot SUBMIT_EDIT from state: ${state.status}`);
+        console.warn(`[AIInlineGeneration] Cannot SUBMIT_EDIT from state: ${state.status}`); // I18N: no-translate - developer diagnostic
         return state;
       }
       if (!state.editPrompt.trim()) {
-        console.warn(`[AIInlineGeneration] Cannot SUBMIT_EDIT with empty prompt`);
+        console.warn(`[AIInlineGeneration] Cannot SUBMIT_EDIT with empty prompt`); // I18N: no-translate - developer diagnostic
         return state;
       }
       return {
@@ -226,7 +226,7 @@ function reducer(
 
     case "EDIT_SUCCESS":
       if (state.status !== "submittingEdit") {
-        console.warn(`[AIInlineGeneration] Cannot EDIT_SUCCESS from state: ${state.status}`);
+        console.warn(`[AIInlineGeneration] Cannot EDIT_SUCCESS from state: ${state.status}`); // I18N: no-translate - developer diagnostic
         return state;
       }
       return {
@@ -238,7 +238,7 @@ function reducer(
 
     case "EDIT_ERROR":
       if (state.status !== "submittingEdit") {
-        console.warn(`[AIInlineGeneration] Cannot EDIT_ERROR from state: ${state.status}`);
+        console.warn(`[AIInlineGeneration] Cannot EDIT_ERROR from state: ${state.status}`); // I18N: no-translate - developer diagnostic
         return state;
       }
       // Return to editing state with prompt preserved
@@ -375,12 +375,12 @@ export function useAIInlineGeneration({
 }: UseAIInlineGenerationOptions): UseAIInlineGenerationReturn {
   const runEffect = useCallback(
     (effect: Effects) => {
-      console.log("[AIInlineGeneration] Running effect:", effect);
+      console.log("[AIInlineGeneration] Running effect:", effect); // I18N: no-translate - developer diagnostic
       if (effect.type === "focusEditor") {
         editor?.focus();
       } else if (effect.type === "destroySession") {
         destroySession(effect.sessionId).catch((err) => {
-          console.error("[AIInlineGeneration] Failed to destroy session:", err);
+          console.error("[AIInlineGeneration] Failed to destroy session:", err); // I18N: no-translate - developer diagnostic
         });
       }
     },
@@ -431,14 +431,14 @@ export function useAIInlineGeneration({
   // Handle session events
   const handleSessionEvent = useCallback(
     (event: SessionEvent) => {
-      console.log("[AIInlineGeneration] Session event:", event.type, event);
+      console.log("[AIInlineGeneration] Session event:", event.type, event); // I18N: no-translate - developer diagnostic
       const currentEditor = editorRef.current;
       const currentState = stateRef.current;
 
       switch (event.type) {
         case "blocksGenerated": {
           if (currentState.status !== "generating" && currentState.status !== "submittingEdit") {
-            console.warn(
+            console.warn( // I18N: no-translate - developer diagnostic
               "[AIInlineGeneration] Received blocksGenerated in unexpected state:",
               currentState.status,
             );
@@ -470,7 +470,7 @@ export function useAIInlineGeneration({
           const toolCallId = event.toolCallId;
 
           if (!currentEditor) {
-            console.error("[AIInlineGeneration] No editor available for block insertion");
+            console.error("[AIInlineGeneration] No editor available for block insertion"); // I18N: no-translate - developer diagnostic
             dispatch({ type: "GENERATION_ERROR" });
             return;
           }
@@ -509,7 +509,7 @@ export function useAIInlineGeneration({
             const position = insertAtBeginning && i === 0 ? "before" : "after";
             const referenceId = lastInsertedId || currentEditor.document[0]?.id;
             if (!referenceId) {
-              console.error("[AIInlineGeneration] No reference block for insertion");
+              console.error("[AIInlineGeneration] No reference block for insertion"); // I18N: no-translate - developer diagnostic
               break;
             }
             const inserted = currentEditor.insertBlocks([newBlock as any], referenceId, position);
@@ -585,8 +585,8 @@ export function useAIInlineGeneration({
         }
 
         case "error": {
-          const message = event.message || "Unknown error";
-          console.error("[AIInlineGeneration] Session error:", message);
+          const message = event.message || "Unknown error"; // I18N: translate - toast fallback
+          console.error("[AIInlineGeneration] Session error:", message); // I18N: no-translate - developer diagnostic
 
           if (currentState.status === "generating") {
             dispatch({ type: "GENERATION_ERROR" });
@@ -624,32 +624,32 @@ export function useAIInlineGeneration({
           const toolRunner = toolRunnerRef.current;
 
           if (!sessionId) {
-            console.error("[AIInlineGeneration] No session for tool execution");
+            console.error("[AIInlineGeneration] No session for tool execution"); // I18N: no-translate - developer diagnostic
             return;
           }
 
           // Execute each tool and send result
           for (const toolCall of toolCalls) {
             if (toolRunner.isAutoApprovable(toolCall.name)) {
-              console.log(`[AIInlineGeneration] Auto-executing tool: ${toolCall.name}`);
+              console.log(`[AIInlineGeneration] Auto-executing tool: ${toolCall.name}`); // I18N: no-translate - developer diagnostic
               toolRunner
                 .executeToolCall(toolCall)
                 .then((result) => {
                   sendToolResult(sessionId, toolCall.id, result.success, result.result).catch(
-                    (err) => console.error("[AIInlineGeneration] Failed to send tool result:", err),
+                    (err) => console.error("[AIInlineGeneration] Failed to send tool result:", err), // I18N: no-translate - developer diagnostic
                   );
                 })
                 .catch((err) => {
-                  console.error(
+                  console.error( // I18N: no-translate - developer diagnostic
                     `[AIInlineGeneration] Failed to execute tool ${toolCall.name}:`,
                     err,
                   );
                   sendToolResult(sessionId, toolCall.id, false, err.message).catch((err2) =>
-                    console.error("[AIInlineGeneration] Failed to send error result:", err2),
+                    console.error("[AIInlineGeneration] Failed to send error result:", err2), // I18N: no-translate - developer diagnostic
                   );
                 });
             } else {
-              console.warn(
+              console.warn( // I18N: no-translate - developer diagnostic
                 `[AIInlineGeneration] Tool ${toolCall.name} is not auto-approvable, sending error`,
               );
               sendToolResult(
@@ -658,7 +658,7 @@ export function useAIInlineGeneration({
                 false,
                 `Tool ${toolCall.name} is not available for inline generation`,
               ).catch((err) =>
-                console.error("[AIInlineGeneration] Failed to send error result:", err),
+                console.error("[AIInlineGeneration] Failed to send error result:", err), // I18N: no-translate - developer diagnostic
               );
             }
           }
@@ -681,7 +681,7 @@ export function useAIInlineGeneration({
       // Cancel any existing session
       const existingSessionId = getSessionId(stateRef.current);
       if (existingSessionId) {
-        await destroySession(existingSessionId).catch(console.error);
+        await destroySession(existingSessionId).catch(console.error); // I18N: no-translate - developer diagnostic
       }
 
       errorToastShownRef.current = false;
@@ -720,10 +720,10 @@ export function useAIInlineGeneration({
         // Send the prompt as user message to start generation
         await sendMessage(sessionId, prompt);
       } catch (error) {
-        console.error("[AIInlineGeneration] Failed to create session:", error);
+        console.error("[AIInlineGeneration] Failed to create session:", error); // I18N: no-translate - developer diagnostic
         dispatch({ type: "GENERATION_ERROR" });
 
-        const message = error instanceof Error ? error.message : "Failed to start generation";
+        const message = error instanceof Error ? error.message : "Failed to start generation"; // I18N: translate - toast fallback
         addToast({
           title: t("editor.ai.generation_failed"),
           description: message,
@@ -772,7 +772,7 @@ export function useAIInlineGeneration({
     } catch (error) {
       dispatch({ type: "EDIT_ERROR" });
 
-      const message = error instanceof Error ? error.message : "Failed to edit block";
+      const message = error instanceof Error ? error.message : "Failed to edit block"; // I18N: translate - toast fallback
       addToast({
         title: t("editor.ai.edit_failed"),
         description: message,
@@ -944,7 +944,7 @@ export function useAIInlineGeneration({
             return;
           }
         } catch (error) {
-          console.warn("Could not get cursor position:", error);
+          console.warn("Could not get cursor position:", error); // I18N: no-translate - developer diagnostic
         }
       }
     },
@@ -956,7 +956,7 @@ export function useAIInlineGeneration({
     return () => {
       const sessionId = getSessionId(stateRef.current);
       if (sessionId) {
-        destroySession(sessionId).catch(console.error);
+        destroySession(sessionId).catch(console.error); // I18N: no-translate - developer diagnostic
       }
     };
   }, []);

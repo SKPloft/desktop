@@ -27,7 +27,7 @@ export function useDependencyState(block: Block, isRunning: boolean | null | und
       const unlisten = await listen(
         `exec_log_completed:${block.dependency.parent}`,
         async (event: any) => {
-          console.log("exec_log_completed", event);
+          console.log("exec_log_completed", event); // I18N: no-translate - developer diagnostic
           updateCanRun();
         },
       );

@@ -50,32 +50,32 @@ pub(crate) fn initialize_menu_handlers<R: Runtime>(handle: &AppHandle<R>) {
         "update-check" => {
             app_handle
                 .emit("update-check", 0)
-                .expect("Failed to emit menu event");
+                .expect("Failed to emit menu event"); // I18N: no-translate - internal expectation message
         }
         "start-sync" => {
             app_handle
                 .emit("start-sync", 0)
-                .expect("Failed to emit menu event");
+                .expect("Failed to emit menu event"); // I18N: no-translate - internal expectation message
         }
         "import-runbook" => {
             app_handle
                 .emit("import-runbook", 0)
-                .expect("Failed to emit menu event");
+                .expect("Failed to emit menu event"); // I18N: no-translate - internal expectation message
         }
         "new-runbook" => {
             app_handle
                 .emit("new-runbook", 0)
-                .expect("Failed to emit menu event");
+                .expect("Failed to emit menu event"); // I18N: no-translate - internal expectation message
         }
         "new-workspace" => {
             app_handle
                 .emit("new-workspace", 0)
-                .expect("Failed to emit menu event");
+                .expect("Failed to emit menu event"); // I18N: no-translate - internal expectation message
         }
         "export-markdown" => {
             app_handle
                 .emit("export-markdown", 0)
-                .expect("Failed to emit menu event");
+                .expect("Failed to emit menu event"); // I18N: no-translate - internal expectation message
         }
         "toggle-devtools" => {
             let window = app_handle.get_webview_window("main").unwrap();
@@ -87,7 +87,7 @@ pub(crate) fn initialize_menu_handlers<R: Runtime>(handle: &AppHandle<R>) {
         }
         "show-llmtools" => {
             if let Err(e) = crate::llmtools_window::create_llmtools_window(app_handle) {
-                log::error!("Failed to open LLM Tools window: {}", e);
+                log::error!("Failed to open LLM Tools window: {}", e); // I18N: no-translate - Rust diagnostic log
             }
         }
         other_id if other_id.starts_with("link-menu-item:") => {
@@ -95,7 +95,7 @@ pub(crate) fn initialize_menu_handlers<R: Runtime>(handle: &AppHandle<R>) {
             if let Some(href) = href {
                 let _ = open::that(href);
             } else {
-                log::warn!("Unknown menu event: {other_id}");
+                log::warn!("Unknown menu event: {other_id}"); // I18N: no-translate - Rust diagnostic log
             }
         }
         other_id if other_id.starts_with("window-tab-item:") => {
@@ -103,11 +103,11 @@ pub(crate) fn initialize_menu_handlers<R: Runtime>(handle: &AppHandle<R>) {
             if let Some(url) = url {
                 app_handle.emit("activate-tab", url).unwrap();
             } else {
-                log::warn!("Unknown menu event: {other_id}");
+                log::warn!("Unknown menu event: {other_id}"); // I18N: no-translate - Rust diagnostic log
             }
         }
         other_id => {
-            log::warn!("Unknown menu event: {other_id}");
+            log::warn!("Unknown menu event: {other_id}"); // I18N: no-translate - Rust diagnostic log
         }
     });
 }

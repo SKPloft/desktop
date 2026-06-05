@@ -74,7 +74,7 @@ export async function fetchCodebergRepoData(
   });
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch repo: ${response.status} ${response.statusText}`);
+    throw new Error(`Failed to fetch repo: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error
   }
 
   const data = await response.json();
@@ -106,7 +106,7 @@ export async function fetchCodebergPRData(
   });
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch PR: ${response.status} ${response.statusText}`);
+    throw new Error(`Failed to fetch PR: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error
   }
 
   const data = await response.json();
@@ -143,7 +143,7 @@ export async function fetchCodebergIssueData(
   );
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch issue: ${response.status} ${response.statusText}`);
+    throw new Error(`Failed to fetch issue: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error
   }
 
   const data = await response.json();
@@ -180,7 +180,7 @@ export async function fetchCodebergCodeData(
   );
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch code: ${response.status} ${response.statusText}`);
+    throw new Error(`Failed to fetch code: ${response.status} ${response.statusText}`); // I18N: translate - rendered preview error
   }
 
   const fullContent = await response.text();

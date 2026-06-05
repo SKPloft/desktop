@@ -47,7 +47,7 @@ const HttpResponseComponent = ({ response, error, dismiss, colorMode }: HttpResp
     try {
       await navigator.clipboard.writeText(text);
     } catch (err) {
-      console.error("Failed to copy to clipboard:", err);
+      console.error("Failed to copy to clipboard:", err);// I18N: no-translate - developer diagnostic
     }
   };
 

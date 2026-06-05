@@ -357,7 +357,7 @@ where
             }
 
             for statement in statements.iter() {
-                tracing::info!("Statement: {:?}", statement);
+                tracing::info!("Statement: {:?}", statement); // I18N: no-translate - Rust diagnostic log
             }
 
             statements

@@ -207,7 +207,7 @@ export async function inspectCommandHistory(h: ShellHistory): Promise<InspectHis
     "select * from history where command=?1 order by timestamp desc",
     [h.command],
   );
-  console.log(other);
+  console.log(other); // I18N: no-translate - developer diagnostic
 
   return {
     other: other.map(
@@ -223,7 +223,7 @@ export async function inspectDirectoryHistory(h: ShellHistory): Promise<InspectH
   let other: any[] = await db.select("select * from history where cwd=?1 order by timestamp desc", [
     h.cwd,
   ]);
-  console.log(other);
+  console.log(other); // I18N: no-translate - developer diagnostic
 
   return {
     other: other.map(

@@ -187,7 +187,7 @@ impl BlockBehavior for SubRunbook {
         self,
         context: ExecutionContext,
     ) -> Result<Option<ExecutionHandle>, Box<dyn std::error::Error + Send + Sync>> {
-        tracing::trace!("Executing sub-runbook block {id}", id = self.id);
+        tracing::trace!("Executing sub-runbook block {id}", id = self.id); // I18N: no-translate - Rust diagnostic log
 
         // Check if runbook reference is specified
         if self.runbook_ref.is_empty() {
@@ -254,7 +254,7 @@ impl BlockBehavior for SubRunbook {
             // Check for recursion before loading (use display_id for stack tracking)
             let stack_id = runbook_ref.display_id();
             if context.is_in_execution_stack(&stack_id) {
-                tracing::warn!(
+                tracing::warn!( // I18N: no-translate - Rust diagnostic log
                     "Recursion detected for sub-runbook {}: already in stack {:?}",
                     stack_id,
                     context.execution_stack()
@@ -541,7 +541,7 @@ impl BlockBehavior for SubRunbook {
                 let final_resolver = match sub_document.get_context_resolver().await {
                     Ok(resolver) => resolver,
                     Err(e) => {
-                        tracing::warn!("Failed to get context resolver for context export: {}", e);
+                        tracing::warn!("Failed to get context resolver for context export: {}", e); // I18N: no-translate - Rust diagnostic log
                         // Don't fail the whole block just because we couldn't export context
                         let _ = context.block_finished(Some(0), true).await;
                         return;
@@ -558,7 +558,7 @@ impl BlockBehavior for SubRunbook {
                     let child_env_vars = final_resolver.env_vars();
                     let parent_env_vars = context.context_resolver.env_vars();
 
-                    tracing::debug!(
+                    tracing::debug!( // I18N: no-translate - Rust diagnostic log
                         "export_env: child has {} env vars, parent has {} env vars",
                         child_env_vars.len(),
                         parent_env_vars.len()
@@ -573,7 +573,7 @@ impl BlockBehavior for SubRunbook {
                         .collect();
 
                     if !new_env_vars.is_empty() {
-                        tracing::info!(
+                        tracing::info!( // I18N: no-translate - Rust diagnostic log
                             "Exporting {} env vars from sub-runbook to parent: {:?}",
                             new_env_vars.len(),
                             new_env_vars.iter().map(|(k, _)| k).collect::<Vec<_>>()
@@ -586,7 +586,7 @@ impl BlockBehavior for SubRunbook {
                     let child_vars = final_resolver.vars();
                     let parent_vars = context.context_resolver.vars();
 
-                    tracing::debug!(
+                    tracing::debug!( // I18N: no-translate - Rust diagnostic log
                         "export_vars: child has {} vars, parent has {} vars",
                         child_vars.len(),
                         parent_vars.len()
@@ -601,7 +601,7 @@ impl BlockBehavior for SubRunbook {
                         .collect();
 
                     if !new_vars.is_empty() {
-                        tracing::info!(
+                        tracing::info!( // I18N: no-translate - Rust diagnostic log
                             "Exporting {} vars from sub-runbook to parent: {:?}",
                             new_vars.len(),
                             new_vars.iter().map(|(k, _, _)| k).collect::<Vec<_>>()
@@ -615,7 +615,7 @@ impl BlockBehavior for SubRunbook {
                     let parent_cwd = context.context_resolver.cwd();
 
                     if child_cwd != parent_cwd {
-                        tracing::info!(
+                        tracing::info!( // I18N: no-translate - Rust diagnostic log
                             "Exporting cwd from sub-runbook to parent: {} -> {}",
                             parent_cwd,
                             child_cwd
@@ -819,13 +819,13 @@ mod tests {
         document_handle
             .update_document(runbook_b_content)
             .await
-            .expect("Should load document");
+            .expect("Should load document"); // I18N: no-translate - internal expectation message
 
         // Execute the sub-runbook block
         let exec_context = document_handle
             .create_execution_context(sub_runbook_block_id, None, None, None)
             .await
-            .expect("Should create execution context");
+            .expect("Should create execution context"); // I18N: no-translate - internal expectation message
 
         let sub_runbook_block = SubRunbook::builder()
             .id(sub_runbook_block_id)
@@ -841,7 +841,7 @@ mod tests {
         let handle = sub_runbook_block
             .execute(exec_context)
             .await
-            .expect("Should execute sub-runbook");
+            .expect("Should execute sub-runbook"); // I18N: no-translate - internal expectation message
 
         // Wait for execution to complete
         if let Some(handle) = handle {
@@ -850,14 +850,14 @@ mod tests {
 
         // Verify the file was created by the sub-runbook
         let file_contents = std::fs::read_to_string(&test_file)
-            .expect("File should exist after sub-runbook execution");
-        assert_eq!(file_contents, "test content");
+            .expect("File should exist after sub-runbook execution"); // I18N: no-translate - internal expectation message
+        assert_eq!(file_contents, "test content"); // I18N: no-translate - Rust assertion
 
         // Now execute the cat script block to verify reading works
         let cat_exec_context = document_handle
             .create_execution_context(cat_script_block_id, None, None, None)
             .await
-            .expect("Should create execution context for cat");
+            .expect("Should create execution context for cat"); // I18N: no-translate - internal expectation message
 
         let cat_block = crate::blocks::script::Script::builder()
             .id(cat_script_block_id)
@@ -870,7 +870,7 @@ mod tests {
         let cat_handle = cat_block
             .execute(cat_exec_context)
             .await
-            .expect("Should execute cat script");
+            .expect("Should execute cat script"); // I18N: no-translate - internal expectation message
 
         // Wait for cat to complete
         if let Some(handle) = cat_handle {
@@ -879,7 +879,7 @@ mod tests {
 
         // Verify events were emitted
         let events = event_bus.events();
-        assert!(!events.is_empty(), "Should have emitted events");
+        assert!(!events.is_empty(), "Should have emitted events"); // I18N: no-translate - Rust assertion
 
         // Clean up
         let _ = std::fs::remove_file(&test_file);
@@ -891,7 +891,7 @@ mod tests {
         // Create temp files to track execution order
         let marker_dir =
             std::env::temp_dir().join(format!("sub_runbook_markers_{}", Uuid::new_v4()));
-        std::fs::create_dir_all(&marker_dir).expect("Should create marker dir");
+        std::fs::create_dir_all(&marker_dir).expect("Should create marker dir"); // I18N: no-translate - internal expectation message
 
         let marker1 = marker_dir.join("marker1");
         let marker2 = marker_dir.join("marker2");
@@ -942,12 +942,12 @@ mod tests {
         document_handle
             .update_document(parent_content)
             .await
-            .expect("Should load document");
+            .expect("Should load document"); // I18N: no-translate - internal expectation message
 
         let exec_context = document_handle
             .create_execution_context(parent_sub_block_id, None, None, None)
             .await
-            .expect("Should create execution context");
+            .expect("Should create execution context"); // I18N: no-translate - internal expectation message
 
         let sub_runbook_block = SubRunbook::builder()
             .id(parent_sub_block_id)
@@ -962,7 +962,7 @@ mod tests {
         let handle = sub_runbook_block
             .execute(exec_context)
             .await
-            .expect("Should execute");
+            .expect("Should execute"); // I18N: no-translate - internal expectation message
 
         // Wait for completion
         if let Some(handle) = handle {
@@ -970,14 +970,14 @@ mod tests {
         }
 
         // Verify both markers were created (blocks executed in order)
-        assert!(marker1.exists(), "First marker should exist");
-        assert!(marker2.exists(), "Second marker should exist");
+        assert!(marker1.exists(), "First marker should exist"); // I18N: no-translate - Rust assertion
+        assert!(marker2.exists(), "Second marker should exist"); // I18N: no-translate - Rust assertion
 
-        let content1 = std::fs::read_to_string(&marker1).expect("Should read marker1");
-        let content2 = std::fs::read_to_string(&marker2).expect("Should read marker2");
+        let content1 = std::fs::read_to_string(&marker1).expect("Should read marker1"); // I18N: no-translate - internal expectation message
+        let content2 = std::fs::read_to_string(&marker2).expect("Should read marker2"); // I18N: no-translate - internal expectation message
 
-        assert_eq!(content1.trim(), "first");
-        assert_eq!(content2.trim(), "second");
+        assert_eq!(content1.trim(), "first"); // I18N: no-translate - Rust assertion
+        assert_eq!(content2.trim(), "second"); // I18N: no-translate - Rust assertion
 
         // Clean up
         let _ = std::fs::remove_dir_all(&marker_dir);
@@ -997,13 +997,13 @@ mod tests {
 
         let sub_runbook = SubRunbook::from_document(&block_data).unwrap();
 
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             sub_runbook.id,
             Uuid::parse_str("550e8400-e29b-41d4-a716-446655440000").unwrap()
         );
-        assert_eq!(sub_runbook.name, "Setup Environment");
-        assert_eq!(sub_runbook.runbook_ref.id, Some("abc123".to_string()));
-        assert_eq!(sub_runbook.runbook_name, Some("Common Setup".to_string()));
+        assert_eq!(sub_runbook.name, "Setup Environment"); // I18N: no-translate - Rust assertion
+        assert_eq!(sub_runbook.runbook_ref.id, Some("abc123".to_string())); // I18N: no-translate - Rust assertion
+        assert_eq!(sub_runbook.runbook_name, Some("Common Setup".to_string())); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -1016,9 +1016,9 @@ mod tests {
 
         let sub_runbook = SubRunbook::from_document(&block_data).unwrap();
 
-        assert_eq!(sub_runbook.name, "Sub-Runbook");
-        assert!(sub_runbook.runbook_ref.is_empty());
-        assert_eq!(sub_runbook.runbook_name, None);
+        assert_eq!(sub_runbook.name, "Sub-Runbook"); // I18N: no-translate - Rust assertion
+        assert!(sub_runbook.runbook_ref.is_empty()); // I18N: no-translate - Rust assertion
+        assert_eq!(sub_runbook.runbook_name, None); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -1033,10 +1033,10 @@ mod tests {
         let json = serde_json::to_string(&state).unwrap();
         let parsed: SubRunbookState = serde_json::from_str(&json).unwrap();
 
-        assert_eq!(parsed.total_blocks, 5);
-        assert_eq!(parsed.completed_blocks, 2);
-        assert_eq!(parsed.current_block_name, Some("Script Block".to_string()));
-        assert_eq!(parsed.status, SubRunbookStatus::Running);
+        assert_eq!(parsed.total_blocks, 5); // I18N: no-translate - Rust assertion
+        assert_eq!(parsed.completed_blocks, 2); // I18N: no-translate - Rust assertion
+        assert_eq!(parsed.current_block_name, Some("Script Block".to_string())); // I18N: no-translate - Rust assertion
+        assert_eq!(parsed.status, SubRunbookStatus::Running); // I18N: no-translate - Rust assertion
     }
 
     /// Test: Recursion detection prevents infinite loops
@@ -1067,13 +1067,13 @@ mod tests {
         document_handle
             .update_document(runbook_a_content)
             .await
-            .expect("Should load document");
+            .expect("Should load document"); // I18N: no-translate - internal expectation message
 
         // Execute the sub-runbook block (which tries to call itself)
         let exec_context = document_handle
             .create_execution_context(sub_runbook_block_id, None, None, None)
             .await
-            .expect("Should create execution context");
+            .expect("Should create execution context"); // I18N: no-translate - internal expectation message
 
         let sub_runbook_block = SubRunbook::builder()
             .id(sub_runbook_block_id)
@@ -1088,13 +1088,13 @@ mod tests {
         let handle = sub_runbook_block
             .execute(exec_context)
             .await
-            .expect("Should start execution");
+            .expect("Should start execution"); // I18N: no-translate - internal expectation message
 
         // Wait for execution to complete
         if let Some(handle) = handle {
             let result = handle.wait_for_completion().await;
             // Should fail due to recursion
-            assert_eq!(result, ExecutionResult::Failure);
+            assert_eq!(result, ExecutionResult::Failure); // I18N: no-translate - Rust assertion
         }
 
         // Check that we got a recursion error in events
@@ -1106,7 +1106,7 @@ mod tests {
                 false
             }
         });
-        assert!(has_recursion_error, "Should have emitted recursion error");
+        assert!(has_recursion_error, "Should have emitted recursion error"); // I18N: no-translate - Rust assertion
     }
 
     /// Test: Environment variables can be exported from sub-runbook to parent
@@ -1148,14 +1148,14 @@ mod tests {
         document_handle
             .update_document(parent_content)
             .await
-            .expect("Should load document");
+            .expect("Should load document"); // I18N: no-translate - internal expectation message
 
         // Verify env var is NOT set before execution
         let resolver_before = document_handle
             .get_context_resolver()
             .await
-            .expect("Should get resolver");
-        assert!(
+            .expect("Should get resolver"); // I18N: no-translate - internal expectation message
+        assert!( // I18N: no-translate - Rust assertion
             resolver_before.env_vars().get("EXPORTED_VAR").is_none(),
             "EXPORTED_VAR should not exist before execution"
         );
@@ -1164,7 +1164,7 @@ mod tests {
         let exec_context = document_handle
             .create_execution_context(parent_sub_block_id, None, None, None)
             .await
-            .expect("Should create execution context");
+            .expect("Should create execution context"); // I18N: no-translate - internal expectation message
 
         let sub_runbook_block = SubRunbook::builder()
             .id(parent_sub_block_id)
@@ -1180,20 +1180,20 @@ mod tests {
         let handle = sub_runbook_block
             .execute(exec_context)
             .await
-            .expect("Should execute");
+            .expect("Should execute"); // I18N: no-translate - internal expectation message
 
         // Wait for completion
         if let Some(handle) = handle {
             let result = handle.wait_for_completion().await;
-            assert_eq!(result, ExecutionResult::Success);
+            assert_eq!(result, ExecutionResult::Success); // I18N: no-translate - Rust assertion
         }
 
         // Verify env var IS set after execution
         let resolver_after = document_handle
             .get_context_resolver()
             .await
-            .expect("Should get resolver");
-        assert_eq!(
+            .expect("Should get resolver"); // I18N: no-translate - internal expectation message
+        assert_eq!( // I18N: no-translate - Rust assertion
             resolver_after.env_vars().get("EXPORTED_VAR"),
             Some(&"hello_from_sub".to_string()),
             "EXPORTED_VAR should be exported to parent"
@@ -1237,13 +1237,13 @@ mod tests {
         document_handle
             .update_document(parent_content)
             .await
-            .expect("Should load document");
+            .expect("Should load document"); // I18N: no-translate - internal expectation message
 
         // Execute the sub-runbook block
         let exec_context = document_handle
             .create_execution_context(parent_sub_block_id, None, None, None)
             .await
-            .expect("Should create execution context");
+            .expect("Should create execution context"); // I18N: no-translate - internal expectation message
 
         let sub_runbook_block = SubRunbook::builder()
             .id(parent_sub_block_id)
@@ -1259,20 +1259,20 @@ mod tests {
         let handle = sub_runbook_block
             .execute(exec_context)
             .await
-            .expect("Should execute");
+            .expect("Should execute"); // I18N: no-translate - internal expectation message
 
         // Wait for completion
         if let Some(handle) = handle {
             let result = handle.wait_for_completion().await;
-            assert_eq!(result, ExecutionResult::Success);
+            assert_eq!(result, ExecutionResult::Success); // I18N: no-translate - Rust assertion
         }
 
         // Verify env var is NOT exported to parent
         let resolver_after = document_handle
             .get_context_resolver()
             .await
-            .expect("Should get resolver");
-        assert!(
+            .expect("Should get resolver"); // I18N: no-translate - internal expectation message
+        assert!( // I18N: no-translate - Rust assertion
             resolver_after.env_vars().get("PRIVATE_VAR").is_none(),
             "PRIVATE_VAR should NOT be exported to parent when export_env=false"
         );
@@ -1325,12 +1325,12 @@ mod tests {
         document_handle
             .update_document(parent_content)
             .await
-            .expect("Should load document");
+            .expect("Should load document"); // I18N: no-translate - internal expectation message
 
         let exec_context = document_handle
             .create_execution_context(parent_sub_block_id, None, None, None)
             .await
-            .expect("Should create execution context");
+            .expect("Should create execution context"); // I18N: no-translate - internal expectation message
 
         let sub_runbook_block = SubRunbook::builder()
             .id(parent_sub_block_id)
@@ -1345,11 +1345,11 @@ mod tests {
         let handle = sub_runbook_block
             .execute(exec_context)
             .await
-            .expect("Should execute");
+            .expect("Should execute"); // I18N: no-translate - internal expectation message
 
         if let Some(handle) = handle {
             let result = handle.wait_for_completion().await;
-            assert_eq!(
+            assert_eq!( // I18N: no-translate - Rust assertion
                 result,
                 ExecutionResult::Success,
                 "Script 2 should see the variable set by Script 1 and succeed"
@@ -1407,13 +1407,13 @@ mod tests {
         document_handle
             .update_document(parent_content)
             .await
-            .expect("Should load document");
+            .expect("Should load document"); // I18N: no-translate - internal expectation message
 
         // First execute the env block to set PARENT_VAR
         let env_context = document_handle
             .create_execution_context(env_block_id, None, None, None)
             .await
-            .expect("Should create env execution context");
+            .expect("Should create env execution context"); // I18N: no-translate - internal expectation message
 
         let env_block = crate::blocks::environment::Environment::builder()
             .id(env_block_id)
@@ -1424,7 +1424,7 @@ mod tests {
         let env_handle = env_block
             .execute(env_context)
             .await
-            .expect("Should execute env");
+            .expect("Should execute env"); // I18N: no-translate - internal expectation message
         if let Some(h) = env_handle {
             h.wait_for_completion().await;
         }
@@ -1433,7 +1433,7 @@ mod tests {
         let exec_context = document_handle
             .create_execution_context(parent_sub_block_id, None, None, None)
             .await
-            .expect("Should create execution context");
+            .expect("Should create execution context"); // I18N: no-translate - internal expectation message
 
         let sub_runbook_block = SubRunbook::builder()
             .id(parent_sub_block_id)
@@ -1448,11 +1448,11 @@ mod tests {
         let handle = sub_runbook_block
             .execute(exec_context)
             .await
-            .expect("Should execute");
+            .expect("Should execute"); // I18N: no-translate - internal expectation message
 
         if let Some(handle) = handle {
             let result = handle.wait_for_completion().await;
-            assert_eq!(
+            assert_eq!( // I18N: no-translate - Rust assertion
                 result,
                 ExecutionResult::Success,
                 "Sub-runbook script should see PARENT_VAR from parent context"
@@ -1499,14 +1499,14 @@ mod tests {
         document_handle
             .update_document(parent_content)
             .await
-            .expect("Should load document");
+            .expect("Should load document"); // I18N: no-translate - internal expectation message
 
         // Verify var doesn't exist before
         let resolver_before = document_handle
             .get_context_resolver()
             .await
-            .expect("Should get resolver");
-        assert!(
+            .expect("Should get resolver"); // I18N: no-translate - internal expectation message
+        assert!( // I18N: no-translate - Rust assertion
             resolver_before.vars().get("exported_var").is_none(),
             "exported_var should not exist before execution"
         );
@@ -1514,7 +1514,7 @@ mod tests {
         let exec_context = document_handle
             .create_execution_context(parent_sub_block_id, None, None, None)
             .await
-            .expect("Should create execution context");
+            .expect("Should create execution context"); // I18N: no-translate - internal expectation message
 
         let sub_runbook_block = SubRunbook::builder()
             .id(parent_sub_block_id)
@@ -1530,19 +1530,19 @@ mod tests {
         let handle = sub_runbook_block
             .execute(exec_context)
             .await
-            .expect("Should execute");
+            .expect("Should execute"); // I18N: no-translate - internal expectation message
 
         if let Some(handle) = handle {
             let result = handle.wait_for_completion().await;
-            assert_eq!(result, ExecutionResult::Success);
+            assert_eq!(result, ExecutionResult::Success); // I18N: no-translate - Rust assertion
         }
 
         // Verify var IS exported to parent
         let resolver_after = document_handle
             .get_context_resolver()
             .await
-            .expect("Should get resolver");
-        assert_eq!(
+            .expect("Should get resolver"); // I18N: no-translate - internal expectation message
+        assert_eq!( // I18N: no-translate - Rust assertion
             resolver_after.vars().get("exported_var"),
             Some(&"exported_value".to_string()),
             "exported_var should be exported to parent when export_vars=true"
@@ -1586,12 +1586,12 @@ mod tests {
         document_handle
             .update_document(parent_content)
             .await
-            .expect("Should load document");
+            .expect("Should load document"); // I18N: no-translate - internal expectation message
 
         let exec_context = document_handle
             .create_execution_context(parent_sub_block_id, None, None, None)
             .await
-            .expect("Should create execution context");
+            .expect("Should create execution context"); // I18N: no-translate - internal expectation message
 
         let sub_runbook_block = SubRunbook::builder()
             .id(parent_sub_block_id)
@@ -1607,19 +1607,19 @@ mod tests {
         let handle = sub_runbook_block
             .execute(exec_context)
             .await
-            .expect("Should execute");
+            .expect("Should execute"); // I18N: no-translate - internal expectation message
 
         if let Some(handle) = handle {
             let result = handle.wait_for_completion().await;
-            assert_eq!(result, ExecutionResult::Success);
+            assert_eq!(result, ExecutionResult::Success); // I18N: no-translate - Rust assertion
         }
 
         // Verify var is NOT exported
         let resolver_after = document_handle
             .get_context_resolver()
             .await
-            .expect("Should get resolver");
-        assert!(
+            .expect("Should get resolver"); // I18N: no-translate - internal expectation message
+        assert!( // I18N: no-translate - Rust assertion
             resolver_after.vars().get("private_var").is_none(),
             "private_var should NOT be exported when export_vars=false"
         );
@@ -1660,18 +1660,18 @@ mod tests {
         document_handle
             .update_document(parent_content)
             .await
-            .expect("Should load document");
+            .expect("Should load document"); // I18N: no-translate - internal expectation message
 
         let resolver_before = document_handle
             .get_context_resolver()
             .await
-            .expect("Should get resolver");
+            .expect("Should get resolver"); // I18N: no-translate - internal expectation message
         let cwd_before = resolver_before.cwd().to_string();
 
         let exec_context = document_handle
             .create_execution_context(parent_sub_block_id, None, None, None)
             .await
-            .expect("Should create execution context");
+            .expect("Should create execution context"); // I18N: no-translate - internal expectation message
 
         let sub_runbook_block = SubRunbook::builder()
             .id(parent_sub_block_id)
@@ -1687,25 +1687,25 @@ mod tests {
         let handle = sub_runbook_block
             .execute(exec_context)
             .await
-            .expect("Should execute");
+            .expect("Should execute"); // I18N: no-translate - internal expectation message
 
         if let Some(handle) = handle {
             let result = handle.wait_for_completion().await;
-            assert_eq!(result, ExecutionResult::Success);
+            assert_eq!(result, ExecutionResult::Success); // I18N: no-translate - Rust assertion
         }
 
         let resolver_after = document_handle
             .get_context_resolver()
             .await
-            .expect("Should get resolver");
+            .expect("Should get resolver"); // I18N: no-translate - internal expectation message
 
         // Parent cwd should now be /tmp (exported from sub-runbook)
-        assert_ne!(
+        assert_ne!( // I18N: no-translate - Rust assertion
             cwd_before,
             resolver_after.cwd(),
             "CWD should have changed after export"
         );
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             resolver_after.cwd(),
             "/tmp",
             "CWD should be exported from sub-runbook"
@@ -1748,12 +1748,12 @@ mod tests {
         document_handle
             .update_document(parent_content)
             .await
-            .expect("Should load document");
+            .expect("Should load document"); // I18N: no-translate - internal expectation message
 
         let exec_context = document_handle
             .create_execution_context(parent_sub_block_id, None, None, None)
             .await
-            .expect("Should create execution context");
+            .expect("Should create execution context"); // I18N: no-translate - internal expectation message
 
         let sub_runbook_block = SubRunbook::builder()
             .id(parent_sub_block_id)
@@ -1768,11 +1768,11 @@ mod tests {
         let handle = sub_runbook_block
             .execute(exec_context)
             .await
-            .expect("Should execute");
+            .expect("Should execute"); // I18N: no-translate - internal expectation message
 
         if let Some(handle) = handle {
             let result = handle.wait_for_completion().await;
-            assert_eq!(
+            assert_eq!( // I18N: no-translate - Rust assertion
                 result,
                 ExecutionResult::Failure,
                 "Sub-runbook should report failure when inner block fails"
@@ -1784,7 +1784,7 @@ mod tests {
         let has_failure = events
             .iter()
             .any(|e| matches!(e, crate::events::GCEvent::BlockFailed { .. }));
-        assert!(has_failure, "Should emit BlockFailed event");
+        assert!(has_failure, "Should emit BlockFailed event"); // I18N: no-translate - Rust assertion
     }
 
     /// Test: Indirect recursion detection (A -> B -> A)
@@ -1827,12 +1827,12 @@ mod tests {
         document_handle
             .update_document(runbook_a_content)
             .await
-            .expect("Should load document");
+            .expect("Should load document"); // I18N: no-translate - internal expectation message
 
         let exec_context = document_handle
             .create_execution_context(sub_block_in_a, None, None, None)
             .await
-            .expect("Should create execution context");
+            .expect("Should create execution context"); // I18N: no-translate - internal expectation message
 
         let sub_runbook_block = SubRunbook::builder()
             .id(sub_block_in_a)
@@ -1847,11 +1847,11 @@ mod tests {
         let handle = sub_runbook_block
             .execute(exec_context)
             .await
-            .expect("Should execute");
+            .expect("Should execute"); // I18N: no-translate - internal expectation message
 
         if let Some(handle) = handle {
             let result = handle.wait_for_completion().await;
-            assert_eq!(
+            assert_eq!( // I18N: no-translate - Rust assertion
                 result,
                 ExecutionResult::Failure,
                 "Should fail due to indirect recursion"
@@ -1867,7 +1867,7 @@ mod tests {
                 false
             }
         });
-        assert!(
+        assert!( // I18N: no-translate - Rust assertion
             has_recursion_error,
             "Should detect indirect recursion (A -> B -> A)"
         );
@@ -1938,12 +1938,12 @@ mod tests {
         document_handle
             .update_document(parent_content)
             .await
-            .expect("Should load document");
+            .expect("Should load document"); // I18N: no-translate - internal expectation message
 
         let exec_context = document_handle
             .create_execution_context(sub_block_in_a, None, None, None)
             .await
-            .expect("Should create execution context");
+            .expect("Should create execution context"); // I18N: no-translate - internal expectation message
 
         let sub_runbook_block = SubRunbook::builder()
             .id(sub_block_in_a)
@@ -1958,11 +1958,11 @@ mod tests {
         let handle = sub_runbook_block
             .execute(exec_context)
             .await
-            .expect("Should execute");
+            .expect("Should execute"); // I18N: no-translate - internal expectation message
 
         if let Some(handle) = handle {
             let result = handle.wait_for_completion().await;
-            assert_eq!(
+            assert_eq!( // I18N: no-translate - Rust assertion
                 result,
                 ExecutionResult::Success,
                 "Nested chain A->B->C should work: C sets var, B sees it after export"

@@ -97,7 +97,7 @@ impl BlockBehavior for Pause {
         self,
         context: ExecutionContext,
     ) -> Result<Option<ExecutionHandle>, Box<dyn std::error::Error + Send + Sync>> {
-        tracing::trace!("Executing Pause block {id}", id = self.id);
+        tracing::trace!("Executing Pause block {id}", id = self.id); // I18N: no-translate - Rust diagnostic log
 
         let _ = context.block_started().await;
 
@@ -117,7 +117,7 @@ impl BlockBehavior for Pause {
                     Ok(result) => is_truthy(&result),
                     Err(e) => {
                         // Template evaluation failed - report error and don't pause
-                        tracing::error!("Pause block condition evaluation failed: {e}");
+                        tracing::error!("Pause block condition evaluation failed: {e}"); // I18N: no-translate - Rust diagnostic log
                         let _ = context
                             .block_failed(format!("Condition evaluation failed: {e}"))
                             .await;
@@ -128,10 +128,10 @@ impl BlockBehavior for Pause {
         };
 
         if should_pause {
-            tracing::debug!("Pause block {id} is pausing execution", id = self.id);
+            tracing::debug!("Pause block {id} is pausing execution", id = self.id); // I18N: no-translate - Rust diagnostic log
             let _ = context.block_paused().await;
         } else {
-            tracing::debug!(
+            tracing::debug!( // I18N: no-translate - Rust diagnostic log
                 "Pause block {id} is not pausing (condition not met)",
                 id = self.id
             );
@@ -149,26 +149,26 @@ mod tests {
     #[test]
     fn test_is_truthy() {
         // Truthy values
-        assert!(is_truthy("true"));
-        assert!(is_truthy("TRUE"));
-        assert!(is_truthy("True"));
-        assert!(is_truthy("1"));
-        assert!(is_truthy("yes"));
-        assert!(is_truthy("YES"));
-        assert!(is_truthy("42"));
-        assert!(is_truthy("-1"));
-        assert!(is_truthy("3.14"));
+        assert!(is_truthy("true")); // I18N: no-translate - Rust assertion
+        assert!(is_truthy("TRUE")); // I18N: no-translate - Rust assertion
+        assert!(is_truthy("True")); // I18N: no-translate - Rust assertion
+        assert!(is_truthy("1")); // I18N: no-translate - Rust assertion
+        assert!(is_truthy("yes")); // I18N: no-translate - Rust assertion
+        assert!(is_truthy("YES")); // I18N: no-translate - Rust assertion
+        assert!(is_truthy("42")); // I18N: no-translate - Rust assertion
+        assert!(is_truthy("-1")); // I18N: no-translate - Rust assertion
+        assert!(is_truthy("3.14")); // I18N: no-translate - Rust assertion
 
         // Falsy values
-        assert!(!is_truthy("false"));
-        assert!(!is_truthy("FALSE"));
-        assert!(!is_truthy("0"));
-        assert!(!is_truthy("no"));
-        assert!(!is_truthy("NO"));
-        assert!(!is_truthy(""));
-        assert!(!is_truthy("   "));
-        assert!(!is_truthy("random string"));
-        assert!(!is_truthy("0.0"));
+        assert!(!is_truthy("false")); // I18N: no-translate - Rust assertion
+        assert!(!is_truthy("FALSE")); // I18N: no-translate - Rust assertion
+        assert!(!is_truthy("0")); // I18N: no-translate - Rust assertion
+        assert!(!is_truthy("no")); // I18N: no-translate - Rust assertion
+        assert!(!is_truthy("NO")); // I18N: no-translate - Rust assertion
+        assert!(!is_truthy("")); // I18N: no-translate - Rust assertion
+        assert!(!is_truthy("   ")); // I18N: no-translate - Rust assertion
+        assert!(!is_truthy("random string")); // I18N: no-translate - Rust assertion
+        assert!(!is_truthy("0.0")); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -181,9 +181,9 @@ mod tests {
         });
 
         let pause = Pause::from_document(&json_data).unwrap();
-        assert_eq!(pause.id, id);
-        assert_eq!(pause.condition, "");
-        assert!(!pause.pause_if_truthy);
+        assert_eq!(pause.id, id); // I18N: no-translate - Rust assertion
+        assert_eq!(pause.condition, ""); // I18N: no-translate - Rust assertion
+        assert!(!pause.pause_if_truthy); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -199,9 +199,9 @@ mod tests {
         });
 
         let pause = Pause::from_document(&json_data).unwrap();
-        assert_eq!(pause.id, id);
-        assert_eq!(pause.condition, "{{ var.error_count > 0 }}");
-        assert!(pause.pause_if_truthy);
+        assert_eq!(pause.id, id); // I18N: no-translate - Rust assertion
+        assert_eq!(pause.condition, "{{ var.error_count > 0 }}"); // I18N: no-translate - Rust assertion
+        assert!(pause.pause_if_truthy); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -213,7 +213,7 @@ mod tests {
         });
 
         let result = Pause::from_document(&json_data);
-        assert!(result.is_err());
+        assert!(result.is_err()); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -227,8 +227,8 @@ mod tests {
         let json = serde_json::to_string(&original).unwrap();
         let deserialized: Pause = serde_json::from_str(&json).unwrap();
 
-        assert_eq!(original.id, deserialized.id);
-        assert_eq!(original.condition, deserialized.condition);
-        assert_eq!(original.pause_if_truthy, deserialized.pause_if_truthy);
+        assert_eq!(original.id, deserialized.id); // I18N: no-translate - Rust assertion
+        assert_eq!(original.condition, deserialized.condition); // I18N: no-translate - Rust assertion
+        assert_eq!(original.pause_if_truthy, deserialized.pause_if_truthy); // I18N: no-translate - Rust assertion
     }
 }

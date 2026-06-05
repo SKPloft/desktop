@@ -495,7 +495,7 @@ impl Terminal {
             let env_exports = build_env_exports(context.context_resolver.env_vars());
             if !env_exports.is_empty() {
                 if let Err(e) = pty_store.write_pty(self.id, env_exports.into()).await {
-                    tracing::warn!("Failed to write env exports to SSH PTY: {}", e);
+                    tracing::warn!("Failed to write env exports to SSH PTY: {}", e); // I18N: no-translate - Rust diagnostic log
                 }
             }
         }
@@ -503,7 +503,7 @@ impl Terminal {
         if let Some(ref remote_path) = remote_var_path {
             let export_cmd = format!("export ATUIN_OUTPUT_VARS='{}'\n", remote_path);
             if let Err(e) = pty_store.write_pty(self.id, export_cmd.into()).await {
-                tracing::warn!("Failed to write export command to SSH PTY: {}", e);
+                tracing::warn!("Failed to write export command to SSH PTY: {}", e); // I18N: no-translate - Rust diagnostic log
             }
         }
 
@@ -525,14 +525,14 @@ impl Terminal {
         // They stay running until cancelled
         // Natural termination is handled by the PTY reader loop detecting EOF, usually because the
         // user has run 'exit', pressed ctrl-d, or similar.
-        tracing::trace!(
+        tracing::trace!( // I18N: no-translate - Rust diagnostic log
             "Awaiting terminal cancellation for block {id}",
             id = self.id
         );
 
         let _ = cancel_rx.await;
 
-        tracing::debug!("Cancelling terminal execution for block {id}", id = self.id);
+        tracing::debug!("Cancelling terminal execution for block {id}", id = self.id); // I18N: no-translate - Rust diagnostic log
 
         // Read variables from temp file (local) or remote file (SSH)
         if let Some(handle) = fs_var_handle {
@@ -552,7 +552,7 @@ impl Terminal {
                     // No variables written, that's fine
                 }
                 Err(e) => {
-                    tracing::warn!("Failed to read terminal output variables: {}", e);
+                    tracing::warn!("Failed to read terminal output variables: {}", e); // I18N: no-translate - Rust diagnostic log
                 }
             }
         } else if let (Some(ref host), Some(ref remote_path)) = (&ssh_host, &remote_var_path) {
@@ -581,7 +581,7 @@ impl Terminal {
                     }
                 }
                 Err(e) => {
-                    tracing::warn!("Failed to read remote terminal output variables: {}", e);
+                    tracing::warn!("Failed to read remote terminal output variables: {}", e); // I18N: no-translate - Rust diagnostic log
                 }
             }
 

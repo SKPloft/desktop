@@ -24,10 +24,10 @@ const __dirname = dirname(__filename);
 const cmdlineArgs = process.argv.slice(2);
 
 if (cmdlineArgs.length < 2) {
-  console.error("Usage: node script/tauri <runtime> <command> [prepended-args...]");
-  console.error("  command: dev or build");
-  console.error("  runtime: wry or cef");
-  console.error(
+  console.error("Usage: node script/tauri <runtime> <command> [prepended-args...]"); // I18N: no-translate - developer diagnostic
+  console.error("  command: dev or build"); // I18N: no-translate - developer diagnostic
+  console.error("  runtime: wry or cef"); // I18N: no-translate - developer diagnostic
+  console.error( // I18N: no-translate - developer diagnostic
     "  prepended-args: Arguments to prepend to the cargo args (-- separator is optional)",
   );
   process.exit(1);
@@ -36,11 +36,11 @@ if (cmdlineArgs.length < 2) {
 const [runtime, cmd, ...tauriArgs] = cmdlineArgs;
 
 if (!["wry", "cef"].includes(runtime)) {
-  console.error(`Invalid runtime: ${runtime}. Must be 'wry' or 'cef'`);
+  console.error(`Invalid runtime: ${runtime}. Must be 'wry' or 'cef'`); // I18N: no-translate - developer diagnostic
   process.exit(1);
 }
 if (!["dev", "build"].includes(cmd)) {
-  console.error(`Invalid command: ${cmd}. Must be 'dev' or 'build'`);
+  console.error(`Invalid command: ${cmd}. Must be 'dev' or 'build'`); // I18N: no-translate - developer diagnostic
   process.exit(1);
 }
 
@@ -54,7 +54,7 @@ const args = ["tauri", cmd, ...tauriArgs];
 
 const command = "cargo";
 
-console.log(`Running: ${command} ${args.join(" ")}`);
+console.log(`Running: ${command} ${args.join(" ")}`); // I18N: no-translate - developer diagnostic
 
 // Spawn the tauri process
 const proc = spawn(command, args, {
@@ -64,7 +64,7 @@ const proc = spawn(command, args, {
 });
 
 proc.on("error", (error) => {
-  console.error(`Failed to start process: ${error.message}`);
+  console.error(`Failed to start process: ${error.message}`); // I18N: no-translate - developer diagnostic
   process.exit(1);
 });
 

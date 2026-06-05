@@ -49,7 +49,7 @@ export default function App() {
         setSessions(sessionList);
       })
       .catch((err) => {
-        console.error("Failed to list sessions:", err);
+        console.error("Failed to list sessions:", err); // I18N: no-translate - developer diagnostic
       });
 
     // Subscribe to events
@@ -61,7 +61,7 @@ export default function App() {
         setConnected(true);
       })
       .catch((err) => {
-        console.error("Failed to subscribe to LLM Tools events:", err);
+        console.error("Failed to subscribe to LLM Tools events:", err); // I18N: no-translate - developer diagnostic
       });
 
     // Cleanup not needed - channel will be closed when component unmounts

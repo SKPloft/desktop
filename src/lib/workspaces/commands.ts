@@ -37,7 +37,7 @@ export async function watchWorkspace(
   id: string,
   callback: (event: WorkspaceEvent) => void,
 ): Promise<() => void> {
-  console.log("(coommand) Watching workspace", id);
+  console.log("(coommand) Watching workspace", id); // I18N: no-translate - developer diagnostic
   const channel = new Channel<WorkspaceEvent>(callback);
   await promiseResult<undefined, WorkspaceError>(invoke("watch_workspace", { path, id, channel }));
   return () => {

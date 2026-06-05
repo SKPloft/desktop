@@ -51,7 +51,7 @@ export function getWeekInfo() {
     return locale.weekInfo;
   }
 
-  throw new Error("Could not fetch week info via new or old api");
+  throw new Error("Could not fetch week info via new or old api"); // I18N: no-translate - internal exception
 }
 
 export function formatBytes(bytes: number): string {
@@ -101,10 +101,10 @@ export function formatDuration(ms: number) {
 }
 
 export async function installAtuinCLI() {
-  console.log("Installing CLI...");
+  console.log("Installing CLI..."); // I18N: no-translate - developer diagnostic
   await invoke("install_cli");
 
-  console.log("Setting up plugin...");
+  console.log("Setting up plugin..."); // I18N: no-translate - developer diagnostic
   await invoke("setup_cli");
 }
 

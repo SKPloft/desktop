@@ -270,7 +270,7 @@ function App() {
     setShowNewWorkspaceDialog(false);
 
     createNewWorkspace(name, online, folder).then(() => {
-      console.log("workspace created");
+      console.log("workspace created"); // I18N: no-translate - developer diagnostic
     });
   }
 
@@ -301,7 +301,7 @@ function App() {
       name,
       online: online ? 1 : 0,
       orgId: selectedOrg || null,
-      folder: online ? undefined : folder.expect("folder is required for offline workspaces"),
+      folder: online ? undefined : folder.expect("folder is required for offline workspaces"), // I18N: no-translate - internal expectation message
     });
     const workspaceStrategy = getWorkspaceStrategy(unsavedWorkspace);
 
@@ -835,7 +835,7 @@ function App() {
     // Before we move on, we need to drain the operation processor
     const success = await processUnprocessedOperations();
     if (!success) {
-      console.error("Failed to process operations after moving items");
+      console.error("Failed to process operations after moving items"); // I18N: no-translate - developer diagnostic
 
       oldManager.expireOptimisticUpdates([deleteChangeRef]);
       newManager.expireOptimisticUpdates([createChangeRef]);

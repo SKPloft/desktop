@@ -43,7 +43,7 @@ export default async function doWorkspaceSetup(): Promise<void> {
       const server_wss = await api.getWorkspaces();
       const server_ws = server_wss.find((ws) => ws.owner.type === "user");
       if (!server_ws) {
-        throw new Error("No user workspace found");
+        throw new Error("No user workspace found"); // I18N: no-translate - internal exception
       }
 
       workspace = new Workspace({

@@ -70,7 +70,7 @@ export class AtuinSharedStateAdapter<T extends SharableState> implements SharedS
 
   public async ensureConnected() {
     if (!this.channel) {
-      throw new Error("Channel not yet initialized");
+      throw new Error("Channel not yet initialized"); // I18N: no-translate - internal exception
     }
 
     if (this.channel!.state === "joined" || this.channel!.state === "joining") return;
@@ -89,7 +89,7 @@ export class AtuinSharedStateAdapter<T extends SharableState> implements SharedS
 
   public resync(last_known_version: Version): Promise<ResyncPayload<T>> {
     if (!this.channel) {
-      throw new Error("Channel not yet initialized");
+      throw new Error("Channel not yet initialized"); // I18N: no-translate - internal exception
     }
 
     return this.channel!.push<ResyncRequest>(Event.RESYNC_REQ, { last_known_version }).receive<
@@ -121,7 +121,7 @@ export class OfflineSharedStateAdapter<T extends SharableState> implements Share
     return () => {};
   }
   async resync(_last_known_version: Version): Promise<ResyncPayload<T>> {
-    throw new Error("Offline adapter does not support resync");
+    throw new Error("Offline adapter does not support resync"); // I18N: no-translate - internal exception
   }
   destroy(): void {
     return;

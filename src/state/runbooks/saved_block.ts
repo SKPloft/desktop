@@ -25,7 +25,7 @@ const fieldSpecs: FieldSpecs<SavedBlockAttrs> = {
 const globalSpec: GlobalSpec<SavedBlockAttrs> = {
   preSave: async (context, model, _type) => {
     if (model.get("name").trim() === "") {
-      throw new Error("Name cannot be empty");
+      throw new Error("Name cannot be empty"); // I18N: no-translate - internal exception
     }
 
     setTimestamps(context, model);

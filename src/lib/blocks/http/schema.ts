@@ -85,6 +85,7 @@ AIBlockRegistry.getInstance().addBlock({
   typeName: "http",
   friendlyName: () => t("editor.blocks.http.title"),
   shortDescription: () => t("editor.blocks.http.short_desc"),
+  // Description is not recommended for i18n — AI-facing developer docs, maintain in English.
   description: () => undent`
     HTTP blocks are used to make HTTP requests to a URL with a given endpoint, verb, and headers. The HTTP block supports all standard HTTP verbs: GET, POST, PUT, DELETE, PATCH, HEAD, and OPTIONS.
 

@@ -19,7 +19,7 @@ export function t(key: string, params?: TranslationParams): string {
   let text = I18n.getInstance().translate(key);
 
   if (import.meta.env.DEV && text === key && key.includes(".")) {
-    console.debug(`[i18n] Missing translation: "${key}"`);
+    console.debug(`[i18n] Missing translation: "${key}"`); // I18N: no-translate - developer diagnostic
   }
 
   if (params) {

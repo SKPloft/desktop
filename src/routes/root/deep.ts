@@ -38,9 +38,9 @@ const handleDeepLink = async (
       useStore.getState().setProposedDesktopConnectuser({ username: user.user.username, token });
     } catch (err) {
       if (err instanceof HttpResponseError) {
-        console.error("Failed to verify token:", err.code);
+        console.error("Failed to verify token:", err.code); // I18N: no-translate - developer diagnostic
       } else {
-        console.error("Failed to verify token:", err);
+        console.error("Failed to verify token:", err); // I18N: no-translate - developer diagnostic
       }
     }
   }

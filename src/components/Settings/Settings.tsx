@@ -484,9 +484,9 @@ const GeneralSettings = () => {
               disabled={!backgroundSync}
               items={[
                 { label: t("settings.general.sync_concurrency.one"), key: "1" },
-                { label: "2", key: "2" }, //TODO I18N - numeric label, not user-facing text
-                { label: "5", key: "5" }, //TODO I18N - numeric label, not user-facing text
-                { label: "10", key: "10" }, //TODO I18N - numeric label, not user-facing text
+                { label: "2", key: "2" }, // I18N: no-translate - numeric option value
+                { label: "5", key: "5" }, // I18N: no-translate - numeric option value
+                { label: "10", key: "10" }, // I18N: no-translate - numeric option value
               ]}
             >
               {(item) => <SelectItem key={item.key}>{item.label}</SelectItem>}
@@ -868,7 +868,7 @@ async function loadSounds(): Promise<SoundInfo[]> {
   try {
     return await invoke<SoundInfo[]>("list_sounds");
   } catch (e) {
-    console.warn("Failed to load sounds:", e);
+    console.warn("Failed to load sounds:", e); // I18N: no-translate - developer diagnostic
     return [];
   }
 }
@@ -907,9 +907,9 @@ const NotificationRow = ({
     e.preventDefault();
     if (soundId === "none") return;
 
-    console.log("Playing sound", soundId, "at volume", volume, "->", volume / 100);
+    console.log("Playing sound", soundId, "at volume", volume, "->", volume / 100);// I18N: no-translate - developer diagnostic
     invoke("play_sound", { soundId, volume: volume / 100 }).catch((err) => {
-      console.error("Failed to play sound:", err);
+      console.error("Failed to play sound:", err);// I18N: no-translate - developer diagnostic
     });
   };
 
@@ -1345,7 +1345,7 @@ const AIOllamaSettings = () => {
         setApiKeyLoaded(true);
       })
       .catch((e) => {
-        console.error("Failed to load Ollama API key:", e);
+        console.error("Failed to load Ollama API key:", e);// I18N: no-translate - developer diagnostic
         setApiKeyLoaded(true);
       });
   }, []);
@@ -1366,7 +1366,7 @@ const AIOllamaSettings = () => {
         });
       }
     } catch (e) {
-      console.error("Failed to save Ollama API key:", e);
+      console.error("Failed to save Ollama API key:", e);// I18N: no-translate - developer diagnostic
     }
   };
 
@@ -1455,7 +1455,7 @@ const AIClaudeSettings = () => {
         setApiKeyLoaded(true);
       })
       .catch((e) => {
-        console.error("Failed to load Claude API key:", e);
+        console.error("Failed to load Claude API key:", e);// I18N: no-translate - developer diagnostic
         setApiKeyLoaded(true);
       });
   }, []);
@@ -1476,7 +1476,7 @@ const AIClaudeSettings = () => {
         });
       }
     } catch (e) {
-      console.error("Failed to save Claude API key:", e);
+      console.error("Failed to save Claude API key:", e);// I18N: no-translate - developer diagnostic
     }
   };
 
@@ -1490,7 +1490,7 @@ const AIClaudeSettings = () => {
           isSelected={claudeSettings.enabled}
           onValueChange={(enabled) => setClaudeSettings({ ...claudeSettings, enabled })}
           description={t("settings.ai.provider.toggle", {
-            provider: "Claude (Anthropic direct API)",
+            provider: "Claude (Anthropic direct API)",// I18N: translate - visible provider label
           })}
         />
 
@@ -1561,7 +1561,7 @@ const AIOpenAISettings = () => {
         setApiKeyLoaded(true);
       })
       .catch((e) => {
-        console.error("Failed to load OpenAI API key:", e);
+        console.error("Failed to load OpenAI API key:", e);// I18N: no-translate - developer diagnostic
         setApiKeyLoaded(true);
       });
   }, []);
@@ -1582,7 +1582,7 @@ const AIOpenAISettings = () => {
         });
       }
     } catch (e) {
-      console.error("Failed to save OpenAI API key:", e);
+      console.error("Failed to save OpenAI API key:", e);// I18N: no-translate - developer diagnostic
     }
   };
 
@@ -1671,7 +1671,7 @@ const AIDeepSeekSettings = () => {
         setApiKeyLoaded(true);
       })
       .catch((e) => {
-        console.error("Failed to load DeepSeek API key:", e);
+        console.error("Failed to load DeepSeek API key:", e);// I18N: no-translate - developer diagnostic
         setApiKeyLoaded(true);
       });
   }, []);
@@ -1692,7 +1692,7 @@ const AIDeepSeekSettings = () => {
         });
       }
     } catch (e) {
-      console.error("Failed to save DeepSeek API key:", e);
+      console.error("Failed to save DeepSeek API key:", e);// I18N: no-translate - developer diagnostic
     }
   };
 

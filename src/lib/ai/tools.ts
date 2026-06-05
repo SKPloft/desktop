@@ -76,7 +76,7 @@ async function executeInsertBlocks(
   } else if (reference_block_id) {
     editor.insertBlocks(blocks, reference_block_id, position);
   } else {
-    throw new Error("reference_block_id required for 'before' or 'after' position");
+    throw new Error("reference_block_id required for 'before' or 'after' position"); // I18N: translate - AI-visible tool result/error
   }
 
   return { success: true };
@@ -103,12 +103,12 @@ async function executeReplaceBlocks(
   const { block_ids, new_blocks } = params;
 
   if (block_ids.length === 0) {
-    throw new Error("block_ids cannot be empty");
+    throw new Error("block_ids cannot be empty"); // I18N: translate - AI-visible tool result/error
   }
 
   const blocksToReplace = editor.document.filter((b: any) => block_ids.includes(b.id));
   if (blocksToReplace.length === 0) {
-    throw new Error("No blocks found with the specified IDs");
+    throw new Error("No blocks found with the specified IDs"); // I18N: translate - AI-visible tool result/error
   }
 
   editor.replaceBlocks(blocksToReplace, new_blocks);
@@ -200,7 +200,7 @@ export class AIToolRunner {
    */
   async executeTool(toolName: string, params: any): Promise<ToolResult> {
     if (!this.editor) {
-      return { success: false, result: "No editor available" };
+      return { success: false, result: "No editor available" }; // I18N: translate - AI-visible tool result/error
     }
 
     try {
@@ -225,11 +225,11 @@ export class AIToolRunner {
           result = await executeReplaceBlocks(this.editor, params);
           break;
         default:
-          throw new Error(`Unknown tool: ${toolName}`);
+          throw new Error(`Unknown tool: ${toolName}`); // I18N: translate - AI-visible tool result/error
       }
       return { success: true, result: JSON.stringify(result) };
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unknown error";
+      const message = error instanceof Error ? error.message : "Unknown error"; // I18N: translate - AI-visible tool result/error
       return { success: false, result: message };
     }
   }

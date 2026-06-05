@@ -171,6 +171,6 @@ function joinUrlParts(parts: string[], trailingSlash: boolean = false): string {
     return result + "/";
   }
 
-  console.info("joinUrlParts result", result);
+  console.info("joinUrlParts result", result); // I18N: no-translate - developer diagnostic
   return result;
 }

@@ -57,7 +57,7 @@ export default class AsyncQueue {
         let alreadyReleased = false;
         resolve(() => {
           if (alreadyReleased) {
-            throw new Error("Cannot release: already released");
+            throw new Error("Cannot release: already released"); // I18N: no-translate - internal exception
           }
           alreadyReleased = true;
           this.release();
@@ -68,7 +68,7 @@ export default class AsyncQueue {
 
   private async release() {
     if (this.runningCount <= 0) {
-      throw new Error("Cannot release: no resources are checked out");
+      throw new Error("Cannot release: no resources are checked out"); // I18N: no-translate - internal exception
     }
 
     this.runningCount--;

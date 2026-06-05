@@ -181,7 +181,7 @@ export default class OnlineStrategy implements WorkspaceStrategy {
       try {
         await runbook.delete();
       } catch (err) {
-        console.error("Failed to delete runbook from database", err);
+        console.error("Failed to delete runbook from database", err); // I18N: no-translate - developer diagnostic
         // Continue anyway to remove from folder tree
       }
     }
@@ -366,7 +366,7 @@ export default class OnlineStrategy implements WorkspaceStrategy {
           .action({ label: t("common.ok"), value: "ok", variant: "flat" })
           .build();
       }
-      console.error(err);
+      console.error(err); // I18N: no-translate - developer diagnostic
       runbook.delete();
       return false;
     } finally {

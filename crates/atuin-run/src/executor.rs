@@ -106,7 +106,7 @@ impl Executor {
             self.document.update_bridge_channel(document_bridge).await?;
 
             if let Err(e) = self.execute_block(block, receiver).await {
-                println!("{e}");
+                println!("{e}"); // I18N: no-translate - Rust console output
                 std::process::exit(1);
             }
         }
@@ -321,7 +321,7 @@ impl Executor {
                     if let Event::Key(key_event) = event {
                         let bytes = key_event_to_bytes(key_event);
                         if let Err(e) = self.pty_store.write_pty(block_id, bytes).await {
-                            eprintln!("Failed to send keyboard input to PTY: {e}");
+                            eprintln!("Failed to send keyboard input to PTY: {e}"); // I18N: no-translate - Rust console output
                         }
                     }
                 }
@@ -445,7 +445,7 @@ impl Executor {
                                 if self.interactive {
                                     // In interactive mode, prompt the user to continue
                                     self.renderer.mark_complete(viewport)?;
-                                    println!("\n⏸  Workflow paused. Press Enter to continue...");
+                                    println!("\n⏸  Workflow paused. Press Enter to continue..."); // I18N: no-translate - Rust console output
                                     let mut input = String::new();
                                     std::io::stdin().read_line(&mut input)?;
                                     // Continue to the next block
@@ -588,7 +588,7 @@ impl Executor {
     fn get_output_lines(&self, block: Block, resolver: &ContextResolver) -> Vec<String> {
         match block {
             Block::Directory(dir) => {
-                tracing::debug!("dir block: {dir:?}");
+                tracing::debug!("dir block: {dir:?}"); // I18N: no-translate - Rust diagnostic log
                 vec![format!(
                     "Directory set to: {}",
                     resolver.resolve_template(&dir.path).unwrap_or_default()

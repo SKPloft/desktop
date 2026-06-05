@@ -419,7 +419,7 @@ impl WorkspaceManager {
             return;
         }
 
-        log::debug!(
+        log::debug!( // I18N: no-translate - Rust diagnostic log
             "Handling {} file events for workspace {}",
             events.len(),
             workspace_id
@@ -460,11 +460,11 @@ impl WorkspaceManager {
             });
 
             if !has_relevant_paths {
-                log::debug!("Skipping irrelevant paths: {:?}", event.paths);
+                log::debug!("Skipping irrelevant paths: {:?}", event.paths); // I18N: no-translate - Rust diagnostic log
                 continue;
             }
 
-            log::debug!(
+            log::debug!( // I18N: no-translate - Rust diagnostic log
                 "Processing relevant event: {:?} for paths: {:?}",
                 event.event.kind,
                 event.paths
@@ -534,7 +534,7 @@ impl WorkspaceManager {
                                         gitignore.as_ref(),
                                     ) && !workspace.watched_dirs.contains(&canonical_path)
                                     {
-                                        log::debug!(
+                                        log::debug!( // I18N: no-translate - Rust diagnostic log
                                             "Adding watcher for new directory: {}",
                                             path.display()
                                         );
@@ -542,7 +542,7 @@ impl WorkspaceManager {
                                             ._debouncer
                                             .watch(path, RecursiveMode::NonRecursive)
                                         {
-                                            log::warn!(
+                                            log::warn!( // I18N: no-translate - Rust diagnostic log
                                                 "Failed to watch new directory {}: {}",
                                                 path.display(),
                                                 e
@@ -560,12 +560,12 @@ impl WorkspaceManager {
                                     let canonical_path =
                                         path.canonicalize().unwrap_or_else(|_| path.to_path_buf());
                                     if workspace.watched_dirs.contains(&canonical_path) {
-                                        log::debug!(
+                                        log::debug!( // I18N: no-translate - Rust diagnostic log
                                             "Removing watcher for deleted path: {}",
                                             path.display()
                                         );
                                         if let Err(e) = workspace._debouncer.unwatch(path) {
-                                            log::debug!("Failed to unwatch deleted path {} (this is normal): {}", path.display(), e);
+                                            log::debug!("Failed to unwatch deleted path {} (this is normal): {}", path.display(), e); // I18N: no-translate - Rust diagnostic log
                                         }
                                         workspace.watched_dirs.remove(&canonical_path);
                                     }
@@ -674,7 +674,7 @@ impl WorkspaceManager {
                         .cloned()
                         .collect();
                     for dir in dirs_to_add {
-                        log::debug!(
+                        log::debug!( // I18N: no-translate - Rust diagnostic log
                             "Adding watcher for directory found during rescan: {}",
                             dir.display()
                         );
@@ -682,7 +682,7 @@ impl WorkspaceManager {
                             ._debouncer
                             .watch(dir.clone(), RecursiveMode::NonRecursive)
                         {
-                            log::warn!("Failed to watch new directory {}: {}", dir.display(), e);
+                            log::warn!("Failed to watch new directory {}: {}", dir.display(), e); // I18N: no-translate - Rust diagnostic log
                             // Don't track directories we failed to watch
                             new_watched_dirs.remove(&dir);
                         }
@@ -695,12 +695,12 @@ impl WorkspaceManager {
                         .cloned()
                         .collect();
                     for dir in dirs_to_remove {
-                        log::debug!(
+                        log::debug!( // I18N: no-translate - Rust diagnostic log
                             "Removing watcher for directory removed during rescan: {}",
                             dir.display()
                         );
                         if let Err(e) = workspace._debouncer.unwatch(&dir) {
-                            log::debug!(
+                            log::debug!( // I18N: no-translate - Rust diagnostic log
                                 "Failed to unwatch deleted directory {} (this is normal): {}",
                                 dir.display(),
                                 e
@@ -777,7 +777,7 @@ impl WorkspaceManager {
         root_path: &Path,
         workspace_id: &str,
     ) -> Result<HashSet<PathBuf>, WorkspaceError> {
-        log::debug!(
+        log::debug!( // I18N: no-translate - Rust diagnostic log
             "Setting up selective watching for workspace {} at {}",
             workspace_id,
             root_path.display()
@@ -790,7 +790,7 @@ impl WorkspaceManager {
         for entry in walker.filter_map(Result::ok) {
             let path = entry.path();
             if path.is_dir() {
-                log::debug!("Watching directory: {}", path.display());
+                log::debug!("Watching directory: {}", path.display()); // I18N: no-translate - Rust diagnostic log
                 debouncer
                     .watch(path, RecursiveMode::NonRecursive)
                     .map_err(|e| WorkspaceError::WatchError {
@@ -803,7 +803,7 @@ impl WorkspaceManager {
             }
         }
 
-        log::info!(
+        log::info!( // I18N: no-translate - Rust diagnostic log
             "Watching {} directories for workspace {workspace_id}",
             watched_dirs.len()
         );
@@ -986,7 +986,7 @@ mod tests {
 
         // Wait for initial state event
         let initial_events = collector.wait_for_events(1, 1000).await;
-        assert!(!initial_events.is_empty());
+        assert!(!initial_events.is_empty()); // I18N: no-translate - Rust assertion
         collector.clear_events().await;
 
         // Give the workspace manager time to set up file watching
@@ -998,7 +998,7 @@ mod tests {
 
         // Wait for folder creation to be detected
         let folder_events = collector.wait_for_events(1, 2000).await;
-        assert!(!folder_events.is_empty());
+        assert!(!folder_events.is_empty()); // I18N: no-translate - Rust assertion
         collector.clear_events().await;
 
         // Create a runbook in the new folder
@@ -1009,14 +1009,14 @@ mod tests {
 
         // Wait for runbook creation to be detected
         let runbook_events = collector.wait_for_events(1, 5000).await;
-        assert!(
+        assert!( // I18N: no-translate - Rust assertion
             !runbook_events.is_empty(),
             "Expected runbook creation events, got: {runbook_events:?}"
         );
         collector.clear_events().await;
 
         // Verify the runbook was added to state using polling
-        assert!(
+        assert!( // I18N: no-translate - Rust assertion
             wait_for_state_condition(
                 &manager_arc,
                 "test-workspace",
@@ -1034,13 +1034,13 @@ mod tests {
             if let Some(workspace) = manager.workspaces.get("test-workspace") {
                 if let Ok(state) = &workspace.state {
                     let runbook = state.runbooks.get("test-runbook-id").unwrap();
-                    assert_eq!(runbook.name, "test_runbook");
-                    assert_eq!(runbook.id, "test-runbook-id");
+                    assert_eq!(runbook.name, "test_runbook"); // I18N: no-translate - Rust assertion
+                    assert_eq!(runbook.id, "test-runbook-id"); // I18N: no-translate - Rust assertion
                 } else {
-                    panic!("Workspace state should be Ok");
+                    panic!("Workspace state should be Ok"); // I18N: no-translate - Rust panic/internal diagnostic
                 }
             } else {
-                panic!("Workspace should exist");
+                panic!("Workspace should exist"); // I18N: no-translate - Rust panic/internal diagnostic
             }
         }
 
@@ -1051,14 +1051,14 @@ mod tests {
 
         // Wait for runbook deletion to be detected
         let deletion_events = collector.wait_for_events(1, 5000).await;
-        assert!(
+        assert!( // I18N: no-translate - Rust assertion
             !deletion_events.is_empty(),
             "Expected runbook deletion events, got: {deletion_events:?}"
         );
         collector.clear_events().await;
 
         // Verify the runbook was removed from state using polling
-        assert!(
+        assert!( // I18N: no-translate - Rust assertion
             wait_for_state_condition(
                 &manager_arc,
                 "test-workspace",
@@ -1103,7 +1103,7 @@ mod tests {
 
         // Wait for initial state event
         let initial_events = collector.wait_for_events(1, 1000).await;
-        assert!(!initial_events.is_empty());
+        assert!(!initial_events.is_empty()); // I18N: no-translate - Rust assertion
         collector.clear_events().await;
 
         // Create common directories that should be ignored
@@ -1140,7 +1140,7 @@ mod tests {
                             .iter()
                             .any(|dir| entry.path.display().to_string().contains(dir));
 
-                        assert!(!ignored);
+                        assert!(!ignored); // I18N: no-translate - Rust assertion
                     }
                 }
                 _ => {}
@@ -1154,13 +1154,13 @@ mod tests {
             if let Some(workspace) = manager.workspaces.get("test-workspace") {
                 if let Ok(state) = &workspace.state {
                     for dir_name in &ignored_dirs {
-                        assert!(!state.runbooks.contains_key(&format!("ignored-{dir_name}")));
+                        assert!(!state.runbooks.contains_key(&format!("ignored-{dir_name}"))); // I18N: no-translate - Rust assertion
                     }
                 } else {
-                    panic!("Workspace state should be Ok");
+                    panic!("Workspace state should be Ok"); // I18N: no-translate - Rust panic/internal diagnostic
                 }
             } else {
-                panic!("Workspace should exist");
+                panic!("Workspace should exist"); // I18N: no-translate - Rust panic/internal diagnostic
             }
         }
 
@@ -1205,7 +1205,7 @@ mod tests {
 
         // Wait for initial state event
         let initial_events = collector.wait_for_events(1, 1000).await;
-        assert!(!initial_events.is_empty());
+        assert!(!initial_events.is_empty()); // I18N: no-translate - Rust assertion
         collector.clear_events().await;
 
         // Create ignored folder and runbook
@@ -1228,11 +1228,11 @@ mod tests {
         let events = collector.get_events().await;
         for event in events.iter() {
             if let WorkspaceEvent::State(state) = event {
-                assert!(
+                assert!( // I18N: no-translate - Rust assertion
                     !state.runbooks.contains_key("ignored-runbook-id"),
                     "Ignored runbook should not be in state events"
                 );
-                assert!(
+                assert!( // I18N: no-translate - Rust assertion
                     !state.runbooks.contains_key("temp-file-id"),
                     "Ignored file should not be in state events"
                 );
@@ -1240,7 +1240,7 @@ mod tests {
         }
 
         // Verify that gitignored content is not in the workspace state
-        assert!(
+        assert!( // I18N: no-translate - Rust assertion
             wait_for_state_condition(
                 &manager_arc,
                 "test-workspace",
@@ -1297,7 +1297,7 @@ mod tests {
 
         // Wait for initial state event
         let initial_events = collector.wait_for_events(1, 1000).await;
-        assert!(!initial_events.is_empty());
+        assert!(!initial_events.is_empty()); // I18N: no-translate - Rust assertion
         collector.clear_events().await;
 
         // Create ignored folder in subdirectory
@@ -1327,11 +1327,11 @@ mod tests {
             events = events_future => Ok(events),
             _ = timeout_future => Err("Timeout waiting for events"),
         } {
-            Ok(events) => assert!(
+            Ok(events) => assert!( // I18N: no-translate - Rust assertion
                 !events.is_empty(),
                 "Events should be generated for valid runbook"
             ),
-            Err(e) => panic!("{}", e),
+            Err(e) => panic!("{}", e), // I18N: no-translate - Rust panic/internal diagnostic
         };
 
         // Verify that only the valid runbook is in the workspace state
@@ -1340,14 +1340,14 @@ mod tests {
             let manager = manager_guard.as_ref().unwrap();
             if let Some(workspace) = manager.workspaces.get("test-workspace") {
                 if let Ok(state) = &workspace.state {
-                    assert!(!state.runbooks.contains_key("local-runbook-id"));
-                    assert!(!state.runbooks.contains_key("local-file-id"));
-                    assert!(state.runbooks.contains_key("valid-runbook-id"));
+                    assert!(!state.runbooks.contains_key("local-runbook-id")); // I18N: no-translate - Rust assertion
+                    assert!(!state.runbooks.contains_key("local-file-id")); // I18N: no-translate - Rust assertion
+                    assert!(state.runbooks.contains_key("valid-runbook-id")); // I18N: no-translate - Rust assertion
                 } else {
-                    panic!("Workspace state should be Ok");
+                    panic!("Workspace state should be Ok"); // I18N: no-translate - Rust panic/internal diagnostic
                 }
             } else {
-                panic!("Workspace should exist");
+                panic!("Workspace should exist"); // I18N: no-translate - Rust panic/internal diagnostic
             }
         }
 
@@ -1388,7 +1388,7 @@ mod tests {
 
         // Wait for initial state event
         let initial_events = collector.wait_for_events(1, 1000).await;
-        assert!(!initial_events.is_empty());
+        assert!(!initial_events.is_empty()); // I18N: no-translate - Rust assertion
         collector.clear_events().await;
 
         // Create ignored folder in workspace (should be ignored due to parent .gitignore)
@@ -1403,7 +1403,7 @@ mod tests {
         create_test_runbook(&workspace_path, "valid_runbook", "valid-runbook-id").await;
 
         // Wait for the valid runbook to appear in state
-        assert!(
+        assert!( // I18N: no-translate - Rust assertion
             wait_for_state_condition(
                 &manager_arc,
                 "test-workspace",
@@ -1419,7 +1419,7 @@ mod tests {
 
         // Check that only the valid runbook generated events
         let events = collector.get_events().await;
-        assert!(
+        assert!( // I18N: no-translate - Rust assertion
             !events.is_empty(),
             "Events should be generated for valid runbook"
         );
@@ -1427,11 +1427,11 @@ mod tests {
         // Verify no events contain the ignored items
         for event in events.iter() {
             if let WorkspaceEvent::State(state) = event {
-                assert!(
+                assert!( // I18N: no-translate - Rust assertion
                     !state.runbooks.contains_key("parent-runbook-id"),
                     "Parent-ignored runbook should not be in state events"
                 );
-                assert!(
+                assert!( // I18N: no-translate - Rust assertion
                     !state.runbooks.contains_key("parent-file-id"),
                     "Parent-ignored file should not be in state events"
                 );
@@ -1439,7 +1439,7 @@ mod tests {
         }
 
         // Verify that only the valid runbook is in the workspace state
-        assert!(
+        assert!( // I18N: no-translate - Rust assertion
             wait_for_state_condition(
                 &manager_arc,
                 "test-workspace",
@@ -1488,7 +1488,7 @@ mod tests {
 
         // Wait for initial state event
         let initial_events = collector.wait_for_events(1, 1000).await;
-        assert!(!initial_events.is_empty());
+        assert!(!initial_events.is_empty()); // I18N: no-translate - Rust assertion
         collector.clear_events().await;
 
         // Create hidden directories and files (should be ignored)
@@ -1506,7 +1506,7 @@ mod tests {
         create_test_runbook(&workspace_path, "valid_runbook", "valid-runbook-id").await;
 
         // Wait for the valid runbook to appear in state
-        assert!(
+        assert!( // I18N: no-translate - Rust assertion
             wait_for_state_condition(
                 &manager_arc,
                 "test-workspace",
@@ -1522,7 +1522,7 @@ mod tests {
 
         // Check that only the valid runbook generated events
         let events = collector.get_events().await;
-        assert!(
+        assert!( // I18N: no-translate - Rust assertion
             !events.is_empty(),
             "Events should be generated for valid runbook"
         );
@@ -1531,12 +1531,12 @@ mod tests {
         for event in events.iter() {
             if let WorkspaceEvent::State(state) = event {
                 for dir_name in &hidden_dirs {
-                    assert!(
+                    assert!( // I18N: no-translate - Rust assertion
                         !state.runbooks.contains_key(&format!("hidden-{dir_name}")),
                         "Hidden directory runbook should not be in state events: {dir_name}"
                     );
                 }
-                assert!(
+                assert!( // I18N: no-translate - Rust assertion
                     !state.runbooks.contains_key("hidden-file-id"),
                     "Hidden file should not be in state events"
                 );
@@ -1544,7 +1544,7 @@ mod tests {
         }
 
         // Verify that only the valid runbook is in the workspace state
-        assert!(
+        assert!( // I18N: no-translate - Rust assertion
             wait_for_state_condition(
                 &manager_arc,
                 "test-workspace",
@@ -1596,7 +1596,7 @@ mod tests {
 
         // Wait for initial state event
         let initial_events = collector.wait_for_events(1, 1000).await;
-        assert!(!initial_events.is_empty());
+        assert!(!initial_events.is_empty()); // I18N: no-translate - Rust assertion
         collector.clear_events().await;
 
         // Rapidly create multiple runbooks to test debouncing
@@ -1613,7 +1613,7 @@ mod tests {
 
         // Wait for debounced events to be processed
         let events = collector.wait_for_events(1, 1000).await;
-        assert!(
+        assert!( // I18N: no-translate - Rust assertion
             !events.is_empty(),
             "Events should be generated for runbook creation"
         );
@@ -1625,13 +1625,13 @@ mod tests {
             if let Some(workspace) = manager.workspaces.get("test-workspace") {
                 if let Ok(state) = &workspace.state {
                     for i in 0..5 {
-                        assert!(state.runbooks.contains_key(&format!("runbook-{i}")));
+                        assert!(state.runbooks.contains_key(&format!("runbook-{i}"))); // I18N: no-translate - Rust assertion
                     }
                 } else {
-                    panic!("Workspace state should be Ok");
+                    panic!("Workspace state should be Ok"); // I18N: no-translate - Rust panic/internal diagnostic
                 }
             } else {
-                panic!("Workspace should exist");
+                panic!("Workspace should exist"); // I18N: no-translate - Rust panic/internal diagnostic
             }
         }
 
@@ -1674,14 +1674,14 @@ mod tests {
 
         // Wait for initial state event
         let initial_events = collector.wait_for_events(1, 1000).await;
-        assert!(!initial_events.is_empty());
+        assert!(!initial_events.is_empty()); // I18N: no-translate - Rust assertion
         collector.clear_events().await;
 
         create_test_runbook(&workspace_path, "test", "test-runbook-id").await;
         create_test_runbook(&workspace_path, "test2", "test-runbook-id2").await;
 
         let events = collector.wait_for_events(1, 1000).await;
-        assert!(!events.is_empty());
+        assert!(!events.is_empty()); // I18N: no-translate - Rust assertion
         collector.clear_events().await;
 
         {
@@ -1689,8 +1689,8 @@ mod tests {
             let manager = manager_guard.as_ref().unwrap();
             if let Some(workspace) = manager.workspaces.get("test-workspace") {
                 if let Ok(state) = &workspace.state {
-                    assert!(state.runbooks.contains_key("test-runbook-id"));
-                    assert!(state.runbooks.contains_key("test-runbook-id2"));
+                    assert!(state.runbooks.contains_key("test-runbook-id")); // I18N: no-translate - Rust assertion
+                    assert!(state.runbooks.contains_key("test-runbook-id2")); // I18N: no-translate - Rust assertion
                 }
             }
         }
@@ -1707,15 +1707,15 @@ mod tests {
         .unwrap();
 
         let events = collector.wait_for_events(1, 1000).await;
-        assert!(!events.is_empty());
+        assert!(!events.is_empty()); // I18N: no-translate - Rust assertion
 
         {
             let manager_guard = manager_arc.lock().await;
             let manager = manager_guard.as_ref().unwrap();
             if let Some(workspace) = manager.workspaces.get("test-workspace") {
                 if let Ok(state) = &workspace.state {
-                    assert!(!state.runbooks.contains_key("test-runbook-id"));
-                    assert!(state.runbooks.contains_key("test-runbook-id2"));
+                    assert!(!state.runbooks.contains_key("test-runbook-id")); // I18N: no-translate - Rust assertion
+                    assert!(state.runbooks.contains_key("test-runbook-id2")); // I18N: no-translate - Rust assertion
                 }
             }
         }
@@ -1762,7 +1762,7 @@ mod tests {
 
         // Wait for initial state event
         let initial_events = collector.wait_for_events(1, 1000).await;
-        assert!(!initial_events.is_empty());
+        assert!(!initial_events.is_empty()); // I18N: no-translate - Rust assertion
         collector.clear_events().await;
 
         // Give the workspace manager time to set up file watching
@@ -1780,14 +1780,14 @@ mod tests {
 
         // Wait for the runbook creation to be detected
         let runbook_events = collector.wait_for_events(1, 3000).await;
-        assert!(
+        assert!( // I18N: no-translate - Rust assertion
             !runbook_events.is_empty(),
             "Runbook creation in preexisting nested subdirectory should trigger events. \
              This indicates setup_selective_watching is not correctly watching all directories."
         );
 
         // Verify the runbook appears in the workspace state
-        assert!(
+        assert!( // I18N: no-translate - Rust assertion
             wait_for_state_condition(
                 &manager_arc,
                 "test-workspace",
@@ -1839,7 +1839,7 @@ mod tests {
 
         // Wait for initial state event
         let initial_events = collector.wait_for_events(1, 1000).await;
-        assert!(!initial_events.is_empty());
+        assert!(!initial_events.is_empty()); // I18N: no-translate - Rust assertion
         collector.clear_events().await;
 
         // Step 2: Create an empty folder via the API (simulates UI "New Folder")
@@ -1849,12 +1849,12 @@ mod tests {
             manager
                 .create_folder("test-workspace", None, "My Folder")
                 .await
-                .expect("Should create folder successfully")
+                .expect("Should create folder successfully") // I18N: no-translate - internal expectation message
         };
 
         // Wait for folder creation to be detected
         let folder_events = collector.wait_for_events(1, 2000).await;
-        assert!(
+        assert!( // I18N: no-translate - Rust assertion
             !folder_events.is_empty(),
             "Folder creation should trigger events"
         );
@@ -1878,7 +1878,7 @@ mod tests {
         };
 
         // Step 4: Verify the runbook was created successfully
-        assert!(
+        assert!( // I18N: no-translate - Rust assertion
             runbook_result.is_ok(),
             "create_runbook should succeed, but got error: {:?}",
             runbook_result.err()
@@ -1887,7 +1887,7 @@ mod tests {
         let runbook_id = runbook_result.unwrap();
 
         // Verify the runbook appears in the workspace state
-        assert!(
+        assert!( // I18N: no-translate - Rust assertion
             wait_for_state_condition(
                 &manager_arc,
                 "test-workspace",
@@ -1905,18 +1905,18 @@ mod tests {
             if let Some(workspace) = manager.workspaces.get("test-workspace") {
                 if let Ok(state) = &workspace.state {
                     let runbook = state.runbooks.get(&runbook_id).unwrap();
-                    assert_eq!(runbook.name, "Test Runbook");
-                    assert!(
+                    assert_eq!(runbook.name, "Test Runbook"); // I18N: no-translate - Rust assertion
+                    assert!( // I18N: no-translate - Rust assertion
                         runbook.path.starts_with(&folder_path),
                         "Runbook path {:?} should be inside folder {:?}",
                         runbook.path,
                         folder_path
                     );
                 } else {
-                    panic!("Workspace state should be Ok");
+                    panic!("Workspace state should be Ok"); // I18N: no-translate - Rust panic/internal diagnostic
                 }
             } else {
-                panic!("Workspace should exist");
+                panic!("Workspace should exist"); // I18N: no-translate - Rust panic/internal diagnostic
             }
         }
 

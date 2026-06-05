@@ -40,7 +40,7 @@ function playSound(success: boolean) {
     oscillator.start(audioContext.currentTime);
     oscillator.stop(audioContext.currentTime + 0.3);
   } catch (e) {
-    console.warn("Failed to play notification sound:", e);
+    console.warn("Failed to play notification sound:", e); // I18N: no-translate - developer diagnostic
   }
 }
 
@@ -57,7 +57,7 @@ async function sendOsNotification(title: string, body: string): Promise<void> {
 
     sendNotification({ title, body });
   } catch (e) {
-    console.warn("Failed to send OS notification:", e);
+    console.warn("Failed to send OS notification:", e); // I18N: no-translate - developer diagnostic
   }
 }
 

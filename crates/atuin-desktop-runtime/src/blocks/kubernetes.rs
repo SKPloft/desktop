@@ -238,7 +238,7 @@ impl BlockBehavior for Kubernetes {
         self,
         context: ExecutionContext,
     ) -> Result<Option<ExecutionHandle>, Box<dyn std::error::Error + Send + Sync>> {
-        tracing::trace!("Executing Kubernetes block {id}", id = self.id);
+        tracing::trace!("Executing Kubernetes block {id}", id = self.id); // I18N: no-translate - Rust diagnostic log
 
         let _ = context.block_started().await;
 
@@ -246,7 +246,7 @@ impl BlockBehavior for Kubernetes {
         let result = self.execute_kubectl_command(&context).await;
 
         if let Err(e) = result {
-            tracing::error!("{e}");
+            tracing::error!("{e}"); // I18N: no-translate - Rust diagnostic log
             let error_message = e.to_string();
             let _ = context.block_failed(error_message).await;
             return Err(e.into());

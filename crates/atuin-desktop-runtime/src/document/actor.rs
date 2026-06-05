@@ -216,7 +216,7 @@ impl DocumentHandle {
         });
 
         // Spawn the document actor
-        tracing::trace!(
+        tracing::trace!( // I18N: no-translate - Rust diagnostic log
             "Spawning document actor for runbook {runbook_id}",
             runbook_id = runbook_id
         );
@@ -598,7 +598,7 @@ impl DocumentHandle {
 
 impl Drop for DocumentHandle {
     fn drop(&mut self) {
-        tracing::trace!(
+        tracing::trace!( // I18N: no-translate - Rust diagnostic log
             "Shutting down document actor for runbook {runbook_id}",
             runbook_id = self.runbook_id
         );
@@ -786,7 +786,7 @@ impl DocumentActor {
         &mut self,
         document: Vec<serde_json::Value>,
     ) -> Result<(), DocumentError> {
-        tracing::trace!("Updating document {} with new content", self.document.id);
+        tracing::trace!("Updating document {} with new content", self.document.id); // I18N: no-translate - Rust diagnostic log
         // Update the document using put_document, which returns the index to rebuild from
         let rebuild_from = self
             .document
@@ -804,7 +804,7 @@ impl DocumentActor {
             if let Err(errors) = result {
                 // Log errors but don't fail the entire operation
                 for error in errors {
-                    tracing::error!("Error rebuilding passive context: {:?}", error);
+                    tracing::error!("Error rebuilding passive context: {:?}", error); // I18N: no-translate - Rust diagnostic log
                 }
             }
         }
@@ -905,7 +905,7 @@ impl DocumentActor {
         block_id: Uuid,
         update_fn: BlockStateUpdater,
     ) -> Result<(), DocumentError> {
-        tracing::trace!(
+        tracing::trace!( // I18N: no-translate - Rust diagnostic log
             "Updating block state for block {block_id} in document {doc_id}",
             doc_id = self.document.id
         );
@@ -941,7 +941,7 @@ impl DocumentActor {
         };
 
         if let Some(state) = state {
-            tracing::trace!("Emitting state changed for block {block_id}");
+            tracing::trace!("Emitting state changed for block {block_id}"); // I18N: no-translate - Rust diagnostic log
             let _ = self.document.emit_state_changed(block_id, state).await;
         }
 
@@ -953,7 +953,7 @@ impl DocumentActor {
         block_id: Uuid,
         output: Box<dyn BlockExecutionOutput>,
     ) -> Result<(), DocumentError> {
-        tracing::trace!("Setting block execution output for block {block_id}");
+        tracing::trace!("Setting block execution output for block {block_id}"); // I18N: no-translate - Rust diagnostic log
 
         let block_index = self
             .document
@@ -1018,7 +1018,7 @@ impl DocumentActor {
         &mut self,
         block_id: Uuid,
     ) -> Result<(), DocumentError> {
-        tracing::trace!(
+        tracing::trace!( // I18N: no-translate - Rust diagnostic log
             "Block local value changed for block {block_id} in document {}",
             self.document.id
         );
@@ -1026,7 +1026,7 @@ impl DocumentActor {
             .document
             .get_block_index(&block_id)
             .ok_or(DocumentError::BlockNotFound(block_id))?;
-        tracing::trace!("Rebuilding document from index {rebuild_from}");
+        tracing::trace!("Rebuilding document from index {rebuild_from}"); // I18N: no-translate - Rust diagnostic log
 
         // Rebuild passive contexts only for affected blocks
         let result = self
@@ -1037,7 +1037,7 @@ impl DocumentActor {
         if let Err(errors) = result {
             // Log errors but don't fail the entire operation
             for error in errors {
-                tracing::error!("Error rebuilding passive context: {:?}", error);
+                tracing::error!("Error rebuilding passive context: {:?}", error); // I18N: no-translate - Rust diagnostic log
             }
         }
 
@@ -1045,7 +1045,7 @@ impl DocumentActor {
     }
 
     async fn handle_reset_state(&mut self) -> Result<(), DocumentError> {
-        tracing::trace!("Resetting document state for document {}", self.document.id);
+        tracing::trace!("Resetting document state for document {}", self.document.id); // I18N: no-translate - Rust diagnostic log
         self.document.reset_state().await?;
 
         let result = self
@@ -1055,7 +1055,7 @@ impl DocumentActor {
 
         if let Err(errors) = result {
             for error in errors {
-                tracing::error!("Error rebuilding passive context: {:?}", error);
+                tracing::error!("Error rebuilding passive context: {:?}", error); // I18N: no-translate - Rust diagnostic log
             }
         }
 

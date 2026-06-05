@@ -49,7 +49,7 @@ export default function Search() {
   useEffect(() => {
     (async () => {
       let installed = await invoke<boolean>("is_cli_installed");
-      console.log("CLI installation status:", installed);
+      console.log("CLI installation status:", installed); // I18N: no-translate - developer diagnostic
       setCLIInstalled(installed);
     })();
   }, []);

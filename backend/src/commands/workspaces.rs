@@ -61,7 +61,7 @@ pub async fn copy_welcome_workspace<R: Runtime>(
 #[tauri::command]
 pub async fn reset_workspaces(state: State<'_, AtuinState>) -> Result<(), WorkspaceError> {
     let mut manager = state.workspaces.lock().await;
-    let manager = manager.as_mut().expect("Workspaces not found in state");
+    let manager = manager.as_mut().expect("Workspaces not found in state"); // I18N: no-translate - internal expectation message
     manager.reset();
     Ok(())
 }
@@ -75,7 +75,7 @@ pub async fn watch_workspace(
 ) -> Result<(), WorkspaceError> {
     let workspaces_clone = state.workspaces.clone();
     let mut manager = state.workspaces.lock().await;
-    let manager = manager.as_mut().expect("Workspaces not found in state");
+    let manager = manager.as_mut().expect("Workspaces not found in state"); // I18N: no-translate - internal expectation message
     manager
         .watch_workspace(
             path,
@@ -83,7 +83,7 @@ pub async fn watch_workspace(
             move |event: WorkspaceEvent| match channel.send(event) {
                 Ok(_) => (),
                 Err(e) => {
-                    println!("Error sending workspace event: {e:?}");
+                    println!("Error sending workspace event: {e:?}"); // I18N: no-translate - Rust console output
                 }
             },
             workspaces_clone,
@@ -97,7 +97,7 @@ pub async fn unwatch_workspace(
     state: State<'_, AtuinState>,
 ) -> Result<(), WorkspaceError> {
     let mut manager = state.workspaces.lock().await;
-    let manager = manager.as_mut().expect("Workspaces not found in state");
+    let manager = manager.as_mut().expect("Workspaces not found in state"); // I18N: no-translate - internal expectation message
     manager.unwatch_workspace(&id).await
 }
 
@@ -109,7 +109,7 @@ pub async fn create_workspace(
     state: State<'_, AtuinState>,
 ) -> Result<(), WorkspaceError> {
     let mut manager = state.workspaces.lock().await;
-    let manager = manager.as_mut().expect("Workspaces not found in state");
+    let manager = manager.as_mut().expect("Workspaces not found in state"); // I18N: no-translate - internal expectation message
     manager.create_workspace(&path, &id, &name).await
 }
 
@@ -120,7 +120,7 @@ pub async fn rename_workspace(
     state: State<'_, AtuinState>,
 ) -> Result<(), WorkspaceError> {
     let mut manager = state.workspaces.lock().await;
-    let manager = manager.as_mut().expect("Workspaces not found in state");
+    let manager = manager.as_mut().expect("Workspaces not found in state"); // I18N: no-translate - internal expectation message
     manager.rename_workspace(&id, &name).await
 }
 
@@ -130,7 +130,7 @@ pub async fn read_dir(
     state: State<'_, AtuinState>,
 ) -> Result<WorkspaceDirInfo, WorkspaceError> {
     let mut manager = state.workspaces.lock().await;
-    let manager = manager.as_mut().expect("Workspaces not found in state");
+    let manager = manager.as_mut().expect("Workspaces not found in state"); // I18N: no-translate - internal expectation message
     manager.get_dir_info(&workspace_id).await
 }
 
@@ -140,7 +140,7 @@ pub async fn get_workspace_id_by_folder(
     state: State<'_, AtuinState>,
 ) -> Result<String, WorkspaceError> {
     let mut manager = state.workspaces.lock().await;
-    let manager = manager.as_mut().expect("Workspaces not found in state");
+    let manager = manager.as_mut().expect("Workspaces not found in state"); // I18N: no-translate - internal expectation message
     let folder = PathBuf::from(folder);
     manager.get_workspace_id_by_folder(&folder).await
 }
@@ -154,7 +154,7 @@ pub async fn save_runbook(
     state: State<'_, AtuinState>,
 ) -> Result<String, WorkspaceError> {
     let mut manager = state.workspaces.lock().await;
-    let manager = manager.as_mut().expect("Workspaces not found in state");
+    let manager = manager.as_mut().expect("Workspaces not found in state"); // I18N: no-translate - internal expectation message
     manager
         .save_runbook(&workspace_id, &runbook_id, &name, content)
         .await
@@ -167,7 +167,7 @@ pub async fn delete_runbook(
     state: State<'_, AtuinState>,
 ) -> Result<(), WorkspaceError> {
     let mut manager = state.workspaces.lock().await;
-    let manager = manager.as_mut().expect("Workspaces not found in state");
+    let manager = manager.as_mut().expect("Workspaces not found in state"); // I18N: no-translate - internal expectation message
     manager.delete_runbook(&workspace_id, &runbook_id).await
 }
 
@@ -179,7 +179,7 @@ pub async fn create_folder(
     state: State<'_, AtuinState>,
 ) -> Result<String, WorkspaceError> {
     let mut manager = state.workspaces.lock().await;
-    let manager = manager.as_mut().expect("Workspaces not found in state");
+    let manager = manager.as_mut().expect("Workspaces not found in state"); // I18N: no-translate - internal expectation message
     manager
         .create_folder(&workspace_id, parent_path.as_deref(), &name)
         .await
@@ -194,7 +194,7 @@ pub async fn rename_folder(
     state: State<'_, AtuinState>,
 ) -> Result<(), WorkspaceError> {
     let mut manager = state.workspaces.lock().await;
-    let manager = manager.as_mut().expect("Workspaces not found in state");
+    let manager = manager.as_mut().expect("Workspaces not found in state"); // I18N: no-translate - internal expectation message
     manager
         .rename_folder(&workspace_id, &folder_id, &new_name)
         .await
@@ -207,7 +207,7 @@ pub async fn delete_folder(
     state: State<'_, AtuinState>,
 ) -> Result<(), WorkspaceError> {
     let mut manager = state.workspaces.lock().await;
-    let manager = manager.as_mut().expect("Workspace not found in state");
+    let manager = manager.as_mut().expect("Workspace not found in state"); // I18N: no-translate - internal expectation message
     manager.delete_folder(&workspace_id, &folder_id).await
 }
 
@@ -219,7 +219,7 @@ pub async fn move_items(
     state: State<'_, AtuinState>,
 ) -> Result<(), WorkspaceError> {
     let mut manager = state.workspaces.lock().await;
-    let manager = manager.as_mut().expect("Workspace not found in state");
+    let manager = manager.as_mut().expect("Workspace not found in state"); // I18N: no-translate - internal expectation message
     manager
         .move_items(&workspace_id, &item_ids, new_parent.as_deref())
         .await
@@ -235,7 +235,7 @@ pub async fn create_runbook(
     state: State<'_, AtuinState>,
 ) -> Result<String, WorkspaceError> {
     let mut manager = state.workspaces.lock().await;
-    let manager = manager.as_mut().expect("Workspace not found in state");
+    let manager = manager.as_mut().expect("Workspace not found in state"); // I18N: no-translate - internal expectation message
     manager
         .create_runbook(
             &workspace_id,
@@ -253,7 +253,7 @@ pub async fn get_runbook(
     state: State<'_, AtuinState>,
 ) -> Result<OfflineRunbook, WorkspaceError> {
     let mut manager = state.workspaces.lock().await;
-    let manager = manager.as_mut().expect("Workspace not found in state");
+    let manager = manager.as_mut().expect("Workspace not found in state"); // I18N: no-translate - internal expectation message
     manager.get_runbook(&runbook_id).await
 }
 
@@ -266,7 +266,7 @@ pub async fn move_items_between_workspaces(
     state: State<'_, AtuinState>,
 ) -> Result<(), WorkspaceError> {
     let mut manager = state.workspaces.lock().await;
-    let manager = manager.as_mut().expect("Workspace not found in state");
+    let manager = manager.as_mut().expect("Workspace not found in state"); // I18N: no-translate - internal expectation message
     manager
         .move_items_between_workspaces(
             &item_ids,

@@ -172,7 +172,7 @@ impl PtyStore {
         while let Some(msg) = self.receiver.recv().await {
             self.handle_message(msg).await;
 
-            tracing::debug!(
+            tracing::debug!( // I18N: no-translate - Rust diagnostic log
                 "PtyStore Message, store length: {}",
                 self.pty_sessions.len()
             );
@@ -222,10 +222,10 @@ impl PtyStore {
 
         if let Some(pty) = pty {
             let metadata = pty.metadata();
-            tracing::info!("Killing pty: {}", metadata.pid);
+            tracing::info!("Killing pty: {}", metadata.pid); // I18N: no-translate - Rust diagnostic log
 
             if let Err(e) = pty.kill_child().await {
-                tracing::debug!(
+                tracing::debug!( // I18N: no-translate - Rust diagnostic log
                     "Failed to kill PTY child {}: {} (likely already closed)",
                     metadata.pid,
                     e
@@ -237,7 +237,7 @@ impl PtyStore {
     async fn write_pty(&mut self, id: Uuid, data: Bytes) {
         if let Some(pty) = self.pty_sessions.get_mut(&id) {
             if let Err(e) = pty.send_bytes(data).await {
-                tracing::debug!("Failed to send bytes to PTY {id}: {e} (likely session closed)");
+                tracing::debug!("Failed to send bytes to PTY {id}: {e} (likely session closed)"); // I18N: no-translate - Rust diagnostic log
             }
         }
     }
@@ -245,7 +245,7 @@ impl PtyStore {
     async fn pty_resize(&mut self, id: Uuid, rows: u16, cols: u16) {
         if let Some(pty) = self.pty_sessions.get_mut(&id) {
             if let Err(e) = pty.resize(rows, cols).await {
-                tracing::debug!("Failed to resize PTY {id}: {e} (likely session closed)");
+                tracing::debug!("Failed to resize PTY {id}: {e} (likely session closed)"); // I18N: no-translate - Rust diagnostic log
             }
         }
     }

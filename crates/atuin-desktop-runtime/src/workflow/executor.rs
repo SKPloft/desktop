@@ -37,18 +37,18 @@ impl ExecutorHandle {
     }
 
     pub async fn run_workflow(&self, id: Uuid, workflow: Vec<Block>) {
-        println!("running workflow: {workflow:?}");
+        println!("running workflow: {workflow:?}"); // I18N: no-translate - Rust console output
         self.sender
             .send(ExecutorMessage::RunWorkflow { id, workflow })
             .await
-            .expect("Failed to send run workflow message");
+            .expect("Failed to send run workflow message"); // I18N: no-translate - internal expectation message
     }
 
     pub async fn stop_workflow(&self, id: Uuid) {
         self.sender
             .send(ExecutorMessage::StopWorkflow { id })
             .await
-            .expect("Failed to send stop workflow message");
+            .expect("Failed to send stop workflow message"); // I18N: no-translate - internal expectation message
     }
 }
 
@@ -88,7 +88,7 @@ impl Executor {
                 ExecutorMessage::RunWorkflow { id, workflow } => {
                     // if the workflow is already running, we don't want to run it again
                     if self.workflow_store.contains_key(&id) {
-                        println!("workflow already running, skipping");
+                        println!("workflow already running, skipping"); // I18N: no-translate - Rust console output
                         continue;
                     }
 
@@ -106,26 +106,26 @@ impl Executor {
 
                         event_sender
                             .send(WorkflowEvent::WorkflowFinished { id })
-                            .expect("Failed to send finished event");
+                            .expect("Failed to send finished event"); // I18N: no-translate - internal expectation message
                     });
 
-                    println!("inserting workflow into store: {id:?}");
+                    println!("inserting workflow into store: {id:?}"); // I18N: no-translate - Rust console output
                     self.workflow_store
                         .insert(id, WorkflowData { cancel_channel });
                 }
                 ExecutorMessage::StopWorkflow { id } => {
-                    println!("stopping workflow: {id:?}");
+                    println!("stopping workflow: {id:?}"); // I18N: no-translate - Rust console output
                     match self.workflow_store.remove(&id) {
                         Some(handle) => {
                             // If the cancel channel is still open, cancel the workflow. Otherwise, it has already finished
                             if !handle.cancel_channel.is_closed() {
                                 if let Err(e) = handle.cancel_channel.send(()) {
-                                    println!("error sending cancel signal: {e:?}");
+                                    println!("error sending cancel signal: {e:?}"); // I18N: no-translate - Rust console output
                                 }
                             }
                         }
                         _ => {
-                            println!("workflow not found, skipping");
+                            println!("workflow not found, skipping"); // I18N: no-translate - Rust console output
                         }
                     }
                 }

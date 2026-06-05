@@ -30,7 +30,7 @@ class DialogBuilderBase<T> {
 
   protected buildInternal(): Promise<T> {
     if (this._actions.length === 0) {
-      throw new Error("Actions are required");
+      throw new Error("Actions are required"); // I18N: no-translate - internal exception
     }
 
     let resolve: (value: T) => void;

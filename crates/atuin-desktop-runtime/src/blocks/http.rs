@@ -196,7 +196,7 @@ impl BlockBehavior for Http {
         self,
         context: ExecutionContext,
     ) -> Result<Option<ExecutionHandle>, Box<dyn std::error::Error + Send + Sync>> {
-        tracing::trace!("Executing HTTP block {id}", id = self.id);
+        tracing::trace!("Executing HTTP block {id}", id = self.id); // I18N: no-translate - Rust diagnostic log
 
         let _ = context.block_started().await;
 
@@ -204,7 +204,7 @@ impl BlockBehavior for Http {
         let response = self.make_http_request(&context).await;
 
         if let Err(e) = response {
-            tracing::error!("{e}");
+            tracing::error!("{e}"); // I18N: no-translate - Rust diagnostic log
 
             let error_message = match e {
                 HttpError::Reqwest(ref e) => {
@@ -480,7 +480,7 @@ mod tests {
 
         // Verify we received lifecycle messages
         let messages = message_channel.get_messages().await;
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             messages.len(),
             3,
             "Expected 3 messages (Started, Output, Finished)"
@@ -489,39 +489,39 @@ mod tests {
         // Check Started message
         match &messages[0] {
             DocumentBridgeMessage::BlockOutput { block_id, output } => {
-                assert_eq!(*block_id, http_id);
-                assert!(matches!(
+                assert_eq!(*block_id, http_id); // I18N: no-translate - Rust assertion
+                assert!(matches!( // I18N: no-translate - Rust assertion
                     output.lifecycle,
                     Some(BlockLifecycleEvent::Started(_))
                 ));
             }
-            _ => panic!("Expected BlockOutput message"),
+            _ => panic!("Expected BlockOutput message"), // I18N: no-translate - Rust panic/internal diagnostic
         }
 
         // Check Output message
         match &messages[1] {
             DocumentBridgeMessage::BlockOutput { block_id, output } => {
-                assert_eq!(*block_id, http_id);
-                assert!(output.object.is_some(), "Expected response object");
+                assert_eq!(*block_id, http_id); // I18N: no-translate - Rust assertion
+                assert!(output.object.is_some(), "Expected response object"); // I18N: no-translate - Rust assertion
                 let response = output.object.as_ref().unwrap();
-                assert_eq!(response["status"], 200);
-                assert_eq!(response["body"], "Hello, World!");
+                assert_eq!(response["status"], 200); // I18N: no-translate - Rust assertion
+                assert_eq!(response["body"], "Hello, World!"); // I18N: no-translate - Rust assertion
             }
-            _ => panic!("Expected BlockOutput message"),
+            _ => panic!("Expected BlockOutput message"), // I18N: no-translate - Rust panic/internal diagnostic
         }
 
         // Check Finished message
         match &messages[2] {
             DocumentBridgeMessage::BlockOutput { block_id, output } => {
-                assert_eq!(*block_id, http_id);
+                assert_eq!(*block_id, http_id); // I18N: no-translate - Rust assertion
                 match &output.lifecycle {
                     Some(BlockLifecycleEvent::Finished(data)) => {
-                        assert!(data.success, "Request should have succeeded");
+                        assert!(data.success, "Request should have succeeded"); // I18N: no-translate - Rust assertion
                     }
-                    _ => panic!("Expected Finished lifecycle event"),
+                    _ => panic!("Expected Finished lifecycle event"), // I18N: no-translate - Rust panic/internal diagnostic
                 }
             }
-            _ => panic!("Expected BlockOutput message"),
+            _ => panic!("Expected BlockOutput message"), // I18N: no-translate - Rust panic/internal diagnostic
         }
     }
 
@@ -549,7 +549,7 @@ mod tests {
 
         // Verify we received messages
         let messages = message_channel.get_messages().await;
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             messages.len(),
             3,
             "Expected 3 messages (Started, Output, Finished)"
@@ -558,13 +558,13 @@ mod tests {
         // Check the finished message includes the JSON response
         match &messages[1] {
             DocumentBridgeMessage::BlockOutput { block_id, output } => {
-                println!("output: {:?}", output);
-                assert_eq!(*block_id, http_id);
+                println!("output: {:?}", output); // I18N: no-translate - Rust console output
+                assert_eq!(*block_id, http_id); // I18N: no-translate - Rust assertion
                 let response = output.object.as_ref().unwrap();
-                assert_eq!(response["status"], 201);
-                assert_eq!(response["body"], "{\"status\":\"created\"}");
+                assert_eq!(response["status"], 201); // I18N: no-translate - Rust assertion
+                assert_eq!(response["body"], "{\"status\":\"created\"}"); // I18N: no-translate - Rust assertion
             }
-            _ => panic!("Expected BlockOutput message"),
+            _ => panic!("Expected BlockOutput message"), // I18N: no-translate - Rust panic/internal diagnostic
         }
     }
 
@@ -803,7 +803,7 @@ mod tests {
         // Verify events were emitted
         use crate::events::GCEvent;
         let events = event_bus.events();
-        assert_eq!(events.len(), 2);
+        assert_eq!(events.len(), 2); // I18N: no-translate - Rust assertion
 
         // Check BlockStarted event
         match &events[0] {
@@ -811,10 +811,10 @@ mod tests {
                 block_id,
                 runbook_id: rb_id,
             } => {
-                assert_eq!(*block_id, http_id);
-                assert_eq!(*rb_id, runbook_id);
+                assert_eq!(*block_id, http_id); // I18N: no-translate - Rust assertion
+                assert_eq!(*rb_id, runbook_id); // I18N: no-translate - Rust assertion
             }
-            _ => panic!("Expected BlockStarted event, got: {:?}", events[0]),
+            _ => panic!("Expected BlockStarted event, got: {:?}", events[0]), // I18N: no-translate - Rust panic/internal diagnostic
         }
 
         // Check BlockFinished event
@@ -824,11 +824,11 @@ mod tests {
                 runbook_id: rb_id,
                 success,
             } => {
-                assert_eq!(*block_id, http_id);
-                assert_eq!(*rb_id, runbook_id);
-                assert_eq!(*success, true);
+                assert_eq!(*block_id, http_id); // I18N: no-translate - Rust assertion
+                assert_eq!(*rb_id, runbook_id); // I18N: no-translate - Rust assertion
+                assert_eq!(*success, true); // I18N: no-translate - Rust assertion
             }
-            _ => panic!("Expected BlockFinished event, got: {:?}", events[1]),
+            _ => panic!("Expected BlockFinished event, got: {:?}", events[1]), // I18N: no-translate - Rust panic/internal diagnostic
         }
     }
 
@@ -854,7 +854,7 @@ mod tests {
         // Verify events were emitted
         use crate::events::GCEvent;
         let events = event_bus.events();
-        assert_eq!(events.len(), 2);
+        assert_eq!(events.len(), 2); // I18N: no-translate - Rust assertion
 
         // Check BlockStarted event
         match &events[0] {
@@ -862,10 +862,10 @@ mod tests {
                 block_id,
                 runbook_id: rb_id,
             } => {
-                assert_eq!(*block_id, http_id);
-                assert_eq!(*rb_id, runbook_id);
+                assert_eq!(*block_id, http_id); // I18N: no-translate - Rust assertion
+                assert_eq!(*rb_id, runbook_id); // I18N: no-translate - Rust assertion
             }
-            _ => panic!("Expected BlockStarted event, got: {:?}", events[0]),
+            _ => panic!("Expected BlockStarted event, got: {:?}", events[0]), // I18N: no-translate - Rust panic/internal diagnostic
         }
 
         // Check BlockFinished event (with success=false for 500 error)
@@ -875,11 +875,11 @@ mod tests {
                 runbook_id: rb_id,
                 success,
             } => {
-                assert_eq!(*block_id, http_id);
-                assert_eq!(*rb_id, runbook_id);
-                assert_eq!(*success, false);
+                assert_eq!(*block_id, http_id); // I18N: no-translate - Rust assertion
+                assert_eq!(*rb_id, runbook_id); // I18N: no-translate - Rust assertion
+                assert_eq!(*success, false); // I18N: no-translate - Rust assertion
             }
-            _ => panic!("Expected BlockFinished event, got: {:?}", events[1]),
+            _ => panic!("Expected BlockFinished event, got: {:?}", events[1]), // I18N: no-translate - Rust panic/internal diagnostic
         }
     }
 
@@ -897,7 +897,7 @@ mod tests {
         // Verify events were emitted
         use crate::events::GCEvent;
         let events = event_bus.events();
-        assert_eq!(events.len(), 2);
+        assert_eq!(events.len(), 2); // I18N: no-translate - Rust assertion
 
         // Check BlockStarted event
         match &events[0] {
@@ -905,10 +905,10 @@ mod tests {
                 block_id,
                 runbook_id: rb_id,
             } => {
-                assert_eq!(*block_id, http_id);
-                assert_eq!(*rb_id, runbook_id);
+                assert_eq!(*block_id, http_id); // I18N: no-translate - Rust assertion
+                assert_eq!(*rb_id, runbook_id); // I18N: no-translate - Rust assertion
             }
-            _ => panic!("Expected BlockStarted event, got: {:?}", events[0]),
+            _ => panic!("Expected BlockStarted event, got: {:?}", events[0]), // I18N: no-translate - Rust panic/internal diagnostic
         }
 
         // Check BlockFinished event (with success=false for 500 error)
@@ -918,11 +918,11 @@ mod tests {
                 runbook_id: rb_id,
                 error,
             } => {
-                assert_eq!(*block_id, http_id);
-                assert_eq!(*rb_id, runbook_id);
-                assert_eq!(*error, "Invalid HTTP request");
+                assert_eq!(*block_id, http_id); // I18N: no-translate - Rust assertion
+                assert_eq!(*rb_id, runbook_id); // I18N: no-translate - Rust assertion
+                assert_eq!(*error, "Invalid HTTP request"); // I18N: no-translate - Rust assertion
             }
-            _ => panic!("Expected BlockFailed event, got: {:?}", events[1]),
+            _ => panic!("Expected BlockFailed event, got: {:?}", events[1]), // I18N: no-translate - Rust panic/internal diagnostic
         }
     }
 
@@ -945,19 +945,19 @@ mod tests {
 
         let http = Http::from_document(&block_data).unwrap();
 
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             http.id,
             Uuid::parse_str("00000000-0000-0000-0000-000000000001").unwrap()
         );
-        assert_eq!(http.name, "Test Request");
-        assert_eq!(http.url, "https://api.example.com/data");
-        assert_eq!(http.verb, HttpVerb::Post);
-        assert_eq!(
+        assert_eq!(http.name, "Test Request"); // I18N: no-translate - Rust assertion
+        assert_eq!(http.url, "https://api.example.com/data"); // I18N: no-translate - Rust assertion
+        assert_eq!(http.verb, HttpVerb::Post); // I18N: no-translate - Rust assertion
+        assert_eq!( // I18N: no-translate - Rust assertion
             http.headers.get("Content-Type").unwrap(),
             "application/json"
         );
-        assert_eq!(http.headers.get("Authorization").unwrap(), "Bearer token");
-        assert_eq!(http.body, "{\"test\": true}");
+        assert_eq!(http.headers.get("Authorization").unwrap(), "Bearer token"); // I18N: no-translate - Rust assertion
+        assert_eq!(http.body, "{\"test\": true}"); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -972,10 +972,10 @@ mod tests {
 
         let http = Http::from_document(&block_data).unwrap();
 
-        assert_eq!(http.name, "HTTP Request");
-        assert_eq!(http.verb, HttpVerb::Get);
-        assert!(http.headers.is_empty());
-        assert!(http.body.is_empty());
+        assert_eq!(http.name, "HTTP Request"); // I18N: no-translate - Rust assertion
+        assert_eq!(http.verb, HttpVerb::Get); // I18N: no-translate - Rust assertion
+        assert!(http.headers.is_empty()); // I18N: no-translate - Rust assertion
+        assert!(http.body.is_empty()); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -992,21 +992,21 @@ mod tests {
 
         let http = Http::from_document(&block_data).unwrap();
 
-        assert_eq!(http.headers.get("Access-Token").unwrap(), "abc123");
-        assert_eq!(
+        assert_eq!(http.headers.get("Access-Token").unwrap(), "abc123"); // I18N: no-translate - Rust assertion
+        assert_eq!( // I18N: no-translate - Rust assertion
             http.headers.get("Content-Type").unwrap(),
             "application/json"
         );
-        assert_eq!(http.headers.len(), 2);
+        assert_eq!(http.headers.len(), 2); // I18N: no-translate - Rust assertion
     }
 
     #[test]
     fn test_http_verb_body_allowed() {
-        assert!(!HttpVerb::Get.is_body_allowed());
-        assert!(!HttpVerb::Head.is_body_allowed());
-        assert!(HttpVerb::Post.is_body_allowed());
-        assert!(HttpVerb::Put.is_body_allowed());
-        assert!(HttpVerb::Delete.is_body_allowed());
-        assert!(HttpVerb::Patch.is_body_allowed());
+        assert!(!HttpVerb::Get.is_body_allowed()); // I18N: no-translate - Rust assertion
+        assert!(!HttpVerb::Head.is_body_allowed()); // I18N: no-translate - Rust assertion
+        assert!(HttpVerb::Post.is_body_allowed()); // I18N: no-translate - Rust assertion
+        assert!(HttpVerb::Put.is_body_allowed()); // I18N: no-translate - Rust assertion
+        assert!(HttpVerb::Delete.is_body_allowed()); // I18N: no-translate - Rust assertion
+        assert!(HttpVerb::Patch.is_body_allowed()); // I18N: no-translate - Rust assertion
     }
 }

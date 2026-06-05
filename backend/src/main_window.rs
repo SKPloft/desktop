@@ -146,9 +146,9 @@ pub(crate) async fn create_main_window<R: Runtime>(app: &AppHandle<R>) -> Result
                 .state(EffectState::Active)
                 .build(),
         ) {
-            log::error!("Failed to apply window effects: {:?}", e);
+            log::error!("Failed to apply window effects: {:?}", e); // I18N: no-translate - Rust diagnostic log
         } else {
-            log::info!("Applied window effects successfully");
+            log::info!("Applied window effects successfully"); // I18N: no-translate - Rust diagnostic log
         }
     }
 
@@ -174,13 +174,13 @@ pub(crate) async fn create_main_window<R: Runtime>(app: &AppHandle<R>) -> Result
         attempts += 1;
         let target_size = PhysicalSize::new(window_state.width, window_state.height);
         let target_pos = PhysicalPosition::new(window_state.x, window_state.y);
-        log::debug!("target window state:  size: {target_size:?}, pos: {target_pos:?}");
-        log::debug!(
+        log::debug!("target window state:  size: {target_size:?}, pos: {target_pos:?}"); // I18N: no-translate - Rust diagnostic log
+        log::debug!( // I18N: no-translate - Rust diagnostic log
             "current window state: size: {:?}, pos: {:?}",
             window.outer_size().unwrap(),
             window.outer_position().unwrap()
         );
-        log::debug!("adjustment attempt: {attempts}");
+        log::debug!("adjustment attempt: {attempts}"); // I18N: no-translate - Rust diagnostic log
         tokio::time::sleep(std::time::Duration::from_millis(10)).await;
         window
             .set_size(PhysicalSize::new(window_state.width, window_state.height))

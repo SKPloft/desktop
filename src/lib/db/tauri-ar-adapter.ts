@@ -97,7 +97,7 @@ export default function createTauriAdapter<T extends ModelAttributes>(
       } else if (res.length === 1) {
         return convertRowToCamelCase<T>(res[0]);
       } else {
-        throw new Error("get returned multiple results");
+        throw new Error("get returned multiple results"); // I18N: no-translate - internal exception
       }
     } else {
       return convertRowToCamelCase<T>(res);
@@ -106,7 +106,7 @@ export default function createTauriAdapter<T extends ModelAttributes>(
 
   async function getBy(context: Context, matchOrQuery: Partial<T> | string, bindValues?: any[]) {
     const res = await all(context, matchOrQuery, bindValues);
-    if (res.length > 1) throw new Error("getBy returned multiple results");
+    if (res.length > 1) throw new Error("getBy returned multiple results"); // I18N: no-translate - internal exception
     return res[0] || null;
   }
 

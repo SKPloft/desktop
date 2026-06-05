@@ -21,7 +21,7 @@ pub async fn log_execution<R: tauri::Runtime>(
     end_time: u64,
     output: String,
 ) -> Result<(), String> {
-    log::debug!("Logging execution for block: {block:?}");
+    log::debug!("Logging execution for block: {block:?}"); // I18N: no-translate - Rust diagnostic log
     state
         .exec_log()
         .log_execution(block.clone(), start_time, end_time, output.clone())
@@ -31,7 +31,7 @@ pub async fn log_execution<R: tauri::Runtime>(
     let event_sender = state.event_sender();
     event_sender
         .send(WorkflowEvent::BlockFinished { id: block.id() })
-        .expect("Failed to send stop block event");
+        .expect("Failed to send stop block event"); // I18N: no-translate - internal expectation message
 
     app.emit(
         format!("exec_log_completed:{}", block.id()).as_str(),

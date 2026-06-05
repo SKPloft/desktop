@@ -51,23 +51,23 @@ mod tests {
     fn test_hash_history() {
         let mut hash_history = HashHistory::new(3);
 
-        assert_eq!(hash_history.latest(), None);
+        assert_eq!(hash_history.latest(), None); // I18N: no-translate - Rust assertion
 
         hash_history.push("1".to_string());
         hash_history.push("2".to_string());
         hash_history.push("3".to_string());
-        assert!(hash_history.contains("1"));
-        assert!(hash_history.contains("2"));
-        assert!(hash_history.contains("3"));
+        assert!(hash_history.contains("1")); // I18N: no-translate - Rust assertion
+        assert!(hash_history.contains("2")); // I18N: no-translate - Rust assertion
+        assert!(hash_history.contains("3")); // I18N: no-translate - Rust assertion
 
-        assert_eq!(hash_history.latest(), Some(&"3".to_string()));
+        assert_eq!(hash_history.latest(), Some(&"3".to_string())); // I18N: no-translate - Rust assertion
 
         hash_history.push("4".to_string());
-        assert!(!hash_history.contains("1"));
-        assert!(hash_history.contains("2"));
-        assert!(hash_history.contains("3"));
-        assert!(hash_history.contains("4"));
+        assert!(!hash_history.contains("1")); // I18N: no-translate - Rust assertion
+        assert!(hash_history.contains("2")); // I18N: no-translate - Rust assertion
+        assert!(hash_history.contains("3")); // I18N: no-translate - Rust assertion
+        assert!(hash_history.contains("4")); // I18N: no-translate - Rust assertion
 
-        assert_eq!(hash_history.latest(), Some(&"4".to_string()));
+        assert_eq!(hash_history.latest(), Some(&"4".to_string())); // I18N: no-translate - Rust assertion
     }
 }

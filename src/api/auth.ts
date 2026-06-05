@@ -74,7 +74,7 @@ export function getHubApiToken() {
         username = localStorageUsername;
       }
     }
-    if (!username) throw new Error("No username found in KVStore");
+    if (!username) throw new Error("No username found in KVStore"); // I18N: no-translate - internal exception
 
     const password = await _loadPassword("sh.atuin.runbooks.api", username);
     cachedHubApiToken = password;
@@ -85,7 +85,7 @@ export function getHubApiToken() {
 export async function clearHubApiToken() {
   const kv = await KVStore.open_default();
   let username = await kv.get<string>("username");
-  if (!username) throw new Error("No username found in KVStore");
+  if (!username) throw new Error("No username found in KVStore"); // I18N: no-translate - internal exception
 
   await _deletePassword("sh.atuin.runbooks.api", username);
   await kv.delete("username");

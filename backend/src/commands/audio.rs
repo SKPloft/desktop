@@ -67,7 +67,7 @@ pub async fn play_sound<R: Runtime>(
     sound_id: String,
     volume: f32,
 ) -> Result<(), String> {
-    log::info!(
+    log::info!( // I18N: no-translate - Rust diagnostic log
         "play_sound called with sound_id={}, volume={}",
         sound_id,
         volume
@@ -85,14 +85,14 @@ pub async fn play_sound<R: Runtime>(
 
     // Clamp volume to valid range
     let volume = volume.clamp(0.0, 1.0);
-    log::info!("Playing sound {} at volume {}", sound_id, volume);
+    log::info!("Playing sound {} at volume {}", sound_id, volume); // I18N: no-translate - Rust diagnostic log
 
     // Spawn audio playback in a separate thread to avoid blocking
     std::thread::spawn(move || {
         let file = match File::open(&sound_path) {
             Ok(f) => f,
             Err(e) => {
-                log::warn!("Failed to open sound file {:?}: {}", sound_path, e);
+                log::warn!("Failed to open sound file {:?}: {}", sound_path, e); // I18N: no-translate - Rust diagnostic log
                 return;
             }
         };
@@ -102,7 +102,7 @@ pub async fn play_sound<R: Runtime>(
         let (_stream, stream_handle) = match OutputStream::try_default() {
             Ok(s) => s,
             Err(e) => {
-                log::warn!("Failed to get audio output stream: {}", e);
+                log::warn!("Failed to get audio output stream: {}", e); // I18N: no-translate - Rust diagnostic log
                 return;
             }
         };
@@ -110,7 +110,7 @@ pub async fn play_sound<R: Runtime>(
         let sink = match Sink::try_new(&stream_handle) {
             Ok(s) => s,
             Err(e) => {
-                log::warn!("Failed to create audio sink: {}", e);
+                log::warn!("Failed to create audio sink: {}", e); // I18N: no-translate - Rust diagnostic log
                 return;
             }
         };
@@ -121,7 +121,7 @@ pub async fn play_sound<R: Runtime>(
         let source = match Decoder::new(reader) {
             Ok(s) => s,
             Err(e) => {
-                log::warn!("Failed to decode sound file: {}", e);
+                log::warn!("Failed to decode sound file: {}", e); // I18N: no-translate - Rust diagnostic log
                 return;
             }
         };

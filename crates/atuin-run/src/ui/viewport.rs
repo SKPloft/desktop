@@ -207,10 +207,10 @@ mod tests {
     #[test]
     fn test_viewport_creation() {
         let viewport = BlockViewport::new(1, "Test Block".to_string(), 8);
-        assert_eq!(viewport.number, 1);
-        assert_eq!(viewport.title, "Test Block");
-        assert_eq!(viewport.content_height, 8);
-        assert_eq!(viewport.lines.len(), 0);
+        assert_eq!(viewport.number, 1); // I18N: no-translate - Rust assertion
+        assert_eq!(viewport.title, "Test Block"); // I18N: no-translate - Rust assertion
+        assert_eq!(viewport.content_height, 8); // I18N: no-translate - Rust assertion
+        assert_eq!(viewport.lines.len(), 0); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -222,12 +222,12 @@ mod tests {
         viewport.add_line("Line 3".to_string());
         // Note: Each add_line may add multiple physical lines if wrapping occurs
         // For short lines, it should still be 3 lines
-        assert!(viewport.lines.len() >= 3);
+        assert!(viewport.lines.len() >= 3); // I18N: no-translate - Rust assertion
 
         // Adding a 4th line should remove the oldest
         viewport.add_line("Line 4".to_string());
-        assert_eq!(viewport.lines.len(), 3);
-        assert_eq!(viewport.lines[2], "Line 4");
+        assert_eq!(viewport.lines.len(), 3); // I18N: no-translate - Rust assertion
+        assert_eq!(viewport.lines[2], "Line 4"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -239,14 +239,14 @@ mod tests {
         viewport.add_line(long_line.to_string());
 
         // Should have added multiple lines (at least 2)
-        assert!(viewport.lines.len() > 1);
+        assert!(viewport.lines.len() > 1); // I18N: no-translate - Rust assertion
 
         // First line should be the start
-        assert!(viewport.lines[0].starts_with("This is"));
+        assert!(viewport.lines[0].starts_with("This is")); // I18N: no-translate - Rust assertion
 
         // Continuation lines should be indented
         if viewport.lines.len() > 1 {
-            assert!(viewport.lines[1].starts_with("  "));
+            assert!(viewport.lines[1].starts_with("  ")); // I18N: no-translate - Rust assertion
         }
     }
 }

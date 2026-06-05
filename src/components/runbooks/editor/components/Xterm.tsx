@@ -90,7 +90,7 @@ const Xterm = forwardRef<XtermHandle, XtermProps>(
             webglAddon = new WebglAddon();
             term.loadAddon(webglAddon);
           } catch (e) {
-            console.warn("WebGL addon failed to load", e);
+            console.warn("WebGL addon failed to load", e); // I18N: no-translate - developer diagnostic
           }
         }
 

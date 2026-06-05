@@ -124,8 +124,8 @@ mod tests {
 
     #[tokio::test]
     async fn test_setup_creates_file() {
-        let handle = setup().expect("setup should succeed");
-        assert!(
+        let handle = setup().expect("setup should succeed"); // I18N: no-translate - internal expectation message
+        assert!( // I18N: no-translate - Rust assertion
             handle.path().exists(),
             "temporary file should exist after setup"
         );
@@ -133,96 +133,96 @@ mod tests {
 
     #[tokio::test]
     async fn test_finalize_empty_file_returns_empty_map() {
-        let handle = setup().expect("setup should succeed");
-        let vars = finalize(handle).await.expect("finalize should succeed");
-        assert!(vars.is_empty(), "empty file should produce empty map");
+        let handle = setup().expect("setup should succeed"); // I18N: no-translate - internal expectation message
+        let vars = finalize(handle).await.expect("finalize should succeed"); // I18N: no-translate - internal expectation message
+        assert!(vars.is_empty(), "empty file should produce empty map"); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
     async fn test_single_variable() {
-        let handle = setup().expect("setup should succeed");
+        let handle = setup().expect("setup should succeed"); // I18N: no-translate - internal expectation message
 
         // Write a single variable to the file
-        let mut file = std::fs::File::create(handle.path()).expect("should open file for writing");
-        writeln!(file, "MY_VAR=hello").expect("should write to file");
+        let mut file = std::fs::File::create(handle.path()).expect("should open file for writing"); // I18N: no-translate - internal expectation message
+        writeln!(file, "MY_VAR=hello").expect("should write to file"); // I18N: no-translate - internal expectation message
         drop(file);
 
-        let vars = finalize(handle).await.expect("finalize should succeed");
-        assert_eq!(vars.len(), 1);
-        assert_eq!(vars.get("MY_VAR"), Some(&"hello".to_string()));
+        let vars = finalize(handle).await.expect("finalize should succeed"); // I18N: no-translate - internal expectation message
+        assert_eq!(vars.len(), 1); // I18N: no-translate - Rust assertion
+        assert_eq!(vars.get("MY_VAR"), Some(&"hello".to_string())); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
     async fn test_multiple_variables() {
-        let handle = setup().expect("setup should succeed");
+        let handle = setup().expect("setup should succeed"); // I18N: no-translate - internal expectation message
 
-        let mut file = std::fs::File::create(handle.path()).expect("should open file for writing");
-        writeln!(file, "VAR1=value1").expect("should write to file");
-        writeln!(file, "VAR2=value2").expect("should write to file");
-        writeln!(file, "VAR3=value3").expect("should write to file");
+        let mut file = std::fs::File::create(handle.path()).expect("should open file for writing"); // I18N: no-translate - internal expectation message
+        writeln!(file, "VAR1=value1").expect("should write to file"); // I18N: no-translate - internal expectation message
+        writeln!(file, "VAR2=value2").expect("should write to file"); // I18N: no-translate - internal expectation message
+        writeln!(file, "VAR3=value3").expect("should write to file"); // I18N: no-translate - internal expectation message
         drop(file);
 
-        let vars = finalize(handle).await.expect("finalize should succeed");
-        assert_eq!(vars.len(), 3);
-        assert_eq!(vars.get("VAR1"), Some(&"value1".to_string()));
-        assert_eq!(vars.get("VAR2"), Some(&"value2".to_string()));
-        assert_eq!(vars.get("VAR3"), Some(&"value3".to_string()));
+        let vars = finalize(handle).await.expect("finalize should succeed"); // I18N: no-translate - internal expectation message
+        assert_eq!(vars.len(), 3); // I18N: no-translate - Rust assertion
+        assert_eq!(vars.get("VAR1"), Some(&"value1".to_string())); // I18N: no-translate - Rust assertion
+        assert_eq!(vars.get("VAR2"), Some(&"value2".to_string())); // I18N: no-translate - Rust assertion
+        assert_eq!(vars.get("VAR3"), Some(&"value3".to_string())); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
     async fn test_empty_value() {
-        let handle = setup().expect("setup should succeed");
+        let handle = setup().expect("setup should succeed"); // I18N: no-translate - internal expectation message
 
-        let mut file = std::fs::File::create(handle.path()).expect("should open file for writing");
-        writeln!(file, "EMPTY_VAR=").expect("should write to file");
+        let mut file = std::fs::File::create(handle.path()).expect("should open file for writing"); // I18N: no-translate - internal expectation message
+        writeln!(file, "EMPTY_VAR=").expect("should write to file"); // I18N: no-translate - internal expectation message
         drop(file);
 
-        let vars = finalize(handle).await.expect("finalize should succeed");
-        assert_eq!(vars.len(), 1);
-        assert_eq!(vars.get("EMPTY_VAR"), Some(&"".to_string()));
+        let vars = finalize(handle).await.expect("finalize should succeed"); // I18N: no-translate - internal expectation message
+        assert_eq!(vars.len(), 1); // I18N: no-translate - Rust assertion
+        assert_eq!(vars.get("EMPTY_VAR"), Some(&"".to_string())); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
     async fn test_value_with_equals_sign() {
-        let handle = setup().expect("setup should succeed");
+        let handle = setup().expect("setup should succeed"); // I18N: no-translate - internal expectation message
 
-        let mut file = std::fs::File::create(handle.path()).expect("should open file for writing");
-        writeln!(file, "MY_VAR=foo=bar=baz").expect("should write to file");
+        let mut file = std::fs::File::create(handle.path()).expect("should open file for writing"); // I18N: no-translate - internal expectation message
+        writeln!(file, "MY_VAR=foo=bar=baz").expect("should write to file"); // I18N: no-translate - internal expectation message
         drop(file);
 
-        let vars = finalize(handle).await.expect("finalize should succeed");
-        assert_eq!(vars.len(), 1);
-        assert_eq!(vars.get("MY_VAR"), Some(&"foo=bar=baz".to_string()));
+        let vars = finalize(handle).await.expect("finalize should succeed"); // I18N: no-translate - internal expectation message
+        assert_eq!(vars.len(), 1); // I18N: no-translate - Rust assertion
+        assert_eq!(vars.get("MY_VAR"), Some(&"foo=bar=baz".to_string())); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
     async fn test_blank_lines_are_ignored() {
-        let handle = setup().expect("setup should succeed");
+        let handle = setup().expect("setup should succeed"); // I18N: no-translate - internal expectation message
 
-        let mut file = std::fs::File::create(handle.path()).expect("should open file for writing");
-        writeln!(file, "VAR1=value1").expect("should write to file");
-        writeln!(file).expect("should write blank line");
-        writeln!(file, "VAR2=value2").expect("should write to file");
+        let mut file = std::fs::File::create(handle.path()).expect("should open file for writing"); // I18N: no-translate - internal expectation message
+        writeln!(file, "VAR1=value1").expect("should write to file"); // I18N: no-translate - internal expectation message
+        writeln!(file).expect("should write blank line"); // I18N: no-translate - internal expectation message
+        writeln!(file, "VAR2=value2").expect("should write to file"); // I18N: no-translate - internal expectation message
         drop(file);
 
-        let vars = finalize(handle).await.expect("finalize should succeed");
-        assert_eq!(vars.len(), 2);
-        assert_eq!(vars.get("VAR1"), Some(&"value1".to_string()));
-        assert_eq!(vars.get("VAR2"), Some(&"value2".to_string()));
+        let vars = finalize(handle).await.expect("finalize should succeed"); // I18N: no-translate - internal expectation message
+        assert_eq!(vars.len(), 2); // I18N: no-translate - Rust assertion
+        assert_eq!(vars.get("VAR1"), Some(&"value1".to_string())); // I18N: no-translate - Rust assertion
+        assert_eq!(vars.get("VAR2"), Some(&"value2".to_string())); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
     async fn test_later_value_overwrites_earlier() {
-        let handle = setup().expect("setup should succeed");
+        let handle = setup().expect("setup should succeed"); // I18N: no-translate - internal expectation message
 
-        let mut file = std::fs::File::create(handle.path()).expect("should open file for writing");
-        writeln!(file, "MY_VAR=first").expect("should write to file");
-        writeln!(file, "MY_VAR=second").expect("should write to file");
+        let mut file = std::fs::File::create(handle.path()).expect("should open file for writing"); // I18N: no-translate - internal expectation message
+        writeln!(file, "MY_VAR=first").expect("should write to file"); // I18N: no-translate - internal expectation message
+        writeln!(file, "MY_VAR=second").expect("should write to file"); // I18N: no-translate - internal expectation message
         drop(file);
 
-        let vars = finalize(handle).await.expect("finalize should succeed");
-        assert_eq!(vars.len(), 1);
-        assert_eq!(vars.get("MY_VAR"), Some(&"second".to_string()));
+        let vars = finalize(handle).await.expect("finalize should succeed"); // I18N: no-translate - internal expectation message
+        assert_eq!(vars.len(), 1); // I18N: no-translate - Rust assertion
+        assert_eq!(vars.get("MY_VAR"), Some(&"second".to_string())); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -230,8 +230,8 @@ mod tests {
         let content = "output<<EOF\nline 1\nline 2\nline 3\nEOF\n";
         let vars = parse_vars(content);
 
-        assert_eq!(vars.len(), 1);
-        assert_eq!(
+        assert_eq!(vars.len(), 1); // I18N: no-translate - Rust assertion
+        assert_eq!( // I18N: no-translate - Rust assertion
             vars.get("output"),
             Some(&"line 1\nline 2\nline 3".to_string())
         );
@@ -242,8 +242,8 @@ mod tests {
         let content = "myvar<<CUSTOM_DELIM\nsome content\nmore content\nCUSTOM_DELIM\n";
         let vars = parse_vars(content);
 
-        assert_eq!(vars.len(), 1);
-        assert_eq!(
+        assert_eq!(vars.len(), 1); // I18N: no-translate - Rust assertion
+        assert_eq!( // I18N: no-translate - Rust assertion
             vars.get("myvar"),
             Some(&"some content\nmore content".to_string())
         );
@@ -254,8 +254,8 @@ mod tests {
         let content = "var<<END\nsingle line\nEND\n";
         let vars = parse_vars(content);
 
-        assert_eq!(vars.len(), 1);
-        assert_eq!(vars.get("var"), Some(&"single line".to_string()));
+        assert_eq!(vars.len(), 1); // I18N: no-translate - Rust assertion
+        assert_eq!(vars.get("var"), Some(&"single line".to_string())); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -263,8 +263,8 @@ mod tests {
         let content = "empty<<DELIM\nDELIM\n";
         let vars = parse_vars(content);
 
-        assert_eq!(vars.len(), 1);
-        assert_eq!(vars.get("empty"), Some(&"".to_string()));
+        assert_eq!(vars.len(), 1); // I18N: no-translate - Rust assertion
+        assert_eq!(vars.get("empty"), Some(&"".to_string())); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -272,8 +272,8 @@ mod tests {
         let content = "special<<EOF\n$VAR\n`cmd`\n\"quotes\"\n'single'\nEOF\n";
         let vars = parse_vars(content);
 
-        assert_eq!(vars.len(), 1);
-        assert_eq!(
+        assert_eq!(vars.len(), 1); // I18N: no-translate - Rust assertion
+        assert_eq!( // I18N: no-translate - Rust assertion
             vars.get("special"),
             Some(&"$VAR\n`cmd`\n\"quotes\"\n'single'".to_string())
         );
@@ -284,8 +284,8 @@ mod tests {
         let content = "spaces<<END\n  indented\n\ttabbed\n  \nEND\n";
         let vars = parse_vars(content);
 
-        assert_eq!(vars.len(), 1);
-        assert_eq!(
+        assert_eq!(vars.len(), 1); // I18N: no-translate - Rust assertion
+        assert_eq!( // I18N: no-translate - Rust assertion
             vars.get("spaces"),
             Some(&"  indented\n\ttabbed\n  ".to_string())
         );
@@ -297,8 +297,8 @@ mod tests {
         let content = "incomplete<<EOF\nline 1\nline 2\n";
         let vars = parse_vars(content);
 
-        assert_eq!(vars.len(), 1);
-        assert_eq!(vars.get("incomplete"), Some(&"line 1\nline 2".to_string()));
+        assert_eq!(vars.len(), 1); // I18N: no-translate - Rust assertion
+        assert_eq!(vars.get("incomplete"), Some(&"line 1\nline 2".to_string())); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -306,10 +306,10 @@ mod tests {
         let content = "simple=value\noutput<<EOF\nmulti\nline\nEOF\nanother=test\n";
         let vars = parse_vars(content);
 
-        assert_eq!(vars.len(), 3);
-        assert_eq!(vars.get("simple"), Some(&"value".to_string()));
-        assert_eq!(vars.get("output"), Some(&"multi\nline".to_string()));
-        assert_eq!(vars.get("another"), Some(&"test".to_string()));
+        assert_eq!(vars.len(), 3); // I18N: no-translate - Rust assertion
+        assert_eq!(vars.get("simple"), Some(&"value".to_string())); // I18N: no-translate - Rust assertion
+        assert_eq!(vars.get("output"), Some(&"multi\nline".to_string())); // I18N: no-translate - Rust assertion
+        assert_eq!(vars.get("another"), Some(&"test".to_string())); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -318,8 +318,8 @@ mod tests {
         let content = "var<<END\nthis line has END in it\nEND\n";
         let vars = parse_vars(content);
 
-        assert_eq!(vars.len(), 1);
-        assert_eq!(
+        assert_eq!(vars.len(), 1); // I18N: no-translate - Rust assertion
+        assert_eq!( // I18N: no-translate - Rust assertion
             vars.get("var"),
             Some(&"this line has END in it".to_string())
         );
@@ -331,26 +331,26 @@ mod tests {
         let content = "config<<DONE\nkey=value\nfoo=bar\nDONE\n";
         let vars = parse_vars(content);
 
-        assert_eq!(vars.len(), 1);
-        assert_eq!(vars.get("config"), Some(&"key=value\nfoo=bar".to_string()));
+        assert_eq!(vars.len(), 1); // I18N: no-translate - Rust assertion
+        assert_eq!(vars.get("config"), Some(&"key=value\nfoo=bar".to_string())); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
     async fn test_finalize_with_heredoc() {
-        let handle = setup().expect("setup should succeed");
+        let handle = setup().expect("setup should succeed"); // I18N: no-translate - internal expectation message
 
-        let mut file = std::fs::File::create(handle.path()).expect("should open file for writing");
-        writeln!(file, "simple=test").expect("should write to file");
-        writeln!(file, "multi<<EOF").expect("should write to file");
-        writeln!(file, "line 1").expect("should write to file");
-        writeln!(file, "line 2").expect("should write to file");
-        writeln!(file, "EOF").expect("should write to file");
+        let mut file = std::fs::File::create(handle.path()).expect("should open file for writing"); // I18N: no-translate - internal expectation message
+        writeln!(file, "simple=test").expect("should write to file"); // I18N: no-translate - internal expectation message
+        writeln!(file, "multi<<EOF").expect("should write to file"); // I18N: no-translate - internal expectation message
+        writeln!(file, "line 1").expect("should write to file"); // I18N: no-translate - internal expectation message
+        writeln!(file, "line 2").expect("should write to file"); // I18N: no-translate - internal expectation message
+        writeln!(file, "EOF").expect("should write to file"); // I18N: no-translate - internal expectation message
         drop(file);
 
-        let vars = finalize(handle).await.expect("finalize should succeed");
-        assert_eq!(vars.len(), 2);
-        assert_eq!(vars.get("simple"), Some(&"test".to_string()));
-        assert_eq!(vars.get("multi"), Some(&"line 1\nline 2".to_string()));
+        let vars = finalize(handle).await.expect("finalize should succeed"); // I18N: no-translate - internal expectation message
+        assert_eq!(vars.len(), 2); // I18N: no-translate - Rust assertion
+        assert_eq!(vars.get("simple"), Some(&"test".to_string())); // I18N: no-translate - Rust assertion
+        assert_eq!(vars.get("multi"), Some(&"line 1\nline 2".to_string())); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -359,8 +359,8 @@ mod tests {
         let content = "redirect=command<<input\n";
         let vars = parse_vars(content);
 
-        assert_eq!(vars.len(), 1);
-        assert_eq!(vars.get("redirect"), Some(&"command<<input".to_string()));
+        assert_eq!(vars.len(), 1); // I18N: no-translate - Rust assertion
+        assert_eq!(vars.get("redirect"), Some(&"command<<input".to_string())); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -369,11 +369,11 @@ mod tests {
         let content = "cmd=cat file.txt <<< 'input'\nop=test 5<<10\n";
         let vars = parse_vars(content);
 
-        assert_eq!(vars.len(), 2);
-        assert_eq!(
+        assert_eq!(vars.len(), 2); // I18N: no-translate - Rust assertion
+        assert_eq!( // I18N: no-translate - Rust assertion
             vars.get("cmd"),
             Some(&"cat file.txt <<< 'input'".to_string())
         );
-        assert_eq!(vars.get("op"), Some(&"test 5<<10".to_string()));
+        assert_eq!(vars.get("op"), Some(&"test 5<<10".to_string())); // I18N: no-translate - Rust assertion
     }
 }

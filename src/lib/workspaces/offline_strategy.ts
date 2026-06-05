@@ -98,7 +98,7 @@ export default class OfflineStrategy implements WorkspaceStrategy {
 
   async createWorkspace(): Promise<Result<Workspace, WorkspaceError>> {
     if (!this.workspace.get("folder")) {
-      throw new Error(t("workspace.offline.error.no_folder_selected"));
+      throw new Error(t("workspace.offline.error.no_folder_selected")); // I18N: no-translate - internal exception
     }
 
     const error = await checkWorkspaceFolder(this.workspace.get("folder")!);
@@ -298,7 +298,7 @@ export default class OfflineStrategy implements WorkspaceStrategy {
     let result = await Ok.from<Runbook | null, WorkspaceError>(
       OfflineRunbook.create(this.workspace, parentFolderId),
     );
-    console.log("createRunbook result", result);
+    console.log("createRunbook result", result); // I18N: no-translate - developer diagnostic
     if (result.isOk() && result.unwrap() === null) {
       result = Err({
         type: "WorkspaceCreateError",
@@ -429,5 +429,5 @@ export default class OfflineStrategy implements WorkspaceStrategy {
 }
 
 function exhaustiveCheck(value: never): never {
-  throw new Error(`Unhandled value: ${value}`);
+  throw new Error(`Unhandled value: ${value}`); // I18N: no-translate - internal exception
 }

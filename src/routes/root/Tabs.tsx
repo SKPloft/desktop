@@ -112,7 +112,7 @@ export default function Tabs() {
           break;
         default:
           const x: never = action.type;
-          console.error("Unknown action", x);
+          console.error("Unknown action", x); // I18N: no-translate - developer diagnostic
       }
     });
 
@@ -360,7 +360,7 @@ const TabDisplay = React.forwardRef(
             break;
           default:
             const x: never = action.type;
-            console.error("Unknown action", x);
+            console.error("Unknown action", x); // I18N: no-translate - developer diagnostic
         }
       });
 

@@ -21,7 +21,7 @@ pub fn stderr_log_dispatcher_factory() -> Dispatch {
 }
 
 pub fn log_dir_dispatcher_factory() -> Dispatch {
-    todo!()
+    todo!() // I18N: no-translate - Rust panic/internal diagnostic
 }
 
 fn get_colors_line() -> ColoredLevelConfig {

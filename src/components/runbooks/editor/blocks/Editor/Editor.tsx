@@ -381,7 +381,7 @@ export default createReactBlockSpec(
 
         // Store in template variable if variable name is specified
         if (block.props.variableName && currentRunbookId) {
-          setTemplateVar(currentRunbookId, block.props.variableName, val).catch(console.error);
+          setTemplateVar(currentRunbookId, block.props.variableName, val).catch(console.error); // I18N: no-translate - developer diagnostic
         }
       };
 

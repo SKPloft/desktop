@@ -42,7 +42,7 @@ export default function UpdateNotifier() {
 
   async function doUpdate(update: Update) {
     if (AtuinEnv.isDev) {
-      console.log("UpdateNotifier: doUpdate: skipping update in dev mode");
+      console.log("UpdateNotifier: doUpdate: skipping update in dev mode"); // I18N: no-translate - developer diagnostic
       return;
     }
 
@@ -61,7 +61,7 @@ export default function UpdateNotifier() {
         }
       });
     } catch (err) {
-      console.error("UpdateNotifier: error downloading and installing update", err);
+      console.error("UpdateNotifier: error downloading and installing update", err); // I18N: no-translate - developer diagnostic
       setUpdating(None);
       addToast({
         title: t("updates.error_title"),

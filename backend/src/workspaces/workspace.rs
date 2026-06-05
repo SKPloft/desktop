@@ -472,8 +472,8 @@ mod tests {
 
     #[test]
     fn test_name_to_filename() {
-        assert_eq!(name_to_filename(" Hello World! "), "Hello World");
-        assert_eq!(
+        assert_eq!(name_to_filename(" Hello World! "), "Hello World"); // I18N: no-translate - Rust assertion
+        assert_eq!( // I18N: no-translate - Rust assertion
             name_to_filename("Wait, is this a file runbook!?"),
             "Wait is this a file runbook"
         );

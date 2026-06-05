@@ -57,7 +57,7 @@ export default class WorkspaceManager {
             queryClient.invalidateQueries(allRunbooks());
             break;
           case "RunbookChanged":
-            console.log("runbook changed", event.data);
+            console.log("runbook changed", event.data); // I18N: no-translate - developer diagnostic
             useStore.getState().queryClient.invalidateQueries(runbookById(event.data));
             const runbook = await OfflineRunbook.load(event.data);
             this.emitter.emit("runbook-changed", runbook);
@@ -67,7 +67,7 @@ export default class WorkspaceManager {
             break;
           default:
             const exhaustiveCheck: never = event;
-            throw new Error(`Unhandled workspace event: ${exhaustiveCheck}`);
+            throw new Error(`Unhandled workspace event: ${exhaustiveCheck}`); // I18N: no-translate - internal exception
         }
       });
     }
@@ -88,7 +88,7 @@ export default class WorkspaceManager {
       SharedStateManager.stopInstance(`workspace-folder:${workspace.get("id")}`);
     } else {
       if (!this.workspaces.has(workspace.get("id")!)) {
-        console.warn("Workspace not being watched", workspace.get("id")!);
+        console.warn("Workspace not being watched", workspace.get("id")!); // I18N: no-translate - developer diagnostic
         return;
       }
 

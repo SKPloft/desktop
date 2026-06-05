@@ -30,7 +30,7 @@ export async function sshConnect(userHost: string): Promise<void> {
   } catch (error) {
     // If there's an error, update the status
     SSHBus.get().updateConnectionStatus(userHost, "error");
-    console.error(error);
+    console.error(error); // I18N: no-translate - developer diagnostic
 
     addToast({
       title: t("editor.blocks.ssh_connect.connection_failed"),

@@ -166,7 +166,7 @@ impl Dropdown {
 
                 let cwd = context.context_resolver.cwd().to_string();
                 let envs = context.context_resolver.env_vars().clone();
-                tracing::trace!("Running dropdown command in directory {cwd}");
+                tracing::trace!("Running dropdown command in directory {cwd}"); // I18N: no-translate - Rust diagnostic log
 
                 let output = Command::new(&self.interpreter)
                     .current_dir(cwd)
@@ -305,7 +305,7 @@ impl BlockBehavior for Dropdown {
         let _ = context.block_started().await;
 
         let resolved_options = self.resolve_options(&context).await?;
-        tracing::trace!(
+        tracing::trace!( // I18N: no-translate - Rust diagnostic log
             "Resolved options for dropdown block {id}: {options:?}",
             id = self.id,
             options = resolved_options
@@ -335,80 +335,80 @@ mod tests {
         #[test]
         fn test_parse_simple_option() {
             let option: DropdownOption = "value".try_into().unwrap();
-            assert_eq!(option.label, "value");
-            assert_eq!(option.value, "value");
+            assert_eq!(option.label, "value"); // I18N: no-translate - Rust assertion
+            assert_eq!(option.value, "value"); // I18N: no-translate - Rust assertion
         }
 
         #[test]
         fn test_parse_label_value_option() {
             let option: DropdownOption = "Label:value".try_into().unwrap();
-            assert_eq!(option.label, "Label");
-            assert_eq!(option.value, "value");
+            assert_eq!(option.label, "Label"); // I18N: no-translate - Rust assertion
+            assert_eq!(option.value, "value"); // I18N: no-translate - Rust assertion
         }
 
         #[test]
         fn test_parse_label_with_multiple_colons() {
             let option: DropdownOption = "Label:value:with:colons".try_into().unwrap();
-            assert_eq!(option.label, "Label");
-            assert_eq!(option.value, "value:with:colons");
+            assert_eq!(option.label, "Label"); // I18N: no-translate - Rust assertion
+            assert_eq!(option.value, "value:with:colons"); // I18N: no-translate - Rust assertion
         }
 
         #[test]
         fn test_vec_from_str_empty() {
             let options = DropdownOption::vec_from_str("").unwrap();
-            assert!(options.is_empty());
+            assert!(options.is_empty()); // I18N: no-translate - Rust assertion
         }
 
         #[test]
         fn test_vec_from_str_whitespace_only() {
             let options = DropdownOption::vec_from_str("   ").unwrap();
-            assert!(options.is_empty());
+            assert!(options.is_empty()); // I18N: no-translate - Rust assertion
         }
 
         #[test]
         fn test_vec_from_str_comma_separated() {
             let options = DropdownOption::vec_from_str("a, b, c").unwrap();
-            assert_eq!(options.len(), 3);
-            assert_eq!(options[0].value, "a");
-            assert_eq!(options[1].value, "b");
-            assert_eq!(options[2].value, "c");
+            assert_eq!(options.len(), 3); // I18N: no-translate - Rust assertion
+            assert_eq!(options[0].value, "a"); // I18N: no-translate - Rust assertion
+            assert_eq!(options[1].value, "b"); // I18N: no-translate - Rust assertion
+            assert_eq!(options[2].value, "c"); // I18N: no-translate - Rust assertion
         }
 
         #[test]
         fn test_vec_from_str_newline_separated() {
             let options = DropdownOption::vec_from_str("a\nb\nc").unwrap();
-            assert_eq!(options.len(), 3);
-            assert_eq!(options[0].value, "a");
-            assert_eq!(options[1].value, "b");
-            assert_eq!(options[2].value, "c");
+            assert_eq!(options.len(), 3); // I18N: no-translate - Rust assertion
+            assert_eq!(options[0].value, "a"); // I18N: no-translate - Rust assertion
+            assert_eq!(options[1].value, "b"); // I18N: no-translate - Rust assertion
+            assert_eq!(options[2].value, "c"); // I18N: no-translate - Rust assertion
         }
 
         #[test]
         fn test_vec_from_str_crlf_separated() {
             let options = DropdownOption::vec_from_str("a\r\nb\r\nc").unwrap();
-            assert_eq!(options.len(), 3);
-            assert_eq!(options[0].value, "a");
-            assert_eq!(options[1].value, "b");
-            assert_eq!(options[2].value, "c");
+            assert_eq!(options.len(), 3); // I18N: no-translate - Rust assertion
+            assert_eq!(options[0].value, "a"); // I18N: no-translate - Rust assertion
+            assert_eq!(options[1].value, "b"); // I18N: no-translate - Rust assertion
+            assert_eq!(options[2].value, "c"); // I18N: no-translate - Rust assertion
         }
 
         #[test]
         fn test_vec_from_str_with_labels() {
             let options = DropdownOption::vec_from_str("Label A:a, Label B:b").unwrap();
-            assert_eq!(options.len(), 2);
-            assert_eq!(options[0].label, "Label A");
-            assert_eq!(options[0].value, "a");
-            assert_eq!(options[1].label, "Label B");
-            assert_eq!(options[1].value, "b");
+            assert_eq!(options.len(), 2); // I18N: no-translate - Rust assertion
+            assert_eq!(options[0].label, "Label A"); // I18N: no-translate - Rust assertion
+            assert_eq!(options[0].value, "a"); // I18N: no-translate - Rust assertion
+            assert_eq!(options[1].label, "Label B"); // I18N: no-translate - Rust assertion
+            assert_eq!(options[1].value, "b"); // I18N: no-translate - Rust assertion
         }
 
         #[test]
         fn test_vec_from_str_filters_empty_parts() {
             let options = DropdownOption::vec_from_str("a,,b,  ,c").unwrap();
-            assert_eq!(options.len(), 3);
-            assert_eq!(options[0].value, "a");
-            assert_eq!(options[1].value, "b");
-            assert_eq!(options[2].value, "c");
+            assert_eq!(options.len(), 3); // I18N: no-translate - Rust assertion
+            assert_eq!(options[0].value, "a"); // I18N: no-translate - Rust assertion
+            assert_eq!(options[1].value, "b"); // I18N: no-translate - Rust assertion
+            assert_eq!(options[2].value, "c"); // I18N: no-translate - Rust assertion
         }
     }
 
@@ -419,26 +419,26 @@ mod tests {
         #[test]
         fn test_try_from_fixed() {
             let opt_type: DropdownOptionType = "fixed".try_into().unwrap();
-            assert_eq!(opt_type, DropdownOptionType::Fixed);
+            assert_eq!(opt_type, DropdownOptionType::Fixed); // I18N: no-translate - Rust assertion
         }
 
         #[test]
         fn test_try_from_variable() {
             let opt_type: DropdownOptionType = "variable".try_into().unwrap();
-            assert_eq!(opt_type, DropdownOptionType::Variable);
+            assert_eq!(opt_type, DropdownOptionType::Variable); // I18N: no-translate - Rust assertion
         }
 
         #[test]
         fn test_try_from_command() {
             let opt_type: DropdownOptionType = "command".try_into().unwrap();
-            assert_eq!(opt_type, DropdownOptionType::Command);
+            assert_eq!(opt_type, DropdownOptionType::Command); // I18N: no-translate - Rust assertion
         }
 
         #[test]
         fn test_try_from_invalid() {
             let result: Result<DropdownOptionType, _> = "invalid".try_into();
-            assert!(result.is_err());
-            assert!(result.unwrap_err().contains("Invalid dropdown option type"));
+            assert!(result.is_err()); // I18N: no-translate - Rust assertion
+            assert!(result.unwrap_err().contains("Invalid dropdown option type")); // I18N: no-translate - Rust assertion
         }
     }
 
@@ -481,7 +481,7 @@ mod tests {
             let all_three_blank = dropdown.fixed_options.is_empty()
                 && dropdown.variable_options.is_empty()
                 && dropdown.command_options.is_empty();
-            assert!(all_three_blank);
+            assert!(all_three_blank); // I18N: no-translate - Rust assertion
 
             // The options source should be the `options` field
             let options_source = if all_three_blank {
@@ -494,13 +494,13 @@ mod tests {
                 }
             };
 
-            assert_eq!(options_source, "fallback1, fallback2");
+            assert_eq!(options_source, "fallback1, fallback2"); // I18N: no-translate - Rust assertion
 
             // Parse and verify
             let parsed = DropdownOption::vec_from_str(options_source).unwrap();
-            assert_eq!(parsed.len(), 2);
-            assert_eq!(parsed[0].value, "fallback1");
-            assert_eq!(parsed[1].value, "fallback2");
+            assert_eq!(parsed.len(), 2); // I18N: no-translate - Rust assertion
+            assert_eq!(parsed[0].value, "fallback1"); // I18N: no-translate - Rust assertion
+            assert_eq!(parsed[1].value, "fallback2"); // I18N: no-translate - Rust assertion
         }
 
         #[test]
@@ -516,7 +516,7 @@ mod tests {
             let all_three_blank = dropdown.fixed_options.is_empty()
                 && dropdown.variable_options.is_empty()
                 && dropdown.command_options.is_empty();
-            assert!(!all_three_blank);
+            assert!(!all_three_blank); // I18N: no-translate - Rust assertion
 
             let options_source = if all_three_blank {
                 &dropdown.options
@@ -528,7 +528,7 @@ mod tests {
                 }
             };
 
-            assert_eq!(options_source, "fixed1, fixed2");
+            assert_eq!(options_source, "fixed1, fixed2"); // I18N: no-translate - Rust assertion
         }
 
         #[test]
@@ -544,7 +544,7 @@ mod tests {
             let all_three_blank = dropdown.fixed_options.is_empty()
                 && dropdown.variable_options.is_empty()
                 && dropdown.command_options.is_empty();
-            assert!(!all_three_blank);
+            assert!(!all_three_blank); // I18N: no-translate - Rust assertion
 
             let options_source = if all_three_blank {
                 &dropdown.options
@@ -556,7 +556,7 @@ mod tests {
                 }
             };
 
-            assert_eq!(options_source, "myVariable");
+            assert_eq!(options_source, "myVariable"); // I18N: no-translate - Rust assertion
         }
 
         #[test]
@@ -572,7 +572,7 @@ mod tests {
             let all_three_blank = dropdown.fixed_options.is_empty()
                 && dropdown.variable_options.is_empty()
                 && dropdown.command_options.is_empty();
-            assert!(!all_three_blank);
+            assert!(!all_three_blank); // I18N: no-translate - Rust assertion
 
             let options_source = if all_three_blank {
                 &dropdown.options
@@ -584,7 +584,7 @@ mod tests {
                 }
             };
 
-            assert_eq!(options_source, "echo 'a\nb\nc'");
+            assert_eq!(options_source, "echo 'a\nb\nc'"); // I18N: no-translate - Rust assertion
         }
 
         #[test]
@@ -602,7 +602,7 @@ mod tests {
             let all_three_blank = dropdown.fixed_options.is_empty()
                 && dropdown.variable_options.is_empty()
                 && dropdown.command_options.is_empty();
-            assert!(!all_three_blank);
+            assert!(!all_three_blank); // I18N: no-translate - Rust assertion
 
             // Since not all three are blank, use type-based selection
             // options_type is Variable, so it returns variable_options (which is empty)
@@ -616,7 +616,7 @@ mod tests {
                 }
             };
 
-            assert_eq!(options_source, "");
+            assert_eq!(options_source, ""); // I18N: no-translate - Rust assertion
         }
     }
 
@@ -642,15 +642,15 @@ mod tests {
             });
 
             let dropdown = Dropdown::from_document(&json).unwrap();
-            assert_eq!(dropdown.id, id);
-            assert_eq!(dropdown.name, "myDropdown");
-            assert_eq!(dropdown.options, "opt1, opt2");
-            assert_eq!(dropdown.options_type, DropdownOptionType::Fixed);
-            assert_eq!(dropdown.fixed_options, "fixed1, fixed2");
-            assert_eq!(dropdown.variable_options, "");
-            assert_eq!(dropdown.command_options, "");
-            assert_eq!(dropdown.value, "opt1");
-            assert_eq!(dropdown.interpreter, "/bin/bash");
+            assert_eq!(dropdown.id, id); // I18N: no-translate - Rust assertion
+            assert_eq!(dropdown.name, "myDropdown"); // I18N: no-translate - Rust assertion
+            assert_eq!(dropdown.options, "opt1, opt2"); // I18N: no-translate - Rust assertion
+            assert_eq!(dropdown.options_type, DropdownOptionType::Fixed); // I18N: no-translate - Rust assertion
+            assert_eq!(dropdown.fixed_options, "fixed1, fixed2"); // I18N: no-translate - Rust assertion
+            assert_eq!(dropdown.variable_options, ""); // I18N: no-translate - Rust assertion
+            assert_eq!(dropdown.command_options, ""); // I18N: no-translate - Rust assertion
+            assert_eq!(dropdown.value, "opt1"); // I18N: no-translate - Rust assertion
+            assert_eq!(dropdown.interpreter, "/bin/bash"); // I18N: no-translate - Rust assertion
         }
 
         #[test]
@@ -670,7 +670,7 @@ mod tests {
             });
 
             let dropdown = Dropdown::from_document(&json).unwrap();
-            assert_eq!(dropdown.options, "");
+            assert_eq!(dropdown.options, ""); // I18N: no-translate - Rust assertion
         }
 
         #[test]
@@ -688,7 +688,7 @@ mod tests {
             });
 
             let result = Dropdown::from_document(&json);
-            assert!(result.is_err());
+            assert!(result.is_err()); // I18N: no-translate - Rust assertion
         }
 
         #[test]
@@ -708,7 +708,7 @@ mod tests {
             });
 
             let result = Dropdown::from_document(&json);
-            assert!(result.is_err());
+            assert!(result.is_err()); // I18N: no-translate - Rust assertion
         }
 
         #[test]
@@ -727,8 +727,8 @@ mod tests {
             });
 
             let result = Dropdown::from_document(&json);
-            assert!(result.is_err());
-            assert!(result.unwrap_err().contains("Missing name"));
+            assert!(result.is_err()); // I18N: no-translate - Rust assertion
+            assert!(result.unwrap_err().contains("Missing name")); // I18N: no-translate - Rust assertion
         }
     }
 
@@ -746,7 +746,7 @@ mod tests {
             let json = serde_json::to_string(&option).unwrap();
             let deserialized: DropdownOption = serde_json::from_str(&json).unwrap();
 
-            assert_eq!(option, deserialized);
+            assert_eq!(option, deserialized); // I18N: no-translate - Rust assertion
         }
 
         #[test]
@@ -767,7 +767,7 @@ mod tests {
             let json = serde_json::to_string(&dropdown).unwrap();
             let deserialized: Dropdown = serde_json::from_str(&json).unwrap();
 
-            assert_eq!(dropdown, deserialized);
+            assert_eq!(dropdown, deserialized); // I18N: no-translate - Rust assertion
         }
     }
 
@@ -778,15 +778,15 @@ mod tests {
         #[test]
         fn test_from_str_with_custom_delimiter() {
             let option = DropdownOption::from_str_with_delimiter("Label|value", "|").unwrap();
-            assert_eq!(option.label, "Label");
-            assert_eq!(option.value, "value");
+            assert_eq!(option.label, "Label"); // I18N: no-translate - Rust assertion
+            assert_eq!(option.value, "value"); // I18N: no-translate - Rust assertion
         }
 
         #[test]
         fn test_from_str_with_multi_char_delimiter() {
             let option = DropdownOption::from_str_with_delimiter("Label::value", "::").unwrap();
-            assert_eq!(option.label, "Label");
-            assert_eq!(option.value, "value");
+            assert_eq!(option.label, "Label"); // I18N: no-translate - Rust assertion
+            assert_eq!(option.value, "value"); // I18N: no-translate - Rust assertion
         }
 
         #[test]
@@ -794,15 +794,15 @@ mod tests {
             let option =
                 DropdownOption::from_str_with_delimiter("Display Name->actual_value", "->")
                     .unwrap();
-            assert_eq!(option.label, "Display Name");
-            assert_eq!(option.value, "actual_value");
+            assert_eq!(option.label, "Display Name"); // I18N: no-translate - Rust assertion
+            assert_eq!(option.value, "actual_value"); // I18N: no-translate - Rust assertion
         }
 
         #[test]
         fn test_from_str_no_delimiter_found() {
             let option = DropdownOption::from_str_with_delimiter("just_a_value", "|").unwrap();
-            assert_eq!(option.label, "just_a_value");
-            assert_eq!(option.value, "just_a_value");
+            assert_eq!(option.label, "just_a_value"); // I18N: no-translate - Rust assertion
+            assert_eq!(option.value, "just_a_value"); // I18N: no-translate - Rust assertion
         }
 
         #[test]
@@ -811,21 +811,21 @@ mod tests {
             let option =
                 DropdownOption::from_str_with_delimiter("My Label|http://example.com:8080", "|")
                     .unwrap();
-            assert_eq!(option.label, "My Label");
-            assert_eq!(option.value, "http://example.com:8080");
+            assert_eq!(option.label, "My Label"); // I18N: no-translate - Rust assertion
+            assert_eq!(option.value, "http://example.com:8080"); // I18N: no-translate - Rust assertion
         }
 
         #[test]
         fn test_vec_from_str_with_custom_delimiter() {
             let options =
                 DropdownOption::vec_from_str_with_delimiter("A|1, B|2, C|3", "|").unwrap();
-            assert_eq!(options.len(), 3);
-            assert_eq!(options[0].label, "A");
-            assert_eq!(options[0].value, "1");
-            assert_eq!(options[1].label, "B");
-            assert_eq!(options[1].value, "2");
-            assert_eq!(options[2].label, "C");
-            assert_eq!(options[2].value, "3");
+            assert_eq!(options.len(), 3); // I18N: no-translate - Rust assertion
+            assert_eq!(options[0].label, "A"); // I18N: no-translate - Rust assertion
+            assert_eq!(options[0].value, "1"); // I18N: no-translate - Rust assertion
+            assert_eq!(options[1].label, "B"); // I18N: no-translate - Rust assertion
+            assert_eq!(options[1].value, "2"); // I18N: no-translate - Rust assertion
+            assert_eq!(options[2].label, "C"); // I18N: no-translate - Rust assertion
+            assert_eq!(options[2].value, "3"); // I18N: no-translate - Rust assertion
         }
 
         #[test]
@@ -833,20 +833,20 @@ mod tests {
             let options =
                 DropdownOption::vec_from_str_with_delimiter("Label A::a\nLabel B::b", "::")
                     .unwrap();
-            assert_eq!(options.len(), 2);
-            assert_eq!(options[0].label, "Label A");
-            assert_eq!(options[0].value, "a");
-            assert_eq!(options[1].label, "Label B");
-            assert_eq!(options[1].value, "b");
+            assert_eq!(options.len(), 2); // I18N: no-translate - Rust assertion
+            assert_eq!(options[0].label, "Label A"); // I18N: no-translate - Rust assertion
+            assert_eq!(options[0].value, "a"); // I18N: no-translate - Rust assertion
+            assert_eq!(options[1].label, "Label B"); // I18N: no-translate - Rust assertion
+            assert_eq!(options[1].value, "b"); // I18N: no-translate - Rust assertion
         }
 
         #[test]
         fn test_default_colon_delimiter() {
             // vec_from_str should use ":" as default
             let options = DropdownOption::vec_from_str("Label:value").unwrap();
-            assert_eq!(options.len(), 1);
-            assert_eq!(options[0].label, "Label");
-            assert_eq!(options[0].value, "value");
+            assert_eq!(options.len(), 1); // I18N: no-translate - Rust assertion
+            assert_eq!(options[0].label, "Label"); // I18N: no-translate - Rust assertion
+            assert_eq!(options[0].value, "value"); // I18N: no-translate - Rust assertion
         }
     }
 }

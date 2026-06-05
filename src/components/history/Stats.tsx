@@ -105,7 +105,7 @@ export default function Stats() {
         setTop(s.stats);
       })
       .catch((e) => {
-        console.log(e);
+        console.log(e); // I18N: no-translate - developer diagnostic
       });
   }, []);
 

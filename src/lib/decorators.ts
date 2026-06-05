@@ -6,7 +6,7 @@ export function autobind(
   let fn = descriptor.value;
 
   if (typeof fn !== "function") {
-    throw new Error("Only methods can be autobound");
+    throw new Error("Only methods can be autobound"); // I18N: no-translate - internal exception
   }
 
   return {

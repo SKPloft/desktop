@@ -52,8 +52,8 @@ mod tests {
         context.insert(var.clone());
 
         let retrieved = context.get::<DocumentVar>();
-        assert!(retrieved.is_some());
-        assert_eq!(retrieved.unwrap(), &var);
+        assert!(retrieved.is_some()); // I18N: no-translate - Rust assertion
+        assert_eq!(retrieved.unwrap(), &var); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -72,16 +72,16 @@ mod tests {
         context.insert(cwd.clone());
         context.insert(env.clone());
 
-        assert_eq!(context.get::<DocumentVar>(), Some(&var));
-        assert_eq!(context.get::<DocumentCwd>(), Some(&cwd));
-        assert_eq!(context.get::<DocumentEnvVar>(), Some(&env));
+        assert_eq!(context.get::<DocumentVar>(), Some(&var)); // I18N: no-translate - Rust assertion
+        assert_eq!(context.get::<DocumentCwd>(), Some(&cwd)); // I18N: no-translate - Rust assertion
+        assert_eq!(context.get::<DocumentEnvVar>(), Some(&env)); // I18N: no-translate - Rust assertion
     }
 
     #[test]
     fn test_block_context_get_nonexistent() {
         let context = BlockContext::new();
-        assert!(context.get::<DocumentVar>().is_none());
-        assert!(context.get::<DocumentCwd>().is_none());
+        assert!(context.get::<DocumentVar>().is_none()); // I18N: no-translate - Rust assertion
+        assert!(context.get::<DocumentCwd>().is_none()); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -95,7 +95,7 @@ mod tests {
         context.insert(var2.clone());
 
         let retrieved = context.get::<DocumentVar>();
-        assert_eq!(retrieved, Some(&var2));
+        assert_eq!(retrieved, Some(&var2)); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -113,7 +113,7 @@ mod tests {
         let serialized = serde_json::to_string(&context).unwrap();
         let deserialized: BlockContext = serde_json::from_str(&serialized).unwrap();
 
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             deserialized.get::<DocumentVar>(),
             Some(&DocumentVar::new(
                 "TEST_VAR".to_string(),
@@ -121,11 +121,11 @@ mod tests {
                 "test".to_string()
             ))
         );
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             deserialized.get::<DocumentCwd>(),
             Some(&DocumentCwd("/tmp/test".to_string()))
         );
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             deserialized.get::<DocumentEnvVar>(),
             Some(&DocumentEnvVar("PATH".to_string(), "/usr/bin".to_string()))
         );
@@ -134,9 +134,9 @@ mod tests {
     #[test]
     fn test_context_resolver_new() {
         let resolver = ContextResolver::new();
-        assert!(resolver.vars().is_empty());
-        assert!(resolver.env_vars().is_empty());
-        assert!(resolver.ssh_host().is_none());
+        assert!(resolver.vars().is_empty()); // I18N: no-translate - Rust assertion
+        assert!(resolver.env_vars().is_empty()); // I18N: no-translate - Rust assertion
+        assert!(resolver.ssh_host().is_none()); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -159,7 +159,7 @@ mod tests {
 
         let resolver = ContextResolver::from_blocks(&[block_with_context]);
 
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             resolver.get_var("TEST_VAR"),
             Some(&"test_value".to_string())
         );
@@ -205,12 +205,12 @@ mod tests {
 
         let resolver = ContextResolver::from_blocks(&blocks);
 
-        assert_eq!(resolver.get_var("VAR1"), Some(&"value1".to_string()));
-        assert_eq!(
+        assert_eq!(resolver.get_var("VAR1"), Some(&"value1".to_string())); // I18N: no-translate - Rust assertion
+        assert_eq!( // I18N: no-translate - Rust assertion
             resolver.env_vars().get("PATH"),
             Some(&"/usr/bin".to_string())
         );
-        assert_eq!(resolver.cwd(), "/tmp/test");
+        assert_eq!(resolver.cwd(), "/tmp/test"); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -248,7 +248,7 @@ mod tests {
 
         let resolver = ContextResolver::from_blocks(&blocks);
 
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             resolver.get_var("SHARED_VAR"),
             Some(&"second_value".to_string())
         );
@@ -258,7 +258,7 @@ mod tests {
     fn test_context_resolver_template_resolution_no_template() {
         let resolver = ContextResolver::new();
         let result = resolver.resolve_template("plain text").unwrap();
-        assert_eq!(result, "plain text");
+        assert_eq!(result, "plain text"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -270,7 +270,7 @@ mod tests {
         let result = resolver
             .resolve_template("Hello, {{ var.USERNAME }}!")
             .unwrap();
-        assert_eq!(result, "Hello, alice!");
+        assert_eq!(result, "Hello, alice!"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -283,7 +283,7 @@ mod tests {
         let result = resolver
             .resolve_template("Connect to {{ var.HOST }}:{{ var.PORT }}")
             .unwrap();
-        assert_eq!(result, "Connect to example.com:8080");
+        assert_eq!(result, "Connect to example.com:8080"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -299,7 +299,7 @@ mod tests {
             .build();
 
         let result = resolver.resolve_template("PATH is {{ env.PATH }}").unwrap();
-        assert_eq!(result, "PATH is /usr/bin");
+        assert_eq!(result, "PATH is /usr/bin"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -320,7 +320,7 @@ mod tests {
         let result = resolver
             .resolve_template("User {{ var.USER }} has home {{ env.HOME }}")
             .unwrap();
-        assert_eq!(result, "User bob has home /home/bob");
+        assert_eq!(result, "User bob has home /home/bob"); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -345,7 +345,7 @@ mod tests {
 
         resolver.push_block(&block_with_context);
 
-        assert_eq!(resolver.get_var("NEW_VAR"), Some(&"new_value".to_string()));
+        assert_eq!(resolver.get_var("NEW_VAR"), Some(&"new_value".to_string())); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -378,11 +378,11 @@ mod tests {
 
         resolver.push_block(&block_with_context);
 
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             resolver.get_var("PASSIVE_VAR"),
             Some(&"passive".to_string())
         );
-        assert_eq!(resolver.get_var("ACTIVE_VAR"), Some(&"active".to_string()));
+        assert_eq!(resolver.get_var("ACTIVE_VAR"), Some(&"active".to_string())); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -403,10 +403,10 @@ mod tests {
 
         let resolved = ResolvedContext::from_resolver(&resolver);
 
-        assert_eq!(resolved.variables, vars);
-        assert_eq!(resolved.cwd, "/tmp/test");
-        assert_eq!(resolved.env_vars, env_vars);
-        assert_eq!(resolved.ssh_host, Some("example.com".to_string()));
+        assert_eq!(resolved.variables, vars); // I18N: no-translate - Rust assertion
+        assert_eq!(resolved.cwd, "/tmp/test"); // I18N: no-translate - Rust assertion
+        assert_eq!(resolved.env_vars, env_vars); // I18N: no-translate - Rust assertion
+        assert_eq!(resolved.ssh_host, Some("example.com".to_string())); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -428,18 +428,18 @@ mod tests {
         let serialized = serde_json::to_string(&original).unwrap();
         let deserialized: ResolvedContext = serde_json::from_str(&serialized).unwrap();
 
-        assert_eq!(original.variables, deserialized.variables);
-        assert_eq!(original.cwd, deserialized.cwd);
-        assert_eq!(original.env_vars, deserialized.env_vars);
-        assert_eq!(original.ssh_host, deserialized.ssh_host);
+        assert_eq!(original.variables, deserialized.variables); // I18N: no-translate - Rust assertion
+        assert_eq!(original.cwd, deserialized.cwd); // I18N: no-translate - Rust assertion
+        assert_eq!(original.env_vars, deserialized.env_vars); // I18N: no-translate - Rust assertion
+        assert_eq!(original.ssh_host, deserialized.ssh_host); // I18N: no-translate - Rust assertion
     }
 
     #[test]
     fn test_resolved_context_default() {
         let resolved = ResolvedContext::default();
-        assert!(resolved.variables.is_empty());
-        assert!(resolved.env_vars.is_empty());
-        assert!(resolved.ssh_host.is_none());
+        assert!(resolved.variables.is_empty()); // I18N: no-translate - Rust assertion
+        assert!(resolved.env_vars.is_empty()); // I18N: no-translate - Rust assertion
+        assert!(resolved.ssh_host.is_none()); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -462,12 +462,12 @@ mod tests {
         let block_with_context =
             DocumentBlock::new(Block::Var(var_block), context, None, None, None);
 
-        assert_eq!(block_with_context.id(), block_id);
-        assert!(block_with_context
+        assert_eq!(block_with_context.id(), block_id); // I18N: no-translate - Rust assertion
+        assert!(block_with_context // I18N: no-translate - Rust assertion
             .passive_context()
             .get::<DocumentVar>()
             .is_some());
-        assert!(block_with_context
+        assert!(block_with_context // I18N: no-translate - Rust assertion
             .active_context()
             .get::<DocumentVar>()
             .is_none());
@@ -496,11 +496,11 @@ mod tests {
         new_active.insert(DocumentCwd("/new/path".to_string()));
         block_with_context.replace_active_context(new_active);
 
-        assert!(block_with_context
+        assert!(block_with_context // I18N: no-translate - Rust assertion
             .passive_context()
             .get::<DocumentVar>()
             .is_some());
-        assert!(block_with_context
+        assert!(block_with_context // I18N: no-translate - Rust assertion
             .active_context()
             .get::<DocumentCwd>()
             .is_some());
@@ -516,8 +516,8 @@ mod tests {
             "test".to_string(),
         );
 
-        assert_eq!(var1, var2);
-        assert_ne!(var1, var3);
+        assert_eq!(var1, var2); // I18N: no-translate - Rust assertion
+        assert_ne!(var1, var3); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -527,7 +527,7 @@ mod tests {
         context.insert(ssh_host.clone());
 
         let retrieved = context.get::<DocumentSshHost>();
-        assert_eq!(retrieved, Some(&DocumentSshHost(None)));
+        assert_eq!(retrieved, Some(&DocumentSshHost(None))); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -537,7 +537,7 @@ mod tests {
         context.insert(ssh_host.clone());
 
         let retrieved = context.get::<DocumentSshHost>();
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             retrieved,
             Some(&DocumentSshHost(Some("example.com".to_string())))
         );
@@ -554,7 +554,7 @@ mod tests {
         let result = resolver
             .resolve_template("https://{{ var.BASE_URL }}/{{ var.VERSION }}/{{ var.ENDPOINT }}")
             .unwrap();
-        assert_eq!(result, "https://api.example.com/v1/users");
+        assert_eq!(result, "https://api.example.com/v1/users"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -571,7 +571,7 @@ mod tests {
                 "https://{{ extra.BASE_URL }}/{{ extra.VERSION }}/{{ extra.ENDPOINT }}",
             )
             .unwrap();
-        assert_eq!(result, "https://api.example.com/v1/users");
+        assert_eq!(result, "https://api.example.com/v1/users"); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -632,31 +632,31 @@ mod tests {
         let resolver = ContextResolver::from_blocks(&blocks);
         let resolved = ResolvedContext::from_resolver(&resolver);
 
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             resolved.variables.get("USERNAME"),
             Some(&"alice".to_string())
         );
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             resolved.variables.get("PROJECT"),
             Some(&"myapp".to_string())
         );
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             resolved.env_vars.get("HOME"),
             Some(&"/home/alice".to_string())
         );
-        assert_eq!(resolved.cwd, "/home/alice/projects");
+        assert_eq!(resolved.cwd, "/home/alice/projects"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
     fn test_document_vars_new_and_insert() {
         let mut vars = DocumentVars::new();
-        assert!(vars.is_empty());
+        assert!(vars.is_empty()); // I18N: no-translate - Rust assertion
 
         vars.insert("VAR1".to_string(), "value1".to_string(), "test".to_string());
         vars.insert("VAR2".to_string(), "value2".to_string(), "test".to_string());
 
-        assert_eq!(vars.len(), 2);
-        assert!(!vars.is_empty());
+        assert_eq!(vars.len(), 2); // I18N: no-translate - Rust assertion
+        assert!(!vars.is_empty()); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -668,7 +668,7 @@ mod tests {
             "test".to_string(),
         ));
 
-        assert_eq!(vars.len(), 1);
+        assert_eq!(vars.len(), 1); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -678,7 +678,7 @@ mod tests {
         vars.insert("VAR2".to_string(), "value2".to_string(), "test".to_string());
 
         let names: Vec<&str> = vars.iter().map(|v| v.name.as_str()).collect();
-        assert_eq!(names, vec!["VAR1", "VAR2"]);
+        assert_eq!(names, vec!["VAR1", "VAR2"]); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -689,7 +689,7 @@ mod tests {
         ];
 
         let vars: DocumentVars = items.into_iter().collect();
-        assert_eq!(vars.len(), 2);
+        assert_eq!(vars.len(), 2); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -699,7 +699,7 @@ mod tests {
         vars.insert("VAR2".to_string(), "value2".to_string(), "test".to_string());
 
         let collected: Vec<DocumentVar> = vars.into_iter().collect();
-        assert_eq!(collected.len(), 2);
+        assert_eq!(collected.len(), 2); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -712,8 +712,8 @@ mod tests {
         context.insert(vars.clone());
 
         let retrieved = context.get::<DocumentVars>();
-        assert!(retrieved.is_some());
-        assert_eq!(retrieved.unwrap().len(), 2);
+        assert!(retrieved.is_some()); // I18N: no-translate - Rust assertion
+        assert_eq!(retrieved.unwrap().len(), 2); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -736,8 +736,8 @@ mod tests {
 
         let resolver = ContextResolver::from_blocks(&[block_with_context]);
 
-        assert_eq!(resolver.get_var("VAR1"), Some(&"value1".to_string()));
-        assert_eq!(resolver.get_var("VAR2"), Some(&"value2".to_string()));
+        assert_eq!(resolver.get_var("VAR1"), Some(&"value1".to_string())); // I18N: no-translate - Rust assertion
+        assert_eq!(resolver.get_var("VAR2"), Some(&"value2".to_string())); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -785,12 +785,12 @@ mod tests {
 
         let resolver = ContextResolver::from_blocks(&blocks);
 
-        assert_eq!(resolver.get_var("BASE"), Some(&"hello".to_string()));
-        assert_eq!(
+        assert_eq!(resolver.get_var("BASE"), Some(&"hello".to_string())); // I18N: no-translate - Rust assertion
+        assert_eq!( // I18N: no-translate - Rust assertion
             resolver.get_var("GREETING"),
             Some(&"hello world".to_string())
         );
-        assert_eq!(resolver.get_var("OTHER"), Some(&"static value".to_string()));
+        assert_eq!(resolver.get_var("OTHER"), Some(&"static value".to_string())); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -826,11 +826,11 @@ mod tests {
 
         let resolver = ContextResolver::from_blocks(&[block_with_context]);
 
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             resolver.get_var("ACTIVE_VAR1"),
             Some(&"active1".to_string())
         );
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             resolver.get_var("ACTIVE_VAR2"),
             Some(&"active2".to_string())
         );
@@ -857,8 +857,8 @@ mod tests {
         let deserialized: BlockContext = serde_json::from_str(&serialized).unwrap();
 
         let retrieved = deserialized.get::<DocumentVars>();
-        assert!(retrieved.is_some());
+        assert!(retrieved.is_some()); // I18N: no-translate - Rust assertion
         let retrieved_vars = retrieved.unwrap();
-        assert_eq!(retrieved_vars.len(), 2);
+        assert_eq!(retrieved_vars.len(), 2); // I18N: no-translate - Rust assertion
     }
 }

@@ -112,7 +112,7 @@ async fn connect_default() -> eyre::Result<Session> {
 #[ignore]
 async fn test_auth_rsa_key() {
     let result = connect_with_key("id_rsa").await;
-    assert!(
+    assert!( // I18N: no-translate - Rust assertion
         result.is_ok(),
         "RSA key authentication failed: {:?}",
         result.err()
@@ -124,7 +124,7 @@ async fn test_auth_rsa_key() {
 #[ignore]
 async fn test_auth_ecdsa_key() {
     let result = connect_with_key("id_ecdsa").await;
-    assert!(
+    assert!( // I18N: no-translate - Rust assertion
         result.is_ok(),
         "ECDSA key authentication failed: {:?}",
         result.err()
@@ -136,7 +136,7 @@ async fn test_auth_ecdsa_key() {
 #[ignore]
 async fn test_auth_ed25519_key() {
     let result = connect_with_key("id_ed25519").await;
-    assert!(
+    assert!( // I18N: no-translate - Rust assertion
         result.is_ok(),
         "Ed25519 key authentication failed: {:?}",
         result.err()
@@ -148,7 +148,7 @@ async fn test_auth_ed25519_key() {
 #[ignore]
 async fn test_auth_password() {
     let result = connect_with_password().await;
-    assert!(
+    assert!( // I18N: no-translate - Rust assertion
         result.is_ok(),
         "Password authentication failed: {:?}",
         result.err()
@@ -160,7 +160,7 @@ async fn test_auth_password() {
 #[ignore]
 async fn test_auth_invalid_key_fails() {
     let host = host_string();
-    let mut session = Session::open(&host).await.expect("Failed to open session");
+    let mut session = Session::open(&host).await.expect("Failed to open session"); // I18N: no-translate - internal expectation message
 
     // Create a temporary invalid key
     let temp_dir = tempfile::TempDir::new().unwrap();
@@ -168,7 +168,7 @@ async fn test_auth_invalid_key_fails() {
     std::fs::write(&fake_key, "not a valid key").unwrap();
 
     let result = session.key_auth(&test_user(), &test_host(), fake_key).await;
-    assert!(result.is_err(), "Invalid key should fail authentication");
+    assert!(result.is_err(), "Invalid key should fail authentication"); // I18N: no-translate - Rust assertion
 }
 
 /// Test authentication with wrong password fails
@@ -176,10 +176,10 @@ async fn test_auth_invalid_key_fails() {
 #[ignore]
 async fn test_auth_wrong_password_fails() {
     let host = host_string();
-    let mut session = Session::open(&host).await.expect("Failed to open session");
+    let mut session = Session::open(&host).await.expect("Failed to open session"); // I18N: no-translate - internal expectation message
 
     let result = session.password_auth(&test_user(), "wrongpassword").await;
-    assert!(result.is_err(), "Wrong password should fail authentication");
+    assert!(result.is_err(), "Wrong password should fail authentication"); // I18N: no-translate - Rust assertion
 }
 
 /// Test the full authenticate() method with explicit key
@@ -189,13 +189,13 @@ async fn test_authenticate_with_explicit_key() {
     let host = host_string();
     let key_path = test_keys_dir().join("id_ed25519");
 
-    let mut session = Session::open(&host).await.expect("Failed to open session");
+    let mut session = Session::open(&host).await.expect("Failed to open session"); // I18N: no-translate - internal expectation message
 
     let result = session
         .authenticate(Some(Authentication::Key(key_path)), Some(&test_user()))
         .await;
 
-    assert!(
+    assert!( // I18N: no-translate - Rust assertion
         result.is_ok(),
         "authenticate() with explicit key failed: {:?}",
         result.err()
@@ -210,31 +210,31 @@ async fn test_authenticate_with_explicit_key() {
 #[tokio::test]
 #[ignore]
 async fn test_exec_simple_command() {
-    let session = connect_default().await.expect("Failed to connect");
+    let session = connect_default().await.expect("Failed to connect"); // I18N: no-translate - internal expectation message
 
     let result = session
         .exec_and_capture("echo 'hello world'")
         .await
-        .expect("Command execution failed");
+        .expect("Command execution failed"); // I18N: no-translate - internal expectation message
 
-    assert_eq!(result.exit_code, 0);
-    assert_eq!(result.stdout.trim(), "hello world");
-    assert!(result.stderr.is_empty());
+    assert_eq!(result.exit_code, 0); // I18N: no-translate - Rust assertion
+    assert_eq!(result.stdout.trim(), "hello world"); // I18N: no-translate - Rust assertion
+    assert!(result.stderr.is_empty()); // I18N: no-translate - Rust assertion
 }
 
 /// Test command with non-zero exit code
 #[tokio::test]
 #[ignore]
 async fn test_exec_with_exit_code() {
-    let session = connect_default().await.expect("Failed to connect");
+    let session = connect_default().await.expect("Failed to connect"); // I18N: no-translate - internal expectation message
 
     // Use false command which reliably returns exit code 1
     let result = session
         .exec_and_capture("false")
         .await
-        .expect("Command execution failed");
+        .expect("Command execution failed"); // I18N: no-translate - internal expectation message
 
-    assert_ne!(
+    assert_ne!( // I18N: no-translate - Rust assertion
         result.exit_code, 0,
         "false command should return non-zero exit code"
     );
@@ -244,62 +244,62 @@ async fn test_exec_with_exit_code() {
 #[tokio::test]
 #[ignore]
 async fn test_exec_with_stderr() {
-    let session = connect_default().await.expect("Failed to connect");
+    let session = connect_default().await.expect("Failed to connect"); // I18N: no-translate - internal expectation message
 
     let result = session
         .exec_and_capture("echo 'error message' >&2")
         .await
-        .expect("Command execution failed");
+        .expect("Command execution failed"); // I18N: no-translate - internal expectation message
 
-    assert_eq!(result.exit_code, 0);
-    assert!(result.stderr.contains("error message"));
+    assert_eq!(result.exit_code, 0); // I18N: no-translate - Rust assertion
+    assert!(result.stderr.contains("error message")); // I18N: no-translate - Rust assertion
 }
 
 /// Test command with both stdout and stderr
 #[tokio::test]
 #[ignore]
 async fn test_exec_with_stdout_and_stderr() {
-    let session = connect_default().await.expect("Failed to connect");
+    let session = connect_default().await.expect("Failed to connect"); // I18N: no-translate - internal expectation message
 
     let result = session
         .exec_and_capture("echo 'out' && echo 'err' >&2")
         .await
-        .expect("Command execution failed");
+        .expect("Command execution failed"); // I18N: no-translate - internal expectation message
 
-    assert_eq!(result.exit_code, 0);
-    assert!(result.stdout.contains("out"));
-    assert!(result.stderr.contains("err"));
+    assert_eq!(result.exit_code, 0); // I18N: no-translate - Rust assertion
+    assert!(result.stdout.contains("out")); // I18N: no-translate - Rust assertion
+    assert!(result.stderr.contains("err")); // I18N: no-translate - Rust assertion
 }
 
 /// Test command with multiple lines of output
 #[tokio::test]
 #[ignore]
 async fn test_exec_multiline_output() {
-    let session = connect_default().await.expect("Failed to connect");
+    let session = connect_default().await.expect("Failed to connect"); // I18N: no-translate - internal expectation message
 
     let result = session
         .exec_and_capture("echo 'line1'; echo 'line2'; echo 'line3'")
         .await
-        .expect("Command execution failed");
+        .expect("Command execution failed"); // I18N: no-translate - internal expectation message
 
-    assert_eq!(result.exit_code, 0);
-    assert!(result.stdout.contains("line1"));
-    assert!(result.stdout.contains("line2"));
-    assert!(result.stdout.contains("line3"));
+    assert_eq!(result.exit_code, 0); // I18N: no-translate - Rust assertion
+    assert!(result.stdout.contains("line1")); // I18N: no-translate - Rust assertion
+    assert!(result.stdout.contains("line2")); // I18N: no-translate - Rust assertion
+    assert!(result.stdout.contains("line3")); // I18N: no-translate - Rust assertion
 }
 
 /// Test command with environment variables
 #[tokio::test]
 #[ignore]
 async fn test_exec_with_env_vars() {
-    let session = connect_default().await.expect("Failed to connect");
+    let session = connect_default().await.expect("Failed to connect"); // I18N: no-translate - internal expectation message
 
     let result = session
         .exec_and_capture("TEST_VAR='hello' && echo $TEST_VAR")
         .await
-        .expect("Command execution failed");
+        .expect("Command execution failed"); // I18N: no-translate - internal expectation message
 
-    assert_eq!(result.exit_code, 0);
+    assert_eq!(result.exit_code, 0); // I18N: no-translate - Rust assertion
     // Note: This might be empty due to shell behavior, adjust if needed
 }
 
@@ -307,16 +307,16 @@ async fn test_exec_with_env_vars() {
 #[tokio::test]
 #[ignore]
 async fn test_exec_nonexistent_command() {
-    let session = connect_default().await.expect("Failed to connect");
+    let session = connect_default().await.expect("Failed to connect"); // I18N: no-translate - internal expectation message
 
     let result = session
         .exec_and_capture("nonexistent_command_12345")
         .await
-        .expect("Command execution failed");
+        .expect("Command execution failed"); // I18N: no-translate - internal expectation message
 
     // Command should fail with non-zero exit code
     // Note: The error should appear in stderr
-    assert!(
+    assert!( // I18N: no-translate - Rust assertion
         result.exit_code != 0 || result.stderr.contains("not found"),
         "Nonexistent command should fail: exit_code={}, stderr={}",
         result.exit_code,
@@ -332,36 +332,36 @@ async fn test_exec_nonexistent_command() {
 #[tokio::test]
 #[ignore]
 async fn test_create_temp_file() {
-    let session = connect_default().await.expect("Failed to connect");
+    let session = connect_default().await.expect("Failed to connect"); // I18N: no-translate - internal expectation message
 
     let temp_path = session
         .create_temp_file("atuin-test")
         .await
-        .expect("Failed to create temp file");
+        .expect("Failed to create temp file"); // I18N: no-translate - internal expectation message
 
-    assert!(temp_path.starts_with("/tmp/atuin-test-"));
+    assert!(temp_path.starts_with("/tmp/atuin-test-")); // I18N: no-translate - Rust assertion
 
     // Verify file exists
     let result = session
         .exec_and_capture(&format!("test -f '{}' && echo 'exists'", temp_path))
         .await
-        .expect("Failed to check file");
+        .expect("Failed to check file"); // I18N: no-translate - internal expectation message
 
-    assert_eq!(result.exit_code, 0);
-    assert!(result.stdout.contains("exists"));
+    assert_eq!(result.exit_code, 0); // I18N: no-translate - Rust assertion
+    assert!(result.stdout.contains("exists")); // I18N: no-translate - Rust assertion
 
     // Cleanup
     session
         .delete_file(&temp_path)
         .await
-        .expect("Failed to delete temp file");
+        .expect("Failed to delete temp file"); // I18N: no-translate - internal expectation message
 }
 
 /// Test reading a file from the remote system
 #[tokio::test]
 #[ignore]
 async fn test_read_file() {
-    let session = connect_default().await.expect("Failed to connect");
+    let session = connect_default().await.expect("Failed to connect"); // I18N: no-translate - internal expectation message
 
     // Create a file with known content
     let temp_path = session.create_temp_file("atuin-read-test").await.unwrap();
@@ -374,9 +374,9 @@ async fn test_read_file() {
     let content = session
         .read_file(&temp_path)
         .await
-        .expect("Failed to read file");
+        .expect("Failed to read file"); // I18N: no-translate - internal expectation message
 
-    assert_eq!(content.trim(), "test content 123");
+    assert_eq!(content.trim(), "test content 123"); // I18N: no-translate - Rust assertion
 
     // Cleanup
     session.delete_file(&temp_path).await.unwrap();
@@ -386,7 +386,7 @@ async fn test_read_file() {
 #[tokio::test]
 #[ignore]
 async fn test_delete_file() {
-    let session = connect_default().await.expect("Failed to connect");
+    let session = connect_default().await.expect("Failed to connect"); // I18N: no-translate - internal expectation message
 
     let temp_path = session.create_temp_file("atuin-delete-test").await.unwrap();
 
@@ -395,31 +395,31 @@ async fn test_delete_file() {
         .exec_and_capture(&format!("test -f '{}'", temp_path))
         .await
         .unwrap();
-    assert_eq!(result.exit_code, 0, "File should exist before deletion");
+    assert_eq!(result.exit_code, 0, "File should exist before deletion"); // I18N: no-translate - Rust assertion
 
     // Delete it
     session
         .delete_file(&temp_path)
         .await
-        .expect("Failed to delete file");
+        .expect("Failed to delete file"); // I18N: no-translate - internal expectation message
 
     // File should not exist
     let result = session
         .exec_and_capture(&format!("test -f '{}'", temp_path))
         .await
         .unwrap();
-    assert_ne!(result.exit_code, 0, "File should not exist after deletion");
+    assert_ne!(result.exit_code, 0, "File should not exist after deletion"); // I18N: no-translate - Rust assertion
 }
 
 /// Test deleting a non-existent file doesn't fail (rm -f behavior)
 #[tokio::test]
 #[ignore]
 async fn test_delete_nonexistent_file() {
-    let session = connect_default().await.expect("Failed to connect");
+    let session = connect_default().await.expect("Failed to connect"); // I18N: no-translate - internal expectation message
 
     // This should not fail because delete_file uses rm -f
     let result = session.delete_file("/tmp/nonexistent-file-12345").await;
-    assert!(result.is_ok(), "Deleting nonexistent file should not fail");
+    assert!(result.is_ok(), "Deleting nonexistent file should not fail"); // I18N: no-translate - Rust assertion
 }
 
 // =============================================================================
@@ -444,17 +444,17 @@ async fn test_pool_connect() {
         )
         .await;
 
-    assert!(result.is_ok(), "Pool connection failed: {:?}", result.err());
+    assert!(result.is_ok(), "Pool connection failed: {:?}", result.err()); // I18N: no-translate - Rust assertion
 }
 
 /// Test that keepalive works on pooled connections
 #[tokio::test]
 #[ignore]
 async fn test_pool_keepalive() {
-    let session = connect_default().await.expect("Failed to connect");
+    let session = connect_default().await.expect("Failed to connect"); // I18N: no-translate - internal expectation message
 
     let keepalive_ok = session.send_keepalive().await;
-    assert!(keepalive_ok, "Keepalive should succeed on live connection");
+    assert!(keepalive_ok, "Keepalive should succeed on live connection"); // I18N: no-translate - Rust assertion
 }
 
 /// Test multiple sequential connections reuse the session
@@ -475,7 +475,7 @@ async fn test_pool_connection_reuse() {
             Some(Authentication::Key(key_path.clone())),
         )
         .await
-        .expect("First connection failed");
+        .expect("First connection failed"); // I18N: no-translate - internal expectation message
 
     // Second connection should reuse the same session
     let session2 = pool
@@ -485,10 +485,10 @@ async fn test_pool_connection_reuse() {
             Some(Authentication::Key(key_path)),
         )
         .await
-        .expect("Second connection failed");
+        .expect("Second connection failed"); // I18N: no-translate - internal expectation message
 
     // Both should point to the same session (Arc comparison)
-    assert!(
+    assert!( // I18N: no-translate - Rust assertion
         std::sync::Arc::ptr_eq(&session1, &session2),
         "Pool should reuse connections"
     );
@@ -513,7 +513,7 @@ async fn test_connection_to_invalid_host_fails() {
 
     // Either timeout or connection error is acceptable
     match result {
-        Ok(conn_result) => assert!(
+        Ok(conn_result) => assert!( // I18N: no-translate - Rust assertion
             conn_result.is_err(),
             "Connection to invalid host should fail"
         ),
@@ -534,7 +534,7 @@ async fn test_connection_to_wrong_port_fails() {
 
     // Either timeout or connection refused is acceptable
     match result {
-        Ok(conn_result) => assert!(conn_result.is_err(), "Connection to wrong port should fail"),
+        Ok(conn_result) => assert!(conn_result.is_err(), "Connection to wrong port should fail"), // I18N: no-translate - Rust assertion
         Err(_timeout) => (), // Timeout is fine - proves it would hang
     }
 }
@@ -551,10 +551,10 @@ async fn test_auth_certificate_valid() {
     let host = host_string();
     let key_path = test_keys_dir().join("id_ed25519_cert_only");
 
-    let mut session = Session::open(&host).await.expect("Failed to open session");
+    let mut session = Session::open(&host).await.expect("Failed to open session"); // I18N: no-translate - internal expectation message
     let auth_result = session.key_auth(&test_user(), &test_host(), key_path).await;
 
-    assert!(
+    assert!( // I18N: no-translate - Rust assertion
         auth_result.is_ok(),
         "Certificate authentication should succeed: {:?}",
         auth_result.err()
@@ -562,7 +562,7 @@ async fn test_auth_certificate_valid() {
 
     // Should have no warnings for a valid certificate
     let auth_result = auth_result.unwrap();
-    assert!(
+    assert!( // I18N: no-translate - Rust assertion
         auth_result.warnings.is_empty(),
         "Valid certificate should produce no warnings, got: {:?}",
         auth_result.warnings
@@ -572,9 +572,9 @@ async fn test_auth_certificate_valid() {
     let cmd_result = session
         .exec_and_capture("echo 'cert auth works'")
         .await
-        .expect("Command execution failed");
-    assert_eq!(cmd_result.exit_code, 0);
-    assert!(cmd_result.stdout.contains("cert auth works"));
+        .expect("Command execution failed"); // I18N: no-translate - internal expectation message
+    assert_eq!(cmd_result.exit_code, 0); // I18N: no-translate - Rust assertion
+    assert!(cmd_result.stdout.contains("cert auth works")); // I18N: no-translate - Rust assertion
 }
 
 /// Test that expired certificate falls back to key auth with a warning
@@ -585,10 +585,10 @@ async fn test_auth_certificate_expired_fallback() {
     let host = host_string();
     let key_path = test_keys_dir().join("id_ed25519_expired_cert");
 
-    let mut session = Session::open(&host).await.expect("Failed to open session");
+    let mut session = Session::open(&host).await.expect("Failed to open session"); // I18N: no-translate - internal expectation message
     let auth_result = session.key_auth(&test_user(), &test_host(), key_path).await;
 
-    assert!(
+    assert!( // I18N: no-translate - Rust assertion
         auth_result.is_ok(),
         "Expired cert should fall back to key auth: {:?}",
         auth_result.err()
@@ -596,7 +596,7 @@ async fn test_auth_certificate_expired_fallback() {
 
     // Should have a warning about the expired certificate
     let auth_result = auth_result.unwrap();
-    assert!(
+    assert!( // I18N: no-translate - Rust assertion
         !auth_result.warnings.is_empty(),
         "Expired certificate should produce a warning"
     );
@@ -606,7 +606,7 @@ async fn test_auth_certificate_expired_fallback() {
         .warnings
         .iter()
         .any(|w| matches!(w, SshWarning::CertificateExpired { .. }));
-    assert!(
+    assert!( // I18N: no-translate - Rust assertion
         has_expired_warning,
         "Should have CertificateExpired warning, got: {:?}",
         auth_result.warnings
@@ -621,10 +621,10 @@ async fn test_auth_certificate_not_yet_valid_fallback() {
     let host = host_string();
     let key_path = test_keys_dir().join("id_ed25519_future_cert");
 
-    let mut session = Session::open(&host).await.expect("Failed to open session");
+    let mut session = Session::open(&host).await.expect("Failed to open session"); // I18N: no-translate - internal expectation message
     let auth_result = session.key_auth(&test_user(), &test_host(), key_path).await;
 
-    assert!(
+    assert!( // I18N: no-translate - Rust assertion
         auth_result.is_ok(),
         "Not-yet-valid cert should fall back to key auth: {:?}",
         auth_result.err()
@@ -632,7 +632,7 @@ async fn test_auth_certificate_not_yet_valid_fallback() {
 
     // Should have a warning about the not-yet-valid certificate
     let auth_result = auth_result.unwrap();
-    assert!(
+    assert!( // I18N: no-translate - Rust assertion
         !auth_result.warnings.is_empty(),
         "Not-yet-valid certificate should produce a warning"
     );
@@ -642,7 +642,7 @@ async fn test_auth_certificate_not_yet_valid_fallback() {
         .warnings
         .iter()
         .any(|w| matches!(w, SshWarning::CertificateNotYetValid { .. }));
-    assert!(
+    assert!( // I18N: no-translate - Rust assertion
         has_future_warning,
         "Should have CertificateNotYetValid warning, got: {:?}",
         auth_result.warnings
@@ -659,18 +659,18 @@ async fn test_auth_certificate_auto_detection() {
     let cert_path = test_keys_dir().join("id_ed25519_cert_only-cert.pub");
 
     // Verify the certificate file exists (sanity check)
-    assert!(
+    assert!( // I18N: no-translate - Rust assertion
         cert_path.exists(),
         "Certificate file should exist at {:?}",
         cert_path
     );
 
-    let mut session = Session::open(&host).await.expect("Failed to open session");
+    let mut session = Session::open(&host).await.expect("Failed to open session"); // I18N: no-translate - internal expectation message
 
     // key_auth should automatically detect and use the certificate
     let auth_result = session.key_auth(&test_user(), &test_host(), key_path).await;
 
-    assert!(
+    assert!( // I18N: no-translate - Rust assertion
         auth_result.is_ok(),
         "Auto-detected certificate auth should succeed: {:?}",
         auth_result.err()
@@ -685,13 +685,13 @@ async fn test_auth_cert_auth_explicit() {
     let key_path = test_keys_dir().join("id_ed25519_cert_only");
     let cert_path = test_keys_dir().join("id_ed25519_cert_only-cert.pub");
 
-    let mut session = Session::open(&host).await.expect("Failed to open session");
+    let mut session = Session::open(&host).await.expect("Failed to open session"); // I18N: no-translate - internal expectation message
 
     let auth_result = session
         .cert_auth(&test_user(), &test_host(), key_path, cert_path)
         .await;
 
-    assert!(
+    assert!( // I18N: no-translate - Rust assertion
         auth_result.is_ok(),
         "Explicit cert_auth should succeed: {:?}",
         auth_result.err()
@@ -704,7 +704,7 @@ async fn test_auth_cert_auth_explicit() {
 async fn test_auth_key_without_cert_still_works() {
     // id_ed25519 has an authorized_keys entry but no certificate
     let result = connect_with_key("id_ed25519").await;
-    assert!(
+    assert!( // I18N: no-translate - Rust assertion
         result.is_ok(),
         "Key without certificate should authenticate via authorized_keys: {:?}",
         result.err()

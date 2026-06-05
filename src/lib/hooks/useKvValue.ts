@@ -60,7 +60,7 @@ export function useBlockKvValue<T>(
 ): [T, (value: T) => Promise<void>] {
   const runbookId = useCurrentRunbookId();
   if (!runbookId) {
-    throw new Error("useBlockKvValue must be used within a runbook context");
+    throw new Error("useBlockKvValue must be used within a runbook context"); // I18N: no-translate - internal exception
   }
 
   const storeKey = `block.${blockId}.${key}`;

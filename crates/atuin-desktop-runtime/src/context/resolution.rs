@@ -156,7 +156,7 @@ impl ContextResolver {
                         DocumentVar::new(var.name.clone(), resolved_value, var.source.clone()),
                     );
                 } else {
-                    tracing::warn!("Failed to resolve template for variable {}", var.name);
+                    tracing::warn!("Failed to resolve template for variable {}", var.name); // I18N: no-translate - Rust diagnostic log
                 }
             }
 
@@ -169,7 +169,7 @@ impl ContextResolver {
                             DocumentVar::new(var.name.clone(), resolved_value, var.source.clone()),
                         );
                     } else {
-                        tracing::warn!("Failed to resolve template for variable {}", var.name);
+                        tracing::warn!("Failed to resolve template for variable {}", var.name); // I18N: no-translate - Rust diagnostic log
                     }
                 }
             }
@@ -179,7 +179,7 @@ impl ContextResolver {
                 if let Ok(resolved_value) = self.resolve_template(&env.1) {
                     self.env_vars.insert(env.0.clone(), resolved_value);
                 } else {
-                    tracing::warn!(
+                    tracing::warn!( // I18N: no-translate - Rust diagnostic log
                         "Failed to resolve template for environment variable {}",
                         env.0
                     );
@@ -188,16 +188,16 @@ impl ContextResolver {
 
             // Process multiple environment variables (from sub-runbook imports)
             if let Some(envs) = ctx.get::<DocumentEnvVars>() {
-                tracing::debug!(
+                tracing::debug!( // I18N: no-translate - Rust diagnostic log
                     "Processing DocumentEnvVars with {} entries",
                     envs.iter().count()
                 );
                 for env in envs.iter() {
-                    tracing::debug!("Adding env var from DocumentEnvVars: {}={}", env.0, env.1);
+                    tracing::debug!("Adding env var from DocumentEnvVars: {}={}", env.0, env.1); // I18N: no-translate - Rust diagnostic log
                     if let Ok(resolved_value) = self.resolve_template(&env.1) {
                         self.env_vars.insert(env.0.clone(), resolved_value);
                     } else {
-                        tracing::warn!(
+                        tracing::warn!( // I18N: no-translate - Rust diagnostic log
                             "Failed to resolve template for environment variable {}",
                             env.0
                         );
@@ -226,7 +226,7 @@ impl ContextResolver {
 
                     self.cwd = normalized_path.to_string_lossy().to_string();
                 } else {
-                    tracing::warn!("Failed to resolve template for directory {}", dir.0);
+                    tracing::warn!("Failed to resolve template for directory {}", dir.0); // I18N: no-translate - Rust diagnostic log
                 }
             }
 
@@ -235,7 +235,7 @@ impl ContextResolver {
                     if let Ok(resolved_value) = self.resolve_template(host) {
                         self.ssh_host = Some(resolved_value);
                     } else {
-                        tracing::warn!("Failed to resolve template for SSH host {}", host);
+                        tracing::warn!("Failed to resolve template for SSH host {}", host); // I18N: no-translate - Rust diagnostic log
                     }
                 } else {
                     self.ssh_host = None;
@@ -530,7 +530,7 @@ mod tests {
         let block = create_block_with_context(passive_context, None);
 
         resolver.push_block(&block);
-        assert_eq!(resolver.cwd(), "/absolute/path");
+        assert_eq!(resolver.cwd(), "/absolute/path"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -544,7 +544,7 @@ mod tests {
         let block = create_block_with_context(passive_context, None);
 
         resolver.push_block(&block);
-        assert_eq!(resolver.cwd(), "/base/path/subdir");
+        assert_eq!(resolver.cwd(), "/base/path/subdir"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -558,7 +558,7 @@ mod tests {
         let block = create_block_with_context(passive_context, None);
 
         resolver.push_block(&block);
-        assert_eq!(resolver.cwd(), "/base/path/sibling");
+        assert_eq!(resolver.cwd(), "/base/path/sibling"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -575,7 +575,7 @@ mod tests {
         let block = create_block_with_context(passive_context, None);
 
         resolver.push_block(&block);
-        assert_eq!(resolver.cwd(), "/home/user/projects");
+        assert_eq!(resolver.cwd(), "/home/user/projects"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -592,7 +592,7 @@ mod tests {
         let block = create_block_with_context(passive_context, None);
 
         resolver.push_block(&block);
-        assert_eq!(resolver.cwd(), "/home/user/documents");
+        assert_eq!(resolver.cwd(), "/home/user/documents"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -604,7 +604,7 @@ mod tests {
         let block = create_block_with_context(passive_context, None);
 
         resolver.push_block(&block);
-        assert_eq!(resolver.cwd(), "/path/with/$dollar");
+        assert_eq!(resolver.cwd(), "/path/with/$dollar"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -618,7 +618,7 @@ mod tests {
         let block = create_block_with_context(passive_context, None);
 
         resolver.push_block(&block);
-        assert_eq!(resolver.cwd(), default_cwd());
+        assert_eq!(resolver.cwd(), default_cwd()); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -629,19 +629,19 @@ mod tests {
         context1.insert(DocumentCwd("/base".to_string()));
         let block1 = create_block_with_context(context1, None);
         resolver.push_block(&block1);
-        assert_eq!(resolver.cwd(), "/base");
+        assert_eq!(resolver.cwd(), "/base"); // I18N: no-translate - Rust assertion
 
         let mut context2 = BlockContext::new();
         context2.insert(DocumentCwd("subdir1".to_string()));
         let block2 = create_block_with_context(context2, None);
         resolver.push_block(&block2);
-        assert_eq!(resolver.cwd(), "/base/subdir1");
+        assert_eq!(resolver.cwd(), "/base/subdir1"); // I18N: no-translate - Rust assertion
 
         let mut context3 = BlockContext::new();
         context3.insert(DocumentCwd("subdir2".to_string()));
         let block3 = create_block_with_context(context3, None);
         resolver.push_block(&block3);
-        assert_eq!(resolver.cwd(), "/base/subdir1/subdir2");
+        assert_eq!(resolver.cwd(), "/base/subdir1/subdir2"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -661,7 +661,7 @@ mod tests {
         let block = create_block_with_context(passive_context, None);
 
         resolver.push_block(&block);
-        assert_eq!(resolver.cwd(), "/home/alice/myproject");
+        assert_eq!(resolver.cwd(), "/home/alice/myproject"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -679,7 +679,7 @@ mod tests {
         let block = create_block_with_context(passive_context, None);
 
         resolver.push_block(&block);
-        assert_eq!(resolver.get_var("greeting").unwrap(), "hello world");
+        assert_eq!(resolver.get_var("greeting").unwrap(), "hello world"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -696,7 +696,7 @@ mod tests {
         let block = create_block_with_context(passive_context, None);
 
         resolver.push_block(&block);
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             resolver.env_vars().get("SERVER_URL").unwrap(),
             "http://localhost:8080"
         );
@@ -716,7 +716,7 @@ mod tests {
         let block = create_block_with_context(passive_context, None);
 
         resolver.push_block(&block);
-        assert_eq!(resolver.ssh_host().unwrap(), "server.example.com");
+        assert_eq!(resolver.ssh_host().unwrap(), "server.example.com"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -745,8 +745,8 @@ mod tests {
         ];
 
         let resolver = ContextResolver::from_blocks(&blocks);
-        assert_eq!(resolver.cwd(), "/base");
-        assert_eq!(resolver.get_var("key").unwrap(), "value2");
+        assert_eq!(resolver.cwd(), "/base"); // I18N: no-translate - Rust assertion
+        assert_eq!(resolver.get_var("key").unwrap(), "value2"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -757,7 +757,7 @@ mod tests {
         let block = create_block_with_context(passive_context, None);
 
         resolver.push_block(&block);
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             resolver.cwd(),
             dirs::home_dir()
                 .unwrap()
@@ -779,7 +779,7 @@ mod tests {
         let block = create_block_with_context(passive_context.clone(), None);
 
         resolver.push_block(&block);
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             resolver.cwd(),
             dirs::home_dir()
                 .unwrap()
@@ -791,7 +791,7 @@ mod tests {
         passive_context.insert(DocumentCwd("$HOME/Documents".to_string()));
         let block = create_block_with_context(passive_context, None);
         resolver.push_block(&block);
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             resolver.cwd(),
             dirs::home_dir()
                 .unwrap()
@@ -809,21 +809,21 @@ mod tests {
         let block = create_block_with_context(passive_context, None);
 
         resolver.push_block(&block);
-        assert_eq!(resolver.cwd(), "/path/with/~tilde");
+        assert_eq!(resolver.cwd(), "/path/with/~tilde"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
     fn test_resolve_template_without_markers() {
         let resolver = ContextResolver::new();
         let result = resolver.resolve_template("plain text").unwrap();
-        assert_eq!(result, "plain text");
+        assert_eq!(result, "plain text"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
     fn test_resolve_template_with_undefined_var() {
         let resolver = ContextResolver::new();
         let result = resolver.resolve_template("{{ var.undefined }}");
-        assert!(result.is_err());
+        assert!(result.is_err()); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -844,7 +844,7 @@ mod tests {
         let block = create_block_with_context(passive_context, Some(active_context));
 
         resolver.push_block(&block);
-        assert_eq!(resolver.get_var("key").unwrap(), "active");
+        assert_eq!(resolver.get_var("key").unwrap(), "active"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -857,10 +857,10 @@ mod tests {
             .build();
 
         let resolved = ResolvedContext::from_resolver(&resolver);
-        assert_eq!(resolved.variables.get("key1").unwrap(), "value1");
-        assert_eq!(resolved.cwd, "/test/path");
-        assert_eq!(resolved.env_vars.get("VAR").unwrap(), "val");
-        assert_eq!(resolved.ssh_host.as_ref().unwrap(), "host.example.com");
+        assert_eq!(resolved.variables.get("key1").unwrap(), "value1"); // I18N: no-translate - Rust assertion
+        assert_eq!(resolved.cwd, "/test/path"); // I18N: no-translate - Rust assertion
+        assert_eq!(resolved.env_vars.get("VAR").unwrap(), "val"); // I18N: no-translate - Rust assertion
+        assert_eq!(resolved.ssh_host.as_ref().unwrap(), "host.example.com"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -871,7 +871,7 @@ mod tests {
         let block = create_block_with_context(passive_context, None);
 
         resolver.push_block(&block);
-        assert_eq!(resolver.cwd(), "/path/with spaces/and-dashes");
+        assert_eq!(resolver.cwd(), "/path/with spaces/and-dashes"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -886,7 +886,7 @@ mod tests {
 
         resolver.push_block(&block);
         // Path normalization removes ./ which is correct behavior
-        assert_eq!(resolver.cwd(), "/base/subdir");
+        assert_eq!(resolver.cwd(), "/base/subdir"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -900,7 +900,7 @@ mod tests {
         let block = create_block_with_context(passive_context, None);
 
         resolver.push_block(&block);
-        assert_eq!(resolver.cwd(), "/a/b/c/other");
+        assert_eq!(resolver.cwd(), "/a/b/c/other"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -915,7 +915,7 @@ mod tests {
 
         resolver.push_block(&block);
         // Should normalize to /etc (can't go above root)
-        assert_eq!(resolver.cwd(), "/etc");
+        assert_eq!(resolver.cwd(), "/etc"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -928,7 +928,7 @@ mod tests {
 
         resolver.push_block(&block);
         // Trailing slash should be preserved or handled correctly
-        assert!(
+        assert!( // I18N: no-translate - Rust assertion
             resolver.cwd() == "/path/to/dir/" || resolver.cwd() == "/path/to/dir",
             "cwd was: {}",
             resolver.cwd()
@@ -945,7 +945,7 @@ mod tests {
 
         resolver.push_block(&block);
         // Whitespace should be trimmed
-        assert_eq!(resolver.cwd(), "/path/to/dir");
+        assert_eq!(resolver.cwd(), "/path/to/dir"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -958,20 +958,20 @@ mod tests {
         context1.insert(DocumentCwd("../other".to_string()));
         let block1 = create_block_with_context(context1, None);
         resolver.push_block(&block1);
-        assert_eq!(resolver.cwd(), "/base/other");
+        assert_eq!(resolver.cwd(), "/base/other"); // I18N: no-translate - Rust assertion
 
         let mut context2 = BlockContext::new();
         context2.insert(DocumentCwd("./subfolder/deep".to_string()));
         let block2 = create_block_with_context(context2, None);
         resolver.push_block(&block2);
-        assert_eq!(resolver.cwd(), "/base/other/subfolder/deep");
+        assert_eq!(resolver.cwd(), "/base/other/subfolder/deep"); // I18N: no-translate - Rust assertion
 
         let mut context3 = BlockContext::new();
         context3.insert(DocumentCwd("../../sibling".to_string()));
         let block3 = create_block_with_context(context3, None);
         resolver.push_block(&block3);
         // From /base/other/subfolder/deep, ../../sibling goes to /base/other/sibling
-        assert_eq!(resolver.cwd(), "/base/other/sibling");
+        assert_eq!(resolver.cwd(), "/base/other/sibling"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -985,14 +985,14 @@ mod tests {
         context1.insert(DocumentCwd("relative/path".to_string()));
         let block1 = create_block_with_context(context1, None);
         resolver.push_block(&block1);
-        assert_eq!(resolver.cwd(), "/initial/relative/path");
+        assert_eq!(resolver.cwd(), "/initial/relative/path"); // I18N: no-translate - Rust assertion
 
         // Then reset with absolute path
         let mut context2 = BlockContext::new();
         context2.insert(DocumentCwd("/completely/new/path".to_string()));
         let block2 = create_block_with_context(context2, None);
         resolver.push_block(&block2);
-        assert_eq!(resolver.cwd(), "/completely/new/path");
+        assert_eq!(resolver.cwd(), "/completely/new/path"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -1006,7 +1006,7 @@ mod tests {
         let block = create_block_with_context(passive_context, None);
 
         resolver.push_block(&block);
-        assert_eq!(resolver.cwd(), "/path/to/.hidden/dir.name.with.dots");
+        assert_eq!(resolver.cwd(), "/path/to/.hidden/dir.name.with.dots"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -1023,7 +1023,7 @@ mod tests {
         let block = create_block_with_context(passive_context, None);
 
         resolver.push_block(&block);
-        assert_eq!(resolver.cwd(), "/home/user/documents");
+        assert_eq!(resolver.cwd(), "/home/user/documents"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -1041,7 +1041,7 @@ mod tests {
         let block = create_block_with_context(passive_context, None);
 
         resolver.push_block(&block);
-        assert_eq!(resolver.cwd(), "/base/myproject/src");
+        assert_eq!(resolver.cwd(), "/base/myproject/src"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -1055,6 +1055,6 @@ mod tests {
         let block = create_block_with_context(passive_context, None);
 
         resolver.push_block(&block);
-        assert_eq!(resolver.ssh_host(), None);
+        assert_eq!(resolver.ssh_host(), None); // I18N: no-translate - Rust assertion
     }
 }

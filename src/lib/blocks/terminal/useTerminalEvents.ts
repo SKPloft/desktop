@@ -20,13 +20,13 @@ export const useTerminalEvents = (terminalData: any, terminal: TerminalBlock) =>
     setCommandDuration(terminalData.commandDuration || null);
 
     const handleExecutionStarted = () => {
-      console.log("Terminal execution started");
+      console.log("Terminal execution started"); // I18N: no-translate - developer diagnostic
       setIsLoading(false);
       setIsRunning(true);
     };
 
     const handleExecutionFinished = ({ exitCode, duration }: any) => {
-      console.log("Terminal execution finished", { exitCode, duration });
+      console.log("Terminal execution finished", { exitCode, duration }); // I18N: no-translate - developer diagnostic
       setIsRunning(false);
       setExitCode(exitCode);
       setCommandDuration(duration);
@@ -39,12 +39,12 @@ export const useTerminalEvents = (terminalData: any, terminal: TerminalBlock) =>
     };
 
     const handleExecutionCancelled = () => {
-      console.log("Terminal execution cancelled");
+      console.log("Terminal execution cancelled"); // I18N: no-translate - developer diagnostic
       setIsRunning(false);
     };
 
     const handleExecutionError = ({ message }: any) => {
-      console.log("Terminal execution error", message);
+      console.log("Terminal execution error", message); // I18N: no-translate - developer diagnostic
       setIsRunning(false);
       addToast({
         title: t("editor.blocks.terminal.error_title"),

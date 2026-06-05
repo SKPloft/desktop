@@ -107,7 +107,7 @@ export function KubernetesComponent({
   // Use the new hooks for execution and output
   const execution = useBlockExecution(kubernetes.id);
   useBlockOutput<any>(kubernetes.id, (output) => {
-    console.log("kubernetes output", output);
+    console.log("kubernetes output", output); // I18N: no-translate - developer diagnostic
 
     if (output.object && output.object.type === "kubernetes") {
       const result: KubernetesResult = {
@@ -252,7 +252,7 @@ export function KubernetesComponent({
                 variant="flat"
                 onPress={() => {
                   if (kubernetes.mode === "preset") {
-                    setMode("custom");
+                    setMode("custom");// I18N: no-translate - internal state value
                   } else {
                     // When switching from custom to preset, set to default command if current isn't a preset
                     if (!currentPresetKey) {
@@ -263,7 +263,7 @@ export function KubernetesComponent({
                 }}
                 disabled={!isEditable}
               >
-                {kubernetes.mode === "preset" ? "Custom" : "Preset"}
+                {kubernetes.mode === "preset" ? "Custom" : "Preset"}{/* I18N: translate - visible button label */}
               </Button>
               {kubernetes.mode === "custom" && (
                 <Button

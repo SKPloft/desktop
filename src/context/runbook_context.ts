@@ -1,7 +1,7 @@
 import { createContext } from "react";
 
 function stub() {
-  throw new Error("context not initialized");
+  throw new Error("context not initialized"); // I18N: no-translate - internal exception
 }
 
 interface API {

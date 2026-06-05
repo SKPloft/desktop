@@ -107,7 +107,7 @@ fn resolve_service_target(
         if let Some(key) = key {
             service_target.auth = AuthData::Key(key);
         } else if !is_hub && adapter_kind != AdapterKind::Ollama {
-            log::warn!(
+            log::warn!( // I18N: no-translate - Rust diagnostic log
                 "No API key found for provider '{}' (adapter {:?}). Requests will fail with auth error.",
                 parts[0],
                 adapter_kind

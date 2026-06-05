@@ -13,7 +13,7 @@ pub async fn workflow_block_start_event(
     let event_sender = state.event_sender();
     event_sender
         .send(WorkflowEvent::BlockStarted { id: block })
-        .expect("Failed to send start block event");
+        .expect("Failed to send start block event"); // I18N: no-translate - internal expectation message
 
     Ok(())
 }
@@ -24,7 +24,7 @@ pub async fn workflow_serial(
     id: Uuid,
     workflow: Vec<Block>,
 ) -> Result<(), String> {
-    println!("workflow_serial command received");
+    println!("workflow_serial command received"); // I18N: no-translate - Rust console output
     state.executor().run_workflow(id, workflow).await;
 
     Ok(())

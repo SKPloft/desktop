@@ -132,7 +132,7 @@ export default class Tree<T extends {}> {
 
   public updateNode(id: string, parent: NodeID, index?: number) {
     if (!this.data[id]) {
-      throw new Error(`Node not found: ${id}`);
+      throw new Error(`Node not found: ${id}`); // I18N: no-translate - internal exception
     }
 
     const oldParent = this.data[id].parent.unwrapOr(ROOT);
@@ -157,7 +157,7 @@ export default class Tree<T extends {}> {
     const children = this.getChildren(id);
 
     if (strategy === DeleteStrategy.Decline && children.length > 0) {
-      throw new Error("Cannot delete node with children");
+      throw new Error("Cannot delete node with children"); // I18N: no-translate - internal exception
     } else if (strategy === DeleteStrategy.Cascade) {
       for (const child of children) {
         this.deleteNode(child as string, strategy);

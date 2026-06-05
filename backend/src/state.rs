@@ -133,7 +133,7 @@ impl AtuinState {
             .await?;
 
         // For some reason we cannot spawn the exec log task before the state is managed. Annoying.
-        let exec_log = ExecLogHandle::new(path).expect("Failed to boot exec log");
+        let exec_log = ExecLogHandle::new(path).expect("Failed to boot exec log"); // I18N: no-translate - internal expectation message
         self.exec_log.lock().unwrap().replace(exec_log);
 
         let pty_store = PtyStoreHandle::new();
@@ -214,7 +214,7 @@ impl AtuinState {
         if let Some(exec_log) = &self.exec_log.lock().unwrap().as_ref() {
             (*exec_log).clone()
         } else {
-            panic!("Exec log not initialized");
+            panic!("Exec log not initialized"); // I18N: no-translate - Rust panic/internal diagnostic
         }
     }
 
@@ -222,7 +222,7 @@ impl AtuinState {
         if let Some(pty_store) = &self.pty_store.lock().unwrap().as_ref() {
             (*pty_store).clone()
         } else {
-            panic!("Pty store not initialized");
+            panic!("Pty store not initialized"); // I18N: no-translate - Rust panic/internal diagnostic
         }
     }
 
@@ -230,7 +230,7 @@ impl AtuinState {
         if let Some(ssh_pool) = &self.ssh_pool.lock().unwrap().as_ref() {
             (*ssh_pool).clone()
         } else {
-            panic!("SSH pool not initialized");
+            panic!("SSH pool not initialized"); // I18N: no-translate - Rust panic/internal diagnostic
         }
     }
 
@@ -238,7 +238,7 @@ impl AtuinState {
         if let Some(shared_state) = self.shared_state.lock().unwrap().as_ref() {
             shared_state.clone()
         } else {
-            panic!("Shared state not initialized");
+            panic!("Shared state not initialized"); // I18N: no-translate - Rust panic/internal diagnostic
         }
     }
 
@@ -246,7 +246,7 @@ impl AtuinState {
         if let Some(executor) = self.executor.lock().unwrap().as_ref() {
             (*executor).clone()
         } else {
-            panic!("Executor not initialized");
+            panic!("Executor not initialized"); // I18N: no-translate - Rust panic/internal diagnostic
         }
     }
 
@@ -254,7 +254,7 @@ impl AtuinState {
         if let Some(event_sender) = self.event_sender.lock().unwrap().as_ref() {
             (*event_sender).clone()
         } else {
-            panic!("Event sender not initialized");
+            panic!("Event sender not initialized"); // I18N: no-translate - Rust panic/internal diagnostic
         }
     }
 
@@ -262,7 +262,7 @@ impl AtuinState {
         if let Some(gc_event_sender) = self.gc_event_sender.lock().unwrap().as_ref() {
             gc_event_sender.clone()
         } else {
-            panic!("GC event sender not initialized");
+            panic!("GC event sender not initialized"); // I18N: no-translate - Rust panic/internal diagnostic
         }
     }
 
@@ -270,7 +270,7 @@ impl AtuinState {
         if let Some(secret_cache) = self.secret_cache.lock().unwrap().as_ref() {
             secret_cache.clone()
         } else {
-            panic!("Secret cache not initialized");
+            panic!("Secret cache not initialized"); // I18N: no-translate - Rust panic/internal diagnostic
         }
     }
 
@@ -278,7 +278,7 @@ impl AtuinState {
         if let Some(ai_manager) = self.ai_manager.lock().await.as_ref() {
             ai_manager.clone()
         } else {
-            panic!("AI manager not found");
+            panic!("AI manager not found"); // I18N: no-translate - Rust panic/internal diagnostic
         }
     }
 }

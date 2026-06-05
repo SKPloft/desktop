@@ -16,6 +16,7 @@ const HttpVerbDropdown: React.FC<HttpVerbDropdownProps> = ({
   disabled = false,
 }) => {
   const { t } = useTranslation();
+  // Not recommended for i18n — color tokens used for backend communication with the UI framework.
   const verbColors: Record<HttpVerb, string> = {
     [HttpVerb.GET]: "success",
     [HttpVerb.POST]: "primary",

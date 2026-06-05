@@ -69,7 +69,7 @@ class MarkdownErrorBoundary extends Component<
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.warn("Streamdown render failed, falling back to plain text:", error, errorInfo);
+    console.warn("Streamdown render failed, falling back to plain text:", error, errorInfo); // I18N: no-translate - developer diagnostic
   }
 
   render() {
@@ -420,7 +420,7 @@ export default function AIAssistant({
         }
       })
       .catch((err) => {
-        console.error("Failed to create AI session:", err);
+        console.error("Failed to create AI session:", err); // I18N: no-translate - developer diagnostic
         if (mounted) {
           setIsCreatingSession(false);
         }
@@ -430,7 +430,7 @@ export default function AIAssistant({
       mounted = false;
       // Destroy session on unmount
       if (sessionId) {
-        destroySession(sessionId).catch(console.error);
+        destroySession(sessionId).catch(console.error); // I18N: no-translate - developer diagnostic
       }
     };
   }, [isOpen]);
@@ -439,7 +439,7 @@ export default function AIAssistant({
   useEffect(() => {
     return () => {
       if (sessionId) {
-        destroySession(sessionId).catch(console.error);
+        destroySession(sessionId).catch(console.error); // I18N: no-translate - developer diagnostic
         setSessionId(null);
       }
     };
@@ -560,7 +560,7 @@ export default function AIAssistant({
         return;
       }
     } catch (err) {
-      console.error("Failed to get model selection:", err);
+      console.error("Failed to get model selection:", err); // I18N: no-translate - developer diagnostic
       await new DialogBuilder()
         .title(t("editor.ai.assistant.provider_error_title"))
         .icon("error")
@@ -627,7 +627,7 @@ export default function AIAssistant({
     // keep history in sql
     if (sessionId) {
       const blockRegistry = AIBlockRegistry.getInstance();
-      destroySession(sessionId).catch(console.error);
+      destroySession(sessionId).catch(console.error); // I18N: no-translate - developer diagnostic
       setSessionId(null);
       setIsCreatingSession(true);
       createSession(
@@ -644,7 +644,7 @@ export default function AIAssistant({
           setIsCreatingSession(false);
         })
         .catch((err) => {
-          console.error("Failed to create AI session:", err);
+          console.error("Failed to create AI session:", err); // I18N: no-translate - developer diagnostic
           setIsCreatingSession(false);
         });
     }

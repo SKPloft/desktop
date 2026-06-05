@@ -27,18 +27,18 @@ function yamlQuote(value) {
 
 function readYamlMap(filePath, label) {
   if (!existsSync(filePath)) {
-    throw new Error(`${label} is missing at ${path.relative(root, filePath)}`);
+    throw new Error(`${label} is missing at ${path.relative(root, filePath)}`); // I18N: no-translate - internal exception
   }
 
   const content = readFileSync(filePath, "utf8");
   const parsed = YAML.parse(content);
 
   if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
-    throw new Error(`${label} must parse to a YAML mapping`);
+    throw new Error(`${label} must parse to a YAML mapping`); // I18N: no-translate - internal exception
   }
 
   if (parsed._version !== 1) {
-    throw new Error(`${label} must contain _version: 1`);
+    throw new Error(`${label} must contain _version: 1`); // I18N: no-translate - internal exception
   }
 
   return parsed;
@@ -163,54 +163,54 @@ function main() {
 
     if (missingEn.length > 0 || missingZh.length > 0) {
       mkdirSync(path.dirname(localeFiles.en), { recursive: true });
-      console.log(`i18n merge: appended ${missingEn.length} en keys and ${missingZh.length} zh-CN keys`);
+      console.log(`i18n merge: appended ${missingEn.length} en keys and ${missingZh.length} zh-CN keys`); // I18N: no-translate - developer diagnostic
     }
   }
 
-  console.log("i18n check:");
-  console.log(`- frontend extracted keys: ${frontendKeys.length}`);
-  console.log(`- backend extracted keys: ${backendKeys.length}`);
-  console.log(`- combined extracted keys: ${extractedKeys.length}`);
-  console.log(`- locales/en.yml keys: ${enKeys.length}`);
-  console.log(`- locales/zh-CN.yml keys: ${zhKeys.length}`);
-  console.log(`- missing in locales/en.yml: ${missingEn.length}${missingEn.length ? ` (${sample(missingEn)})` : ""}`);
-  console.log(`- stale in locales/en.yml: ${staleEn.length}${staleEn.length ? ` (${sample(staleEn)})` : ""}`);
-  console.log(`- missing in locales/zh-CN.yml: ${missingZh.length}${missingZh.length ? ` (${sample(missingZh)})` : ""}`);
-  console.log(`- dynamic frontend calls: ${dynamicWarnings.length}`);
+  console.log("i18n check:"); // I18N: no-translate - developer diagnostic
+  console.log(`- frontend extracted keys: ${frontendKeys.length}`); // I18N: no-translate - developer diagnostic
+  console.log(`- backend extracted keys: ${backendKeys.length}`); // I18N: no-translate - developer diagnostic
+  console.log(`- combined extracted keys: ${extractedKeys.length}`); // I18N: no-translate - developer diagnostic
+  console.log(`- locales/en.yml keys: ${enKeys.length}`); // I18N: no-translate - developer diagnostic
+  console.log(`- locales/zh-CN.yml keys: ${zhKeys.length}`); // I18N: no-translate - developer diagnostic
+  console.log(`- missing in locales/en.yml: ${missingEn.length}${missingEn.length ? ` (${sample(missingEn)})` : ""}`); // I18N: no-translate - developer diagnostic
+  console.log(`- stale in locales/en.yml: ${staleEn.length}${staleEn.length ? ` (${sample(staleEn)})` : ""}`); // I18N: no-translate - developer diagnostic
+  console.log(`- missing in locales/zh-CN.yml: ${missingZh.length}${missingZh.length ? ` (${sample(missingZh)})` : ""}`); // I18N: no-translate - developer diagnostic
+  console.log(`- dynamic frontend calls: ${dynamicWarnings.length}`); // I18N: no-translate - developer diagnostic
 
   if (dynamicWarnings.length > 0) {
     for (const warning of dynamicWarnings.slice(0, 20)) {
-      console.log(
+      console.log( // I18N: no-translate - developer diagnostic
         `  - ${path.relative(root, warning.file)}:${warning.line} ${warning.expression} (${warning.reason})`,
       );
     }
     if (dynamicWarnings.length > 20) {
-      console.log(`  - ...and ${dynamicWarnings.length - 20} more`);
+      console.log(`  - ...and ${dynamicWarnings.length - 20} more`); // I18N: no-translate - developer diagnostic
     }
   }
 
   if (auditMode) {
-    console.log(`- included source literals: ${frontendAudit.sourceLiterals.length}`);
+    console.log(`- included source literals: ${frontendAudit.sourceLiterals.length}`); // I18N: no-translate - developer diagnostic
     for (const item of frontendAudit.sourceLiterals.slice(0, 30)) {
-      console.log(`  - ${path.relative(root, item.file)}:${item.line} ${item.kind}: ${JSON.stringify(item.value)}`);
+      console.log(`  - ${path.relative(root, item.file)}:${item.line} ${item.kind}: ${JSON.stringify(item.value)}`); // I18N: no-translate - developer diagnostic
     }
     if (frontendAudit.sourceLiterals.length > 30) {
-      console.log(`  - ...and ${frontendAudit.sourceLiterals.length - 30} more`);
+      console.log(`  - ...and ${frontendAudit.sourceLiterals.length - 30} more`); // I18N: no-translate - developer diagnostic
     }
 
-    console.log(`- skipped source literals: ${frontendAudit.skippedLiterals.length}`);
+    console.log(`- skipped source literals: ${frontendAudit.skippedLiterals.length}`); // I18N: no-translate - developer diagnostic
     for (const item of frontendAudit.skippedLiterals.slice(0, 50)) {
-      console.log(
+      console.log( // I18N: no-translate - developer diagnostic
         `  - ${path.relative(root, item.file)}:${item.line} ${item.kind}: ${JSON.stringify(item.value)} (${item.reason})`,
       );
     }
     if (frontendAudit.skippedLiterals.length > 50) {
-      console.log(`  - ...and ${frontendAudit.skippedLiterals.length - 50} more`);
+      console.log(`  - ...and ${frontendAudit.skippedLiterals.length - 50} more`); // I18N: no-translate - developer diagnostic
     }
   }
 
   if (!writeMissing && (missingEn.length > 0 || missingZh.length > 0)) {
-    console.error("i18n check failed: run `bun run i18n:merge` to append missing fallback keys.");
+    console.error("i18n check failed: run `bun run i18n:merge` to append missing fallback keys."); // I18N: no-translate - developer diagnostic
     process.exitCode = 1;
   }
 }
@@ -218,6 +218,6 @@ function main() {
 try {
   main();
 } catch (error) {
-  console.error(`i18n check failed: ${error.message}`);
+  console.error(`i18n check failed: ${error.message}`); // I18N: no-translate - developer diagnostic
   process.exitCode = 1;
 }

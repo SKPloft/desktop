@@ -532,13 +532,13 @@ mod tests {
     #[test]
     fn idle_to_sending_on_user_message() {
         let mut agent = Agent::new(ChatMessage::system("you are a helpful assistant"));
-        assert_eq!(agent.state(), &State::Idle);
+        assert_eq!(agent.state(), &State::Idle); // I18N: no-translate - Rust assertion
 
         let t = agent.handle(Event::UserMessage(user_msg("hello")));
 
-        assert_eq!(agent.state(), &State::Sending);
-        assert_eq!(t.effects, vec![Effect::StartRequest]);
-        assert_eq!(agent.context().conversation.len(), 2); // system + user
+        assert_eq!(agent.state(), &State::Sending); // I18N: no-translate - Rust assertion
+        assert_eq!(t.effects, vec![Effect::StartRequest]); // I18N: no-translate - Rust assertion
+        assert_eq!(agent.context().conversation.len(), 2); // system + user // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -548,9 +548,9 @@ mod tests {
 
         let t = agent.handle(Event::UserMessage(user_msg("second")));
 
-        assert_eq!(agent.state(), &State::Sending);
-        assert!(t.effects.is_empty());
-        assert_eq!(agent.context().queued_messages.len(), 1);
+        assert_eq!(agent.state(), &State::Sending); // I18N: no-translate - Rust assertion
+        assert!(t.effects.is_empty()); // I18N: no-translate - Rust assertion
+        assert_eq!(agent.context().queued_messages.len(), 1); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -560,8 +560,8 @@ mod tests {
 
         let t = agent.handle(Event::StreamStart);
 
-        assert_eq!(agent.state(), &State::Streaming);
-        assert!(t.effects.is_empty());
+        assert_eq!(agent.state(), &State::Streaming); // I18N: no-translate - Rust assertion
+        assert!(t.effects.is_empty()); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -574,14 +574,14 @@ mod tests {
             content: "Hi there!".to_string(),
         }));
 
-        assert_eq!(agent.state(), &State::Streaming);
-        assert_eq!(
+        assert_eq!(agent.state(), &State::Streaming); // I18N: no-translate - Rust assertion
+        assert_eq!( // I18N: no-translate - Rust assertion
             t.effects,
             vec![Effect::EmitChunk {
                 content: "Hi there!".to_string()
             }]
         );
-        assert_eq!(agent.context().current_response, "Hi there!");
+        assert_eq!(agent.context().current_response, "Hi there!"); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -595,9 +595,9 @@ mod tests {
 
         let t = agent.handle(Event::StreamEnd { tool_calls: vec![] });
 
-        assert_eq!(agent.state(), &State::Idle);
-        assert_eq!(t.effects, vec![Effect::ResponseComplete]);
-        assert_eq!(agent.context().conversation.len(), 3); // system + user + assistant
+        assert_eq!(agent.state(), &State::Idle); // I18N: no-translate - Rust assertion
+        assert_eq!(t.effects, vec![Effect::ResponseComplete]); // I18N: no-translate - Rust assertion
+        assert_eq!(agent.context().conversation.len(), 3); // system + user + assistant // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -612,13 +612,13 @@ mod tests {
 
         let t = agent.handle(Event::StreamEnd { tool_calls: vec![] });
 
-        assert_eq!(agent.state(), &State::Sending);
-        assert_eq!(
+        assert_eq!(agent.state(), &State::Sending); // I18N: no-translate - Rust assertion
+        assert_eq!( // I18N: no-translate - Rust assertion
             t.effects,
             vec![Effect::ResponseComplete, Effect::StartRequest]
         );
-        assert!(agent.context().queued_messages.is_empty());
-        assert_eq!(agent.context().conversation.len(), 4); // system + first + response + second
+        assert!(agent.context().queued_messages.is_empty()); // I18N: no-translate - Rust assertion
+        assert_eq!(agent.context().conversation.len(), 4); // system + first + response + second // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -635,15 +635,15 @@ mod tests {
             tool_calls: vec![tc.clone()],
         });
 
-        assert_eq!(agent.state(), &State::PendingTools);
-        assert_eq!(
+        assert_eq!(agent.state(), &State::PendingTools); // I18N: no-translate - Rust assertion
+        assert_eq!( // I18N: no-translate - Rust assertion
             t.effects,
             vec![
                 Effect::ResponseComplete,
                 Effect::ExecuteTools { calls: vec![tc] }
             ]
         );
-        assert_eq!(agent.context().pending_tools.len(), 1);
+        assert_eq!(agent.context().pending_tools.len(), 1); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -660,16 +660,16 @@ mod tests {
             output: ToolOutput::Success("12:34 PM".to_string()),
         }));
 
-        assert_eq!(agent.state(), &State::Sending);
-        assert_eq!(
+        assert_eq!(agent.state(), &State::Sending); // I18N: no-translate - Rust assertion
+        assert_eq!( // I18N: no-translate - Rust assertion
             t.effects,
             vec![Effect::ToolResultReceived, Effect::StartRequest]
         );
-        assert!(agent.context().pending_tools.is_empty());
+        assert!(agent.context().pending_tools.is_empty()); // I18N: no-translate - Rust assertion
         // Tool results are now pushed to conversation as ToolResponse messages
-        assert!(agent.context().tool_results.is_empty());
+        assert!(agent.context().tool_results.is_empty()); // I18N: no-translate - Rust assertion
         // Conversation: system, user msg, assistant msg (with tool call), tool response
-        assert_eq!(agent.context().conversation.len(), 4);
+        assert_eq!(agent.context().conversation.len(), 4); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -690,8 +690,8 @@ mod tests {
             output: ToolOutput::Success("result_a".to_string()),
         }));
 
-        assert_eq!(agent.state(), &State::PendingTools);
-        assert_eq!(t.effects, vec![Effect::ToolResultReceived]);
+        assert_eq!(agent.state(), &State::PendingTools); // I18N: no-translate - Rust assertion
+        assert_eq!(t.effects, vec![Effect::ToolResultReceived]); // I18N: no-translate - Rust assertion
 
         // Second result - now complete
         let t = agent.handle(Event::ToolResult(ToolResult {
@@ -699,8 +699,8 @@ mod tests {
             output: ToolOutput::Success("result_b".to_string()),
         }));
 
-        assert_eq!(agent.state(), &State::Sending);
-        assert_eq!(
+        assert_eq!(agent.state(), &State::Sending); // I18N: no-translate - Rust assertion
+        assert_eq!( // I18N: no-translate - Rust assertion
             t.effects,
             vec![Effect::ToolResultReceived, Effect::StartRequest]
         );
@@ -714,8 +714,8 @@ mod tests {
 
         let t = agent.handle(Event::Cancel);
 
-        assert_eq!(agent.state(), &State::Idle);
-        assert_eq!(t.effects, vec![Effect::Cancelled]);
+        assert_eq!(agent.state(), &State::Idle); // I18N: no-translate - Rust assertion
+        assert_eq!(t.effects, vec![Effect::Cancelled]); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -727,8 +727,8 @@ mod tests {
             error: "network error".to_string(),
         });
 
-        assert_eq!(agent.state(), &State::Idle);
-        assert_eq!(
+        assert_eq!(agent.state(), &State::Idle); // I18N: no-translate - Rust assertion
+        assert_eq!( // I18N: no-translate - Rust assertion
             t.effects,
             vec![Effect::Error {
                 message: "network error".to_string()
@@ -753,11 +753,11 @@ mod tests {
         // Check the assistant message in conversation has both text and tool call
         // conversation[0] = system, [1] = user, [2] = assistant
         let assistant_msg = &agent.context().conversation[2];
-        assert!(matches!(assistant_msg.role, ChatRole::Assistant));
+        assert!(matches!(assistant_msg.role, ChatRole::Assistant)); // I18N: no-translate - Rust assertion
         let parts = assistant_msg.content.clone().into_parts();
-        assert_eq!(parts.len(), 2);
-        assert!(matches!(&parts[0], ContentPart::Text(t) if t == "Let me check."));
-        assert!(
+        assert_eq!(parts.len(), 2); // I18N: no-translate - Rust assertion
+        assert!(matches!(&parts[0], ContentPart::Text(t) if t == "Let me check.")); // I18N: no-translate - Rust assertion
+        assert!( // I18N: no-translate - Rust assertion
             matches!(&parts[1], ContentPart::ToolCall(c) if c.call_id == tc.call_id && c.fn_name == tc.fn_name)
         );
     }
@@ -778,10 +778,10 @@ mod tests {
         });
 
         // Messages stay queued until tools complete
-        assert_eq!(agent.state(), &State::PendingTools);
-        assert_eq!(agent.context().queued_messages.len(), 1);
+        assert_eq!(agent.state(), &State::PendingTools); // I18N: no-translate - Rust assertion
+        assert_eq!(agent.context().queued_messages.len(), 1); // I18N: no-translate - Rust assertion
         // Conversation: system, first msg, assistant msg
-        assert_eq!(agent.context().conversation.len(), 3);
+        assert_eq!(agent.context().conversation.len(), 3); // I18N: no-translate - Rust assertion
 
         // Tool completes - now queued messages are drained
         agent.handle(Event::ToolResult(ToolResult {
@@ -789,13 +789,13 @@ mod tests {
             output: ToolOutput::Success("result".to_string()),
         }));
 
-        assert_eq!(agent.state(), &State::Sending);
-        assert!(agent.context().queued_messages.is_empty());
+        assert_eq!(agent.state(), &State::Sending); // I18N: no-translate - Rust assertion
+        assert!(agent.context().queued_messages.is_empty()); // I18N: no-translate - Rust assertion
         // Conversation: system, first msg, assistant msg, tool response, second msg
-        assert_eq!(agent.context().conversation.len(), 5);
+        assert_eq!(agent.context().conversation.len(), 5); // I18N: no-translate - Rust assertion
         // Verify the fifth message is the queued "second"
         let fifth_msg = &agent.context().conversation[4];
-        assert!(matches!(fifth_msg.role, ChatRole::User));
+        assert!(matches!(fifth_msg.role, ChatRole::User)); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -808,15 +808,15 @@ mod tests {
         });
 
         // In PendingTools awaiting tools
-        assert_eq!(agent.state(), &State::PendingTools);
+        assert_eq!(agent.state(), &State::PendingTools); // I18N: no-translate - Rust assertion
 
         // User sends new message while waiting for tools
         let t = agent.handle(Event::UserMessage(user_msg("continue")));
 
         // Message should be queued, not trigger a new request
-        assert_eq!(agent.state(), &State::PendingTools);
-        assert!(t.effects.is_empty());
-        assert_eq!(agent.context().queued_messages.len(), 1);
+        assert_eq!(agent.state(), &State::PendingTools); // I18N: no-translate - Rust assertion
+        assert!(t.effects.is_empty()); // I18N: no-translate - Rust assertion
+        assert_eq!(agent.context().queued_messages.len(), 1); // I18N: no-translate - Rust assertion
 
         // Tool result completes - queued message is drained and request starts
         let t = agent.handle(Event::ToolResult(ToolResult {
@@ -824,14 +824,14 @@ mod tests {
             output: ToolOutput::Success("result_a".to_string()),
         }));
 
-        assert_eq!(agent.state(), &State::Sending);
-        assert_eq!(
+        assert_eq!(agent.state(), &State::Sending); // I18N: no-translate - Rust assertion
+        assert_eq!( // I18N: no-translate - Rust assertion
             t.effects,
             vec![Effect::ToolResultReceived, Effect::StartRequest]
         );
-        assert!(agent.context().queued_messages.is_empty());
+        assert!(agent.context().queued_messages.is_empty()); // I18N: no-translate - Rust assertion
         // Conversation: system, user msg, assistant msg, tool response, queued msg
-        assert_eq!(agent.context().conversation.len(), 5);
+        assert_eq!(agent.context().conversation.len(), 5); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -846,17 +846,17 @@ mod tests {
             ],
         });
 
-        assert_eq!(agent.state(), &State::PendingTools);
-        assert_eq!(agent.context().pending_tools.len(), 2);
+        assert_eq!(agent.state(), &State::PendingTools); // I18N: no-translate - Rust assertion
+        assert_eq!(agent.context().pending_tools.len(), 2); // I18N: no-translate - Rust assertion
 
         // Cancel while tools are pending
         let t = agent.handle(Event::Cancel);
 
-        assert_eq!(agent.state(), &State::Idle);
-        assert_eq!(t.effects, vec![Effect::Cancelled]);
-        assert!(agent.context().pending_tools.is_empty());
+        assert_eq!(agent.state(), &State::Idle); // I18N: no-translate - Rust assertion
+        assert_eq!(t.effects, vec![Effect::Cancelled]); // I18N: no-translate - Rust assertion
+        assert!(agent.context().pending_tools.is_empty()); // I18N: no-translate - Rust assertion
         // Tool results were pushed to conversation as error responses
         // Conversation: system, user msg, assistant msg, tool response, tool response
-        assert_eq!(agent.context().conversation.len(), 5);
+        assert_eq!(agent.context().conversation.len(), 5); // I18N: no-translate - Rust assertion
     }
 }

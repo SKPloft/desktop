@@ -98,7 +98,7 @@ export const EditorAIFeatures = forwardRef<EditorAIFeaturesHandle, EditorAIFeatu
           runbookId,
         };
       } catch (error) {
-        console.warn("Failed to get editor context:", error);
+        console.warn("Failed to get editor context:", error); // I18N: no-translate - developer diagnostic
         return undefined;
       }
     }, [editor, aiShareContext, runbookId]);

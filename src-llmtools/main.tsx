@@ -5,7 +5,7 @@ import App from "./App";
 import { initI18n } from "../src/lib/i18n";
 
 initI18n()
-  .catch((err) => console.warn("i18n init failed:", err))
+  .catch((err) => console.warn("i18n init failed:", err)) // I18N: no-translate - developer diagnostic
   .finally(() => {
     ReactDOM.createRoot(document.getElementById("root")!).render(
       <HeroUIProvider>

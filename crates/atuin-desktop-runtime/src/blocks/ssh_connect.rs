@@ -278,40 +278,40 @@ impl BlockBehavior for SshConnect {
         let (identity_key, certificate) = if let Some(provider) = block_local_value_provider {
             let identity_key = match provider.get_block_local_value(self.id, "identityKey").await {
                 Ok(Some(value)) => {
-                    tracing::debug!("Block {} read identityKey from KV: {}", self.id, value);
+                    tracing::debug!("Block {} read identityKey from KV: {}", self.id, value); // I18N: no-translate - Rust diagnostic log
                     Self::parse_identity_key_from_local(&value)
                 }
                 Ok(None) => {
-                    tracing::debug!("Block {} has no identityKey in KV", self.id);
+                    tracing::debug!("Block {} has no identityKey in KV", self.id); // I18N: no-translate - Rust diagnostic log
                     None
                 }
                 Err(e) => {
-                    tracing::warn!("Failed to get identity key from local storage: {}", e);
+                    tracing::warn!("Failed to get identity key from local storage: {}", e); // I18N: no-translate - Rust diagnostic log
                     None
                 }
             };
 
             let certificate = match provider.get_block_local_value(self.id, "certificate").await {
                 Ok(Some(value)) => {
-                    tracing::debug!("Block {} read certificate from KV: {}", self.id, value);
+                    tracing::debug!("Block {} read certificate from KV: {}", self.id, value); // I18N: no-translate - Rust diagnostic log
                     Self::parse_certificate_from_local(&value)
                 }
                 Ok(None) => {
-                    tracing::debug!("Block {} has no certificate in KV", self.id);
+                    tracing::debug!("Block {} has no certificate in KV", self.id); // I18N: no-translate - Rust diagnostic log
                     None
                 }
                 Err(e) => {
-                    tracing::warn!("Failed to get certificate from local storage: {}", e);
+                    tracing::warn!("Failed to get certificate from local storage: {}", e); // I18N: no-translate - Rust diagnostic log
                     None
                 }
             };
 
             (identity_key, certificate)
         } else {
-            tracing::debug!("Block {} has no block_local_value_provider", self.id);
+            tracing::debug!("Block {} has no block_local_value_provider", self.id); // I18N: no-translate - Rust diagnostic log
             (None, None)
         };
-        tracing::debug!(
+        tracing::debug!( // I18N: no-translate - Rust diagnostic log
             "Block {} resolved identity_key to: {:?}, certificate to: {:?}",
             self.id,
             identity_key,
@@ -350,7 +350,7 @@ mod tests {
 
         let context = ResolvedContext::from_block(&ssh, None).await.unwrap();
 
-        assert_eq!(context.ssh_host, Some("user@host.com".to_string()));
+        assert_eq!(context.ssh_host, Some("user@host.com".to_string())); // I18N: no-translate - Rust assertion
     }
 
     // Edge cases
@@ -363,7 +363,7 @@ mod tests {
 
         let context = ResolvedContext::from_block(&ssh, None).await;
 
-        assert!(context.is_err());
+        assert!(context.is_err()); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -374,7 +374,7 @@ mod tests {
             .build();
 
         let context = ResolvedContext::from_block(&ssh, None).await;
-        assert!(context.is_err());
+        assert!(context.is_err()); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -385,7 +385,7 @@ mod tests {
             .build();
 
         let context = ResolvedContext::from_block(&ssh, None).await.unwrap();
-        assert_eq!(context.ssh_host, Some("hostname.com".to_string()));
+        assert_eq!(context.ssh_host, Some("hostname.com".to_string())); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -396,7 +396,7 @@ mod tests {
             .build();
 
         let context = ResolvedContext::from_block(&ssh, None).await.unwrap();
-        assert_eq!(context.ssh_host, Some("192.168.1.100".to_string()));
+        assert_eq!(context.ssh_host, Some("192.168.1.100".to_string())); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -407,7 +407,7 @@ mod tests {
             .build();
 
         let context = ResolvedContext::from_block(&ssh, None).await.unwrap();
-        assert_eq!(context.ssh_host, Some("root@192.168.1.100".to_string()));
+        assert_eq!(context.ssh_host, Some("root@192.168.1.100".to_string())); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -419,7 +419,7 @@ mod tests {
 
         let context = ResolvedContext::from_block(&ssh, None).await.unwrap();
 
-        assert_eq!(context.ssh_host, Some("user@host.com:2222".to_string()));
+        assert_eq!(context.ssh_host, Some("user@host.com:2222".to_string())); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -430,7 +430,7 @@ mod tests {
             .build();
 
         let context = ResolvedContext::from_block(&ssh, None).await.unwrap();
-        assert_eq!(context.ssh_host, Some("host.com:2222".to_string()));
+        assert_eq!(context.ssh_host, Some("host.com:2222".to_string())); // I18N: no-translate - Rust assertion
     }
 
     // Parsing tests
@@ -442,9 +442,9 @@ mod tests {
             .build();
 
         let (user, host, port) = ssh.parse_user_host();
-        assert_eq!(user, Some("user".to_string()));
-        assert_eq!(host, "host.com");
-        assert_eq!(port, Some(2222));
+        assert_eq!(user, Some("user".to_string())); // I18N: no-translate - Rust assertion
+        assert_eq!(host, "host.com"); // I18N: no-translate - Rust assertion
+        assert_eq!(port, Some(2222)); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -455,9 +455,9 @@ mod tests {
             .build();
 
         let (user, host, port) = ssh.parse_user_host();
-        assert_eq!(user, Some("user".to_string()));
-        assert_eq!(host, "host.com");
-        assert_eq!(port, None);
+        assert_eq!(user, Some("user".to_string())); // I18N: no-translate - Rust assertion
+        assert_eq!(host, "host.com"); // I18N: no-translate - Rust assertion
+        assert_eq!(port, None); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -468,9 +468,9 @@ mod tests {
             .build();
 
         let (user, host, port) = ssh.parse_user_host();
-        assert_eq!(user, None);
-        assert_eq!(host, "host.com");
-        assert_eq!(port, None);
+        assert_eq!(user, None); // I18N: no-translate - Rust assertion
+        assert_eq!(host, "host.com"); // I18N: no-translate - Rust assertion
+        assert_eq!(port, None); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -481,9 +481,9 @@ mod tests {
             .build();
 
         let (user, host, port) = ssh.parse_user_host();
-        assert_eq!(user, None);
-        assert_eq!(host, "host.com");
-        assert_eq!(port, Some(2222));
+        assert_eq!(user, None); // I18N: no-translate - Rust assertion
+        assert_eq!(host, "host.com"); // I18N: no-translate - Rust assertion
+        assert_eq!(port, Some(2222)); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -494,9 +494,9 @@ mod tests {
             .build();
 
         let (user, host, port) = ssh.parse_user_host();
-        assert_eq!(user, None);
-        assert_eq!(host, "host.com");
-        assert_eq!(port, None); // Invalid port should be None
+        assert_eq!(user, None); // I18N: no-translate - Rust assertion
+        assert_eq!(host, "host.com"); // I18N: no-translate - Rust assertion
+        assert_eq!(port, None); // Invalid port should be None // I18N: no-translate - Rust assertion
     }
 
     // Serialization tests
@@ -510,8 +510,8 @@ mod tests {
         let json = serde_json::to_string(&original).unwrap();
         let deserialized: SshConnect = serde_json::from_str(&json).unwrap();
 
-        assert_eq!(original.id, deserialized.id);
-        assert_eq!(original.user_host, deserialized.user_host);
+        assert_eq!(original.id, deserialized.id); // I18N: no-translate - Rust assertion
+        assert_eq!(original.user_host, deserialized.user_host); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -526,8 +526,8 @@ mod tests {
         });
 
         let ssh = SshConnect::from_document(&json_data).unwrap();
-        assert_eq!(ssh.id, id);
-        assert_eq!(ssh.user_host, "user@host.com");
+        assert_eq!(ssh.id, id); // I18N: no-translate - Rust assertion
+        assert_eq!(ssh.user_host, "user@host.com"); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -542,8 +542,8 @@ mod tests {
         });
 
         let ssh = SshConnect::from_document(&json_data).unwrap();
-        assert_eq!(ssh.id, id);
-        assert_eq!(ssh.user_host, "user@host.com");
+        assert_eq!(ssh.id, id); // I18N: no-translate - Rust assertion
+        assert_eq!(ssh.user_host, "user@host.com"); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -557,8 +557,8 @@ mod tests {
         });
 
         let result = SshConnect::from_document(&json_data);
-        assert!(result.is_ok());
-        assert_eq!(result.unwrap().user_host, "");
+        assert!(result.is_ok()); // I18N: no-translate - Rust assertion
+        assert_eq!(result.unwrap().user_host, ""); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -570,7 +570,7 @@ mod tests {
             .build();
 
         let context = ResolvedContext::from_block(&ssh, None).await;
-        assert!(context.is_err());
+        assert!(context.is_err()); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -584,8 +584,8 @@ mod tests {
             port: None,
         };
         let result = ResolvedContext::from_block(&ssh_user_only, None).await;
-        assert!(result.is_err());
-        assert!(result
+        assert!(result.is_err()); // I18N: no-translate - Rust assertion
+        assert!(result // I18N: no-translate - Rust assertion
             .unwrap_err()
             .to_string()
             .contains("both user and hostname"));
@@ -599,8 +599,8 @@ mod tests {
             port: None,
         };
         let result = ResolvedContext::from_block(&ssh_hostname_only, None).await;
-        assert!(result.is_err());
-        assert!(result
+        assert!(result.is_err()); // I18N: no-translate - Rust assertion
+        assert!(result // I18N: no-translate - Rust assertion
             .unwrap_err()
             .to_string()
             .contains("both user and hostname"));
@@ -614,7 +614,7 @@ mod tests {
             port: Some(22),
         };
         let result = ResolvedContext::from_block(&ssh_both, None).await;
-        assert!(result.is_ok());
+        assert!(result.is_ok()); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -637,7 +637,7 @@ mod tests {
                 .build();
 
             let context = ResolvedContext::from_block(&ssh, None).await.unwrap();
-            assert_eq!(context.ssh_host, Some(user_host.to_string()));
+            assert_eq!(context.ssh_host, Some(user_host.to_string())); // I18N: no-translate - Rust assertion
         }
     }
 
@@ -645,58 +645,58 @@ mod tests {
     fn test_parse_identity_key_from_local_none() {
         let json = r#"{"mode": "none", "value": ""}"#;
         let result = SshConnect::parse_identity_key_from_local(json);
-        assert_eq!(result, Some(SshIdentityKeyConfig::None));
+        assert_eq!(result, Some(SshIdentityKeyConfig::None)); // I18N: no-translate - Rust assertion
 
         // Empty mode string also means None
         let json = r#"{"mode": "", "value": ""}"#;
         let result = SshConnect::parse_identity_key_from_local(json);
-        assert_eq!(result, Some(SshIdentityKeyConfig::None));
+        assert_eq!(result, Some(SshIdentityKeyConfig::None)); // I18N: no-translate - Rust assertion
     }
 
     #[test]
     fn test_parse_identity_key_from_local_paste() {
         let json = r#"{"mode": "paste", "value": "-----BEGIN OPENSSH PRIVATE KEY-----\ntest\n-----END OPENSSH PRIVATE KEY-----"}"#;
         let result = SshConnect::parse_identity_key_from_local(json);
-        assert!(matches!(result, Some(SshIdentityKeyConfig::Paste { .. })));
+        assert!(matches!(result, Some(SshIdentityKeyConfig::Paste { .. }))); // I18N: no-translate - Rust assertion
         if let Some(SshIdentityKeyConfig::Paste { content }) = result {
-            assert!(content.contains("BEGIN OPENSSH PRIVATE KEY"));
+            assert!(content.contains("BEGIN OPENSSH PRIVATE KEY")); // I18N: no-translate - Rust assertion
         }
 
         // Empty value returns None (invalid config)
         let json = r#"{"mode": "paste", "value": ""}"#;
         let result = SshConnect::parse_identity_key_from_local(json);
-        assert!(result.is_none());
+        assert!(result.is_none()); // I18N: no-translate - Rust assertion
     }
 
     #[test]
     fn test_parse_identity_key_from_local_path() {
         let json = r#"{"mode": "path", "value": "/home/user/.ssh/id_ed25519"}"#;
         let result = SshConnect::parse_identity_key_from_local(json);
-        assert!(matches!(result, Some(SshIdentityKeyConfig::Path { .. })));
+        assert!(matches!(result, Some(SshIdentityKeyConfig::Path { .. }))); // I18N: no-translate - Rust assertion
         if let Some(SshIdentityKeyConfig::Path { path }) = result {
-            assert_eq!(path, "/home/user/.ssh/id_ed25519");
+            assert_eq!(path, "/home/user/.ssh/id_ed25519"); // I18N: no-translate - Rust assertion
         }
 
         // Empty value returns None (invalid config)
         let json = r#"{"mode": "path", "value": ""}"#;
         let result = SshConnect::parse_identity_key_from_local(json);
-        assert!(result.is_none());
+        assert!(result.is_none()); // I18N: no-translate - Rust assertion
     }
 
     #[test]
     fn test_parse_identity_key_from_local_invalid() {
         // Invalid JSON
         let result = SshConnect::parse_identity_key_from_local("not json");
-        assert!(result.is_none());
+        assert!(result.is_none()); // I18N: no-translate - Rust assertion
 
         // Missing mode field
         let result = SshConnect::parse_identity_key_from_local(r#"{"value": "test"}"#);
-        assert!(result.is_none());
+        assert!(result.is_none()); // I18N: no-translate - Rust assertion
 
         // Unknown mode
         let result =
             SshConnect::parse_identity_key_from_local(r#"{"mode": "unknown", "value": "test"}"#);
-        assert!(result.is_none());
+        assert!(result.is_none()); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -711,8 +711,8 @@ mod tests {
         });
 
         let result = SshConnect::from_document(&json_data);
-        assert!(result.is_err());
-        assert!(result.unwrap_err().contains("Invalid SSH port"));
+        assert!(result.is_err()); // I18N: no-translate - Rust assertion
+        assert!(result.unwrap_err().contains("Invalid SSH port")); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -724,7 +724,7 @@ mod tests {
             hostname: None,
             port: None,
         };
-        assert!(!ssh_none.has_explicit_config());
+        assert!(!ssh_none.has_explicit_config()); // I18N: no-translate - Rust assertion
 
         let ssh_user = SshConnect {
             id: Uuid::new_v4(),
@@ -733,7 +733,7 @@ mod tests {
             hostname: None,
             port: None,
         };
-        assert!(ssh_user.has_explicit_config());
+        assert!(ssh_user.has_explicit_config()); // I18N: no-translate - Rust assertion
 
         let ssh_hostname = SshConnect {
             id: Uuid::new_v4(),
@@ -742,7 +742,7 @@ mod tests {
             hostname: Some("example.com".to_string()),
             port: None,
         };
-        assert!(ssh_hostname.has_explicit_config());
+        assert!(ssh_hostname.has_explicit_config()); // I18N: no-translate - Rust assertion
 
         let ssh_both = SshConnect {
             id: Uuid::new_v4(),
@@ -751,7 +751,7 @@ mod tests {
             hostname: Some("example.com".to_string()),
             port: Some(22),
         };
-        assert!(ssh_both.has_explicit_config());
+        assert!(ssh_both.has_explicit_config()); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -764,7 +764,7 @@ mod tests {
             hostname: None,
             port: None,
         };
-        assert_eq!(ssh.effective_user_host(), "user@host.com");
+        assert_eq!(ssh.effective_user_host(), "user@host.com"); // I18N: no-translate - Rust assertion
 
         // Explicit config - builds from parts
         let ssh = SshConnect {
@@ -774,7 +774,7 @@ mod tests {
             hostname: Some("example.com".to_string()),
             port: None,
         };
-        assert_eq!(ssh.effective_user_host(), "root@example.com");
+        assert_eq!(ssh.effective_user_host(), "root@example.com"); // I18N: no-translate - Rust assertion
 
         // With port
         let ssh = SshConnect {
@@ -784,6 +784,6 @@ mod tests {
             hostname: Some("server.io".to_string()),
             port: Some(2222),
         };
-        assert_eq!(ssh.effective_user_host(), "admin@server.io:2222");
+        assert_eq!(ssh.effective_user_host(), "admin@server.io:2222"); // I18N: no-translate - Rust assertion
     }
 }

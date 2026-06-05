@@ -220,7 +220,7 @@ mod tests {
     #[test]
     fn test_terminal_viewport_creation() {
         let viewport = TerminalViewport::new(24, 80, 8);
-        assert_eq!(viewport.size(), (24, 80));
+        assert_eq!(viewport.size(), (24, 80)); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -229,11 +229,11 @@ mod tests {
         viewport.process_output(b"Hello, World!");
 
         let lines = viewport.get_visible_lines();
-        assert_eq!(lines.len(), 8); // Shows last 8 lines
+        assert_eq!(lines.len(), 8); // Shows last 8 lines // I18N: no-translate - Rust assertion
 
         // Content should be in the visible lines (terminal starts writing at top)
         let all_lines = viewport.get_all_lines();
-        assert!(all_lines[0].contains("Hello, World!"));
+        assert!(all_lines[0].contains("Hello, World!")); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -244,7 +244,7 @@ mod tests {
         // Check all lines to find the content
         let all_lines = viewport.get_all_lines();
         let has_content = all_lines.iter().any(|line| !line.is_empty());
-        assert!(has_content);
+        assert!(has_content); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -255,7 +255,7 @@ mod tests {
         // Check all lines to find the content
         let all_lines = viewport.get_all_lines();
         let non_empty: Vec<_> = all_lines.iter().filter(|l| !l.is_empty()).collect();
-        assert!(non_empty.len() >= 3);
+        assert!(non_empty.len() >= 3); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -266,7 +266,7 @@ mod tests {
 
         let all_lines = viewport.get_all_lines();
         // Line 4 (0-indexed) should have "Test" at column 9
-        assert!(all_lines.len() >= 5);
+        assert!(all_lines.len() >= 5); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -279,6 +279,6 @@ mod tests {
         }
 
         let visible = viewport.get_visible_lines();
-        assert_eq!(visible.len(), 3); // Only shows last 3 lines
+        assert_eq!(visible.len(), 3); // Only shows last 3 lines // I18N: no-translate - Rust assertion
     }
 }

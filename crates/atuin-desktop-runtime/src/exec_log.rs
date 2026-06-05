@@ -88,7 +88,7 @@ impl ExecLogHandle {
         tokio::spawn(async {
             let mut actor = ExecLog::new(path, receiver)
                 .await
-                .expect("Failed to create exec log");
+                .expect("Failed to create exec log"); // I18N: no-translate - internal expectation message
             actor.run().await;
         });
 
@@ -154,7 +154,7 @@ pub struct ExecLog {
 
 impl ExecLog {
     async fn new(path: PathBuf, receiver: mpsc::Receiver<ExecLogMessage>) -> Result<Self> {
-        debug!("opening exec_log sqlite database at {path:?}");
+        debug!("opening exec_log sqlite database at {path:?}"); // I18N: no-translate - Rust diagnostic log
 
         let create = !path.exists();
         if create {
@@ -269,7 +269,7 @@ impl ExecLog {
         end_time: u64,
         output: String,
     ) -> Result<()> {
-        debug!(
+        debug!( // I18N: no-translate - Rust diagnostic log
             "logging execution for block {:?}, start_time: {}, end_time: {}, output: {}",
             block_id, start_time, end_time, output
         );

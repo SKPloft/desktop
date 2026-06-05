@@ -135,7 +135,7 @@ impl Pty {
             .master
             .try_clone_reader()
             .map_err(|e| e.to_string())
-            .expect("Failed to clone reader");
+            .expect("Failed to clone reader"); // I18N: no-translate - internal expectation message
 
         tokio::spawn(async move {
             while let Some(bytes) = master_rx.recv().await {

@@ -70,7 +70,7 @@ const scrollWorkspaceIntoViewGenerator =
         } else if (performance.now() - start < 1000) {
           setTimeout(tryGetEl, 100);
         } else {
-          reject(new Error("Element not found"));
+          reject(new Error("Element not found"));// I18N: no-translate - internal async guard
         }
       };
       tryGetEl();

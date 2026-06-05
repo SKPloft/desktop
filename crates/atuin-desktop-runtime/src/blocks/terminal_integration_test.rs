@@ -28,12 +28,12 @@ mod integration_tests {
     async fn test_terminal_with_directory_block_integration() {
         // Create a test directory
         let test_dir = std::env::temp_dir().join("terminal_test_dir");
-        std::fs::create_dir_all(&test_dir).expect("Should create test directory");
+        std::fs::create_dir_all(&test_dir).expect("Should create test directory"); // I18N: no-translate - internal expectation message
         let test_dir_str = test_dir.to_string_lossy().to_string();
         
         // Create a file in the test directory
         let test_file = test_dir.join("test_file.txt");
-        std::fs::write(&test_file, "test content").expect("Should write test file");
+        std::fs::write(&test_file, "test content").expect("Should write test file"); // I18N: no-translate - internal expectation message
         
         // Create directory block
         let directory = Directory::builder()
@@ -69,9 +69,9 @@ mod integration_tests {
         let dir_handler = DirectoryHandler;
         dir_handler
             .apply_context(&directory, &mut context)
-            .expect("Should apply directory context");
+            .expect("Should apply directory context"); // I18N: no-translate - internal expectation message
         
-        assert_eq!(context.cwd, test_dir_str);
+        assert_eq!(context.cwd, test_dir_str); // I18N: no-translate - Rust assertion
         
         // Execute terminal in the directory
         let terminal_handler = TerminalHandler;
@@ -81,20 +81,20 @@ mod integration_tests {
         let handle = terminal_handler
             .execute(terminal, context, tx, None)
             .await
-            .expect("Terminal should execute successfully");
+            .expect("Terminal should execute successfully"); // I18N: no-translate - internal expectation message
         
         // Give it time to list files
         tokio::time::sleep(Duration::from_millis(200)).await;
         
         // Terminal should be running
         let status = handle.status.read().await.clone();
-        assert!(matches!(status, ExecutionStatus::Running));
+        assert!(matches!(status, ExecutionStatus::Running)); // I18N: no-translate - Rust assertion
         
         // Clean up
         terminal_handler
             .cancel(&handle)
             .await
-            .expect("Should cancel terminal");
+            .expect("Should cancel terminal"); // I18N: no-translate - internal expectation message
         
         // Clean up test directory
         std::fs::remove_dir_all(&test_dir).ok();
@@ -137,7 +137,7 @@ mod integration_tests {
         let script_handle = script_handler
             .execute(script, context.clone(), tx.clone(), None)
             .await
-            .expect("Script should execute");
+            .expect("Script should execute"); // I18N: no-translate - internal expectation message
         
         // Wait for script to complete
         loop {
@@ -145,12 +145,12 @@ mod integration_tests {
             let status = script_handle.status.read().await.clone();
             match status {
                 ExecutionStatus::Success(output) => {
-                    assert_eq!(output.trim(), "generated_value_123");
+                    assert_eq!(output.trim(), "generated_value_123"); // I18N: no-translate - Rust assertion
                     break;
                 }
-                ExecutionStatus::Failed(e) => panic!("Script failed: {}", e),
+                ExecutionStatus::Failed(e) => panic!("Script failed: {}", e), // I18N: no-translate - Rust panic/internal diagnostic
                 ExecutionStatus::Running => continue,
-                _ => panic!("Unexpected status"),
+                _ => panic!("Unexpected status"), // I18N: no-translate - Rust panic/internal diagnostic
             }
         }
         
@@ -158,7 +158,7 @@ mod integration_tests {
         let stored_vars = output_storage.read().await;
         let runbook_vars = stored_vars
             .get(&runbook_id.to_string())
-            .expect("Should have runbook variables");
+            .expect("Should have runbook variables"); // I18N: no-translate - internal expectation message
         
         // Update context with the variable
         context.variables = runbook_vars.clone();
@@ -178,7 +178,7 @@ mod integration_tests {
         let terminal_handle = terminal_handler
             .execute(terminal, context, tx, None)
             .await
-            .expect("Terminal should execute");
+            .expect("Terminal should execute"); // I18N: no-translate - internal expectation message
         
         // Give it time to process
         tokio::time::sleep(Duration::from_millis(200)).await;
@@ -187,7 +187,7 @@ mod integration_tests {
         terminal_handler
             .cancel(&terminal_handle)
             .await
-            .expect("Should cancel terminal");
+            .expect("Should cancel terminal"); // I18N: no-translate - internal expectation message
     }
 
     /// Test terminal with multiple context blocks applied
@@ -195,7 +195,7 @@ mod integration_tests {
     async fn test_terminal_with_multiple_context_blocks() {
         // Create directory block
         let test_dir = std::env::temp_dir().join("multi_context_test");
-        std::fs::create_dir_all(&test_dir).expect("Should create directory");
+        std::fs::create_dir_all(&test_dir).expect("Should create directory"); // I18N: no-translate - internal expectation message
         
         let directory = Directory::builder()
             .id(Uuid::new_v4())
@@ -243,20 +243,20 @@ mod integration_tests {
         let dir_handler = DirectoryHandler;
         dir_handler
             .apply_context(&directory, &mut context)
-            .expect("Should apply directory");
+            .expect("Should apply directory"); // I18N: no-translate - internal expectation message
         
         let env_handler = EnvironmentHandler;
         env_handler
             .apply_context(&env1, &mut context)
-            .expect("Should apply env1");
+            .expect("Should apply env1"); // I18N: no-translate - internal expectation message
         env_handler
             .apply_context(&env2, &mut context)
-            .expect("Should apply env2");
+            .expect("Should apply env2"); // I18N: no-translate - internal expectation message
         
         // Verify context
-        assert_eq!(context.cwd, test_dir.to_string_lossy().to_string());
-        assert_eq!(context.env.get("VAR1"), Some(&"value1".to_string()));
-        assert_eq!(context.env.get("VAR2"), Some(&"value2".to_string()));
+        assert_eq!(context.cwd, test_dir.to_string_lossy().to_string()); // I18N: no-translate - Rust assertion
+        assert_eq!(context.env.get("VAR1"), Some(&"value1".to_string())); // I18N: no-translate - Rust assertion
+        assert_eq!(context.env.get("VAR2"), Some(&"value2".to_string())); // I18N: no-translate - Rust assertion
         
         // Execute terminal
         let terminal_handler = TerminalHandler;
@@ -266,7 +266,7 @@ mod integration_tests {
         let handle = terminal_handler
             .execute(terminal, context, tx, None)
             .await
-            .expect("Terminal should execute");
+            .expect("Terminal should execute"); // I18N: no-translate - internal expectation message
         
         // Give it time to process
         tokio::time::sleep(Duration::from_millis(200)).await;
@@ -275,7 +275,7 @@ mod integration_tests {
         terminal_handler
             .cancel(&handle)
             .await
-            .expect("Should cancel terminal");
+            .expect("Should cancel terminal"); // I18N: no-translate - internal expectation message
         
         std::fs::remove_dir_all(&test_dir).ok();
     }
@@ -315,7 +315,7 @@ mod integration_tests {
         let terminal_handle = terminal_handler
             .execute(terminal, context.clone(), tx.clone(), None)
             .await
-            .expect("Terminal should execute");
+            .expect("Terminal should execute"); // I18N: no-translate - internal expectation message
         
         // Give terminal time to run
         tokio::time::sleep(Duration::from_millis(100)).await;
@@ -338,7 +338,7 @@ mod integration_tests {
         let script_handle = script_handler
             .execute(script, context, tx, None)
             .await
-            .expect("Script should execute");
+            .expect("Script should execute"); // I18N: no-translate - internal expectation message
         
         // Wait for script to complete
         loop {
@@ -346,12 +346,12 @@ mod integration_tests {
             let status = script_handle.status.read().await.clone();
             match status {
                 ExecutionStatus::Success(output) => {
-                    assert!(output.contains("Setup confirmed"));
+                    assert!(output.contains("Setup confirmed")); // I18N: no-translate - Rust assertion
                     break;
                 }
-                ExecutionStatus::Failed(e) => panic!("Script failed: {}", e),
+                ExecutionStatus::Failed(e) => panic!("Script failed: {}", e), // I18N: no-translate - Rust panic/internal diagnostic
                 ExecutionStatus::Running => continue,
-                _ => panic!("Unexpected status"),
+                _ => panic!("Unexpected status"), // I18N: no-translate - Rust panic/internal diagnostic
             }
         }
         
@@ -359,7 +359,7 @@ mod integration_tests {
         terminal_handler
             .cancel(&terminal_handle)
             .await
-            .expect("Should cancel terminal");
+            .expect("Should cancel terminal"); // I18N: no-translate - internal expectation message
     }
 
     /// Test concurrent terminal and script execution
@@ -418,18 +418,18 @@ mod integration_tests {
             )
         );
         
-        let terminal_handle = terminal_handle.expect("Terminal should execute");
-        let script_handle = script_handle.expect("Script should execute");
+        let terminal_handle = terminal_handle.expect("Terminal should execute"); // I18N: no-translate - internal expectation message
+        let script_handle = script_handle.expect("Script should execute"); // I18N: no-translate - internal expectation message
         
         // Both should be running or completed
         let terminal_status = terminal_handle.status.read().await.clone();
         let script_status = script_handle.status.read().await.clone();
         
         // Terminal should be running (interactive)
-        assert!(matches!(terminal_status, ExecutionStatus::Running));
+        assert!(matches!(terminal_status, ExecutionStatus::Running)); // I18N: no-translate - Rust assertion
         
         // Script might be running or already completed
-        assert!(matches!(
+        assert!(matches!( // I18N: no-translate - Rust assertion
             script_status,
             ExecutionStatus::Running | ExecutionStatus::Success(_)
         ));
@@ -443,7 +443,7 @@ mod integration_tests {
         terminal_handler
             .cancel(&terminal_handle)
             .await
-            .expect("Should cancel terminal");
+            .expect("Should cancel terminal"); // I18N: no-translate - internal expectation message
     }
 
     /// Test terminal with very long output
@@ -476,19 +476,19 @@ mod integration_tests {
         let handle = terminal_handler
             .execute(terminal, context, tx, None)
             .await
-            .expect("Terminal should execute");
+            .expect("Terminal should execute"); // I18N: no-translate - internal expectation message
         
         // Give it time to generate output
         tokio::time::sleep(Duration::from_millis(500)).await;
         
         // Should still be running
         let status = handle.status.read().await.clone();
-        assert!(matches!(status, ExecutionStatus::Running));
+        assert!(matches!(status, ExecutionStatus::Running)); // I18N: no-translate - Rust assertion
         
         // Clean up
         terminal_handler
             .cancel(&handle)
             .await
-            .expect("Should cancel terminal");
+            .expect("Should cancel terminal"); // I18N: no-translate - internal expectation message
     }
 }

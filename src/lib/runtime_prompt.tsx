@@ -106,7 +106,7 @@ interface DropdownInputProps {
 // that gets rendered at the bottom of the document has a z-index
 // that seems to be lower than the z-index of the modal.
 function DropdownInput(props: DropdownInputProps) {
-  console.log(props.options);
+  console.log(props.options); // I18N: no-translate - developer diagnostic
   function handleValueChange(value: SharedSelection) {
     props.onValueChange(value.currentKey ?? null);
   }

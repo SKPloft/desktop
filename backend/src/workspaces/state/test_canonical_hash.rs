@@ -38,10 +38,10 @@ mod tests {
         });
 
         // Both should produce the same canonical hash
-        let hash1 = digest_data(&data1).expect("Failed to hash data1");
-        let hash2 = digest_data(&data2).expect("Failed to hash data2");
+        let hash1 = digest_data(&data1).expect("Failed to hash data1"); // I18N: no-translate - internal expectation message
+        let hash2 = digest_data(&data2).expect("Failed to hash data2"); // I18N: no-translate - internal expectation message
 
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             hash1, hash2,
             "Canonical hashing should produce same hash regardless of key order"
         );
@@ -63,16 +63,16 @@ mod tests {
 
         // Convert to YAML and back to JSON (simulating our save/load process)
         let yaml_value: YamlValue =
-            serde_yaml::to_value(&original_json).expect("Failed to convert to YAML");
+            serde_yaml::to_value(&original_json).expect("Failed to convert to YAML"); // I18N: no-translate - internal expectation message
         let reconstructed_json: serde_json::Value =
-            serde_yaml::from_value(yaml_value).expect("Failed to convert back to JSON");
+            serde_yaml::from_value(yaml_value).expect("Failed to convert back to JSON"); // I18N: no-translate - internal expectation message
 
         // Both should produce the same canonical hash
-        let original_hash = digest_data(&original_json).expect("Failed to hash original");
+        let original_hash = digest_data(&original_json).expect("Failed to hash original"); // I18N: no-translate - internal expectation message
         let reconstructed_hash =
-            digest_data(&reconstructed_json).expect("Failed to hash reconstructed");
+            digest_data(&reconstructed_json).expect("Failed to hash reconstructed"); // I18N: no-translate - internal expectation message
 
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             original_hash, reconstructed_hash,
             "YAML roundtrip should preserve canonical hash"
         );
@@ -81,7 +81,7 @@ mod tests {
     #[tokio::test]
     async fn test_file_save_load_hash_consistency() {
         // Test the full save/load cycle produces consistent hashes
-        let temp_dir = tempfile::tempdir().expect("Failed to create temp dir");
+        let temp_dir = tempfile::tempdir().expect("Failed to create temp dir"); // I18N: no-translate - internal expectation message
         let temp_path = temp_dir.path().join("test.atrb");
 
         let original_data = json!({
@@ -116,27 +116,27 @@ mod tests {
 
         // Save to file
         let yaml_text =
-            serde_yaml::to_string(&yaml_structure).expect("Failed to serialize to YAML");
+            serde_yaml::to_string(&yaml_structure).expect("Failed to serialize to YAML"); // I18N: no-translate - internal expectation message
         write(&temp_path, yaml_text)
             .await
-            .expect("Failed to write file");
+            .expect("Failed to write file"); // I18N: no-translate - internal expectation message
 
         // Calculate hash like workspace.rs does (canonical via JSON)
         let json_for_hash: serde_json::Value =
-            serde_yaml::from_value(yaml_structure).expect("Failed to convert to JSON for hashing");
-        let save_hash = digest_data(&json_for_hash).expect("Failed to hash for save");
+            serde_yaml::from_value(yaml_structure).expect("Failed to convert to JSON for hashing"); // I18N: no-translate - internal expectation message
+        let save_hash = digest_data(&json_for_hash).expect("Failed to hash for save"); // I18N: no-translate - internal expectation message
 
         // Now load the file like fs_ops.rs does
         let loaded_yaml_text = tokio::fs::read_to_string(&temp_path)
             .await
-            .expect("Failed to read file");
+            .expect("Failed to read file"); // I18N: no-translate - internal expectation message
         let loaded_yaml: YamlValue =
-            serde_yaml::from_str(&loaded_yaml_text).expect("Failed to parse YAML");
+            serde_yaml::from_str(&loaded_yaml_text).expect("Failed to parse YAML"); // I18N: no-translate - internal expectation message
         let loaded_json: serde_json::Value =
-            serde_yaml::from_value(loaded_yaml).expect("Failed to convert loaded YAML to JSON");
-        let load_hash = digest_data(&loaded_json).expect("Failed to hash loaded data");
+            serde_yaml::from_value(loaded_yaml).expect("Failed to convert loaded YAML to JSON"); // I18N: no-translate - internal expectation message
+        let load_hash = digest_data(&loaded_json).expect("Failed to hash loaded data"); // I18N: no-translate - internal expectation message
 
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             save_hash, load_hash,
             "Save and load should produce identical canonical hashes"
         );

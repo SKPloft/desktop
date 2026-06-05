@@ -68,7 +68,7 @@ export default function CommandPalette() {
       try {
         await commandRegistry.executeCommand(item.command.id, {});
       } catch (error) {
-        console.error("Failed to execute command:", error);
+        console.error("Failed to execute command:", error); // I18N: no-translate - developer diagnostic
       }
     },
     [onClose],

@@ -32,13 +32,13 @@ const colors = {
 };
 
 function log(color, message) {
-  console.log(`${colors[color]}${message}${colors.reset}`);
+  console.log(`${colors[color]}${message}${colors.reset}`); // I18N: no-translate - developer diagnostic
 }
 
 function parsePackageJson() {
   const packagePath = path.join(process.cwd(), "package.json");
   if (!fs.existsSync(packagePath)) {
-    throw new Error("package.json not found");
+    throw new Error("package.json not found"); // I18N: no-translate - internal exception
   }
 
   const packageJson = JSON.parse(fs.readFileSync(packagePath, "utf8"));
@@ -61,7 +61,7 @@ function parsePackageJson() {
 function parseCargoToml() {
   const cargoPath = path.join(process.cwd(), "backend", "Cargo.toml");
   if (!fs.existsSync(cargoPath)) {
-    throw new Error("backend/Cargo.toml not found");
+    throw new Error("backend/Cargo.toml not found"); // I18N: no-translate - internal exception
   }
 
   const cargoContent = fs.readFileSync(cargoPath, "utf8");
@@ -157,22 +157,22 @@ function main() {
 
     log("blue", "JavaScript plugins found:");
     for (const [plugin, version] of Object.entries(jsPlugins)) {
-      console.log(`  ${plugin}: ${version}`);
+      console.log(`  ${plugin}: ${version}`); // I18N: no-translate - developer diagnostic
     }
 
     log("blue", "\nRust plugins found:");
     for (const [plugin, version] of Object.entries(rustPlugins)) {
-      console.log(`  ${plugin}: ${version}`);
+      console.log(`  ${plugin}: ${version}`); // I18N: no-translate - developer diagnostic
     }
 
     // Show expected differences
     if (EXPECTED_DIFFERENCES.rustOnly.length > 0 || EXPECTED_DIFFERENCES.jsOnly.length > 0) {
       log("blue", "\nExpected differences (ignored):");
       if (EXPECTED_DIFFERENCES.rustOnly.length > 0) {
-        console.log(`  Rust-only: ${EXPECTED_DIFFERENCES.rustOnly.join(", ")}`);
+        console.log(`  Rust-only: ${EXPECTED_DIFFERENCES.rustOnly.join(", ")}`); // I18N: no-translate - developer diagnostic
       }
       if (EXPECTED_DIFFERENCES.jsOnly.length > 0) {
-        console.log(`  JS-only: ${EXPECTED_DIFFERENCES.jsOnly.join(", ")}`);
+        console.log(`  JS-only: ${EXPECTED_DIFFERENCES.jsOnly.join(", ")}`); // I18N: no-translate - developer diagnostic
       }
     }
 

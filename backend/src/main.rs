@@ -403,9 +403,9 @@ fn show_window<R: Runtime>(app: &AppHandle<R>) {
     windows
         .values()
         .next()
-        .expect("Sorry, no window found")
+        .expect("Sorry, no window found") // I18N: no-translate - internal expectation message
         .set_focus()
-        .expect("Can't Bring Window to Focus");
+        .expect("Can't Bring Window to Focus"); // I18N: no-translate - internal expectation message
 }
 
 async fn apply_runbooks_migrations<R: Runtime>(app: &AppHandle<R>) -> eyre::Result<()> {
@@ -485,7 +485,7 @@ fn main() {
     } else {
         builder.plugin(tauri_plugin_single_instance::init(|app, argv, _cwd| {
             show_window(app);
-            println!("app opened with {argv:?}");
+            println!("app opened with {argv:?}"); // I18N: no-translate - Rust console output
         }))
     };
 
@@ -621,12 +621,12 @@ fn main() {
                 request
                     .uri()
                     .host()
-                    .expect("Resource URI must have a host")
+                    .expect("Resource URI must have a host") // I18N: no-translate - internal expectation message
                     .to_string()
             } else {
                 format!(
                     "{}/{}",
-                    request.uri().host().expect("Resource URI must have a host"),
+                    request.uri().host().expect("Resource URI must have a host"), // I18N: no-translate - internal expectation message
                     filename
                 )
             };
@@ -637,7 +637,7 @@ fn main() {
                 .resolve("resources", BaseDirectory::Resource);
 
             if let Err(e) = resources_dir {
-                log::error!("Failed to resolve resources directory: {}", e);
+                log::error!("Failed to resolve resources directory: {}", e); // I18N: no-translate - Rust diagnostic log
                 return http::Response::builder()
                     .status(500)
                     .header(http::header::CONTENT_TYPE, "text/plain")
@@ -659,7 +659,7 @@ fn main() {
             let advanced_settings_path = app
                 .path()
                 .app_config_dir()
-                .expect("Failed to get app config dir")
+                .expect("Failed to get app config dir") // I18N: no-translate - internal expectation message
                 .join("advanced_settings");
 
             let advanced_settings = AdvancedSettings::load(&advanced_settings_path)?;
@@ -672,15 +672,15 @@ fn main() {
                 run_async_command(async {
                     match crate::util::load_login_shell_environment().await {
                         Ok(()) => {
-                            log::info!("Successfully loaded login shell environment");
+                            log::info!("Successfully loaded login shell environment"); // I18N: no-translate - Rust diagnostic log
                         }
                         Err(e) => {
-                            log::warn!("Failed to load login shell environment: {}", e);
+                            log::warn!("Failed to load login shell environment: {}", e); // I18N: no-translate - Rust diagnostic log
                         }
                     }
                 });
             } else {
-                log::warn!(
+                log::warn!( // I18N: no-translate - Rust diagnostic log
                     "Skipping login shell environment copy due to advanced configuration settings"
                 );
             }
@@ -693,11 +693,11 @@ fn main() {
             let app_path = app
                 .path()
                 .app_config_dir()
-                .expect("Failed to get app config dir");
+                .expect("Failed to get app config dir"); // I18N: no-translate - internal expectation message
 
             let use_hub_updater_service = env::var("USE_HUB_UPDATER_SERVICE").is_ok();
             if use_hub_updater_service {
-                log::info!("Using Hub updater service");
+                log::info!("Using Hub updater service"); // I18N: no-translate - Rust diagnostic log
             }
 
             let handle_clone = handle.clone();
@@ -711,7 +711,7 @@ fn main() {
                     .state::<state::AtuinState>()
                     .init(&handle_clone)
                     .await
-                    .expect("Failed to initialize application state");
+                    .expect("Failed to initialize application state"); // I18N: no-translate - internal expectation message
             });
 
             let handle_clone = handle.clone();
@@ -719,7 +719,7 @@ fn main() {
                 apply_runbooks_migrations(&handle_clone).await.unwrap();
             });
 
-            handle.set_menu(menu::menu(handle, &[]).expect("Failed to build menu"))?;
+            handle.set_menu(menu::menu(handle, &[]).expect("Failed to build menu"))?; // I18N: no-translate - internal expectation message
 
             let handle_clone = handle.clone();
             handle.listen("i18n:locale_changed", move |_event| {
@@ -747,7 +747,7 @@ fn main() {
             Ok(())
         })
         .build(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .expect("error while running tauri application"); // I18N: no-translate - internal expectation message
 
     app.run(move |handle, event| {
         if let RunEvent::Exit = event {

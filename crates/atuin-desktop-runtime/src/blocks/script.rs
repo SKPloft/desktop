@@ -207,9 +207,9 @@ impl BlockBehavior for Script {
         self,
         context: ExecutionContext,
     ) -> Result<Option<ExecutionHandle>, Box<dyn std::error::Error + Send + Sync>> {
-        tracing::trace!("Executing script block {id}", id = self.id);
+        tracing::trace!("Executing script block {id}", id = self.id); // I18N: no-translate - Rust diagnostic log
 
-        tracing::trace!(
+        tracing::trace!( // I18N: no-translate - Rust diagnostic log
             "Script block {id} execution handle created; ID = {handle_id}",
             id = self.id,
             handle_id = context.handle().id
@@ -229,7 +229,7 @@ impl BlockBehavior for Script {
                 .run_script(context.clone(), context.cancellation_token())
                 .await;
 
-            tracing::trace!(
+            tracing::trace!( // I18N: no-translate - Rust diagnostic log
                 "Script block {id} execution completed; Exit code = {exit_code}",
                 id = self.id,
                 exit_code = exit_code
@@ -265,7 +265,7 @@ impl BlockBehavior for Script {
 
                         let _ = context
                             .update_active_context(self.id, move |ctx| {
-                                tracing::trace!(
+                                tracing::trace!( // I18N: no-translate - Rust diagnostic log
                                     "Storing output variable {var_name} for script block {block_id}",
                                     var_name = var_name,
                                     block_id = self.id
@@ -374,7 +374,7 @@ impl Script {
         Option<HashMap<String, String>>,
     ) {
         // Send started lifecycle event to output channel
-        tracing::trace!(
+        tracing::trace!( // I18N: no-translate - Rust diagnostic log
             "Sending started lifecycle event to output channel for script block {id}",
             id = self.id
         );
@@ -386,7 +386,7 @@ impl Script {
             .context_resolver
             .resolve_template(&self.code)
             .unwrap_or_else(|e| {
-                tracing::warn!("Templating error in script {id}: {e}", id = self.id, e = e);
+                tracing::warn!("Templating error in script {id}: {e}", id = self.id, e = e); // I18N: no-translate - Rust diagnostic log
                 self.code.clone()
             });
 
@@ -394,7 +394,7 @@ impl Script {
         let ssh_host = context.context_resolver.ssh_host().cloned();
         let ssh_config = context.context_resolver.ssh_config().cloned();
         if let Some(ssh_host) = ssh_host {
-            tracing::trace!(
+            tracing::trace!( // I18N: no-translate - Rust diagnostic log
                 "Executing SSH script for script block {id} with SSH host {ssh_host}",
                 id = self.id,
                 ssh_host = ssh_host
@@ -465,7 +465,7 @@ impl Script {
             cmd.process_group(0);
         }
 
-        tracing::trace!("Spawning process for script block {id}", id = self.id,);
+        tracing::trace!("Spawning process for script block {id}", id = self.id,); // I18N: no-translate - Rust diagnostic log
 
         let mut child = match cmd.spawn() {
             Ok(child) => child,
@@ -496,7 +496,7 @@ impl Script {
                     if n == 0 {
                         break;
                     }
-                    tracing::trace!(
+                    tracing::trace!( // I18N: no-translate - Rust diagnostic log
                         "Sending stdout line to output channel for script block {id}",
                         id = block_id
                     );
@@ -529,7 +529,7 @@ impl Script {
                     if n == 0 {
                         break;
                     }
-                    tracing::trace!(
+                    tracing::trace!( // I18N: no-translate - Rust diagnostic log
                         "Sending stderr line to output channel for script block {id}",
                         id = block_id
                     );
@@ -554,7 +554,7 @@ impl Script {
         let exit_code = if let Some(cancel_rx) = cancellation_receiver {
             tokio::select! {
                 _ = cancel_rx => {
-                    tracing::trace!("Process for script block {id} cancelled", id = self.id);
+                    tracing::trace!("Process for script block {id} cancelled", id = self.id); // I18N: no-translate - Rust diagnostic log
 
                     // Kill the process
                     if let Some(pid) = pid {
@@ -562,7 +562,7 @@ impl Script {
                         {
                             use nix::sys::signal::{self, Signal};
                             use nix::unistd::Pid;
-                            tracing::trace!("Sending SIGTERM to process {pid}", pid = pid);
+                            tracing::trace!("Sending SIGTERM to process {pid}", pid = pid); // I18N: no-translate - Rust diagnostic log
                             // Send SIGTERM to the process group
                             let _ = signal::kill(Pid::from_raw(-(pid as i32)), Signal::SIGTERM);
                         }
@@ -573,15 +573,15 @@ impl Script {
                     }
 
                     if let Some(stdout_task) = stdout_task {
-                        tracing::trace!("Waiting for stdout reader to finish");
+                        tracing::trace!("Waiting for stdout reader to finish"); // I18N: no-translate - Rust diagnostic log
                         let _ = stdout_task.await;
                     }
                     if let Some(stderr_task) = stderr_task {
-                        tracing::trace!("Waiting for stderr reader to finish");
+                        tracing::trace!("Waiting for stderr reader to finish"); // I18N: no-translate - Rust diagnostic log
                         let _ = stderr_task.await;
                     }
 
-                    tracing::trace!("Reading captured output");
+                    tracing::trace!("Reading captured output"); // I18N: no-translate - Rust diagnostic log
                     let captured = captured_output.read().await.clone();
 
                     let _ = context.block_cancelled().await;
@@ -593,15 +593,15 @@ impl Script {
                         Ok(status) => status.code().unwrap_or(-1),
                         Err(e) => {
                             if let Some(stdout_task) = stdout_task {
-                                tracing::trace!("Waiting for stdout reader to finish");
+                                tracing::trace!("Waiting for stdout reader to finish"); // I18N: no-translate - Rust diagnostic log
                                 let _ = stdout_task.await;
                             }
                             if let Some(stderr_task) = stderr_task {
-                                tracing::trace!("Waiting for stderr reader to finish");
+                                tracing::trace!("Waiting for stderr reader to finish"); // I18N: no-translate - Rust diagnostic log
                                 let _ = stderr_task.await;
                             }
 
-                            tracing::trace!("Reading captured output");
+                            tracing::trace!("Reading captured output"); // I18N: no-translate - Rust diagnostic log
                             let captured = captured_output.read().await.clone();
                             let _ = context.block_failed(format!("Failed to wait for process: {}", e)).await;
                             return (Err(format!("Failed to wait for process: {}", e).into()), captured, None);
@@ -614,15 +614,15 @@ impl Script {
                 Ok(status) => status.code().unwrap_or(-1),
                 Err(e) => {
                     if let Some(stdout_task) = stdout_task {
-                        tracing::trace!("Waiting for stdout reader to finish");
+                        tracing::trace!("Waiting for stdout reader to finish"); // I18N: no-translate - Rust diagnostic log
                         let _ = stdout_task.await;
                     }
                     if let Some(stderr_task) = stderr_task {
-                        tracing::trace!("Waiting for stderr reader to finish");
+                        tracing::trace!("Waiting for stderr reader to finish"); // I18N: no-translate - Rust diagnostic log
                         let _ = stderr_task.await;
                     }
 
-                    tracing::trace!("Reading captured output");
+                    tracing::trace!("Reading captured output"); // I18N: no-translate - Rust diagnostic log
                     let captured = captured_output.read().await.clone();
                     let _ = context
                         .block_failed(format!("Failed to wait for process: {}", e))
@@ -643,7 +643,7 @@ impl Script {
             let _ = stderr_task.await;
         }
 
-        tracing::trace!("Reading captured output");
+        tracing::trace!("Reading captured output"); // I18N: no-translate - Rust diagnostic log
         let captured = captured_output.read().await.clone();
         if let Ok(vars) = fs_var::finalize(fs_var).await {
             (Ok(exit_code), captured, Some(vars))
@@ -747,7 +747,7 @@ impl Script {
                 result
             }
             _ = &mut cancel_rx => {
-                tracing::trace!("Sending cancel to SSH execution for channel {channel_id}");
+                tracing::trace!("Sending cancel to SSH execution for channel {channel_id}"); // I18N: no-translate - Rust diagnostic log
                 let _ = ssh_pool.exec_cancel(&channel_id).await;
                 let _ = context.block_cancelled().await;
                 if let Some(ref path) = remote_temp_path {
@@ -877,7 +877,7 @@ impl Script {
             {
                 Ok(contents) => Some(fs_var::parse_vars(&contents)),
                 Err(e) => {
-                    tracing::warn!("Failed to read remote temp file for variables: {}", e);
+                    tracing::warn!("Failed to read remote temp file for variables: {}", e); // I18N: no-translate - Rust diagnostic log
                     None
                 }
             }
@@ -997,8 +997,8 @@ mod tests {
                 ExecutionStatus::Success => {
                     break;
                 }
-                ExecutionStatus::Failed(e) => panic!("Script failed: {}", e),
-                ExecutionStatus::Cancelled => panic!("Script was cancelled"),
+                ExecutionStatus::Failed(e) => panic!("Script failed: {}", e), // I18N: no-translate - Rust panic/internal diagnostic
+                ExecutionStatus::Cancelled => panic!("Script was cancelled"), // I18N: no-translate - Rust panic/internal diagnostic
                 ExecutionStatus::Running => continue,
             }
         }
@@ -1017,11 +1017,11 @@ mod tests {
             let status = handle.status.read().await.clone();
             match status {
                 ExecutionStatus::Failed(msg) => {
-                    assert!(msg.contains("Script exited with code 1"));
+                    assert!(msg.contains("Script exited with code 1")); // I18N: no-translate - Rust assertion
                     break;
                 }
-                ExecutionStatus::Success => panic!("Script should have failed"),
-                ExecutionStatus::Cancelled => panic!("Script was cancelled"),
+                ExecutionStatus::Success => panic!("Script should have failed"), // I18N: no-translate - Rust panic/internal diagnostic
+                ExecutionStatus::Cancelled => panic!("Script was cancelled"), // I18N: no-translate - Rust panic/internal diagnostic
                 ExecutionStatus::Running => continue,
             }
         }
@@ -1047,8 +1047,8 @@ mod tests {
                 ExecutionStatus::Success => {
                     break;
                 }
-                ExecutionStatus::Failed(e) => panic!("Script failed: {}", e),
-                ExecutionStatus::Cancelled => panic!("Script was cancelled"),
+                ExecutionStatus::Failed(e) => panic!("Script failed: {}", e), // I18N: no-translate - Rust panic/internal diagnostic
+                ExecutionStatus::Cancelled => panic!("Script was cancelled"), // I18N: no-translate - Rust panic/internal diagnostic
                 ExecutionStatus::Running => continue,
             }
         }
@@ -1071,7 +1071,7 @@ mod tests {
             let status = handle.status.read().await.clone();
             match status {
                 ExecutionStatus::Failed(e) if e.contains("cancelled") => break,
-                ExecutionStatus::Success => panic!("Script should have been cancelled"),
+                ExecutionStatus::Success => panic!("Script should have been cancelled"), // I18N: no-translate - Rust panic/internal diagnostic
                 ExecutionStatus::Cancelled => break,
                 ExecutionStatus::Running => continue,
                 ExecutionStatus::Failed(_) => break, // May fail due to cancellation
@@ -1094,8 +1094,8 @@ mod tests {
                 ExecutionStatus::Success => {
                     break;
                 }
-                ExecutionStatus::Failed(e) => panic!("Script failed: {}", e),
-                ExecutionStatus::Cancelled => panic!("Script was cancelled"),
+                ExecutionStatus::Failed(e) => panic!("Script failed: {}", e), // I18N: no-translate - Rust panic/internal diagnostic
+                ExecutionStatus::Cancelled => panic!("Script was cancelled"), // I18N: no-translate - Rust panic/internal diagnostic
                 ExecutionStatus::Running => continue,
             }
         }
@@ -1127,8 +1127,8 @@ echo "Successfully wrote to $ATUIN_OUTPUT_VARS"
             let status = handle.status.read().await.clone();
             match status {
                 ExecutionStatus::Success => break,
-                ExecutionStatus::Failed(e) => panic!("Script failed: {}", e),
-                ExecutionStatus::Cancelled => panic!("Script was cancelled"),
+                ExecutionStatus::Failed(e) => panic!("Script failed: {}", e), // I18N: no-translate - Rust panic/internal diagnostic
+                ExecutionStatus::Cancelled => panic!("Script was cancelled"), // I18N: no-translate - Rust panic/internal diagnostic
                 ExecutionStatus::Running => continue,
             }
         }
@@ -1141,22 +1141,22 @@ echo "Successfully wrote to $ATUIN_OUTPUT_VARS"
 
     #[tokio::test]
     async fn test_ssh_host_parsing() {
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             Script::parse_ssh_host("user@host.com"),
             (Some("user".to_string()), "host.com".to_string())
         );
 
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             Script::parse_ssh_host("host.com"),
             (None, "host.com".to_string())
         );
 
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             Script::parse_ssh_host("user@host.com:22"),
             (Some("user".to_string()), "host.com:22".to_string())
         );
 
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             Script::parse_ssh_host("host.com:2222"),
             (None, "host.com:2222".to_string())
         );
@@ -1164,18 +1164,18 @@ echo "Successfully wrote to $ATUIN_OUTPUT_VARS"
 
     #[tokio::test]
     async fn test_interpreter_flag_logic() {
-        assert_eq!(Script::get_interpreter_flag("ruby"), Some("-e"));
-        assert_eq!(Script::get_interpreter_flag("node"), Some("-e"));
-        assert_eq!(Script::get_interpreter_flag("php"), Some("-r"));
-        assert_eq!(Script::get_interpreter_flag("bash"), Some("-c"));
-        assert_eq!(Script::get_interpreter_flag("/usr/bin/ruby"), Some("-e"));
-        assert_eq!(
+        assert_eq!(Script::get_interpreter_flag("ruby"), Some("-e")); // I18N: no-translate - Rust assertion
+        assert_eq!(Script::get_interpreter_flag("node"), Some("-e")); // I18N: no-translate - Rust assertion
+        assert_eq!(Script::get_interpreter_flag("php"), Some("-r")); // I18N: no-translate - Rust assertion
+        assert_eq!(Script::get_interpreter_flag("bash"), Some("-c")); // I18N: no-translate - Rust assertion
+        assert_eq!(Script::get_interpreter_flag("/usr/bin/ruby"), Some("-e")); // I18N: no-translate - Rust assertion
+        assert_eq!( // I18N: no-translate - Rust assertion
             Script::get_interpreter_flag("/usr/local/bin/python3"),
             Some("-c")
         );
-        assert_eq!(Script::get_interpreter_flag("python3.10"), Some("-c"));
-        assert_eq!(Script::get_interpreter_flag("awk"), None);
-        assert_eq!(Script::get_interpreter_flag("my-custom-tool"), None);
+        assert_eq!(Script::get_interpreter_flag("python3.10"), Some("-c")); // I18N: no-translate - Rust assertion
+        assert_eq!(Script::get_interpreter_flag("awk"), None); // I18N: no-translate - Rust assertion
+        assert_eq!(Script::get_interpreter_flag("my-custom-tool"), None); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -1194,8 +1194,8 @@ echo "Successfully wrote to $ATUIN_OUTPUT_VARS"
             let status = handle.status.read().await.clone();
             match status {
                 ExecutionStatus::Success => break,
-                ExecutionStatus::Failed(e) => panic!("Script failed: {}", e),
-                ExecutionStatus::Cancelled => panic!("Script was cancelled"),
+                ExecutionStatus::Failed(e) => panic!("Script failed: {}", e), // I18N: no-translate - Rust panic/internal diagnostic
+                ExecutionStatus::Cancelled => panic!("Script was cancelled"), // I18N: no-translate - Rust panic/internal diagnostic
                 ExecutionStatus::Running => continue,
             }
         }
@@ -1203,7 +1203,7 @@ echo "Successfully wrote to $ATUIN_OUTPUT_VARS"
         // Verify events were emitted
         use crate::events::GCEvent;
         let events = event_bus.events();
-        assert_eq!(events.len(), 2);
+        assert_eq!(events.len(), 2); // I18N: no-translate - Rust assertion
 
         // Check BlockStarted event
         match &events[0] {
@@ -1211,10 +1211,10 @@ echo "Successfully wrote to $ATUIN_OUTPUT_VARS"
                 block_id,
                 runbook_id: rb_id,
             } => {
-                assert_eq!(*block_id, script_id);
-                assert_eq!(*rb_id, runbook_id);
+                assert_eq!(*block_id, script_id); // I18N: no-translate - Rust assertion
+                assert_eq!(*rb_id, runbook_id); // I18N: no-translate - Rust assertion
             }
-            _ => panic!("Expected BlockStarted event, got: {:?}", events[0]),
+            _ => panic!("Expected BlockStarted event, got: {:?}", events[0]), // I18N: no-translate - Rust panic/internal diagnostic
         }
 
         // Check BlockFinished event
@@ -1224,11 +1224,11 @@ echo "Successfully wrote to $ATUIN_OUTPUT_VARS"
                 runbook_id: rb_id,
                 success,
             } => {
-                assert_eq!(*block_id, script_id);
-                assert_eq!(*rb_id, runbook_id);
-                assert_eq!(*success, true);
+                assert_eq!(*block_id, script_id); // I18N: no-translate - Rust assertion
+                assert_eq!(*rb_id, runbook_id); // I18N: no-translate - Rust assertion
+                assert_eq!(*success, true); // I18N: no-translate - Rust assertion
             }
-            _ => panic!("Expected BlockFinished event, got: {:?}", events[1]),
+            _ => panic!("Expected BlockFinished event, got: {:?}", events[1]), // I18N: no-translate - Rust panic/internal diagnostic
         }
     }
 
@@ -1248,8 +1248,8 @@ echo "Successfully wrote to $ATUIN_OUTPUT_VARS"
             let status = handle.status.read().await.clone();
             match status {
                 ExecutionStatus::Failed(_) => break,
-                ExecutionStatus::Success => panic!("Script should have failed"),
-                ExecutionStatus::Cancelled => panic!("Script was cancelled"),
+                ExecutionStatus::Success => panic!("Script should have failed"), // I18N: no-translate - Rust panic/internal diagnostic
+                ExecutionStatus::Cancelled => panic!("Script was cancelled"), // I18N: no-translate - Rust panic/internal diagnostic
                 ExecutionStatus::Running => continue,
             }
         }
@@ -1257,7 +1257,7 @@ echo "Successfully wrote to $ATUIN_OUTPUT_VARS"
         // Verify events were emitted
         use crate::events::GCEvent;
         let events = event_bus.events();
-        assert_eq!(events.len(), 2);
+        assert_eq!(events.len(), 2); // I18N: no-translate - Rust assertion
 
         // Check BlockStarted event
         match &events[0] {
@@ -1265,10 +1265,10 @@ echo "Successfully wrote to $ATUIN_OUTPUT_VARS"
                 block_id,
                 runbook_id: rb_id,
             } => {
-                assert_eq!(*block_id, script_id);
-                assert_eq!(*rb_id, runbook_id);
+                assert_eq!(*block_id, script_id); // I18N: no-translate - Rust assertion
+                assert_eq!(*rb_id, runbook_id); // I18N: no-translate - Rust assertion
             }
-            _ => panic!("Expected BlockStarted event, got: {:?}", events[0]),
+            _ => panic!("Expected BlockStarted event, got: {:?}", events[0]), // I18N: no-translate - Rust panic/internal diagnostic
         }
 
         // Check BlockFailed event
@@ -1278,12 +1278,12 @@ echo "Successfully wrote to $ATUIN_OUTPUT_VARS"
                 runbook_id: rb_id,
                 error,
             } => {
-                println!("BlockFailed event: {:?}", error);
-                assert_eq!(*block_id, script_id);
-                assert_eq!(*rb_id, runbook_id);
-                assert!(error.contains("Script exited with code 1"));
+                println!("BlockFailed event: {:?}", error); // I18N: no-translate - Rust console output
+                assert_eq!(*block_id, script_id); // I18N: no-translate - Rust assertion
+                assert_eq!(*rb_id, runbook_id); // I18N: no-translate - Rust assertion
+                assert!(error.contains("Script exited with code 1")); // I18N: no-translate - Rust assertion
             }
-            _ => panic!("Expected BlockFailed event, got: {:?}", events[1]),
+            _ => panic!("Expected BlockFailed event, got: {:?}", events[1]), // I18N: no-translate - Rust panic/internal diagnostic
         }
     }
 }

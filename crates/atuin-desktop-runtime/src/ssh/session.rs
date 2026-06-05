@@ -223,7 +223,7 @@ impl Session {
             ));
         }
 
-        tracing::debug!("Created remote temp file: {}", path);
+        tracing::debug!("Created remote temp file: {}", path); // I18N: no-translate - Rust diagnostic log
         Ok(path)
     }
 
@@ -257,7 +257,7 @@ impl Session {
 
         // rm -f returns 0 even if file doesn't exist, but log if there's an error
         if result.exit_code != 0 {
-            tracing::warn!(
+            tracing::warn!( // I18N: no-translate - Rust diagnostic log
                 "Failed to delete file {}: {} {}",
                 path,
                 result.stdout.trim(),
@@ -297,7 +297,7 @@ impl Session {
             Ok(Some(_)) => true,
             Ok(None) => false,
             Err(_) => {
-                tracing::debug!("SSH keepalive timed out");
+                tracing::debug!("SSH keepalive timed out"); // I18N: no-translate - Rust diagnostic log
                 false
             }
         }
@@ -457,7 +457,7 @@ impl Session {
                     // Parse IdentityAgent manually since russh-config doesn't support it
                     let identity_agent = Self::parse_identity_agent(&hostname);
 
-                    tracing::debug!(
+                    tracing::debug!( // I18N: no-translate - Rust diagnostic log
                         "Resolved SSH config for {host}: hostname={hostname}, port={port}, username={username:?}, identity_files={identity_files:?}, proxy_command={proxy_command:?}, proxy_jump={proxy_jump:?}"
                     );
 
@@ -472,12 +472,12 @@ impl Session {
                     };
                 }
                 Err(e) => {
-                    tracing::warn!("Failed to parse SSH config: {e}");
+                    tracing::warn!("Failed to parse SSH config: {e}"); // I18N: no-translate - Rust diagnostic log
                 }
             }
         }
 
-        tracing::debug!("No SSH config found for {host}, using defaults");
+        tracing::debug!("No SSH config found for {host}, using defaults"); // I18N: no-translate - Rust diagnostic log
         default_config
     }
 
@@ -493,7 +493,7 @@ impl Session {
 
         // Handle ProxyCommand and ProxyJump
         let session = if ssh_config.proxy_command.is_some() || ssh_config.proxy_jump.is_some() {
-            tracing::debug!(
+            tracing::debug!( // I18N: no-translate - Rust diagnostic log
                 "Using proxy for connection to {} (proxy_command: {:?}, proxy_jump: {:?})",
                 host,
                 ssh_config.proxy_command,
@@ -507,17 +507,17 @@ impl Session {
                     russh::client::connect_stream(Arc::new(config), stream, sh).await?
                 }
                 Err(e) => {
-                    tracing::warn!("Failed to create proxy stream: {e}");
+                    tracing::warn!("Failed to create proxy stream: {e}"); // I18N: no-translate - Rust diagnostic log
                     // Fallback to direct connection
                     let address = format!("{}:{}", ssh_config.hostname, ssh_config.port);
-                    tracing::debug!("Falling back to direct connection: {address}");
+                    tracing::debug!("Falling back to direct connection: {address}"); // I18N: no-translate - Rust diagnostic log
                     russh::client::connect(Arc::new(config), address.as_str(), sh).await?
                 }
             }
         } else {
             // Direct connection
             let address = format!("{}:{}", ssh_config.hostname, ssh_config.port);
-            tracing::debug!("Connecting directly to: {address}");
+            tracing::debug!("Connecting directly to: {address}"); // I18N: no-translate - Rust diagnostic log
             russh::client::connect(Arc::new(config), address.as_str(), sh).await?
         };
 
@@ -539,19 +539,19 @@ impl Session {
         if let Some(override_cfg) = config_override {
             if let Some(ref user) = override_cfg.user {
                 if !user.is_empty() {
-                    tracing::debug!("Overriding username from block settings: {}", user);
+                    tracing::debug!("Overriding username from block settings: {}", user); // I18N: no-translate - Rust diagnostic log
                     ssh_config.username = Some(user.clone());
                 }
             }
             if let Some(ref hostname) = override_cfg.hostname {
                 if !hostname.is_empty() {
-                    tracing::debug!("Overriding hostname from block settings: {}", hostname);
+                    tracing::debug!("Overriding hostname from block settings: {}", hostname); // I18N: no-translate - Rust diagnostic log
                     ssh_config.hostname = hostname.clone();
                 }
             }
             if let Some(port) = override_cfg.port {
                 if port > 0 {
-                    tracing::debug!("Overriding port from block settings: {}", port);
+                    tracing::debug!("Overriding port from block settings: {}", port); // I18N: no-translate - Rust diagnostic log
                     ssh_config.port = port;
                 }
             }
@@ -562,7 +562,7 @@ impl Session {
 
         // Handle ProxyCommand and ProxyJump
         let session = if ssh_config.proxy_command.is_some() || ssh_config.proxy_jump.is_some() {
-            tracing::debug!(
+            tracing::debug!( // I18N: no-translate - Rust diagnostic log
                 "Using proxy for connection to {} (proxy_command: {:?}, proxy_jump: {:?})",
                 host,
                 ssh_config.proxy_command,
@@ -575,15 +575,15 @@ impl Session {
                     russh::client::connect_stream(Arc::new(config), stream, sh).await?
                 }
                 Err(e) => {
-                    tracing::warn!("Failed to create proxy stream: {e}");
+                    tracing::warn!("Failed to create proxy stream: {e}"); // I18N: no-translate - Rust diagnostic log
                     let address = format!("{}:{}", ssh_config.hostname, ssh_config.port);
-                    tracing::debug!("Falling back to direct connection: {address}");
+                    tracing::debug!("Falling back to direct connection: {address}"); // I18N: no-translate - Rust diagnostic log
                     russh::client::connect(Arc::new(config), address.as_str(), sh).await?
                 }
             }
         } else {
             let address = format!("{}:{}", ssh_config.hostname, ssh_config.port);
-            tracing::debug!("Connecting directly to: {address}");
+            tracing::debug!("Connecting directly to: {address}"); // I18N: no-translate - Rust diagnostic log
             russh::client::connect(Arc::new(config), address.as_str(), sh).await?
         };
 
@@ -671,7 +671,7 @@ impl Session {
         }
 
         // No certificate found, use regular public key authentication
-        tracing::info!(
+        tracing::info!( // I18N: no-translate - Rust diagnostic log
             "Attempting public key authentication with {}",
             key_path.display()
         );
@@ -679,12 +679,12 @@ impl Session {
         let key_pair = match russh::keys::load_secret_key(&key_path, None) {
             Ok(kp) => kp,
             Err(e) => {
-                tracing::warn!("Failed to load key {}: {e}", key_path.display());
+                tracing::warn!("Failed to load key {}: {e}", key_path.display()); // I18N: no-translate - Rust diagnostic log
                 return Err(e.into());
             }
         };
 
-        tracing::debug!("Key loaded successfully, authenticating...");
+        tracing::debug!("Key loaded successfully, authenticating..."); // I18N: no-translate - Rust diagnostic log
 
         // Query the server for the best RSA hash algorithm it supports
         // This ensures compatibility with both modern (SHA-256/SHA-512) and legacy (SHA-1) servers
@@ -698,14 +698,14 @@ impl Session {
 
         match auth_res {
             russh::client::AuthResult::Success => {
-                tracing::info!("✓ Authentication successful with {}", key_path.display());
+                tracing::info!("✓ Authentication successful with {}", key_path.display()); // I18N: no-translate - Rust diagnostic log
                 Ok(AuthResult::default())
             }
             russh::client::AuthResult::Failure {
                 remaining_methods,
                 partial_success,
             } => {
-                tracing::warn!(
+                tracing::warn!( // I18N: no-translate - Rust diagnostic log
                     "Server rejected key {} (remaining methods: {:?}, partial: {})",
                     key_path.display(),
                     remaining_methods,
@@ -728,7 +728,7 @@ impl Session {
         key_path: PathBuf,
         cert_path: PathBuf,
     ) -> Result<AuthResult> {
-        tracing::info!(
+        tracing::info!( // I18N: no-translate - Rust diagnostic log
             "Attempting certificate authentication with key {} and cert {}",
             key_path.display(),
             cert_path.display()
@@ -738,7 +738,7 @@ impl Session {
         let key_pair = match russh::keys::load_secret_key(&key_path, None) {
             Ok(kp) => kp,
             Err(e) => {
-                tracing::warn!("Failed to load key {}: {e}", key_path.display());
+                tracing::warn!("Failed to load key {}: {e}", key_path.display()); // I18N: no-translate - Rust diagnostic log
                 return Err(e.into());
             }
         };
@@ -803,7 +803,7 @@ impl Session {
             Ok(c) => c,
             Err(e) => {
                 let error_msg = e.to_string();
-                tracing::error!(
+                tracing::error!( // I18N: no-translate - Rust diagnostic log
                     "Failed to load SSH certificate {}: {e}. Falling back to key authentication.",
                     cert_source
                 );
@@ -830,7 +830,7 @@ impl Session {
 
         if now < valid_after {
             let valid_from_str = OffsetDateTime::from(valid_after).to_string();
-            tracing::warn!(
+            tracing::warn!( // I18N: no-translate - Rust diagnostic log
                 "Certificate {} is not yet valid (valid from {}). Falling back to key authentication.",
                 cert_source,
                 valid_from_str
@@ -852,7 +852,7 @@ impl Session {
 
         if now > valid_before {
             let valid_until_str = OffsetDateTime::from(valid_before).to_string();
-            tracing::warn!(
+            tracing::warn!( // I18N: no-translate - Rust diagnostic log
                 "Certificate {} has expired (valid until {}). Falling back to key authentication.",
                 cert_source,
                 valid_until_str
@@ -875,7 +875,7 @@ impl Session {
         // Check if certificate authorizes the requested principal
         let principals = cert.valid_principals();
         if !principals.is_empty() && !principals.iter().any(|p| p == username) {
-            tracing::warn!(
+            tracing::warn!( // I18N: no-translate - Rust diagnostic log
                 "Certificate does not explicitly authorize principal '{}' (authorized: {:?}). \
                  Server may still accept it if wildcards or other matching rules apply.",
                 username,
@@ -883,7 +883,7 @@ impl Session {
             );
         }
 
-        tracing::debug!(
+        tracing::debug!( // I18N: no-translate - Rust diagnostic log
             "Certificate loaded and validated: type={:?}, key_id={}, principals={:?}",
             cert.cert_type(),
             cert.key_id(),
@@ -898,7 +898,7 @@ impl Session {
 
         match auth_res {
             russh::client::AuthResult::Success => {
-                tracing::info!(
+                tracing::info!( // I18N: no-translate - Rust diagnostic log
                     "✓ Certificate authentication successful with {}",
                     cert_source
                 );
@@ -908,7 +908,7 @@ impl Session {
                 remaining_methods,
                 partial_success,
             } => {
-                tracing::warn!(
+                tracing::warn!( // I18N: no-translate - Rust diagnostic log
                     "Server rejected certificate {} (remaining methods: {:?}, partial: {})",
                     cert_source,
                     remaining_methods,
@@ -928,15 +928,15 @@ impl Session {
     /// certificates (id_ed25519-cert.pub, etc.) but not with certificates held in an agent.
     /// See: https://github.com/Eugeny/russh/issues/438
     pub async fn agent_auth(&mut self, username: &str) -> Result<bool> {
-        tracing::info!("Attempting SSH agent authentication for {username}");
+        tracing::info!("Attempting SSH agent authentication for {username}"); // I18N: no-translate - Rust diagnostic log
 
         // Try to connect to SSH agent, using custom IdentityAgent if specified
         let agent_result = if let Some(ref identity_agent) = self.ssh_config.identity_agent {
-            tracing::info!("Using custom IdentityAgent: {identity_agent}");
+            tracing::info!("Using custom IdentityAgent: {identity_agent}"); // I18N: no-translate - Rust diagnostic log
             // Connect to custom agent socket
             russh::keys::agent::client::AgentClient::connect_uds(identity_agent).await
         } else {
-            tracing::info!("Using default SSH agent from environment");
+            tracing::info!("Using default SSH agent from environment"); // I18N: no-translate - Rust diagnostic log
             // Use default SSH agent from environment
             russh::keys::agent::client::AgentClient::connect_env().await
         };
@@ -944,41 +944,41 @@ impl Session {
         match agent_result {
             Ok(mut agent) => match agent.request_identities().await {
                 Ok(keys) => {
-                    tracing::info!("SSH agent has {} keys available", keys.len());
+                    tracing::info!("SSH agent has {} keys available", keys.len()); // I18N: no-translate - Rust diagnostic log
                     for (i, key) in keys.iter().enumerate() {
-                        tracing::debug!("Trying SSH agent key #{}", i + 1);
+                        tracing::debug!("Trying SSH agent key #{}", i + 1); // I18N: no-translate - Rust diagnostic log
                         match self
                             .session
                             .authenticate_publickey_with(username, key.clone(), None, &mut agent)
                             .await
                         {
                             Ok(russh::client::AuthResult::Success) => {
-                                tracing::info!(
+                                tracing::info!( // I18N: no-translate - Rust diagnostic log
                                     "✓ Successfully authenticated with SSH agent key #{}",
                                     i + 1
                                 );
                                 return Ok(true);
                             }
                             Ok(_) => {
-                                tracing::debug!("SSH agent key #{} rejected by server", i + 1);
+                                tracing::debug!("SSH agent key #{} rejected by server", i + 1); // I18N: no-translate - Rust diagnostic log
                                 continue;
                             }
                             Err(e) => {
-                                tracing::debug!("Error trying SSH agent key #{}: {e:?}", i + 1);
+                                tracing::debug!("Error trying SSH agent key #{}: {e:?}", i + 1); // I18N: no-translate - Rust diagnostic log
                                 continue;
                             }
                         }
                     }
-                    tracing::info!("No SSH agent keys worked for authentication");
+                    tracing::info!("No SSH agent keys worked for authentication"); // I18N: no-translate - Rust diagnostic log
                     Ok(false)
                 }
                 Err(e) => {
-                    tracing::info!("Failed to request identities from SSH agent: {e}");
+                    tracing::info!("Failed to request identities from SSH agent: {e}"); // I18N: no-translate - Rust diagnostic log
                     Ok(false)
                 }
             },
             Err(e) => {
-                tracing::info!("Cannot connect to SSH agent: {e}");
+                tracing::info!("Cannot connect to SSH agent: {e}"); // I18N: no-translate - Rust diagnostic log
                 Ok(false)
             }
         }
@@ -1009,25 +1009,25 @@ impl Session {
             .or(config_username.as_deref())
             .unwrap_or(&current_user);
 
-        tracing::info!(
+        tracing::info!( // I18N: no-translate - Rust diagnostic log
             "Starting SSH authentication for {username}@{}",
             self.ssh_config.hostname
         );
-        tracing::debug!("SSH config identity files: {identity_files:?}");
+        tracing::debug!("SSH config identity files: {identity_files:?}"); // I18N: no-translate - Rust diagnostic log
 
         let default_keys = Self::default_ssh_keys();
-        tracing::debug!("Available default SSH keys: {default_keys:?}");
+        tracing::debug!("Available default SSH keys: {default_keys:?}"); // I18N: no-translate - Rust diagnostic log
 
         // 1. attempt ssh agent auth
-        tracing::info!("Step 1/4: Trying SSH agent authentication");
+        tracing::info!("Step 1/4: Trying SSH agent authentication"); // I18N: no-translate - Rust diagnostic log
         if self.agent_auth(username).await? {
-            tracing::info!("✓ SSH authentication successful with agent");
+            tracing::info!("✓ SSH authentication successful with agent"); // I18N: no-translate - Rust diagnostic log
             return Ok(AuthResult::default());
         }
-        tracing::info!("✗ SSH agent authentication failed or unavailable");
+        tracing::info!("✗ SSH agent authentication failed or unavailable"); // I18N: no-translate - Rust diagnostic log
 
         // 2. Try SSH config identity files
-        tracing::info!(
+        tracing::info!( // I18N: no-translate - Rust diagnostic log
             "Step 2/4: Trying SSH config identity files ({} files)",
             identity_files.len()
         );
@@ -1041,14 +1041,14 @@ impl Session {
         }
 
         // 3. Try default SSH keys if not already tried via config
-        tracing::info!(
+        tracing::info!( // I18N: no-translate - Rust diagnostic log
             "Step 3/4: Trying default SSH keys ({} keys found)",
             default_keys.len()
         );
         for key_path in &default_keys {
             // Skip if this key was already tried from config
             if identity_files.contains(key_path) {
-                tracing::debug!(
+                tracing::debug!( // I18N: no-translate - Rust diagnostic log
                     "Skipping {} (already tried via SSH config)",
                     key_path.display()
                 );
@@ -1060,26 +1060,26 @@ impl Session {
                     return Ok(auth_result);
                 }
                 Err(e) => {
-                    tracing::debug!("Default SSH key failed: {e}");
+                    tracing::debug!("Default SSH key failed: {e}"); // I18N: no-translate - Rust diagnostic log
                 }
             }
         }
 
         // 4. whatever the user provided
-        tracing::info!("Step 4/4: Trying explicitly provided authentication");
+        tracing::info!("Step 4/4: Trying explicitly provided authentication"); // I18N: no-translate - Rust diagnostic log
         match auth {
             Some(Authentication::Password(_user, password)) => {
-                tracing::info!("Trying password authentication");
+                tracing::info!("Trying password authentication"); // I18N: no-translate - Rust diagnostic log
                 self.password_auth(username, &password).await?;
                 return Ok(AuthResult::default());
             }
             Some(Authentication::Key(key_path)) => {
-                tracing::info!("Trying explicitly provided key: {}", key_path.display());
+                tracing::info!("Trying explicitly provided key: {}", key_path.display()); // I18N: no-translate - Rust diagnostic log
                 return self.key_auth(username, &hostname, key_path).await;
             }
             None => {
-                tracing::warn!("All SSH authentication methods exhausted");
-                tracing::warn!(
+                tracing::warn!("All SSH authentication methods exhausted"); // I18N: no-translate - Rust diagnostic log
+                tracing::warn!( // I18N: no-translate - Rust diagnostic log
                     "Tried: SSH agent, {} config keys, {} default keys",
                     identity_files.len(),
                     default_keys.len()
@@ -1119,14 +1119,14 @@ impl Session {
             .or(config_username.as_deref())
             .unwrap_or(&current_user);
 
-        tracing::info!(
+        tracing::info!( // I18N: no-translate - Rust diagnostic log
             "Starting SSH authentication for {username}@{}",
             self.ssh_config.hostname
         );
 
         // Step 0: Try block-provided identity key FIRST (overrides everything)
         // If an explicit key is configured and fails, we do NOT fall back to agent/defaults
-        tracing::debug!(
+        tracing::debug!( // I18N: no-translate - Rust diagnostic log
             "authenticate_with_config called with identity_key_config: {:?}, certificate_config: {:?}",
             identity_key_config,
             certificate_config
@@ -1134,12 +1134,12 @@ impl Session {
         if let Some(key_config) = identity_key_config {
             match key_config {
                 SshIdentityKeyConfig::None => {
-                    tracing::debug!(
+                    tracing::debug!( // I18N: no-translate - Rust diagnostic log
                         "Block identity key config is SshIdentityKeyConfig::None, using defaults"
                     );
                 }
                 SshIdentityKeyConfig::Paste { content } => {
-                    tracing::info!("Step 0: Trying block-provided pasted key");
+                    tracing::info!("Step 0: Trying block-provided pasted key"); // I18N: no-translate - Rust diagnostic log
                     // For pasted key content with explicit certificate, use cert_auth_from_content
                     match self
                         .key_auth_from_content_with_cert(
@@ -1151,7 +1151,7 @@ impl Session {
                         .await
                     {
                         Ok(auth_result) => {
-                            tracing::info!("✓ SSH authentication successful with pasted key");
+                            tracing::info!("✓ SSH authentication successful with pasted key"); // I18N: no-translate - Rust diagnostic log
                             return Ok(auth_result);
                         }
                         Err(e) => {
@@ -1163,7 +1163,7 @@ impl Session {
                     }
                 }
                 SshIdentityKeyConfig::Path { path } => {
-                    tracing::info!("Step 0: Trying block-provided key path: {}", path);
+                    tracing::info!("Step 0: Trying block-provided key path: {}", path); // I18N: no-translate - Rust diagnostic log
                     match self
                         .key_auth_with_cert_config(
                             username,
@@ -1174,7 +1174,7 @@ impl Session {
                         .await
                     {
                         Ok(auth_result) => {
-                            tracing::info!("✓ SSH authentication successful with key: {}", path);
+                            tracing::info!("✓ SSH authentication successful with key: {}", path); // I18N: no-translate - Rust diagnostic log
                             return Ok(auth_result);
                         }
                         Err(e) => {
@@ -1201,21 +1201,21 @@ impl Session {
         key_content: &str,
         certificate_config: Option<&SshCertificateConfig>,
     ) -> Result<AuthResult> {
-        tracing::debug!("Attempting authentication with pasted key content");
+        tracing::debug!("Attempting authentication with pasted key content"); // I18N: no-translate - Rust diagnostic log
 
         let key_pair = russh::keys::decode_secret_key(key_content, None)
             .map_err(|e| eyre::eyre!("Failed to decode pasted key: {e}"))?;
 
         // If explicit certificate provided, use cert auth
         if let Some(SshCertificateConfig::Path { path }) = certificate_config {
-            tracing::info!("Using explicit certificate path: {}", path);
+            tracing::info!("Using explicit certificate path: {}", path); // I18N: no-translate - Rust diagnostic log
             return self
                 .cert_auth_with_key(username, host, key_pair, PathBuf::from(path))
                 .await;
         }
 
         if let Some(SshCertificateConfig::Paste { content }) = certificate_config {
-            tracing::info!("Using pasted certificate content");
+            tracing::info!("Using pasted certificate content"); // I18N: no-translate - Rust diagnostic log
             return self
                 .cert_auth_with_key_and_cert_content(username, host, key_pair, content)
                 .await;
@@ -1225,7 +1225,7 @@ impl Session {
         self.try_publickey_auth(username, key_pair)
             .await
             .map(|()| {
-                tracing::info!("✓ Pasted key authentication successful");
+                tracing::info!("✓ Pasted key authentication successful"); // I18N: no-translate - Rust diagnostic log
                 AuthResult::default()
             })
             .map_err(|_| eyre::eyre!("Pasted key authentication failed: server rejected key"))
@@ -1241,14 +1241,14 @@ impl Session {
         certificate_config: Option<&SshCertificateConfig>,
     ) -> Result<AuthResult> {
         if let Some(SshCertificateConfig::Path { path }) = certificate_config {
-            tracing::info!("Using explicit certificate path: {}", path);
+            tracing::info!("Using explicit certificate path: {}", path); // I18N: no-translate - Rust diagnostic log
             return self
                 .cert_auth(username, host, key_path, PathBuf::from(path))
                 .await;
         }
 
         if let Some(SshCertificateConfig::Paste { content }) = certificate_config {
-            tracing::info!("Using pasted certificate content");
+            tracing::info!("Using pasted certificate content"); // I18N: no-translate - Rust diagnostic log
             let key_pair = russh::keys::load_secret_key(&key_path, None)
                 .map_err(|e| eyre::eyre!("Failed to load key {}: {e}", key_path.display()))?;
             return self
@@ -1385,18 +1385,18 @@ impl Session {
 
         let full_command = full_command_parts.join(" ");
 
-        tracing::debug!("Executing command on remote: {full_command}");
+        tracing::debug!("Executing command on remote: {full_command}"); // I18N: no-translate - Rust diagnostic log
 
         let channel_id_clone = channel_id.clone();
         let output_stream_clone = output_stream.clone();
 
         tokio::task::spawn(async move {
             if let Err(e) = channel.exec(true, full_command.as_str()).await {
-                tracing::error!("Failed to execute command: {e}");
+                tracing::error!("Failed to execute command: {e}"); // I18N: no-translate - Rust diagnostic log
                 let _ = output_stream_clone
                     .send(OutputLine::Stderr(e.to_string()))
                     .await;
-                tracing::debug!("Sending exec finished for channel {channel_id_clone}");
+                tracing::debug!("Sending exec finished for channel {channel_id_clone}"); // I18N: no-translate - Rust diagnostic log
                 let _ = handle.exec_finished(&channel_id_clone).await;
                 return;
             }
@@ -1408,7 +1408,7 @@ impl Session {
                 tokio::select! {
                     // Check if we've been asked to cancel
                     _ = &mut cancel_rx => {
-                        tracing::debug!("SSH command execution cancelled");
+                        tracing::debug!("SSH command execution cancelled"); // I18N: no-translate - Rust diagnostic log
                         break;
                     }
 
@@ -1420,7 +1420,7 @@ impl Session {
 
                         match msg {
                             ChannelMsg::Data { data } => {
-                                tracing::trace!("Handling SSH Data message for stdout");
+                                tracing::trace!("Handling SSH Data message for stdout"); // I18N: no-translate - Rust diagnostic log
                                 if let Ok(data_str) = std::str::from_utf8(&data) {
                                     line_buffer.push_str(data_str);
 
@@ -1436,7 +1436,7 @@ impl Session {
                                 }
                             }
                             ChannelMsg::ExtendedData { data, ext: 1 } => {
-                                tracing::trace!("Handling SSH ExtendedData message for stderr");
+                                tracing::trace!("Handling SSH ExtendedData message for stderr"); // I18N: no-translate - Rust diagnostic log
                                 // stderr
                                 if let Ok(data_str) = std::str::from_utf8(&data) {
                                     stderr_line_buffer.push_str(data_str);
@@ -1457,14 +1457,14 @@ impl Session {
                             // §6.10). Only Eof guarantees no more data will follow.
                             // Continue reading until Eof or Close.
                             ChannelMsg::ExitStatus { .. } => {
-                                tracing::trace!("Handling SSH ExitStatus message (continuing to read)");
+                                tracing::trace!("Handling SSH ExitStatus message (continuing to read)"); // I18N: no-translate - Rust diagnostic log
                             }
                             ChannelMsg::Eof => {
-                                tracing::trace!("Handling SSH EOF message");
+                                tracing::trace!("Handling SSH EOF message"); // I18N: no-translate - Rust diagnostic log
                                 break;
                             }
                             ChannelMsg::Close => {
-                                tracing::trace!("Handling SSH Close message");
+                                tracing::trace!("Handling SSH Close message"); // I18N: no-translate - Rust diagnostic log
                                 break;
                             }
                             _ => {}
@@ -1485,7 +1485,7 @@ impl Session {
                     .await;
             }
 
-            tracing::debug!("Sending exec finished for channel {channel_id_clone}");
+            tracing::debug!("Sending exec finished for channel {channel_id_clone}"); // I18N: no-translate - Rust diagnostic log
             let _ = handle.exec_finished(&channel_id_clone).await;
         });
 
@@ -1536,7 +1536,7 @@ impl Session {
                 tokio::select! {
                     // Check if we've been asked to cancel
                     _ = &mut cancel_rx => {
-                        tracing::debug!("SSH PTY session cancelled");
+                        tracing::debug!("SSH PTY session cancelled"); // I18N: no-translate - Rust diagnostic log
                         break;
                     }
 
@@ -1546,7 +1546,7 @@ impl Session {
                                 let _ = channel.window_change(cols as u32, rows as u32, 0, 0).await;
                             }
                             None => {
-                                tracing::debug!("SSH resize stream closed");
+                                tracing::debug!("SSH resize stream closed"); // I18N: no-translate - Rust diagnostic log
                                 break;
                             }
                         }
@@ -1558,12 +1558,12 @@ impl Session {
                             Some(input) => {
                                 let cursor = std::io::Cursor::new(input.as_ref());
                                 if let Err(e) = channel.data(cursor).await {
-                                    tracing::error!("Failed to write to channel: {e}");
+                                    tracing::error!("Failed to write to channel: {e}"); // I18N: no-translate - Rust diagnostic log
                                     break;
                                 }
                             }
                             None => {
-                                tracing::debug!("SSH input stream closed");
+                                tracing::debug!("SSH input stream closed"); // I18N: no-translate - Rust diagnostic log
                                 break;
                             }
                         }
@@ -1578,16 +1578,16 @@ impl Session {
                         match msg {
                             ChannelMsg::Data { data } => {
                                 if let Err(e) = output_stream.send(String::from_utf8_lossy(&data).to_string()).await {
-                                    tracing::error!("Failed to send output to stream: {e}");
+                                    tracing::error!("Failed to send output to stream: {e}"); // I18N: no-translate - Rust diagnostic log
                                     break;
                                 }
                             }
                             ChannelMsg::Close => {
-                                tracing::debug!("SSH channel closed");
+                                tracing::debug!("SSH channel closed"); // I18N: no-translate - Rust diagnostic log
                                 break;
                             }
                             ChannelMsg::Eof => {
-                                tracing::debug!("SSH channel EOF");
+                                tracing::debug!("SSH channel EOF"); // I18N: no-translate - Rust diagnostic log
                                 break;
                             }
                             _ => {}
@@ -1625,49 +1625,49 @@ mod tests {
     #[test]
     fn test_parse_host_string_host_only() {
         let (user, host, port) = Session::parse_host_string("example.com");
-        assert_eq!(user, None);
-        assert_eq!(host, "example.com");
-        assert_eq!(port, None);
+        assert_eq!(user, None); // I18N: no-translate - Rust assertion
+        assert_eq!(host, "example.com"); // I18N: no-translate - Rust assertion
+        assert_eq!(port, None); // I18N: no-translate - Rust assertion
     }
 
     #[test]
     fn test_parse_host_string_with_port() {
         let (user, host, port) = Session::parse_host_string("example.com:2222");
-        assert_eq!(user, None);
-        assert_eq!(host, "example.com");
-        assert_eq!(port, Some(2222));
+        assert_eq!(user, None); // I18N: no-translate - Rust assertion
+        assert_eq!(host, "example.com"); // I18N: no-translate - Rust assertion
+        assert_eq!(port, Some(2222)); // I18N: no-translate - Rust assertion
     }
 
     #[test]
     fn test_parse_host_string_with_user() {
         let (user, host, port) = Session::parse_host_string("alice@example.com");
-        assert_eq!(user, Some("alice".to_string()));
-        assert_eq!(host, "example.com");
-        assert_eq!(port, None);
+        assert_eq!(user, Some("alice".to_string())); // I18N: no-translate - Rust assertion
+        assert_eq!(host, "example.com"); // I18N: no-translate - Rust assertion
+        assert_eq!(port, None); // I18N: no-translate - Rust assertion
     }
 
     #[test]
     fn test_parse_host_string_full_format() {
         let (user, host, port) = Session::parse_host_string("alice@example.com:2222");
-        assert_eq!(user, Some("alice".to_string()));
-        assert_eq!(host, "example.com");
-        assert_eq!(port, Some(2222));
+        assert_eq!(user, Some("alice".to_string())); // I18N: no-translate - Rust assertion
+        assert_eq!(host, "example.com"); // I18N: no-translate - Rust assertion
+        assert_eq!(port, Some(2222)); // I18N: no-translate - Rust assertion
     }
 
     #[test]
     fn test_parse_host_string_invalid_port() {
         let (user, host, port) = Session::parse_host_string("example.com:invalid");
-        assert_eq!(user, None);
-        assert_eq!(host, "example.com:invalid");
-        assert_eq!(port, None);
+        assert_eq!(user, None); // I18N: no-translate - Rust assertion
+        assert_eq!(host, "example.com:invalid"); // I18N: no-translate - Rust assertion
+        assert_eq!(port, None); // I18N: no-translate - Rust assertion
     }
 
     #[test]
     fn test_parse_host_string_ipv6() {
         let (user, host, port) = Session::parse_host_string("[2001:db8::1]:2222");
-        assert_eq!(user, None);
-        assert_eq!(host, "[2001:db8::1]");
-        assert_eq!(port, Some(2222));
+        assert_eq!(user, None); // I18N: no-translate - Rust assertion
+        assert_eq!(host, "[2001:db8::1]"); // I18N: no-translate - Rust assertion
+        assert_eq!(port, Some(2222)); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -1675,7 +1675,7 @@ mod tests {
         let temp_dir = create_test_ssh_config("");
         let config_path = temp_dir.path().join(".ssh").join("config");
         let result = Session::parse_identity_agent_from_path("nonexistent", &config_path);
-        assert_eq!(result, None);
+        assert_eq!(result, None); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -1694,7 +1694,7 @@ Host example.com
             .to_string();
 
         let result = Session::parse_identity_agent_from_path("example.com", &config_path);
-        assert_eq!(result, Some(expected));
+        assert_eq!(result, Some(expected)); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -1707,7 +1707,7 @@ Host *.example.com
         let config_path = temp_dir.path().join(".ssh").join("config");
 
         let result = Session::parse_identity_agent_from_path("server.example.com", &config_path);
-        assert_eq!(result, Some("/tmp/custom-agent.sock".to_string()));
+        assert_eq!(result, Some("/tmp/custom-agent.sock".to_string())); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -1726,7 +1726,7 @@ Host *
             .to_string();
 
         let result = Session::parse_identity_agent_from_path("any-host", &config_path);
-        assert_eq!(result, Some(expected));
+        assert_eq!(result, Some(expected)); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -1739,7 +1739,7 @@ Host other.com
         let config_path = temp_dir.path().join(".ssh").join("config");
 
         let result = Session::parse_identity_agent_from_path("example.com", &config_path);
-        assert_eq!(result, None);
+        assert_eq!(result, None); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -1758,44 +1758,44 @@ Host example.com
             .to_string();
 
         let result = Session::parse_identity_agent_from_path("example.com", &config_path);
-        assert_eq!(result, Some(expected));
+        assert_eq!(result, Some(expected)); // I18N: no-translate - Rust assertion
     }
 
     #[test]
     fn test_resolve_ssh_config_defaults() {
         // Test with a host that's unlikely to be in any real SSH config
         let config = Session::resolve_ssh_config("test-nonexistent-host-12345.invalid");
-        assert_eq!(config.hostname, "test-nonexistent-host-12345.invalid");
-        assert_eq!(config.port, 22);
+        assert_eq!(config.hostname, "test-nonexistent-host-12345.invalid"); // I18N: no-translate - Rust assertion
+        assert_eq!(config.port, 22); // I18N: no-translate - Rust assertion
         // Note: username might be set from global SSH config, so we don't assert None
-        assert!(config.identity_files.is_empty());
-        assert_eq!(config.proxy_command, None);
-        assert_eq!(config.proxy_jump, None);
-        assert_eq!(config.identity_agent, None);
+        assert!(config.identity_files.is_empty()); // I18N: no-translate - Rust assertion
+        assert_eq!(config.proxy_command, None); // I18N: no-translate - Rust assertion
+        assert_eq!(config.proxy_jump, None); // I18N: no-translate - Rust assertion
+        assert_eq!(config.identity_agent, None); // I18N: no-translate - Rust assertion
     }
 
     #[test]
     fn test_resolve_ssh_config_with_input_port() {
         let config = Session::resolve_ssh_config("test-nonexistent-host-12345.invalid:2222");
-        assert_eq!(config.hostname, "test-nonexistent-host-12345.invalid");
-        assert_eq!(config.port, 2222);
+        assert_eq!(config.hostname, "test-nonexistent-host-12345.invalid"); // I18N: no-translate - Rust assertion
+        assert_eq!(config.port, 2222); // I18N: no-translate - Rust assertion
         // Note: username might be set from global SSH config, so we don't assert None
     }
 
     #[test]
     fn test_resolve_ssh_config_with_input_user() {
         let config = Session::resolve_ssh_config("alice@test-nonexistent-host-12345.invalid");
-        assert_eq!(config.hostname, "test-nonexistent-host-12345.invalid");
-        assert_eq!(config.port, 22);
-        assert_eq!(config.username, Some("alice".to_string()));
+        assert_eq!(config.hostname, "test-nonexistent-host-12345.invalid"); // I18N: no-translate - Rust assertion
+        assert_eq!(config.port, 22); // I18N: no-translate - Rust assertion
+        assert_eq!(config.username, Some("alice".to_string())); // I18N: no-translate - Rust assertion
     }
 
     #[test]
     fn test_resolve_ssh_config_full_input() {
         let config = Session::resolve_ssh_config("alice@test-nonexistent-host-12345.invalid:2222");
-        assert_eq!(config.hostname, "test-nonexistent-host-12345.invalid");
-        assert_eq!(config.port, 2222);
-        assert_eq!(config.username, Some("alice".to_string()));
+        assert_eq!(config.hostname, "test-nonexistent-host-12345.invalid"); // I18N: no-translate - Rust assertion
+        assert_eq!(config.port, 2222); // I18N: no-translate - Rust assertion
+        assert_eq!(config.username, Some("alice".to_string())); // I18N: no-translate - Rust assertion
     }
 
     #[test]
@@ -1815,20 +1815,20 @@ Host example.com
 
         for key_path in keys.iter() {
             let filename = key_path.file_name().unwrap().to_str().unwrap();
-            assert!(
+            assert!( // I18N: no-translate - Rust assertion
                 expected_order.contains(&filename),
                 "Unexpected key file: {filename}"
             );
 
             // Verify the key exists (since we filtered for existing keys)
-            assert!(key_path.exists());
+            assert!(key_path.exists()); // I18N: no-translate - Rust assertion
         }
 
         // Verify all returned keys are in ~/.ssh directory
         if let Some(home) = dirs::home_dir() {
             let ssh_dir = home.join(".ssh");
             for key_path in &keys {
-                assert!(key_path.starts_with(&ssh_dir));
+                assert!(key_path.starts_with(&ssh_dir)); // I18N: no-translate - Rust assertion
             }
         }
 
@@ -1841,7 +1841,7 @@ Host example.com
                 let curr_pos = expected_order.iter().position(|&k| k == curr_name).unwrap();
                 let prev_pos = expected_order.iter().position(|&k| k == prev_name).unwrap();
 
-                assert!(
+                assert!( // I18N: no-translate - Rust assertion
                     curr_pos > prev_pos,
                     "Keys not in ssh order: {prev_name} should come before {curr_name}"
                 );
@@ -1861,8 +1861,8 @@ Host example.com
         fs::write(&cert_path, "fake cert content").unwrap();
 
         let result = Session::find_certificate_for_key(&key_path).await;
-        assert!(result.is_some());
-        assert_eq!(result.unwrap(), cert_path);
+        assert!(result.is_some()); // I18N: no-translate - Rust assertion
+        assert_eq!(result.unwrap(), cert_path); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -1874,7 +1874,7 @@ Host example.com
         fs::write(&key_path, "fake key content").unwrap();
 
         let result = Session::find_certificate_for_key(&key_path).await;
-        assert!(result.is_none());
+        assert!(result.is_none()); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -1887,8 +1887,8 @@ Host example.com
         fs::write(&cert_path, "fake cert content").unwrap();
 
         let result = Session::find_certificate_for_key(&key_path).await;
-        assert!(result.is_some());
-        assert_eq!(result.unwrap(), cert_path);
+        assert!(result.is_some()); // I18N: no-translate - Rust assertion
+        assert_eq!(result.unwrap(), cert_path); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -1898,6 +1898,6 @@ Host example.com
         let key_path = PathBuf::from("just_a_filename");
         let result = Session::find_certificate_for_key(&key_path).await;
         // Should return None since no certificate file exists at the relative path
-        assert!(result.is_none());
+        assert!(result.is_none()); // I18N: no-translate - Rust assertion
     }
 }

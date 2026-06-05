@@ -92,7 +92,7 @@ export function remoteRunbook(runbookOrId?: Runbook | string) {
           }
         }
       } else {
-        throw new Error("no runbook ID specified");
+        throw new Error("no runbook ID specified"); // I18N: no-translate - internal exception
       }
     },
     initialData:

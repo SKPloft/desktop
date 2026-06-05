@@ -231,7 +231,7 @@ const ScriptBlock = ({
                 break;
               }
             } catch (e) {
-              console.error(`Error checking ${path}:`, e);
+              console.error(`Error checking ${path}:`, e); // I18N: no-translate - developer diagnostic
             }
           }
 
@@ -240,7 +240,7 @@ const ScriptBlock = ({
 
         setAvailableShells(shellStatus);
       } catch (error) {
-        console.error("Failed to check available shells:", error);
+        console.error("Failed to check available shells:", error); // I18N: no-translate - developer diagnostic
       }
     };
 

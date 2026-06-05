@@ -112,7 +112,7 @@ export default class WorkspaceFolder {
 
   public createRunbook(id: string, parentId: string | null): Node<FolderItem> {
     const parent = parentId
-      ? this.root.getNode(parentId).expect(`Couldn't find parent with id ${parentId}`)
+      ? this.root.getNode(parentId).expect(`Couldn't find parent with id ${parentId}`) // I18N: no-translate - internal expectation message
       : this.root.root();
 
     return parent.createChild(id, 0).setData({
@@ -172,9 +172,9 @@ export default class WorkspaceFolder {
     let nodes: Node<FolderItem>[];
     try {
       // Unwrap early to ensure all nodes are valid
-      nodes = nodeOpts.map((n, i) => n.expect("moveItems: Couldn't find node with id " + ids[i]));
+      nodes = nodeOpts.map((n, i) => n.expect("moveItems: Couldn't find node with id " + ids[i])); // I18N: no-translate - internal expectation message
     } catch (err) {
-      console.error(err);
+      console.error(err); // I18N: no-translate - developer diagnostic
       return false;
     }
 

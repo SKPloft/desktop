@@ -45,7 +45,7 @@ impl SharedStateHandle {
         tauri::async_runtime::spawn(async move {
             let mut actor = SharedState::new(db_pool, receiver)
                 .await
-                .expect("Failed to create shared state");
+                .expect("Failed to create shared state"); // I18N: no-translate - internal expectation message
             actor.run(ready_sender).await;
         });
 

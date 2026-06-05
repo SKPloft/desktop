@@ -95,7 +95,7 @@ export default class RunbookEditor {
 
   updateRunbook(runbook: Runbook) {
     if (runbook.id !== this.runbook.id) {
-      throw new Error("Can only update runbook with runbook of same ID");
+      throw new Error("Can only update runbook with runbook of same ID"); // I18N: no-translate - internal exception
     }
 
     this.runbook = runbook;
@@ -180,7 +180,7 @@ export default class RunbookEditor {
           try {
             editor = createBasicEditor(JSON.parse(snapshot.content)) as any as BlockNoteEditor;
           } catch (error) {
-            reject(new Error(getCreationError()));
+            reject(new Error(getCreationError())); // I18N: no-translate - internal async guard
             return;
           }
           resolve(editor as any as BlockNoteEditor);
@@ -207,7 +207,7 @@ export default class RunbookEditor {
         try {
           editor = createLocalOnlyEditor(content) as any as BlockNoteEditor;
         } catch (error) {
-          reject(new Error(getCreationError()));
+          reject(new Error(getCreationError())); // I18N: no-translate - internal async guard
           return;
         }
         if (needsSave) {
@@ -234,7 +234,7 @@ export default class RunbookEditor {
           this.presenceColor,
         ) as any as BlockNoteEditor;
       } catch (error) {
-        reject(new Error(getCreationError()));
+        reject(new Error(getCreationError())); // I18N: no-translate - internal async guard
         return;
       }
 

@@ -1,5 +1,5 @@
 window.addEventListener("unhandledrejection", (event) => {
-  console.error("Unhandled rejection", event);
+  console.error("Unhandled rejection", event); // I18N: no-translate - developer diagnostic
 });
 
 // Initialize global types
@@ -53,13 +53,13 @@ import { AdvancedSettings } from "./rs-bindings/AdvancedSettings";
     const token = await api.getHubApiToken();
     SocketManager.setApiToken(token);
   } catch (_err) {
-    console.warn("Not able to fetch Hub API token for socket manager");
+    console.warn("Not able to fetch Hub API token for socket manager"); // I18N: no-translate - developer diagnostic
   }
 })();
 
 // If the user has opted in, we will setup sentry/posthog
 init_tracking();
-initI18n().catch((err) => console.warn("i18n init failed:", err));
+initI18n().catch((err) => console.warn("i18n init failed:", err)); // I18N: no-translate - developer diagnostic
 
 const socketManager = SocketManager.get();
 const notificationManager = ServerNotificationManager.get();
@@ -165,7 +165,7 @@ function Application() {
     getCurrentWebview()
       .setZoom(uiScale / 100)
       .catch((err) => {
-        console.error("Failed to set zoom:", err);
+        console.error("Failed to set zoom:", err); // I18N: no-translate - developer diagnostic
       });
   }, [uiScale]);
 
@@ -197,14 +197,14 @@ async function setup() {
     const currentPlatform = platform();
     document.documentElement.dataset.platform = currentPlatform;
   } catch (err) {
-    console.warn("Failed to detect platform:", err);
+    console.warn("Failed to detect platform:", err); // I18N: no-translate - developer diagnostic
   }
 
   try {
     const advancedSettings = await invoke<AdvancedSettings>("get_advanced_settings");
     useStore.getState().setAdvancedSettings(advancedSettings);
   } catch (err) {
-    console.error("Failed to get advanced settings:", err);
+    console.error("Failed to get advanced settings:", err); // I18N: no-translate - developer diagnostic
   }
 
   invoke<void>("reset_workspaces");
@@ -213,8 +213,8 @@ async function setup() {
   try {
     await grandCentral.startListening();
   } catch (err) {
-    console.warn("Failed to start Grand Central:", err);
-    console.warn("Note: this is normal after a page refresh");
+    console.warn("Failed to start Grand Central:", err); // I18N: no-translate - developer diagnostic
+    console.warn("Note: this is normal after a page refresh"); // I18N: no-translate - developer diagnostic
   }
 }
 

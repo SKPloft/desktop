@@ -36,7 +36,7 @@ function shellCheckCommentToDiagnostic(
     from: posToOffset(doc, line, column),
     to: posToOffset(doc, endLine, endColumn),
     severity: level === "style" ? "hint" : level,
-    source: "ShellCheck",
+    source: "ShellCheck", // I18N: no-translate - tool/source name
     renderMessage: () => createMessageNode(code, message),
     message: message,
   };

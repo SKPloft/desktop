@@ -40,7 +40,7 @@ pub async fn load_login_shell_environment() -> Result<()> {
 async fn load_login_shell_environment_impl() -> Result<()> {
     let shell = get_user_shell()?;
 
-    log::info!("Loading environment from login shell: {}", shell);
+    log::info!("Loading environment from login shell: {}", shell); // I18N: no-translate - Rust diagnostic log
 
     // Try different approaches based on the shell type
     let shell_name = std::path::Path::new(&shell)
@@ -75,7 +75,7 @@ async fn load_login_shell_environment_impl() -> Result<()> {
     let mut last_error = None;
 
     for args in attempts {
-        log::debug!("Attempting to capture environment with args: {:?}", args);
+        log::debug!("Attempting to capture environment with args: {:?}", args); // I18N: no-translate - Rust diagnostic log
 
         match Command::new(&shell).args(&args).output() {
             Ok(output) if output.status.success() => {
@@ -106,7 +106,7 @@ async fn load_login_shell_environment_impl() -> Result<()> {
                     }
                 }
 
-                log::info!(
+                log::info!( // I18N: no-translate - Rust diagnostic log
                     "Loaded {} environment variables from login shell. PATH: {}",
                     count,
                     env::var("PATH").unwrap_or_default()
@@ -116,7 +116,7 @@ async fn load_login_shell_environment_impl() -> Result<()> {
             }
             Ok(output) => {
                 let stderr = String::from_utf8_lossy(&output.stderr);
-                log::debug!(
+                log::debug!( // I18N: no-translate - Rust diagnostic log
                     "Shell command failed with status {:?}: {}",
                     output.status,
                     stderr
@@ -127,13 +127,13 @@ async fn load_login_shell_environment_impl() -> Result<()> {
                 ));
             }
             Err(e) => {
-                log::debug!("Failed to execute shell: {}", e);
+                log::debug!("Failed to execute shell: {}", e); // I18N: no-translate - Rust diagnostic log
                 last_error = Some(e.to_string());
             }
         }
     }
 
-    eyre::bail!(
+    eyre::bail!( // I18N: no-translate - Rust internal error construction
         "Failed to capture environment from shell after all attempts. Last error: {}",
         last_error.unwrap_or_else(|| "unknown error".to_string())
     )
@@ -141,10 +141,10 @@ async fn load_login_shell_environment_impl() -> Result<()> {
 
 #[cfg(not(unix))]
 pub fn get_user_shell() -> Result<String> {
-    eyre::bail!("get_user_shell is only supported on Unix systems");
+    eyre::bail!("get_user_shell is only supported on Unix systems"); // I18N: no-translate - Rust internal error construction
 }
 
 #[cfg(not(unix))]
 pub async fn load_login_shell_environment() -> Result<()> {
-    eyre::bail!("load_login_shell_environment is only supported on Unix systems");
+    eyre::bail!("load_login_shell_environment is only supported on Unix systems"); // I18N: no-translate - Rust internal error construction
 }

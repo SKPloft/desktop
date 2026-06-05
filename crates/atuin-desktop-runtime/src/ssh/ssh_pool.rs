@@ -221,7 +221,7 @@ impl SshPoolHandle {
                 let key_host = &key[at_pos + 1..];
                 if key_host == host {
                     let username = &key[..at_pos];
-                    tracing::debug!("Disconnecting SSH connection: {key}");
+                    tracing::debug!("Disconnecting SSH connection: {key}"); // I18N: no-translate - Rust diagnostic log
                     let _ = self.disconnect(host, username).await;
                 }
             }
@@ -493,7 +493,7 @@ impl SshPool {
         while let Some(msg) = self.receiver.recv().await {
             self.handle_message(msg).await;
 
-            tracing::debug!("SshPool Message handled");
+            tracing::debug!("SshPool Message handled"); // I18N: no-translate - Rust diagnostic log
         }
 
         // Clean up health check task when the pool shuts down
@@ -516,20 +516,20 @@ impl SshPool {
                 let msg = SshPoolMessage::HealthCheck { reply_to: reply_tx };
 
                 if sender.send(msg).await.is_err() {
-                    tracing::debug!("SSH pool shut down, stopping health check task");
+                    tracing::debug!("SSH pool shut down, stopping health check task"); // I18N: no-translate - Rust diagnostic log
                     break;
                 }
 
                 let resp = recv.await;
                 match resp {
                     Ok(Ok(())) => {
-                        tracing::debug!("Scheduled SSH health check successful");
+                        tracing::debug!("Scheduled SSH health check successful"); // I18N: no-translate - Rust diagnostic log
                     }
                     Ok(Err(err)) => {
-                        tracing::error!("Scheduled SSH health check failed: {err}");
+                        tracing::error!("Scheduled SSH health check failed: {err}"); // I18N: no-translate - Rust diagnostic log
                     }
                     Err(_) => {
-                        tracing::error!("Scheduled SSH health check response failure");
+                        tracing::error!("Scheduled SSH health check response failure"); // I18N: no-translate - Rust diagnostic log
                     }
                 }
             }
@@ -544,7 +544,7 @@ impl SshPool {
                 auth,
                 reply_to,
             } => {
-                tracing::trace!("Handling Connect message for {host} with username {username:?}");
+                tracing::trace!("Handling Connect message for {host} with username {username:?}"); // I18N: no-translate - Rust diagnostic log
                 let result = self
                     .pool
                     .write()
@@ -560,18 +560,18 @@ impl SshPool {
                 username,
                 reply_to,
             } => {
-                tracing::trace!("Handling Disconnect message for {host} with username {username}");
+                tracing::trace!("Handling Disconnect message for {host} with username {username}"); // I18N: no-translate - Rust diagnostic log
                 let result = self.pool.write().await.disconnect(&host, &username).await;
                 let _ = reply_to.send(result);
             }
             SshPoolMessage::ListConnections { reply_to } => {
-                tracing::trace!("Handling ListConnections message");
+                tracing::trace!("Handling ListConnections message"); // I18N: no-translate - Rust diagnostic log
                 // Get the keys from the pool's connections
                 let connections = self.pool.read().await.connections.keys().cloned().collect();
                 let _ = reply_to.send(connections);
             }
             SshPoolMessage::Len { reply_to } => {
-                tracing::trace!("Handling Len message");
+                tracing::trace!("Handling Len message"); // I18N: no-translate - Rust diagnostic log
                 let len = self.pool.read().await.connections.len();
                 let _ = reply_to.send(len);
             }
@@ -587,7 +587,7 @@ impl SshPool {
                 ssh_config,
                 warnings_tx,
             } => {
-                tracing::trace!(
+                tracing::trace!( // I18N: no-translate - Rust diagnostic log
                     "Executing command on {host} with {interpreter} with username {username:?}"
                 );
                 let (cancel_tx, mut cancel_rx) = oneshot::channel();
@@ -617,21 +617,21 @@ impl SshPool {
                 let handle = self.handle();
                 // Run the SSH connection in a task to avoid blocking the actor
                 tokio::spawn(async move {
-                    tracing::trace!("Connecting to SSH host {host} with username {username}");
+                    tracing::trace!("Connecting to SSH host {host} with username {username}"); // I18N: no-translate - Rust diagnostic log
                     let mut pool_guard = pool.write().await;
                     let (session, warnings): (
                         Result<Arc<Session>, SshPoolConnectionError>,
                         Vec<SshWarning>,
                     ) = tokio::select! {
                         result = pool_guard.connect_with_config(&host, Some(username.as_str()), None, Some(connect_cancel_rx), ssh_config.as_ref()) => {
-                            tracing::trace!("SSH connection to {host} with username {username} successful");
+                            tracing::trace!("SSH connection to {host} with username {username} successful"); // I18N: no-translate - Rust diagnostic log
                             match result {
                                 Ok((session, auth_result)) => (Ok(session), auth_result.warnings),
                                 Err(e) => (Err(SshPoolConnectionError::from(e)), Vec::new()),
                             }
                         }
                         _ = &mut cancel_rx => {
-                            tracing::trace!("SSH connection to {host} with username {username} cancelled");
+                            tracing::trace!("SSH connection to {host} with username {username} cancelled"); // I18N: no-translate - Rust diagnostic log
                             let _ = connect_cancel_tx.send(());
                             let _ = pool_guard.disconnect(&host, &username).await;
                             (Err(SshPoolConnectionError::Cancelled), Vec::new())
@@ -649,15 +649,15 @@ impl SshPool {
                         Err(e) => {
                             match e {
                                 SshPoolConnectionError::Cancelled => {
-                                    tracing::debug!("SSH connection to {host} with username {username} cancelled");
+                                    tracing::debug!("SSH connection to {host} with username {username} cancelled"); // I18N: no-translate - Rust diagnostic log
                                     let _ = reply_to
                                         .send(Err(SshPoolConnectionError::Cancelled.into()));
                                     return;
                                 }
                                 SshPoolConnectionError::ConnectionError(e) => {
-                                    tracing::error!("Failed to connect to SSH host {host}: {e}");
+                                    tracing::error!("Failed to connect to SSH host {host}: {e}"); // I18N: no-translate - Rust diagnostic log
                                     if let Err(e) = reply_to.send(Err(e)) {
-                                        tracing::error!("Failed to send error to reply_to: {e:?}");
+                                        tracing::error!("Failed to send error to reply_to: {e:?}"); // I18N: no-translate - Rust diagnostic log
                                     }
                                     return;
                                 }
@@ -665,7 +665,7 @@ impl SshPool {
                         }
                     };
 
-                    tracing::trace!("Executing command on channel {channel}: {command}");
+                    tracing::trace!("Executing command on channel {channel}: {command}"); // I18N: no-translate - Rust diagnostic log
                     let result = session
                         .exec(
                             handle,
@@ -679,7 +679,7 @@ impl SshPool {
 
                     // Handle exec failures - if the session failed, remove it from the pool
                     if let Err(ref e) = result {
-                        tracing::error!("SSH exec failed for {host}: {e}");
+                        tracing::error!("SSH exec failed for {host}: {e}"); // I18N: no-translate - Rust diagnostic log
                         let key = format!("{username}@{host}");
 
                         // TODO: use a proper error enum
@@ -688,13 +688,13 @@ impl SshPool {
                             || error_str.contains("connection")
                             || error_str.contains("broken pipe")
                         {
-                            tracing::debug!(
+                            tracing::debug!( // I18N: no-translate - Rust diagnostic log
                                 "Removing SSH connection due to connection error: {key}"
                             );
                             pool.write().await.connections.remove(&key);
                         } else if let Some(session) = pool.read().await.connections.get(&key) {
                             if !session.send_keepalive().await {
-                                tracing::debug!(
+                                tracing::debug!( // I18N: no-translate - Rust diagnostic log
                                     "Removing dead SSH connection after exec failure: {key}"
                                 );
                                 pool.write().await.connections.remove(&key);
@@ -703,13 +703,13 @@ impl SshPool {
                     }
 
                     if let Err(e) = reply_to.send(result) {
-                        tracing::error!("Failed to send result to reply_to: {e:?}");
+                        tracing::error!("Failed to send result to reply_to: {e:?}"); // I18N: no-translate - Rust diagnostic log
                     }
                 });
             }
             SshPoolMessage::ExecFinished { channel, reply_to } => {
-                tracing::trace!("Handling ExecFinished message for channel {channel}");
-                tracing::debug!("ExecFinished for channel: {channel}");
+                tracing::trace!("Handling ExecFinished message for channel {channel}"); // I18N: no-translate - Rust diagnostic log
+                tracing::debug!("ExecFinished for channel: {channel}"); // I18N: no-translate - Rust diagnostic log
 
                 if let Some(meta) = self.channels.remove(&channel) {
                     let _ = meta.result_tx.send(());
@@ -718,11 +718,11 @@ impl SshPool {
                 let _ = reply_to.send(Ok(()));
             }
             SshPoolMessage::ExecCancel { channel } => {
-                tracing::trace!("Handling ExecCancel message for channel {channel}");
-                tracing::debug!("ExecCancel for channel: {channel}");
+                tracing::trace!("Handling ExecCancel message for channel {channel}"); // I18N: no-translate - Rust diagnostic log
+                tracing::debug!("ExecCancel for channel: {channel}"); // I18N: no-translate - Rust diagnostic log
 
                 if let Some(meta) = self.channels.remove(&channel) {
-                    tracing::trace!("Sending cancel to channel {channel}");
+                    tracing::trace!("Sending cancel to channel {channel}"); // I18N: no-translate - Rust diagnostic log
                     let _ = meta.cancel_tx.send(());
                 }
             }
@@ -736,7 +736,7 @@ impl SshPool {
                 height,
                 ssh_config,
             } => {
-                tracing::trace!("Handling OpenPty message for {host} with username {username:?} with channel {channel}");
+                tracing::trace!("Handling OpenPty message for {host} with username {username:?} with channel {channel}"); // I18N: no-translate - Rust diagnostic log
                 // Resolve username: block override > provided > SSH config > current user
                 let resolved_ssh_config = Session::resolve_ssh_config(&host);
                 let username = ssh_config
@@ -762,9 +762,9 @@ impl SshPool {
                 let (session, auth_result) = match connect_result {
                     Ok((session, auth_result)) => (session, auth_result),
                     Err(e) => {
-                        tracing::error!("Failed to connect to SSH host {host}: {e}");
+                        tracing::error!("Failed to connect to SSH host {host}: {e}"); // I18N: no-translate - Rust diagnostic log
                         if let Err(e) = reply_to.send(Err(e)) {
-                            tracing::error!("Failed to send error to reply_to: {e:?}");
+                            tracing::error!("Failed to send error to reply_to: {e:?}"); // I18N: no-translate - Rust diagnostic log
                         }
                         return;
                     }
@@ -789,7 +789,7 @@ impl SshPool {
                     },
                 );
 
-                tracing::debug!("Opening PTY for {channel}");
+                tracing::debug!("Opening PTY for {channel}"); // I18N: no-translate - Rust diagnostic log
                 let pty_result = session
                     .open_pty(
                         channel.clone(),
@@ -804,7 +804,7 @@ impl SshPool {
 
                 match pty_result {
                     Err(e) => {
-                        tracing::error!("Failed to open PTY: {e:?}");
+                        tracing::error!("Failed to open PTY: {e:?}"); // I18N: no-translate - Rust diagnostic log
                         // Check if connection is dead and remove it
                         let key = format!("{username}@{host}");
 
@@ -814,13 +814,13 @@ impl SshPool {
                             || error_str.contains("connection")
                             || error_str.contains("broken pipe")
                         {
-                            tracing::debug!(
+                            tracing::debug!( // I18N: no-translate - Rust diagnostic log
                                 "Removing SSH connection due to PTY connection error: {key}"
                             );
                             self.pool.write().await.connections.remove(&key);
                         } else if let Some(session) = self.pool.read().await.connections.get(&key) {
                             if !session.send_keepalive().await {
-                                tracing::debug!(
+                                tracing::debug!( // I18N: no-translate - Rust diagnostic log
                                     "Removing dead SSH connection after PTY failure: {key}"
                                 );
                                 self.pool.write().await.connections.remove(&key);
@@ -839,7 +839,7 @@ impl SshPool {
                 input,
                 reply_to,
             } => {
-                tracing::trace!("Handling PtyWrite message for channel {channel}");
+                tracing::trace!("Handling PtyWrite message for channel {channel}"); // I18N: no-translate - Rust diagnostic log
                 if let Some(meta) = self.channels.get_mut(&channel) {
                     if let Some(pty_input_tx) = meta.pty_input_tx.as_mut() {
                         let _ = pty_input_tx.send(input.clone()).await;
@@ -858,16 +858,16 @@ impl SshPool {
                 }
             }
             SshPoolMessage::ClosePty { channel } => {
-                tracing::trace!("Handling ClosePty message for channel {channel}");
-                tracing::debug!("Closing PTY for {channel}");
+                tracing::trace!("Handling ClosePty message for channel {channel}"); // I18N: no-translate - Rust diagnostic log
+                tracing::debug!("Closing PTY for {channel}"); // I18N: no-translate - Rust diagnostic log
                 if let Some(meta) = self.channels.remove(&channel) {
                     let _ = meta.cancel_tx.send(());
                 }
             }
             SshPoolMessage::HealthCheck { reply_to } => {
-                tracing::trace!("Handling HealthCheck message");
+                tracing::trace!("Handling HealthCheck message"); // I18N: no-translate - Rust diagnostic log
                 let connection_count = self.pool.read().await.connections.len();
-                tracing::debug!(
+                tracing::debug!( // I18N: no-translate - Rust diagnostic log
                     "Running SSH connection health check with keepalives on {connection_count} connections"
                 );
                 let mut dead_connections = Vec::new();
@@ -875,7 +875,7 @@ impl SshPool {
                 // Check all connections for liveness using actual keepalives
                 for (key, session) in &self.pool.read().await.connections {
                     if !session.send_keepalive().await {
-                        tracing::debug!("SSH keepalive failed for connection: {key}");
+                        tracing::debug!("SSH keepalive failed for connection: {key}"); // I18N: no-translate - Rust diagnostic log
                         dead_connections.push(key.clone());
                     }
                 }
@@ -885,12 +885,12 @@ impl SshPool {
                     self.pool.write().await.connections.remove(key);
                 }
                 if dead_count > 0 {
-                    tracing::debug!(
+                    tracing::debug!( // I18N: no-translate - Rust diagnostic log
                         "Health check removed {dead_count} dead connections, {} remaining",
                         self.pool.read().await.connections.len()
                     );
                 } else if connection_count > 0 {
-                    tracing::debug!(
+                    tracing::debug!( // I18N: no-translate - Rust diagnostic log
                         "Health check completed, all {connection_count} connections responded to keepalive"
                     );
                 }
@@ -903,7 +903,7 @@ impl SshPool {
                 prefix,
                 reply_to,
             } => {
-                tracing::trace!("Handling CreateTempFile message for {host} with username {username:?} with prefix {prefix}");
+                tracing::trace!("Handling CreateTempFile message for {host} with username {username:?} with prefix {prefix}"); // I18N: no-translate - Rust diagnostic log
                 let mut pool_guard = self.pool.write().await;
                 let session = match pool_guard
                     .connect(&host, username.as_deref(), None, None)
@@ -926,7 +926,7 @@ impl SshPool {
                 path,
                 reply_to,
             } => {
-                tracing::trace!("Handling ReadFile message for {host} with username {username:?} with path {path}");
+                tracing::trace!("Handling ReadFile message for {host} with username {username:?} with path {path}"); // I18N: no-translate - Rust diagnostic log
                 let mut pool_guard = self.pool.write().await;
                 let session = match pool_guard
                     .connect(&host, username.as_deref(), None, None)
@@ -949,7 +949,7 @@ impl SshPool {
                 path,
                 reply_to,
             } => {
-                tracing::trace!("Handling DeleteFile message for {host} with username {username:?} with path {path}");
+                tracing::trace!("Handling DeleteFile message for {host} with username {username:?} with path {path}"); // I18N: no-translate - Rust diagnostic log
                 let mut pool_guard = self.pool.write().await;
                 let session = match pool_guard
                     .connect(&host, username.as_deref(), None, None)

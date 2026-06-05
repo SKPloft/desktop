@@ -89,7 +89,7 @@ async function migrateWorkspace(
       try {
         await createServerWorkspace(workspace);
       } catch (err) {
-        console.error("Failed to create server workspace during conversion", err);
+        console.error("Failed to create server workspace during conversion", err);// I18N: no-translate - developer diagnostic
       }
     }
 
@@ -99,7 +99,7 @@ async function migrateWorkspace(
     // If the workspace is detected to contain all offline runbooks,
     // we can just move them to the selected path.
     if (!selectedPath) {
-      throw new Error("Selected path is required for offline workspaces");
+      throw new Error("Selected path is required for offline workspaces");// I18N: translate - rendered conversion validation
     }
 
     const result = await commands.createWorkspace(
@@ -123,8 +123,8 @@ async function migrateWorkspace(
       if (!oldRb) {
         // If the local runbook is not found, it's likely because there is a non-shared
         // "legacy" offline runbook in the workspace (from another machine).
-        console.error(
-          "Couldn't move offline runbook to new workspace; local runbook not found",
+        console.error( // I18N: no-translate - developer diagnostic
+          "Couldn't move offline runbook to new workspace; local runbook not found",// I18N: no-translate - developer diagnostic
           rbId,
         );
         continue;
@@ -137,13 +137,13 @@ async function migrateWorkspace(
         JSON.parse(oldRb!.content || "[]"),
       );
       if (result.isErr()) {
-        console.error("Failed to create runbook during conversion", result.unwrapErr());
+        console.error("Failed to create runbook during conversion", result.unwrapErr());// I18N: no-translate - developer diagnostic
         continue;
       }
     }
   } else if (workspaceType === WorkspaceType.Hybrid) {
     if (!selectedPath) {
-      throw new Error("Selected path is required for converting hybrid workspaces");
+      throw new Error("Selected path is required for converting hybrid workspaces");// I18N: translate - rendered conversion validation
     }
 
     // Ensure the workspace exists on the server
@@ -156,7 +156,7 @@ async function migrateWorkspace(
       try {
         await createServerWorkspace(workspace);
       } catch (err) {
-        console.error("Failed to create server workspace during conversion", err);
+        console.error("Failed to create server workspace during conversion", err);// I18N: no-translate - developer diagnostic
       }
     }
 
@@ -201,7 +201,7 @@ async function migrateWorkspace(
           await manager.expireOptimisticUpdates([result.changeRef]);
         }
       } catch (err) {
-        console.error("Failed to delete runbook during conversion", err);
+        console.error("Failed to delete runbook during conversion", err);// I18N: no-translate - developer diagnostic
       }
 
       if (!oldRb) {
@@ -381,7 +381,7 @@ export default function ConvertWorkspaceDialog(props: ConvertWorkspaceDialogProp
         }
       })
       .catch((err) => {
-        console.error("Failed to read directory", err);
+        console.error("Failed to read directory", err);// I18N: no-translate - developer diagnostic
       });
 
     findParentWorkspacePromise
@@ -393,7 +393,7 @@ export default function ConvertWorkspaceDialog(props: ConvertWorkspaceDialogProp
         }
       })
       .catch((err) => {
-        console.error("Failed to find parent workspace", err);
+        console.error("Failed to find parent workspace", err);// I18N: no-translate - developer diagnostic
       });
 
     return () => {
@@ -419,7 +419,7 @@ export default function ConvertWorkspaceDialog(props: ConvertWorkspaceDialogProp
     try {
       await migrateWorkspace(props.workspace, workspaceInfo, folderInfo.path);
     } catch (err) {
-      console.error("Failed to convert workspace", err);
+      console.error("Failed to convert workspace", err); // I18N: no-translate - developer diagnostic
       addToast({
         title: t("workspace.convert.error_title"),
         description: t("workspace.convert.error_description"),

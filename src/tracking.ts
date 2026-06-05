@@ -20,7 +20,7 @@ export const init_tracking = async () => {
   try {
     platformInfo = await invoke<string>("get_platform_info");
   } catch (e) {
-    console.warn("Failed to get platform info:", e);
+    console.warn("Failed to get platform info:", e); // I18N: no-translate - developer diagnostic
     platformInfo = "unknown";
   }
 
@@ -36,7 +36,7 @@ export const init_tracking = async () => {
   // We should not track them as they might be about to opt-out
   // init_tracking is normally called asap, but it is also called from the onboarding
   if (track === null) {
-    console.log("User has not finished onboarding");
+    console.log("User has not finished onboarding"); // I18N: no-translate - developer diagnostic
     return;
   }
 
@@ -86,9 +86,9 @@ export const init_tracking = async () => {
     // Track app start
     track_event("app.start");
 
-    console.log("User opted in to tracking");
+    console.log("User opted in to tracking"); // I18N: no-translate - developer diagnostic
   } else {
-    console.log("User opted out of tracking");
+    console.log("User opted out of tracking"); // I18N: no-translate - developer diagnostic
   }
 };
 
@@ -101,7 +101,7 @@ export default async function track_event(event: string, properties: any = {}) {
   const orgContext = selectedOrg ? "org" : "personal";
 
   if (AtuinEnv.isDev) {
-    console.log(
+    console.log( // I18N: no-translate - developer diagnostic
       `[dev] track_event: ${event} -> ${JSON.stringify({
         ...properties,
         platform: platformInfo,

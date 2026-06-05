@@ -50,6 +50,7 @@ AIBlockRegistry.getInstance().addBlock({
   typeName: "local-directory",
   friendlyName: () => t("editor.blocks.local_directory.title"),
   shortDescription: () => t("editor.blocks.local_directory.short_desc"),
+  // Description is not recommended for i18n — AI-facing developer docs, maintain in English.
   description: () => undent`
     Local Directory blocks set the current working directory for terminal and script blocks that follow. The path is stored locally on the user's machine and is not synced with the runbook,
     allowing different users to set different working directories for the same runbook.

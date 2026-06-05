@@ -100,7 +100,7 @@ impl Document {
                     .map_err(|e| DocumentError::StoreActiveContextError(e.to_string()));
 
                 if let Err(e) = result {
-                    tracing::warn!(
+                    tracing::warn!( // I18N: no-translate - Rust diagnostic log
                         "Failed to delete stored active context for block {block_id} in document {document_id}: {e}",
                         block_id = block.id(),
                         document_id = self.id
@@ -216,7 +216,7 @@ impl Document {
                         .map_err(|e| DocumentError::StoreActiveContextError(e.to_string()));
 
                     if let Err(e) = result {
-                        tracing::warn!(
+                        tracing::warn!( // I18N: no-translate - Rust diagnostic log
                             "Failed to delete stored active context for block {block_id} in document {document_id}: {e}",
                             block_id = deleted_id,
                             document_id = self.id
@@ -259,7 +259,7 @@ impl Document {
 
                     if !KNOWN_UNSUPPORTED_BLOCKS.contains(&block_type.as_str()) && inserted
                     {
-                        tracing::warn!(
+                        tracing::warn!( // I18N: no-translate - Rust diagnostic log
                             "Failed to parse Value with ID {:?} of type {:?} into Block: {:?}. Will not warn about this block again.",
                             value
                                 .get("id")
@@ -483,7 +483,7 @@ impl Document {
         start_index: Option<usize>,
         event_bus: Arc<dyn EventBus>,
     ) -> Result<(), Vec<DocumentError>> {
-        tracing::trace!(
+        tracing::trace!( // I18N: no-translate - Rust diagnostic log
             "Rebuilding passive contexts for document {} starting from index {}",
             self.id,
             start_index.unwrap_or(0)
@@ -650,7 +650,7 @@ impl Document {
                 .map_err(|e| DocumentError::InvalidStructure(e.to_string()));
 
             if let Err(e) = result {
-                tracing::warn!(
+                tracing::warn!( // I18N: no-translate - Rust diagnostic log
                     "Failed to store active context for block {block_id} in document {document_id}: {e}",
                     block_id = block.id(),
                     document_id = self.id

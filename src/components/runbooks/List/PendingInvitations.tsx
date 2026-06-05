@@ -22,7 +22,7 @@ export function PendingInvitations() {
         className="py-2 px-2 flex justify-between items-center bg-gray-200 cursor-pointer hover:underline text-sm text-gray-600"
         onClick={handleClick}
       >
-        Pending invitations:
+        Pending invitations:{/* I18N: translate - visible UI text */}
         <Chip color="primary" size="sm">
           {pendingInvitations}
         </Chip>

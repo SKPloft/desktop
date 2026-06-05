@@ -77,7 +77,7 @@ mod tests {
 
         let context = ResolvedContext::from_block(&dir, None).await.unwrap();
 
-        assert_eq!(context.cwd, "/tmp/test");
+        assert_eq!(context.cwd, "/tmp/test"); // I18N: no-translate - Rust assertion
     }
 
     // Edge cases
@@ -91,7 +91,7 @@ mod tests {
             .unwrap()
             .unwrap();
 
-        assert_eq!(context.get::<DocumentCwd>().unwrap().0, "");
+        assert_eq!(context.get::<DocumentCwd>().unwrap().0, ""); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -107,7 +107,7 @@ mod tests {
             .unwrap()
             .unwrap();
 
-        assert_eq!(context.get::<DocumentCwd>().unwrap().0, "./relative/path");
+        assert_eq!(context.get::<DocumentCwd>().unwrap().0, "./relative/path"); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -123,7 +123,7 @@ mod tests {
             .unwrap()
             .unwrap();
 
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             context.get::<DocumentCwd>().unwrap().0,
             "/path with spaces/test"
         );
@@ -142,7 +142,7 @@ mod tests {
             .unwrap()
             .unwrap();
 
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             context.get::<DocumentCwd>().unwrap().0,
             "/path/with-special_chars.123/test"
         );
@@ -161,7 +161,7 @@ mod tests {
             .unwrap()
             .unwrap();
 
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             context.get::<DocumentCwd>().unwrap().0,
             "/path/with/unicode/测试/test"
         );
@@ -178,8 +178,8 @@ mod tests {
         let json = serde_json::to_string(&original).unwrap();
         let deserialized: Directory = serde_json::from_str(&json).unwrap();
 
-        assert_eq!(original.id, deserialized.id);
-        assert_eq!(original.path, deserialized.path);
+        assert_eq!(original.id, deserialized.id); // I18N: no-translate - Rust assertion
+        assert_eq!(original.path, deserialized.path); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -194,8 +194,8 @@ mod tests {
         });
 
         let dir = Directory::from_document(&json_data).unwrap();
-        assert_eq!(dir.id, id);
-        assert_eq!(dir.path, "/tmp/test");
+        assert_eq!(dir.id, id); // I18N: no-translate - Rust assertion
+        assert_eq!(dir.path, "/tmp/test"); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -208,8 +208,8 @@ mod tests {
         });
 
         let result = Directory::from_document(&json_data);
-        assert!(result.is_err());
-        assert!(result.unwrap_err().contains("Invalid or missing id"));
+        assert!(result.is_err()); // I18N: no-translate - Rust assertion
+        assert!(result.unwrap_err().contains("Invalid or missing id")); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -221,8 +221,8 @@ mod tests {
         });
 
         let result = Directory::from_document(&json_data);
-        assert!(result.is_err());
-        assert!(result.unwrap_err().contains("Missing path"));
+        assert!(result.is_err()); // I18N: no-translate - Rust assertion
+        assert!(result.unwrap_err().contains("Missing path")); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -236,8 +236,8 @@ mod tests {
         });
 
         let result = Directory::from_document(&json_data);
-        assert!(result.is_err());
-        assert!(result.unwrap_err().contains("Invalid or missing id"));
+        assert!(result.is_err()); // I18N: no-translate - Rust assertion
+        assert!(result.unwrap_err().contains("Invalid or missing id")); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -245,8 +245,8 @@ mod tests {
         let id = Uuid::new_v4();
         let dir = Directory::builder().id(id).path("/test/path").build();
 
-        assert_eq!(dir.id, id);
-        assert_eq!(dir.path, "/test/path");
+        assert_eq!(dir.id, id); // I18N: no-translate - Rust assertion
+        assert_eq!(dir.path, "/test/path"); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -257,8 +257,8 @@ mod tests {
             .path("/test/path".to_string()) // String instead of &str
             .build();
 
-        assert_eq!(dir.id, id);
-        assert_eq!(dir.path, "/test/path");
+        assert_eq!(dir.id, id); // I18N: no-translate - Rust assertion
+        assert_eq!(dir.path, "/test/path"); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -279,7 +279,7 @@ mod tests {
 
         let context = dir.passive_context(&resolver, None).await.unwrap().unwrap();
 
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             context.get::<DocumentCwd>().unwrap().0,
             "/home/user/project/src/components"
         );
@@ -304,7 +304,7 @@ mod tests {
         let context = dir.passive_context(&resolver, None).await.unwrap().unwrap();
 
         // The template should resolve the path (normalization happens at context resolution level)
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             context.get::<DocumentCwd>().unwrap().0,
             "/workspace/myproject/../other-project"
         );

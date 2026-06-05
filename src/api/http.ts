@@ -94,7 +94,7 @@ async function makeRequest<T>(
     } catch (_) {
       // ignore
     }
-    throw new HttpResponseError(resp.status, data);
+    throw new HttpResponseError(resp.status, data); // I18N: no-translate - developer/internal string
   }
 }
 

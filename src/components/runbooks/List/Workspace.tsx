@@ -123,7 +123,7 @@ function transformDirEntriesToArboristTree(
     children: ArboristTree;
   } {
     if (pathParts.length === 0) {
-      throw new Error("Cannot create folder with empty path");
+      throw new Error("Cannot create folder with empty path");// I18N: translate - rendered workspace validation
     }
 
     // Start from root and traverse down the path
@@ -160,7 +160,7 @@ function transformDirEntriesToArboristTree(
       currentLevel = folder.children;
     }
 
-    throw new Error("Unexpected end of path traversal");
+    throw new Error("Unexpected end of path traversal");// I18N: translate - rendered workspace validation
   }
 
   for (const entry of sortedEntries) {

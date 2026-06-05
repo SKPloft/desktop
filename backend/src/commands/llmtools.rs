@@ -28,16 +28,16 @@ pub async fn llmtools_subscribe(
             match rx.recv().await {
                 Ok(event) => {
                     if let Err(e) = channel.send(event) {
-                        log::debug!("LLM Tools channel closed: {}", e);
+                        log::debug!("LLM Tools channel closed: {}", e); // I18N: no-translate - Rust diagnostic log
                         break;
                     }
                 }
                 Err(tokio::sync::broadcast::error::RecvError::Closed) => {
-                    log::debug!("LLM Tools broadcast channel closed");
+                    log::debug!("LLM Tools broadcast channel closed"); // I18N: no-translate - Rust diagnostic log
                     break;
                 }
                 Err(tokio::sync::broadcast::error::RecvError::Lagged(n)) => {
-                    log::warn!("LLM Tools subscriber lagged by {} events", n);
+                    log::warn!("LLM Tools subscriber lagged by {} events", n); // I18N: no-translate - Rust diagnostic log
                     // Continue receiving; we just missed some events
                 }
             }

@@ -104,7 +104,7 @@ mod tests {
         let local_var = LocalVar::builder().id(Uuid::new_v4()).name("").build();
 
         let context = ResolvedContext::from_block(&local_var, Some(&local_value_provider())).await;
-        assert!(context.is_err());
+        assert!(context.is_err()); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -118,7 +118,7 @@ mod tests {
             .await
             .unwrap();
 
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             context.variables.get("test_var"),
             Some(&"test_value".to_string())
         );
@@ -135,8 +135,8 @@ mod tests {
         let json = serde_json::to_string(&local_var).unwrap();
         let deserialized: LocalVar = serde_json::from_str(&json).unwrap();
 
-        assert_eq!(local_var.name, deserialized.name);
-        assert_eq!(local_var.id, deserialized.id);
+        assert_eq!(local_var.name, deserialized.name); // I18N: no-translate - Rust assertion
+        assert_eq!(local_var.id, deserialized.id); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -155,7 +155,7 @@ mod tests {
             let context = ResolvedContext::from_block(&local_var, Some(&local_value_provider))
                 .await
                 .unwrap();
-            assert_eq!(context.variables.get(name), Some(&"test_value".to_string()));
+            assert_eq!(context.variables.get(name), Some(&"test_value".to_string())); // I18N: no-translate - Rust assertion
         }
     }
 }

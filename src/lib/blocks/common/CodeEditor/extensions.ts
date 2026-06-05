@@ -109,15 +109,15 @@ export function buildJinjaAutocomplete(blockContext: ResolvedContext): JinjaComp
     var: blockContext.variables as Record<string, string>,
     varSource: blockContext.variablesSources as Record<string, JinjaVarSource>,
     doc: {
-      first: "first block",
-      last: "last block",
-      previous: "previous block",
-      named: "named block",
-      content: "runbook blocks",
+      first: "first block", // I18N: translate - visible completion/help label
+      last: "last block", // I18N: translate - visible completion/help label
+      previous: "previous block", // I18N: translate - visible completion/help label
+      named: "named block", // I18N: translate - visible completion/help label
+      content: "runbook blocks", // I18N: translate - visible completion/help label
     },
     env: blockContext.envVars as Record<string, string>,
     workspace: {
-      root: "workspace root",
+      root: "workspace root", // I18N: translate - visible completion/help label
     },
   };
 
@@ -126,13 +126,13 @@ export function buildJinjaAutocomplete(blockContext: ResolvedContext): JinjaComp
     variables: Object.keys(withoutProperties(jinjaVariables, ["varSource"])).map((v) => {
       let detail = "properties";
       if (v === "var") {
-        detail = "template variables";
+        detail = "template variables"; // I18N: translate - visible completion/help label
       } else if (v === "doc") {
-        detail = "document properties";
+        detail = "document properties"; // I18N: translate - visible completion/help label
       } else if (v === "env") {
-        detail = "environment variables";
+        detail = "environment variables"; // I18N: translate - visible completion/help label
       } else if (v === "workspace") {
-        detail = "workspace properties";
+        detail = "workspace properties"; // I18N: translate - visible completion/help label
       }
 
       return {
@@ -167,15 +167,15 @@ export function buildJinjaAutocomplete(blockContext: ResolvedContext): JinjaComp
         }
       }
       if (current && typeof current === "object" && !Array.isArray(current)) {
-        let sectionName = "Properties";
+        let sectionName = "Properties"; // I18N: translate - visible completion/help label
         if (path[0] === "var") {
-          sectionName = "Template Variables";
+          sectionName = "Template Variables"; // I18N: translate - visible completion/help label
         } else if (path[0] === "doc") {
-          sectionName = "Document Properties";
+          sectionName = "Document Properties"; // I18N: translate - visible completion/help label
         } else if (path[0] === "env") {
-          sectionName = "Environment Variables";
+          sectionName = "Environment Variables"; // I18N: translate - visible completion/help label
         } else if (path[0] === "workspace") {
-          sectionName = "Workspace Properties";
+          sectionName = "Workspace Properties"; // I18N: translate - visible completion/help label
         }
 
         return Object.keys(current).map((v) => ({

@@ -68,7 +68,7 @@ export default function GitLabPreview({ props, updateProps }: GitLabPreviewProps
           );
           break;
         default:
-          throw new Error(`Unknown URL type: ${props.urlType}`);
+          throw new Error(`Unknown URL type: ${props.urlType}`);// I18N: translate - rendered preview error
       }
 
       if (!mountedRef.current) return;
@@ -81,7 +81,7 @@ export default function GitLabPreview({ props, updateProps }: GitLabPreviewProps
       });
     } catch (err) {
       if (!mountedRef.current) return;
-      setError(err instanceof Error ? err.message : "Failed to fetch data");
+      setError(err instanceof Error ? err.message : "Failed to fetch data");// I18N: translate - rendered preview fallback
     } finally {
       if (mountedRef.current) {
         setLoading(false);

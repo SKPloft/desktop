@@ -15,7 +15,7 @@ export function getRunbookLinkMenuItems(
     try {
       // Get current organization ID to scope runbooks to current org
       const { selectedOrg } = useStore.getState();
-      console.log("Current organization ID:", selectedOrg);
+      console.log("Current organization ID:", selectedOrg); // I18N: no-translate - developer diagnostic
 
       // Get runbooks from current organization only
       // TODO: support offline runbooks
@@ -80,11 +80,11 @@ export function getRunbookLinkMenuItems(
           resolve(items);
         })
         .catch((error) => {
-          console.error("Error searching runbooks:", error);
+          console.error("Error searching runbooks:", error); // I18N: no-translate - developer diagnostic
           resolve([]);
         });
     } catch (error) {
-      console.error("Error loading runbooks:", error);
+      console.error("Error loading runbooks:", error); // I18N: no-translate - developer diagnostic
       resolve([]);
     }
   });

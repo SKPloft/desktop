@@ -62,9 +62,9 @@ export class GrandCentral extends Emittery<GrandCentralEvents> {
       };
 
       this.isListening = true;
-      console.log("Grand Central: Started listening to backend events");
+      console.log("Grand Central: Started listening to backend events"); // I18N: no-translate - developer diagnostic
     } catch (error) {
-      console.error("Grand Central: Failed to start listening:", error);
+      console.error("Grand Central: Failed to start listening:", error); // I18N: no-translate - developer diagnostic
       throw error;
     }
   }
@@ -83,14 +83,14 @@ export class GrandCentral extends Emittery<GrandCentralEvents> {
     }
 
     this.isListening = false;
-    console.log("Grand Central: Stopped listening to backend events");
+    console.log("Grand Central: Stopped listening to backend events"); // I18N: no-translate - developer diagnostic
   }
 
   /**
    * Handle events from the backend and emit them to frontend subscribers
    */
   private handleBackendEvent(event: GCEvent): void {
-    console.log("handleBackendEvent", event);
+    console.log("handleBackendEvent", event); // I18N: no-translate - developer diagnostic
 
     try {
       switch (event.type) {
@@ -196,10 +196,10 @@ export class GrandCentral extends Emittery<GrandCentralEvents> {
           break;
 
         default:
-          console.warn("Grand Central: Unhandled event type:", event);
+          console.warn("Grand Central: Unhandled event type:", event); // I18N: no-translate - developer diagnostic
       }
     } catch (error) {
-      console.error("Grand Central: Error handling backend event:", error, event);
+      console.error("Grand Central: Error handling backend event:", error, event); // I18N: no-translate - developer diagnostic
     }
   }
 

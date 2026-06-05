@@ -37,7 +37,7 @@ export default class Node<T extends {}> {
 
   public setData(data: T): Node<T> {
     if (this.id() === ROOT) {
-      throw new Error("Cannot set data for root node");
+      throw new Error("Cannot set data for root node"); // I18N: no-translate - internal exception
     }
 
     this.tree.setData(this.id() as string, data);
@@ -148,7 +148,7 @@ export default class Node<T extends {}> {
 
   public moveTo(parent: Node<T>, index?: number) {
     if (this.id() === ROOT) {
-      throw new Error("Cannot move root node");
+      throw new Error("Cannot move root node"); // I18N: no-translate - internal exception
     }
 
     this.tree.updateNode(this.id() as string, parent.id(), index);
@@ -164,7 +164,7 @@ export default class Node<T extends {}> {
 
   public delete(strategy: DeleteStrategy) {
     if (this.id() === ROOT) {
-      throw new Error("Cannot delete root node");
+      throw new Error("Cannot delete root node"); // I18N: no-translate - internal exception
     }
 
     this.tree.deleteNode(this.id() as string, strategy);
@@ -172,15 +172,15 @@ export default class Node<T extends {}> {
 
   moveRelative(other: Node<T>, offset: number) {
     if (this.id() === ROOT) {
-      throw new Error("Cannot move root node");
+      throw new Error("Cannot move root node"); // I18N: no-translate - internal exception
     }
 
     if (other.id() === this.id()) {
-      throw new Error("Cannot move node before or after itself");
+      throw new Error("Cannot move node before or after itself"); // I18N: no-translate - internal exception
     }
 
     if (other.id() === ROOT) {
-      throw new Error("Cannot move node before or after root");
+      throw new Error("Cannot move node before or after root"); // I18N: no-translate - internal exception
     }
 
     const newParent = other.parent().unwrap();

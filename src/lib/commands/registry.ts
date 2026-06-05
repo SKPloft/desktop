@@ -112,11 +112,11 @@ export class CommandRegistry {
   async executeCommand(id: string, context: CommandContext): Promise<void> {
     const command = this.commands.get(id);
     if (!command) {
-      throw new Error(`Command ${id} not found`);
+      throw new Error(`Command ${id} not found`); // I18N: no-translate - internal exception
     }
 
     if (!this.isCommandEnabled(command)) {
-      throw new Error(`Command ${id} is not enabled`);
+      throw new Error(`Command ${id} is not enabled`); // I18N: no-translate - internal exception
     }
 
     await command.handler(context);
@@ -137,7 +137,7 @@ export function registerBuiltinCommands(): void {
       try {
         await emit("new-runbook");
       } catch (error) {
-        console.error("Failed to trigger new runbook:", error);
+        console.error("Failed to trigger new runbook:", error); // I18N: no-translate - developer diagnostic
       }
     },
   });
@@ -173,7 +173,7 @@ export function registerBuiltinCommands(): void {
       try {
         await emit("export-markdown");
       } catch (error) {
-        console.error("Failed to trigger export:", error);
+        console.error("Failed to trigger export:", error); // I18N: no-translate - developer diagnostic
       }
     },
   });
@@ -225,7 +225,7 @@ export function registerBuiltinCommands(): void {
       try {
         await emit("start-sync");
       } catch (error) {
-        console.error("Failed to trigger sync:", error);
+        console.error("Failed to trigger sync:", error); // I18N: no-translate - developer diagnostic
       }
     },
   });
@@ -277,18 +277,18 @@ export function registerBuiltinCommands(): void {
       const state = useStore.getState();
       const currentTab = state.tabs.find((tab) => tab.id === state.currentTabId);
       if (!currentTab || !currentTab.url.startsWith("/runbook/")) {
-        console.error("Not in a runbook");
+        console.error("Not in a runbook"); // I18N: no-translate - developer diagnostic
         return;
       }
       const runbookId = currentTab.url.split("/").pop();
       if (!runbookId) {
-        console.error("Could not get runbook ID");
+        console.error("Could not get runbook ID"); // I18N: no-translate - developer diagnostic
         return;
       }
       try {
         await invoke("runbook_kill_all_ptys", { runbook: runbookId });
       } catch (error) {
-        console.error("Failed to kill terminals:", error);
+        console.error("Failed to kill terminals:", error); // I18N: no-translate - developer diagnostic
       }
     },
   });
@@ -313,7 +313,7 @@ export function registerBuiltinCommands(): void {
       const tabUri = new TabUri(currentTab.url);
       const runbookId = tabUri.getRunbookId();
       if (!runbookId) {
-        console.error("Not in a runbook");
+        console.error("Not in a runbook"); // I18N: no-translate - developer diagnostic
         return;
       }
       const deepLink = `atuin://runbook/${runbookId}`;
@@ -325,7 +325,7 @@ export function registerBuiltinCommands(): void {
           radius: "sm",
         });
       } catch (error) {
-        console.error("Failed to copy deep link:", error);
+        console.error("Failed to copy deep link:", error); // I18N: no-translate - developer diagnostic
         addToast({
           title: t("commands.runbook.copy_deep_link.error"),
           color: "danger",

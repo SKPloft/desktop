@@ -51,7 +51,7 @@ function reducer(state: FeedbackModalState, action: FeedbackModalAction) {
       return { ...state, feedback: "", email: "", sending: false, sent: false, error: null };
     default:
       const x: never = action;
-      console.error("Unknown action", x);
+      console.error("Unknown action", x); // I18N: no-translate - developer diagnostic
       return state;
   }
 }

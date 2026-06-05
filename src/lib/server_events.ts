@@ -58,7 +58,7 @@ export function setupServerEvents(
 
       await newWorkspace.save();
     } catch (err) {
-      console.error("Error creating org workspace", err);
+      console.error("Error creating org workspace", err); // I18N: no-translate - developer diagnostic
     }
   });
 
@@ -73,7 +73,7 @@ export function setupServerEvents(
       workspace.set("name", serverWorkspace.name);
       await workspace.save();
     } catch (err) {
-      console.error("Error updating org workspace", err);
+      console.error("Error updating org workspace", err); // I18N: no-translate - developer diagnostic
     }
   });
 
@@ -84,7 +84,7 @@ export function setupServerEvents(
 
       await workspace.del();
     } catch (err) {
-      console.error("Error deleting org workspace", err);
+      console.error("Error deleting org workspace", err); // I18N: no-translate - developer diagnostic
     }
   });
 }

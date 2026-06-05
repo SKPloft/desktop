@@ -7,7 +7,7 @@ pub async fn save_password(
     user: &str,
     value: &str,
 ) -> Result<(), String> {
-    log::info!("save_password for {service}, {user}");
+    log::info!("save_password for {service}, {user}"); // I18N: no-translate - Rust diagnostic log
 
     state
         .secret_cache()
@@ -24,7 +24,7 @@ pub async fn load_password(
     service: &str,
     user: &str,
 ) -> Result<Option<String>, String> {
-    log::info!("load_password for {service}, {user}");
+    log::info!("load_password for {service}, {user}"); // I18N: no-translate - Rust diagnostic log
 
     let secret = state
         .secret_cache()
@@ -41,7 +41,7 @@ pub async fn delete_password(
     service: &str,
     user: &str,
 ) -> Result<(), String> {
-    log::info!("delete_password for {service}, {user}");
+    log::info!("delete_password for {service}, {user}"); // I18N: no-translate - Rust diagnostic log
 
     state
         .secret_cache()

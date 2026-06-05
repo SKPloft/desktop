@@ -206,7 +206,7 @@ export function useBlockExecution(blockId: string): ClientExecutionHandle {
 
   const startExecution = useCallback(async () => {
     if (!documentBridge) {
-      console.error("`startExecution` called but document bridge not found");
+      console.error("`startExecution` called but document bridge not found"); // I18N: no-translate - developer diagnostic
       return;
     }
     if (lifecycle === "running") {
@@ -244,7 +244,7 @@ export function useBlockExecution(blockId: string): ClientExecutionHandle {
 
   const stopExecution = useCallback(async () => {
     if (!documentBridge) {
-      console.error("`stopExecution` called but document bridge not found");
+      console.error("`stopExecution` called but document bridge not found"); // I18N: no-translate - developer diagnostic
       return;
     }
 
@@ -319,7 +319,7 @@ export function useBlockExecution(blockId: string): ClientExecutionHandle {
       default:
         if (output.lifecycle !== null) {
           const x: never = output.lifecycle;
-          throw new Error(`Unhandled lifecycle event: ${x}`);
+          throw new Error(`Unhandled lifecycle event: ${x}`); // I18N: no-translate - internal exception
         }
     }
   }, []);

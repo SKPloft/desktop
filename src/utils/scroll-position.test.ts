@@ -74,7 +74,7 @@ describe("scroll-position utils", () => {
 
   it("should handle localStorage errors gracefully", () => {
     localStorageMock.getItem.mockImplementation(() => {
-      throw new Error("localStorage unavailable");
+      throw new Error("localStorage unavailable"); // I18N: no-translate - internal exception
     });
 
     expect(() => getScrollPosition("runbook-123")).not.toThrow();

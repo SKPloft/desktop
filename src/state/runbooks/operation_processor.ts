@@ -16,7 +16,7 @@ import Runbook from "./runbook";
 const logger = new Logger("OperationProcessor", "DarkOliveGreen", "GreenYellow");
 
 function assertUnreachable(_x: never): never {
-  throw new Error("Unreachable clause");
+  throw new Error("Unreachable clause"); // I18N: no-translate - internal exception
 }
 
 function isOnline() {
@@ -301,7 +301,7 @@ async function processWorkspaceCreated(
     } else if (workspaceOwner.type === "org") {
       await api.createOrgWorkspace(workspaceId, workspaceName, workspaceOwner.orgId);
     } else {
-      throw new Error("Invalid workspace owner");
+      throw new Error("Invalid workspace owner"); // I18N: no-translate - internal exception
     }
 
     return true;

@@ -54,7 +54,7 @@ export default class SocketManager extends Emittery {
       // Defer the callback to allow other handlers to be set up
       // before handling the connection event.
       setTimeout(() => {
-        callback(this.socket.expect("isConnected returned true but socket is None"));
+        callback(this.socket.expect("isConnected returned true but socket is None")); // I18N: no-translate - internal expectation message
       }, 0);
     }
 
@@ -151,7 +151,7 @@ export class WrappedChannel<J = unknown> {
     this.channel = this.manager
       .getSocket()
       .map((socket) => socket.channel(topic, channelParams))
-      .expect(
+      .expect( // I18N: no-translate - internal expectation message
         "Tried to create channel with no socket; wait for SocketManager `onConnect` or `onSocketChange` before creating channels",
       );
 
@@ -219,7 +219,7 @@ export class WrappedChannel<J = unknown> {
         return this.join(timeout);
       default:
         const exhaustiveCheck: never = channelState;
-        throw new Error(`Unhandled channel state: ${exhaustiveCheck}`);
+        throw new Error(`Unhandled channel state: ${exhaustiveCheck}`); // I18N: no-translate - internal exception
     }
   }
 
@@ -255,7 +255,7 @@ export class WrappedChannel<J = unknown> {
     return () => {
       unsub();
       if (!this.handlers.has(event)) {
-        console.warn(`${event} wasn't found in handlers, but an unsub was called.`);
+        console.warn(`${event} wasn't found in handlers, but an unsub was called.`); // I18N: no-translate - developer diagnostic
       } else if (this.handlers.get(event)!.count === 1) {
         this.channel.off(event, this.handlers.get(event)!.ref);
         this.handlers.delete(event);

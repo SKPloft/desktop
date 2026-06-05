@@ -13,7 +13,7 @@ async fn update_badge_count<R: tauri::Runtime>(
     app.webview_windows()
         .values()
         .next()
-        .expect("no window found")
+        .expect("no window found") // I18N: no-translate - internal expectation message
         .set_badge_count(len)?;
 
     Ok(())

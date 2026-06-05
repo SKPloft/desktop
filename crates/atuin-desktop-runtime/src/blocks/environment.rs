@@ -101,7 +101,7 @@ mod tests {
 
         let context = ResolvedContext::from_block(&env, None).await.unwrap();
 
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             context.env_vars.get("TEST_VAR"),
             Some(&"test_value".to_string())
         );
@@ -117,7 +117,7 @@ mod tests {
             .build();
 
         let context = ResolvedContext::from_block(&env, None).await.unwrap();
-        assert_eq!(context.env_vars.get("EMPTY_VAR"), Some(&"".to_string()));
+        assert_eq!(context.env_vars.get("EMPTY_VAR"), Some(&"".to_string())); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -129,7 +129,7 @@ mod tests {
             .build();
 
         let context = ResolvedContext::from_block(&env, None).await;
-        assert!(context.is_err());
+        assert!(context.is_err()); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -141,7 +141,7 @@ mod tests {
             .build();
 
         let context = ResolvedContext::from_block(&env, None).await;
-        assert!(context.is_err());
+        assert!(context.is_err()); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -153,7 +153,7 @@ mod tests {
             .build();
 
         let context = ResolvedContext::from_block(&env, None).await;
-        assert!(context.is_err());
+        assert!(context.is_err()); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -166,7 +166,7 @@ mod tests {
 
         let context = ResolvedContext::from_block(&env, None).await.unwrap();
 
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             context.env_vars.get("SPECIAL_VAR"),
             Some(&"value with spaces and symbols: !@#$%^&*()".to_string())
         );
@@ -181,7 +181,7 @@ mod tests {
             .build();
 
         let context = ResolvedContext::from_block(&env, None).await.unwrap();
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             context.env_vars.get("MULTILINE_VAR"),
             Some(&"line1\nline2\nline3".to_string())
         );
@@ -196,7 +196,7 @@ mod tests {
             .build();
 
         let context = ResolvedContext::from_block(&env, None).await.unwrap();
-        assert_eq!(
+        assert_eq!( // I18N: no-translate - Rust assertion
             context.env_vars.get("UNICODE_VAR"),
             Some(&"测试值 🚀 émojis".to_string())
         );
@@ -214,9 +214,9 @@ mod tests {
         let json = serde_json::to_string(&original).unwrap();
         let deserialized: Environment = serde_json::from_str(&json).unwrap();
 
-        assert_eq!(original.id, deserialized.id);
-        assert_eq!(original.name, deserialized.name);
-        assert_eq!(original.value, deserialized.value);
+        assert_eq!(original.id, deserialized.id); // I18N: no-translate - Rust assertion
+        assert_eq!(original.name, deserialized.name); // I18N: no-translate - Rust assertion
+        assert_eq!(original.value, deserialized.value); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -232,9 +232,9 @@ mod tests {
         });
 
         let env = Environment::from_document(&json_data).unwrap();
-        assert_eq!(env.id, id);
-        assert_eq!(env.name, "TEST_VAR");
-        assert_eq!(env.value, "test_value");
+        assert_eq!(env.id, id); // I18N: no-translate - Rust assertion
+        assert_eq!(env.name, "TEST_VAR"); // I18N: no-translate - Rust assertion
+        assert_eq!(env.value, "test_value"); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -249,9 +249,9 @@ mod tests {
         });
 
         let env = Environment::from_document(&json_data).unwrap();
-        assert_eq!(env.id, id);
-        assert_eq!(env.name, "TEST_VAR");
-        assert_eq!(env.value, "");
+        assert_eq!(env.id, id); // I18N: no-translate - Rust assertion
+        assert_eq!(env.name, "TEST_VAR"); // I18N: no-translate - Rust assertion
+        assert_eq!(env.value, ""); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -265,8 +265,8 @@ mod tests {
         });
 
         let result = Environment::from_document(&json_data);
-        assert!(result.is_err());
-        assert!(result.unwrap_err().contains("Missing name"));
+        assert!(result.is_err()); // I18N: no-translate - Rust assertion
+        assert!(result.unwrap_err().contains("Missing name")); // I18N: no-translate - Rust assertion
     }
 
     #[tokio::test]
@@ -290,7 +290,7 @@ mod tests {
                 .build();
 
             let context = ResolvedContext::from_block(&env, None).await.unwrap();
-            assert_eq!(context.env_vars.get(name), Some(&value.to_string()));
+            assert_eq!(context.env_vars.get(name), Some(&value.to_string())); // I18N: no-translate - Rust assertion
         }
     }
 }
