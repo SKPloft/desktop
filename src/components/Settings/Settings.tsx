@@ -506,7 +506,7 @@ const GeneralSettings = () => {
             className="mt-4"
             placeholder={t("settings.editor.light_theme.placeholder")}
             selectedKeys={[lightModeEditorTheme]}
-            items={themes.map((theme) => ({ label: theme[0], key: theme[1] }))}
+            items={themes.map((theme) => ({ label: t("settings.editor.themes." + theme[1]), key: theme[1] }))}
           >
             {(item) => <SelectItem key={item.key}>{item.label}</SelectItem>}
           </Select>
@@ -518,7 +518,7 @@ const GeneralSettings = () => {
             className="mt-4"
             placeholder={t("settings.editor.dark_theme.placeholder")}
             selectedKeys={[darkModeEditorTheme]}
-            items={themes.map((theme) => ({ label: theme[0], key: theme[1] }))}
+            items={themes.map((theme) => ({ label: t("settings.editor.themes." + theme[1]), key: theme[1] }))}
           >
             {(item) => <SelectItem key={item.key}>{item.label}</SelectItem>}
           </Select>

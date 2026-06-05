@@ -462,7 +462,7 @@ export default function ConvertWorkspaceDialog(props: ConvertWorkspaceDialogProp
       hideCloseButton={converting}
     >
       <ModalContent>
-        <ModalHeader>{t("workspace.convert.legacy_description")}</ModalHeader>
+        <ModalHeader>{t("workspace.convert.title")}</ModalHeader>
         <ModalBody className="flex gap-4">
           <p>
             {t("workspace.convert.legacy_description", { name: props.workspace.get("name") })}{" "}
