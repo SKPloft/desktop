@@ -1,3 +1,7 @@
+<p align="right">
+  <strong>English</strong> | <a href="README-zh.md">中文</a>
+</p>
+
 # Atuin Desktop for VRCD
 
 *Note: This is a community fork/custom build of the official [Atuin Desktop](https://github.com/atuinsh/atuin) that introduces **EXPERIMENTAL** full Internationalization (i18n) support and various AI provider bug fixes, bulit for specific organization. Since this fork may set destructive behavior, If you find bugs, please consider report to issues page in current repo before submitting to official*

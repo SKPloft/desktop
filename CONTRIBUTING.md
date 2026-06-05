@@ -92,6 +92,14 @@ A global `app` object lives on the `window`. Items can be added to it via `DevCo
 * `app.setHubCredentials` - function to set hub credentials in development
 * `app.editor` - the BlockNote editor instance (when available)
 
+## Contributing to Custom Features (i18n & AI Fixes)
+
+This fork introduces **experimental i18n support** and specific **AI provider bug fixes**. If you have questions, feedback, or want to contribute to these new features:
+
+1. **Reporting Custom Bugs:** Please report any GUI breakages, translation errors, or bugs specifically related to the patched AI providers directly to **this repository's issue tracker**, *not* the official Atuin repository.
+2. **Adding Languages:** Since i18n is experimental, community contributions for new translations or fixing existing ones are highly welcomed.
+3. **Questions:** If you have questions about how the experimental i18n or AI fixes work, feel free to open a discussion or issue in this repository.
+
 ## Common Issues
 
 ### Node.js runs out of memory running `bun run tauri build`
