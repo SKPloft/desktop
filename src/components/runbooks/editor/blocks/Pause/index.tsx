@@ -69,7 +69,9 @@ const Pause = ({
           )}
         </div>
 
-        <span className="text-xs font-medium text-amber-700 dark:text-amber-300">{t("editor.blocks.pause.title")}</span>
+        <span className="text-xs font-medium text-amber-700 dark:text-amber-300">
+          {t("editor.blocks.pause.title")}
+        </span>
 
         <Select
           size="sm"
@@ -179,7 +181,7 @@ export const insertPause = (schema: any) => (editor: typeof schema.BlockNoteEdit
     );
   },
   icon: <PauseIcon size={18} />,
-  group: t("editor.blocks.group.execute"), 
+  group: t("editor.blocks.group.execute"),
 });
 
 AIBlockRegistry.getInstance().addBlock({

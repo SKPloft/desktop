@@ -388,9 +388,9 @@ const GeneralSettings = () => {
                   setUiScale(numVal);
                 }}
                 marks={[
-                  { value: 50, label: t("settings.general.ui_scale.percent", { value: 50 }) }, 
-                  { value: 100, label: t("settings.general.ui_scale.percent", { value: 100 }) }, 
-                  { value: 150, label: t("settings.general.ui_scale.percent", { value: 150 }) }, 
+                  { value: 50, label: t("settings.general.ui_scale.percent", { value: 50 }) },
+                  { value: 100, label: t("settings.general.ui_scale.percent", { value: 100 }) },
+                  { value: 150, label: t("settings.general.ui_scale.percent", { value: 150 }) },
                 ]}
                 hideValue
                 className="flex-1"

@@ -62,7 +62,7 @@ export default function CommandMenu(props: CommandMenuProps) {
             (workspaces || []).find((w) => w.get("id") === rb.workspaceId)?.get("name") || null,
           title: rb.name,
           type: "runbook",
-          subtitle: t("command_menu.edited"), 
+          subtitle: t("command_menu.edited"),
         };
       });
 
@@ -139,7 +139,11 @@ export default function CommandMenu(props: CommandMenuProps) {
             <DialogTitle>{t("command_menu.title")}</DialogTitle>
           </VisuallyHidden>
           <Command shouldFilter={false}>
-            <CommandInput placeholder={t("command_menu.placeholder")} value={query} onValueChange={setQuery} />
+            <CommandInput
+              placeholder={t("command_menu.placeholder")}
+              value={query}
+              onValueChange={setQuery}
+            />
             <CommandList>
               <CommandEmpty>
                 <div className="py-6 text-center text-sm">

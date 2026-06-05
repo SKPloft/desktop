@@ -395,4 +395,3 @@ export default class OnlineStrategy implements WorkspaceStrategy {
     return true;
   }
 }
-

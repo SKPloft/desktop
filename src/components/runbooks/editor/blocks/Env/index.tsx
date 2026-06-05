@@ -27,11 +27,7 @@ const Env = ({ name = "", value = "", onUpdate, isEditable }: EnvProps) => {
   };
 
   return (
-    <Tooltip
-      content={t("editor.blocks.env.tooltip")}
-      delay={1000}
-      className="outline-none"
-    >
+    <Tooltip content={t("editor.blocks.env.tooltip")} delay={1000} className="outline-none">
       <div className="flex flex-col w-full bg-gradient-to-r from-green-50 to-emerald-50 dark:from-slate-800 dark:to-green-950 rounded-lg p-3 border border-green-200 dark:border-green-900 shadow-sm hover:shadow-md transition-all duration-200">
         <span className="text-[10px] font-mono text-gray-400 dark:text-gray-500 mb-2">env</span>
         <div className="flex flex-row items-center space-x-3">
@@ -122,8 +118,8 @@ export default createReactBlockSpec(
 
 AIBlockRegistry.getInstance().addBlock({
   typeName: "env",
-friendlyName: () => t("editor.blocks.env.title"),
-shortDescription: () => t("editor.blocks.env.short_desc"),
+  friendlyName: () => t("editor.blocks.env.title"),
+  shortDescription: () => t("editor.blocks.env.short_desc"),
   description: () => undent`
     Environment Variable blocks set shell environment variables that are available to all subsequent Terminal and Script blocks in the runbook.
 

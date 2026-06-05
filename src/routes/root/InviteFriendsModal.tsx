@@ -154,7 +154,9 @@ export default function InviteFriendsModal(props: InviteFriendsModalProps) {
             isDisabled={emails.length === 0 || connectionState !== ConnectionState.Online}
           >
             {emails.length > 0
-              ? t(emails.length === 1 ? "invite_friends.send_one" : "invite_friends.send_many", { count: emails.length })
+              ? t(emails.length === 1 ? "invite_friends.send_one" : "invite_friends.send_many", {
+                  count: emails.length,
+                })
               : t("invite_friends.add_emails")}
           </Button>
         </ModalFooter>

@@ -304,12 +304,17 @@ export default function NotificationManager() {
 
       const durationStr =
         durationSecs >= 60
-          ? t("notifications.duration.minutes_seconds", { minutes: Math.floor(durationSecs / 60), seconds: Math.round(durationSecs % 60) })
+          ? t("notifications.duration.minutes_seconds", {
+              minutes: Math.floor(durationSecs / 60),
+              seconds: Math.round(durationSecs % 60),
+            })
           : t("notifications.duration.seconds", { seconds: durationSecs.toFixed(1) });
 
       notify(
         {
-          title: data.success ? t("notifications.block.completed.title") : t("notifications.block.failed.title"),
+          title: data.success
+            ? t("notifications.block.completed.title")
+            : t("notifications.block.failed.title"),
           body: t("notifications.block.finished_body", { runbookName, duration: durationStr }),
           success: data.success,
           duration: durationSecs,
@@ -414,7 +419,10 @@ export default function NotificationManager() {
 
       const durationStr =
         durationSecs >= 60
-          ? t("notifications.duration.minutes_seconds", { minutes: Math.floor(durationSecs / 60), seconds: Math.round(durationSecs % 60) })
+          ? t("notifications.duration.minutes_seconds", {
+              minutes: Math.floor(durationSecs / 60),
+              seconds: Math.round(durationSecs % 60),
+            })
           : t("notifications.duration.seconds", { seconds: durationSecs.toFixed(1) });
 
       notify(
@@ -459,13 +467,20 @@ export default function NotificationManager() {
 
       const durationStr =
         durationSecs >= 60
-          ? t("notifications.duration.minutes_seconds", { minutes: Math.floor(durationSecs / 60), seconds: Math.round(durationSecs % 60) })
+          ? t("notifications.duration.minutes_seconds", {
+              minutes: Math.floor(durationSecs / 60),
+              seconds: Math.round(durationSecs % 60),
+            })
           : t("notifications.duration.seconds", { seconds: durationSecs.toFixed(1) });
 
       notify(
         {
           title: t("notifications.workflow.failed.title"),
-          body: t("notifications.workflow.failed_body", { runbookName, duration: durationStr, error: data.error }),
+          body: t("notifications.workflow.failed_body", {
+            runbookName,
+            duration: durationStr,
+            error: data.error,
+          }),
           success: false,
           duration: durationSecs,
         },
@@ -548,7 +563,9 @@ export default function NotificationManager() {
       logger.warn("SSH certificate load failed", data);
       addToast({
         title: t("notifications.ssh_certificate.load_failed.title"),
-        description: t("notifications.ssh_certificate.load_failed.description", { host: data.host }),
+        description: t("notifications.ssh_certificate.load_failed.description", {
+          host: data.host,
+        }),
         color: "warning",
         timeout: 8000,
       });
@@ -576,7 +593,9 @@ export default function NotificationManager() {
       logger.warn("SSH certificate not yet valid", data);
       addToast({
         title: t("notifications.ssh_certificate.not_yet_valid.title"),
-        description: t("notifications.ssh_certificate.not_yet_valid.description", { host: data.host }),
+        description: t("notifications.ssh_certificate.not_yet_valid.description", {
+          host: data.host,
+        }),
         color: "warning",
         timeout: 8000,
       });

@@ -114,9 +114,7 @@ export default class OfflineStrategy implements WorkspaceStrategy {
           const notEmptyAnswer = await new DialogBuilder()
             .title(t("workspace.offline.dialog.not_empty.title"))
             .icon("warning")
-            .message(
-              t("workspace.offline.dialog.not_empty.message"),
-            )
+            .message(t("workspace.offline.dialog.not_empty.message"))
             .action({ label: t("common.cancel"), value: "cancel", variant: "flat" })
             .action({ label: t("common.ok"), value: "ok", variant: "flat", color: "primary" })
             .build();
@@ -135,9 +133,7 @@ export default class OfflineStrategy implements WorkspaceStrategy {
           const parentAnswer = await new DialogBuilder()
             .title(t("workspace.offline.dialog.subdirectory.title"))
             .icon("warning")
-            .message(
-              t("workspace.offline.dialog.subdirectory.message", { dir }),
-            )
+            .message(t("workspace.offline.dialog.subdirectory.message", { dir }))
             .action({ label: t("common.cancel"), value: "cancel", variant: "flat" })
             .action({ label: t("common.ok"), value: "ok", variant: "flat", color: "primary" })
             .build();
@@ -317,7 +313,9 @@ export default class OfflineStrategy implements WorkspaceStrategy {
       const err = result.unwrapErr();
       let message = t("workspace.offline.error.create_runbook_failed");
       if ("message" in err.data) {
-        message = t("workspace.offline.error.create_runbook_failed_detail", { message: err.data.message });
+        message = t("workspace.offline.error.create_runbook_failed_detail", {
+          message: err.data.message,
+        });
       }
       new DialogBuilder()
         .title(t("workspace.offline.dialog.create_runbook_error.title"))
@@ -366,7 +364,9 @@ export default class OfflineStrategy implements WorkspaceStrategy {
           data: {
             workspace_id: this.workspace.get("id")!,
             folder_id: folderId,
-            message: t("workspace.offline.error.rename_folder_failed_detail", { message: err.data.message }),
+            message: t("workspace.offline.error.rename_folder_failed_detail", {
+              message: err.data.message,
+            }),
           },
         } as WorkspaceError);
       } else {
@@ -398,7 +398,9 @@ export default class OfflineStrategy implements WorkspaceStrategy {
           data: {
             workspace_id: this.workspace.get("id")!,
             folder_id: folderId,
-            message: t("workspace.offline.error.delete_folder_failed_detail", { message: err.data.message }),
+            message: t("workspace.offline.error.delete_folder_failed_detail", {
+              message: err.data.message,
+            }),
           },
         } as WorkspaceError);
       } else {

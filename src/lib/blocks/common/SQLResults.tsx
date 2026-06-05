@@ -69,9 +69,7 @@ const SQLResults = ({ results, error, dismiss, isFullscreen = false }: SQLProps)
           </div>
         </CardHeader>
         <CardBody className="p-4">
-          <p className="text-danger-600 select-text">
-            {error || t("blocks.common.request_error")}
-          </p>
+          <p className="text-danger-600 select-text">{error || t("blocks.common.request_error")}</p>
         </CardBody>
       </Card>
     );
@@ -116,7 +114,9 @@ const SQLResults = ({ results, error, dismiss, isFullscreen = false }: SQLProps)
                 : t("blocks.sql.rows_affected_many", { count: rowsAffected! })}
             </span>
           ) : (
-            <span className="text-default-700 font-semibold">{t("blocks.sql.query_successful")}</span>
+            <span className="text-default-700 font-semibold">
+              {t("blocks.sql.query_successful")}
+            </span>
           )}
         </div>
         <div className="flex items-center gap-4">

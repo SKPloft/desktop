@@ -90,16 +90,16 @@ interface SQLProps {
 }
 
 const autoRefreshChoices = [
-  { label: "common.off", value: 0 }, 
-  { label: "blocks.common.refresh.1s", value: 1000 }, 
-  { label: "blocks.common.refresh.5s", value: 5000 }, 
-  { label: "blocks.common.refresh.10s", value: 10000 }, 
-  { label: "blocks.common.refresh.30s", value: 30000 }, 
-  { label: "blocks.common.refresh.1m", value: 60000 }, 
-  { label: "blocks.common.refresh.2m", value: 120000 }, 
-  { label: "blocks.common.refresh.5m", value: 300000 }, 
-  { label: "blocks.common.refresh.10m", value: 600000 }, 
-  { label: "blocks.common.refresh.30m", value: 1800000 }, 
+  { label: "common.off", value: 0 },
+  { label: "blocks.common.refresh.1s", value: 1000 },
+  { label: "blocks.common.refresh.5s", value: 5000 },
+  { label: "blocks.common.refresh.10s", value: 10000 },
+  { label: "blocks.common.refresh.30s", value: 30000 },
+  { label: "blocks.common.refresh.1m", value: 60000 },
+  { label: "blocks.common.refresh.2m", value: 120000 },
+  { label: "blocks.common.refresh.5m", value: 300000 },
+  { label: "blocks.common.refresh.10m", value: 600000 },
+  { label: "blocks.common.refresh.30m", value: 1800000 },
 ];
 
 const SQL = ({
@@ -280,7 +280,12 @@ const SQL = ({
               </button>
             </Tooltip>
           )}
-          <Tooltip content={isFullscreen ? t("blocks.common.exit_fullscreen") : t("blocks.common.open_fullscreen")} delay={500}>
+          <Tooltip
+            content={
+              isFullscreen ? t("blocks.common.exit_fullscreen") : t("blocks.common.open_fullscreen")
+            }
+            delay={500}
+          >
             <button
               onClick={() => setIsFullscreen(!isFullscreen)}
               className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
@@ -303,7 +308,7 @@ const SQL = ({
               size="sm"
               maskRegex={/(?<=:\/\/).*(?=@[^@]*$)/}
               placeholder={placeholder || "protocol://user:password@host:port/db"}
-              label={t("blocks.sql.uri")} 
+              label={t("blocks.sql.uri")}
               isRequired
               startContent={<DatabaseIcon size={18} />}
               value={uri}
@@ -404,9 +409,11 @@ const SQL = ({
                   {autoRefresh == 0
                     ? t("common.off")
                     : t(
-                        (autoRefreshChoices.find((a) => a.value == autoRefresh) || {
-                          label: "common.off",
-                        }).label,
+                        (
+                          autoRefreshChoices.find((a) => a.value == autoRefresh) || {
+                            label: "common.off",
+                          }
+                        ).label,
                       )}
                 </Button>
               </DropdownTrigger>
@@ -431,7 +438,11 @@ const SQL = ({
               variant="flat"
               onPress={() => setCollapseQuery(!collapseQuery)}
             >
-              <Tooltip content={collapseQuery ? t("blocks.sql.expand_query") : t("blocks.sql.collapse_query")}>
+              <Tooltip
+                content={
+                  collapseQuery ? t("blocks.sql.expand_query") : t("blocks.sql.collapse_query")
+                }
+              >
                 {collapseQuery ? (
                   <ArrowDownToLineIcon size={16} />
                 ) : (
@@ -473,7 +484,9 @@ const SQL = ({
                 data-tauri-drag-region
                 className="flex items-center gap-3 ml-16 w-full justify-between"
               >
-                <span className="text-sm text-default-700">{name || t("blocks.sql.default_name")}</span>
+                <span className="text-sm text-default-700">
+                  {name || t("blocks.sql.default_name")}
+                </span>
               </div>
               <ButtonGroup>
                 <Button
@@ -483,7 +496,11 @@ const SQL = ({
                   onPress={() => setIsFullscreenQueryCollapsed(!isFullscreenQueryCollapsed)}
                 >
                   <Tooltip
-                    content={isFullscreenQueryCollapsed ? t("blocks.sql.show_query_editor") : t("blocks.sql.hide_query_editor")}
+                    content={
+                      isFullscreenQueryCollapsed
+                        ? t("blocks.sql.show_query_editor")
+                        : t("blocks.sql.hide_query_editor")
+                    }
                   >
                     {isFullscreenQueryCollapsed ? (
                       <ArrowDownToLineIcon size={16} />
@@ -511,7 +528,7 @@ const SQL = ({
                         size="sm"
                         maskRegex={/(?<=:\/\/).*(?=@[^@]*$)/}
                         placeholder={placeholder || "protocol://user:password@host:port/db"}
-              label={t("blocks.sql.uri")}
+                        label={t("blocks.sql.uri")}
                         isRequired
                         startContent={<DatabaseIcon size={18} />}
                         value={uri}
@@ -615,7 +632,7 @@ const SQL = ({
         <Modal isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} size="sm">
           <ModalContent>
             <ModalHeader className="text-base font-medium">
-              {settingsTitle || t("common.settings")} 
+              {settingsTitle || t("common.settings")}
             </ModalHeader>
             <ModalBody className="pb-6">{settingsContent}</ModalBody>
           </ModalContent>

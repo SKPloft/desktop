@@ -212,7 +212,8 @@ export default function Topbar(props: TopbarProps) {
             {/* Row 2: Updated time + Tag selector */}
             <div className="hidden md:flex items-center">
               <span className="text-gray-400 text-xs italic whitespace-nowrap">
-                {t("runbooks.topbar.updated")} <RelativeTime time={DateTime.fromJSDate(runbook.updated)} />
+                {t("runbooks.topbar.updated")}{" "}
+                <RelativeTime time={DateTime.fromJSDate(runbook.updated)} />
               </span>
 
               {/* Tag selector + related controls - positioned near content */}

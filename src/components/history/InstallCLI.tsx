@@ -30,9 +30,7 @@ const InstallCLI = () => {
       <ModalContent className="w-full">
         {(onClose) => (
           <div className="max-w-[900px] mx-auto p-6 space-y-6">
-            <h1 className="text-4xl font-bold text-center">
-              {t("history.install_cli.title")}
-            </h1>
+            <h1 className="text-4xl font-bold text-center">{t("history.install_cli.title")}</h1>
 
             <h3 className="text-xl font-semibold text-center">
               {t("history.install_cli.subtitle")}

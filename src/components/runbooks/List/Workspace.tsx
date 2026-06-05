@@ -33,7 +33,6 @@ import { openPath } from "@tauri-apps/plugin-opener";
 import * as commands from "@/lib/workspaces/commands";
 import WorkspaceManager from "@/lib/workspaces/manager";
 import { useTranslation, t as i18n_t } from "@/lib/i18n";
-import { filterRunbooksByLocale } from "@/lib/runbook_locale";
 //there is a standalone function cannot simply use t type, so create a alias
 
 interface WorkspaceProps {
@@ -221,7 +220,7 @@ function transformDirEntriesToArboristTree(
 }
 
 export default function WorkspaceComponent(props: WorkspaceProps) {
-  const { t, locale } = useTranslation();
+  const { t } = useTranslation();
   const treeRef = useRef<TreeApi<TreeRowData> | null>(null);
   const [showConvertWorkspaceDialog, setShowConvertWorkspaceDialog] = useState(false);
 
@@ -255,14 +254,13 @@ export default function WorkspaceComponent(props: WorkspaceProps) {
       }
 
       const info = workspaceInfo.unwrap().unwrap();
-      const filteredRunbooks = filterRunbooksByLocale(info.runbooks, locale);
       return transformDirEntriesToArboristTree(
         info.entries,
         props.workspace.get("folder")!,
-        filteredRunbooks,
+        info.runbooks,
       );
     }
-  }, [workspaceFolder, workspaceInfo, locale]);
+  }, [workspaceFolder, workspaceInfo]);
 
   useEffect(() => {
     // Update offline workspaces from the FS info
@@ -503,7 +501,11 @@ export default function WorkspaceComponent(props: WorkspaceProps) {
       } else {
         new DialogBuilder()
           .title(t("workspace.error.delete_folder"))
-          .message(t("workspace.error.delete_folder_with_message", { message: "An unknown error occurred while deleting the folder." }))
+          .message(
+            t("workspace.error.delete_folder_with_message", {
+              message: "An unknown error occurred while deleting the folder.",
+            }),
+          )
           .action({ label: t("common.ok"), value: "ok" })
           .build();
       }
@@ -626,7 +628,7 @@ export default function WorkspaceComponent(props: WorkspaceProps) {
     }));
     let orgs = [
       {
-        name: i18n_t("common.personal"), 
+        name: i18n_t("common.personal"),
         id: null,
         workspaces: workspaces
           .filter((ws) => ws.get("orgId") === null)
@@ -829,7 +831,11 @@ export default function WorkspaceComponent(props: WorkspaceProps) {
       .message(
         <div>
           <p>{errorText}</p>
-          {helpText && <p className="mt-2 text-sm text-muted-foreground">{t("workspace.error.tip", { helpText })}</p>}
+          {helpText && (
+            <p className="mt-2 text-sm text-muted-foreground">
+              {t("workspace.error.tip", { helpText })}
+            </p>
+          )}
         </div>,
       )
       .action({ label: t("common.ok"), value: "ok" })
@@ -874,8 +880,8 @@ export default function WorkspaceComponent(props: WorkspaceProps) {
       const answer = await new DialogBuilder<"yes" | "no">()
         .title("Delete Workspace")
         .message("Are you sure you want to delete this workspace?")
-        .action({ label: i18n_t("common.delete"), value: "yes", variant: "flat", color: "danger" }) 
-        .action({ label: i18n_t("common.cancel"), value: "no", variant: "flat" }) 
+        .action({ label: i18n_t("common.delete"), value: "yes", variant: "flat", color: "danger" })
+        .action({ label: i18n_t("common.cancel"), value: "no", variant: "flat" })
         .build();
 
       if (answer === "yes") {
@@ -1064,24 +1070,36 @@ async function confirmDeleteFolder(
   if (descendents.folders === 0 && descendents.runbooks > 0) {
     countSnippet = (
       <strong className="text-danger">
-        {descendents.runbooks} {descendents.runbooks === 1 ? i18n_t("root.move_items.runbook") : i18n_t("root.move_items.runbooks")}
+        {descendents.runbooks}{" "}
+        {descendents.runbooks === 1
+          ? i18n_t("root.move_items.runbook")
+          : i18n_t("root.move_items.runbooks")}
       </strong>
     );
   } else if (descendents.folders > 0 && descendents.runbooks === 0) {
     countSnippet = (
       <strong className="text-danger">
-        {descendents.folders} {descendents.folders === 1 ? i18n_t("workspace_tree.count.subfolder_one", { count: 1 }).replace("{{count}}", "1") : i18n_t("workspace_tree.count.subfolder_many", { count: descendents.folders })}
+        {descendents.folders}{" "}
+        {descendents.folders === 1
+          ? i18n_t("workspace_tree.count.subfolder_one", { count: 1 }).replace("{{count}}", "1")
+          : i18n_t("workspace_tree.count.subfolder_many", { count: descendents.folders })}
       </strong>
     );
   } else if (descendents.folders > 0 && descendents.runbooks > 0) {
     countSnippet = (
       <>
         <strong className="text-danger">
-          {descendents.folders} {descendents.folders === 1 ? i18n_t("workspace_tree.count.subfolder_one", { count: 1 }).replace("{{count}}", "1") : i18n_t("workspace_tree.count.subfolder_many", { count: descendents.folders })}
+          {descendents.folders}{" "}
+          {descendents.folders === 1
+            ? i18n_t("workspace_tree.count.subfolder_one", { count: 1 }).replace("{{count}}", "1")
+            : i18n_t("workspace_tree.count.subfolder_many", { count: descendents.folders })}
         </strong>{" "}
         {i18n_t("common.and")}{" "}
         <strong className="text-danger">
-          {descendents.runbooks} {descendents.runbooks === 1 ? i18n_t("root.move_items.runbook") : i18n_t("root.move_items.runbooks")}
+          {descendents.runbooks}{" "}
+          {descendents.runbooks === 1
+            ? i18n_t("root.move_items.runbook")
+            : i18n_t("root.move_items.runbooks")}
         </strong>
       </>
     );
@@ -1089,16 +1107,28 @@ async function confirmDeleteFolder(
 
   const message = (
     <div>
-      <p>{i18n_t("workspace_tree.delete_confirm_prefix")} {idSnippet}?</p>
-      {countSnippet && <p>{i18n_t("workspace_tree.delete_count_prefix")} {countSnippet}.</p>}
+      <p>
+        {i18n_t("workspace_tree.delete_confirm_prefix")} {idSnippet}?
+      </p>
+      {countSnippet && (
+        <p>
+          {i18n_t("workspace_tree.delete_count_prefix")} {countSnippet}.
+        </p>
+      )}
       {isFsWorkspace && willDeleteFiles && (
         <p className="mt-2">
-          <span className="text-warning">{i18n_t("workspace_tree.note")}</span> {i18n_t("workspace_tree.will_delete_files_prefix")} <strong>{i18n_t("workspace_tree.will")}</strong> {i18n_t("workspace_tree.delete_files_suffix")}
+          <span className="text-warning">{i18n_t("workspace_tree.note")}</span>{" "}
+          {i18n_t("workspace_tree.will_delete_files_prefix")}{" "}
+          <strong>{i18n_t("workspace_tree.will")}</strong>{" "}
+          {i18n_t("workspace_tree.delete_files_suffix")}
         </p>
       )}
       {isFsWorkspace && !willDeleteFiles && (
         <p className="mt-2">
-          <span className="text-warning">{i18n_t("workspace_tree.note")}</span> {i18n_t("workspace_tree.will_delete_files_prefix")} <strong>{i18n_t("workspace_tree.will_not")}</strong> {i18n_t("workspace_tree.delete_files_suffix")}
+          <span className="text-warning">{i18n_t("workspace_tree.note")}</span>{" "}
+          {i18n_t("workspace_tree.will_delete_files_prefix")}{" "}
+          <strong>{i18n_t("workspace_tree.will_not")}</strong>{" "}
+          {i18n_t("workspace_tree.delete_files_suffix")}
         </p>
       )}
     </div>
@@ -1115,7 +1145,9 @@ async function confirmDeleteFolder(
       color: "danger",
       confirmWith:
         descendents.total > 0
-          ? (descendents.total === 1 ? i18n_t("workspace_tree.confirm_delete_one", { count: descendents.total }) : i18n_t("workspace_tree.confirm_delete_many", { count: descendents.total }))
+          ? descendents.total === 1
+            ? i18n_t("workspace_tree.confirm_delete_one", { count: descendents.total })
+            : i18n_t("workspace_tree.confirm_delete_many", { count: descendents.total })
           : undefined,
     })
     .build();

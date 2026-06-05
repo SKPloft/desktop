@@ -225,12 +225,16 @@ const SshConnect = ({
         scrollBehavior="inside"
       >
         <ModalContent>
-          <ModalHeader className="text-base font-medium">{t("editor.blocks.ssh_connect.settings_title")}</ModalHeader>
+          <ModalHeader className="text-base font-medium">
+            {t("editor.blocks.ssh_connect.settings_title")}
+          </ModalHeader>
           <ModalBody className="pb-6">
             <div className="grid grid-cols-2 gap-6">
               {/* Left column: Connection */}
               <div className="space-y-3">
-                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">{t("editor.blocks.ssh_connect.connection")}</h3>
+                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {t("editor.blocks.ssh_connect.connection")}
+                </h3>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
                   {t("editor.blocks.ssh_connect.connection_description")}
                 </p>
@@ -280,7 +284,9 @@ const SshConnect = ({
                 {hasIncompleteConfig && (
                   <p className="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 p-2 rounded">
                     {t("editor.blocks.ssh_connect.incomplete_config", {
-                      field: user ? t("editor.blocks.ssh_connect.user_lower") : t("editor.blocks.ssh_connect.hostname_lower"),
+                      field: user
+                        ? t("editor.blocks.ssh_connect.user_lower")
+                        : t("editor.blocks.ssh_connect.hostname_lower"),
                     })}
                   </p>
                 )}
@@ -304,7 +310,9 @@ const SshConnect = ({
                     isDisabled={!isEditable}
                     size="sm"
                   >
-                    <Radio value="none">{t("editor.blocks.ssh_connect.identity_key_use_config")}</Radio>
+                    <Radio value="none">
+                      {t("editor.blocks.ssh_connect.identity_key_use_config")}
+                    </Radio>
                     <Radio value="path">{t("editor.blocks.ssh_connect.identity_key_path")}</Radio>
                     <Radio value="paste">{t("editor.blocks.ssh_connect.identity_key_paste")}</Radio>
                   </RadioGroup>
@@ -313,7 +321,11 @@ const SshConnect = ({
                     <div className="mt-3 space-y-2">
                       <Select
                         label={t("editor.blocks.ssh_connect.select_from_ssh")}
-                        placeholder={keysLoading ? t("editor.blocks.ssh_connect.loading_keys") : t("editor.blocks.ssh_connect.select_key")}
+                        placeholder={
+                          keysLoading
+                            ? t("editor.blocks.ssh_connect.loading_keys")
+                            : t("editor.blocks.ssh_connect.select_key")
+                        }
                         selectedKeys={identityKey.value ? [identityKey.value] : []}
                         onSelectionChange={async (keys) => {
                           const selected = Array.from(keys)[0] as string;
@@ -335,7 +347,9 @@ const SshConnect = ({
                           </SelectItem>
                         ))}
                       </Select>
-                      <p className="text-xs text-gray-500">{t("editor.blocks.ssh_connect.custom_key_path")}</p>
+                      <p className="text-xs text-gray-500">
+                        {t("editor.blocks.ssh_connect.custom_key_path")}
+                      </p>
                       <div className="flex flex-row items-center space-x-2">
                         <Button
                           isIconOnly
@@ -405,14 +419,18 @@ const SshConnect = ({
                     isDisabled={!isEditable}
                     size="sm"
                   >
-                    <Radio value="none">{t("editor.blocks.ssh_connect.certificate_auto_detect")}</Radio>
+                    <Radio value="none">
+                      {t("editor.blocks.ssh_connect.certificate_auto_detect")}
+                    </Radio>
                     <Radio value="path">{t("editor.blocks.ssh_connect.certificate_path")}</Radio>
                     <Radio value="paste">{t("editor.blocks.ssh_connect.certificate_paste")}</Radio>
                   </RadioGroup>
 
                   {certificate.mode === "path" && (
                     <div className="mt-3 space-y-2">
-                      <p className="text-xs text-gray-500">{t("editor.blocks.ssh_connect.certificate_path_description")}</p>
+                      <p className="text-xs text-gray-500">
+                        {t("editor.blocks.ssh_connect.certificate_path_description")}
+                      </p>
                       <div className="flex flex-row items-center space-x-2">
                         <Button
                           isIconOnly

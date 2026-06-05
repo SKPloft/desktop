@@ -198,12 +198,12 @@ export default createReactBlockSpec(
 );
 
 export const insertMySQL = (schema: any) => (editor: typeof schema.BlockNoteEditor) => ({
-  title: t("editor.blocks.mysql.title"), 
+  title: t("editor.blocks.mysql.title"),
   onItemClick: () => {
     track_event("runbooks.block.create", { type: "mysql" });
 
     let mysqlBlocks = editor.document.filter((block: any) => block.type === "mysql");
-    let name = t("editor.blocks.mysql.default_name", { count: mysqlBlocks.length + 1 });  
+    let name = t("editor.blocks.mysql.default_name", { count: mysqlBlocks.length + 1 });
 
     editor.insertBlocks(
       [
@@ -220,7 +220,7 @@ export const insertMySQL = (schema: any) => (editor: typeof schema.BlockNoteEdit
     );
   },
   icon: <DatabaseIcon size={18} />,
-  group: t("editor.blocks.group.database"), 
+  group: t("editor.blocks.group.database"),
 });
 
 AIBlockRegistry.getInstance().addBlock({

@@ -127,15 +127,11 @@ export default function CollaborationsModal(props: CollaborationsModalProps) {
           <>
             <ModalHeader className="flex flex-col gap-1">
               <h1 className="text-2xl font-bold">{t("collaborations.title")}</h1>
-              <p className="text-small text-default-500">
-                {t("collaborations.description")}
-              </p>
+              <p className="text-small text-default-500">{t("collaborations.description")}</p>
             </ModalHeader>
             <ModalBody className="block">
               {connectionState !== ConnectionState.Online && (
-                <p className="">
-                  {t("collaborations.online_required")}
-                </p>
+                <p className="">{t("collaborations.online_required")}</p>
               )}
               {connectionState === ConnectionState.Online && pendingCollabs.length === 0 && (
                 <p>{t("collaborations.none_pending")}</p>
@@ -164,7 +160,9 @@ export default function CollaborationsModal(props: CollaborationsModalProps) {
                               onClick={() => acceptInvitation(collab)}
                               isDisabled={connectionState !== ConnectionState.Online}
                             >
-                              {t("collaborations.accept_into", { workspace: workspace.get("name") })}
+                              {t("collaborations.accept_into", {
+                                workspace: workspace.get("name"),
+                              })}
                             </Button>
                             <Dropdown placement="bottom-end">
                               <DropdownTrigger>

@@ -159,7 +159,9 @@ export function AIPopupBase({
             {/* Quick suggestions */}
             {showSuggestions && suggestions.length > 0 && (
               <div className="space-y-2">
-                <p className="text-xs text-purple-700 dark:text-purple-300">{t("editor.ai_popup.quick_suggestions")}</p>
+                <p className="text-xs text-purple-700 dark:text-purple-300">
+                  {t("editor.ai_popup.quick_suggestions")}
+                </p>
                 <div className="flex flex-wrap gap-1">
                   {suggestions.slice(0, 3).map((suggestion, index) => (
                     <Button

@@ -187,7 +187,10 @@ function ToolCallUI({
     }
   };
 
-  const buttonLabel = selectedAction === "approve" ? t("editor.ai.assistant.allow") : t("editor.ai.assistant.always_allow");
+  const buttonLabel =
+    selectedAction === "approve"
+      ? t("editor.ai.assistant.allow")
+      : t("editor.ai.assistant.always_allow");
 
   return (
     <div className="mt-2 p-2 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded overflow-x-auto">
@@ -676,7 +679,9 @@ export default function AIAssistant({
       <div className="flex-shrink-0 flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/20 dark:to-blue-950/20">
         <div className="flex items-center gap-2">
           <SparklesIcon className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-          <span className="font-medium text-purple-900 dark:text-purple-100">{t("editor.ai.assistant.title")}</span>
+          <span className="font-medium text-purple-900 dark:text-purple-100">
+            {t("editor.ai.assistant.title")}
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <div

@@ -34,7 +34,6 @@ import { useSerialExecution } from "@/lib/hooks/useSerialExecution";
 import { Button, Spinner } from "@heroui/react";
 import AtuinEnv from "@/atuin_env";
 import { useTranslation } from "@/lib/i18n";
-import { resolveLocaleRunbookId } from "@/lib/runbook_locale";
 
 const Editor = React.lazy(() => import("@/components/runbooks/editor/Editor"));
 const Topbar = React.lazy(() => import("@/components/runbooks/TopBar/TopBar"));
@@ -50,14 +49,8 @@ function useMarkRunbookRead(runbook: Runbook | null, refreshRunbooks: () => void
 }
 
 export default function Runbooks() {
-  const { t, locale } = useTranslation();
-  const { runbookId: routeRunbookId } = useParams();
-
-  const runbookId = useMemo(() => {
-    if (!routeRunbookId) return routeRunbookId;
-    const all = WorkspaceManager.getInstance().getAllRunbooks();
-    return resolveLocaleRunbookId(all, routeRunbookId, locale);
-  }, [routeRunbookId, locale]);
+  const { t } = useTranslation();
+  const { runbookId } = useParams();
 
   const user = useStore((store) => store.user);
   const connectionState = useStore((store) => store.connectionState);
@@ -197,11 +190,9 @@ export default function Runbooks() {
     return registerTabOnClose(tab.id, async () => {
       if (serialExecution.isRunning) {
         const answer = await new DialogBuilder()
-          .title(t("runbooks.dialog.cancel_execution.title"))  
+          .title(t("runbooks.dialog.cancel_execution.title"))
           .icon("question")
-          .message(
-            t("runbooks.dialog.cancel_execution.message", { name: currentRunbook.name }),  
-          )
+          .message(t("runbooks.dialog.cancel_execution.message", { name: currentRunbook.name }))
           .action({
             label: t("common.cancel"),
             value: "cancel",

@@ -124,14 +124,10 @@ export default function NewWorkspaceDialog({ onAccept, onCancel }: NewWorkspaceD
                       </span>
                     )}
                     {connectionState === ConnectionState.LoggedOut && (
-                      <span className="text-red-500">
-                        {t("workspace.online_requires_login")}
-                      </span>
+                      <span className="text-red-500">{t("workspace.online_requires_login")}</span>
                     )}
                     {connectionState === ConnectionState.OutOfDate && (
-                      <span className="text-red-500">
-                        {t("workspace.online_requires_update")}
-                      </span>
+                      <span className="text-red-500">{t("workspace.online_requires_update")}</span>
                     )}
                   </div>
                 )}
@@ -170,17 +166,13 @@ export default function NewWorkspaceDialog({ onAccept, onCancel }: NewWorkspaceD
                   </span>
                 </div>
                 {selectedFolder && isChildOfWorkspace && (
-                  <div className="text-danger-500 mt-2">
-                    {t("workspace.child_folder_warning")}
-                  </div>
+                  <div className="text-danger-500 mt-2">{t("workspace.child_folder_warning")}</div>
                 )}
                 {selectedFolder &&
                   folderHasContents &&
                   !existingWorkspaceId &&
                   !isChildOfWorkspace && (
-                    <div className="text-danger-500 mt-2">
-                      {t("workspace.not_empty_warning")}
-                    </div>
+                    <div className="text-danger-500 mt-2">{t("workspace.not_empty_warning")}</div>
                   )}
                 {selectedFolder && folderHasContents && existingWorkspaceId && (
                   <div className="text-warning-500 mt-2">

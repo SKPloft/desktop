@@ -17,11 +17,7 @@ interface HostSelectProps {
 const HostSelect = ({}: HostSelectProps) => {
   const { t } = useTranslation();
   return (
-    <Tooltip
-      content={t("editor.blocks.host.tooltip")}
-      delay={1000}
-      className="outline-none"
-    >
+    <Tooltip content={t("editor.blocks.host.tooltip")} delay={1000} className="outline-none">
       <div className="flex flex-row items-center space-x-3 w-full bg-gradient-to-r from-amber-50 to-orange-50 dark:from-slate-800 dark:to-amber-950 rounded-lg p-3 border border-amber-200 dark:border-amber-900 shadow-sm hover:shadow-md transition-all duration-200">
         <div className="flex items-center">
           <Button
@@ -71,7 +67,7 @@ export default createReactBlockSpec(
 );
 
 export const insertHostSelect = (schema: any) => (editor: typeof schema.BlockNoteEditor) => ({
-  title: t("editor.blocks.host.title"), 
+  title: t("editor.blocks.host.title"),
   subtext: "Specify that commands run on localhost",
   onItemClick: () => {
     track_event("runbooks.block.create", { type: "host-select" });
@@ -87,7 +83,7 @@ export const insertHostSelect = (schema: any) => (editor: typeof schema.BlockNot
     );
   },
   icon: <HomeIcon size={18} />,
-  group: t("editor.blocks.group.network"), 
+  group: t("editor.blocks.group.network"),
 });
 
 AIBlockRegistry.getInstance().addBlock({

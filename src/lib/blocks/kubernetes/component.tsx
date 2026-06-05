@@ -272,7 +272,11 @@ export function KubernetesComponent({
                   variant="flat"
                   onPress={() => setCollapseQuery(!collapseQuery)}
                 >
-                  <Tooltip content={collapseQuery ? t("blocks.sql.expand_query") : t("blocks.sql.collapse_query")}>
+                  <Tooltip
+                    content={
+                      collapseQuery ? t("blocks.sql.expand_query") : t("blocks.sql.collapse_query")
+                    }
+                  >
                     {collapseQuery ? (
                       <ArrowDownToLineIcon size={16} />
                     ) : (
@@ -288,7 +292,13 @@ export function KubernetesComponent({
               isIconOnly
               onPress={() => setExpandedFooter(!expandedFooter)}
             >
-              <Tooltip content={expandedFooter ? t("blocks.common.hide_settings") : t("blocks.common.show_settings")}>
+              <Tooltip
+                content={
+                  expandedFooter
+                    ? t("blocks.common.hide_settings")
+                    : t("blocks.common.show_settings")
+                }
+              >
                 {expandedFooter ? <ChevronUpIcon size={16} /> : <SettingsIcon size={16} />}
               </Tooltip>
             </Button>
@@ -300,7 +310,7 @@ export function KubernetesComponent({
               <div className="flex flex-row gap-2 items-center">
                 <Input
                   size="sm"
-                  placeholder="default" 
+                  placeholder="default"
                   label={t("kubernetes.namespace")}
                   value={kubernetes.namespace}
                   onChange={(e) => setNamespace(e.target.value)}
@@ -312,7 +322,7 @@ export function KubernetesComponent({
                 />
                 <Input
                   size="sm"
-                  placeholder="current-context" 
+                  placeholder="current-context"
                   label={t("kubernetes.context")}
                   value={kubernetes.context}
                   onChange={(e) => setContext(e.target.value)}
@@ -440,7 +450,9 @@ function KubernetesResults({ results, error, dismiss }: KubernetesResultsProps) 
                 : t("kubernetes.resources_returned_many", { count: results.rowCount })}
             </span>
           ) : (
-            <span className="text-default-700 font-semibold">{t("kubernetes.command_successful")}</span>
+            <span className="text-default-700 font-semibold">
+              {t("kubernetes.command_successful")}
+            </span>
           )}
         </div>
         <div className="flex items-center gap-4">

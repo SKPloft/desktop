@@ -296,10 +296,7 @@ export default function RunbookControls(props: RunbookControlsProps) {
         {props.remoteRunbook && (
           <>
             <div className={tableCellRight}>
-              <Tooltip
-                content={t("runbooks.controls.visibility_tooltip")}
-                showArrow
-              >
+              <Tooltip content={t("runbooks.controls.visibility_tooltip")} showArrow>
                 <CircleQuestionMarkIcon className="w-4 h-4 inline-block mr-1 mb-1" />
               </Tooltip>
               {t("runbooks.controls.visibility")}

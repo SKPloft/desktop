@@ -32,10 +32,7 @@ export const LocalDirectoryComponent = ({ blockId, isEditable }: LocalDirectoryC
 
   return (
     <div className="w-full !max-w-full !outline-none overflow-none">
-      <Tooltip
-        content={t("local_directory.tooltip")}
-        delay={1000}
-      >
+      <Tooltip content={t("local_directory.tooltip")} delay={1000}>
         <div className="flex flex-row items-center space-x-3 w-full bg-gradient-to-r from-orange-50 to-amber-50 dark:from-slate-800 dark:to-orange-950 rounded-lg p-3 border border-orange-200 dark:border-orange-900 shadow-sm hover:shadow-md transition-all duration-200">
           <div className="flex items-center">
             <Button

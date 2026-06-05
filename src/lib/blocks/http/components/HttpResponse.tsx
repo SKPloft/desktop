@@ -67,13 +67,13 @@ const HttpResponseComponent = ({ response, error, dismiss, colorMode }: HttpResp
             >
               {t("common.error")}
             </Chip>
-            <span className="text-danger-700 font-semibold">{t("blocks.http.connection_error")}</span>
+            <span className="text-danger-700 font-semibold">
+              {t("blocks.http.connection_error")}
+            </span>
           </div>
         </CardHeader>
         <CardBody className="p-4">
-          <p className="text-danger-600 select-text">
-            {error || t("blocks.common.request_error")}
-          </p>
+          <p className="text-danger-600 select-text">{error || t("blocks.common.request_error")}</p>
         </CardBody>
       </Card>
     );
@@ -135,7 +135,9 @@ const HttpResponseComponent = ({ response, error, dismiss, colorMode }: HttpResp
         {/* Response Headers Section */}
         <div>
           <div className="flex justify-between items-center mb-2">
-            <h3 className="text-sm font-semibold text-default-700">{t("blocks.http.response_headers")}</h3>
+            <h3 className="text-sm font-semibold text-default-700">
+              {t("blocks.http.response_headers")}
+            </h3>
             <Button
               variant="light"
               size="sm"
@@ -173,7 +175,9 @@ const HttpResponseComponent = ({ response, error, dismiss, colorMode }: HttpResp
         {/* Response Body Section */}
         <div>
           <div className="flex justify-between items-center mb-2">
-            <h3 className="text-sm font-semibold text-default-700">{t("blocks.http.response_body")}</h3>
+            <h3 className="text-sm font-semibold text-default-700">
+              {t("blocks.http.response_body")}
+            </h3>
             <Button variant="light" size="sm" isIconOnly onClick={() => copyToClipboard(body)}>
               <Copy size={14} />
             </Button>

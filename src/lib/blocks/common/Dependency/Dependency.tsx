@@ -79,9 +79,7 @@ const Dependency: React.FC<DependencyProps> = ({ block, setDependency }) => {
             <div className="space-y-6">
               <div>
                 <h3 className="text-lg font-medium mb-2">{t("dependency.block_dependencies")}</h3>
-                <p className="text-sm text-gray-500 mb-4">
-                  {t("dependency.description")}
-                </p>
+                <p className="text-sm text-gray-500 mb-4">{t("dependency.description")}</p>
               </div>
 
               <div className="space-y-4">
@@ -209,7 +207,9 @@ const Dependency: React.FC<DependencyProps> = ({ block, setDependency }) => {
 
                     {block.dependency?.within > 0 && (
                       <div className="flex items-center gap-2 mb-4">
-                        <label className="text-sm whitespace-nowrap">{t("dependency.time_period")}</label>
+                        <label className="text-sm whitespace-nowrap">
+                          {t("dependency.time_period")}
+                        </label>
                         <input
                           type="number"
                           className="border rounded p-1 w-20"
@@ -233,9 +233,7 @@ const Dependency: React.FC<DependencyProps> = ({ block, setDependency }) => {
                 <div className="bg-gray-50 p-4 rounded-md border border-gray-200">
                   <h4 className="text-sm font-medium mb-2">{t("dependency.execution_behavior")}</h4>
                   {!selectedParent ? (
-                    <p className="text-sm text-gray-600">
-                      {t("dependency.must_run_successfully")}
-                    </p>
+                    <p className="text-sm text-gray-600">{t("dependency.must_run_successfully")}</p>
                   ) : block.dependency?.within === 0 ? (
                     <p className="text-sm text-gray-600">
                       {t("dependency.only_run_once", { parent: selectedParent.name })}

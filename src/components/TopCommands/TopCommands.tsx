@@ -9,7 +9,7 @@ export default function TopChart({ chartData }: any) {
 
   const chartConfig = {
     command: {
-      label: t("history.command"), 
+      label: t("history.command"),
       color: colorMode === "dark" ? "#66aaf9" : "#c4edde",
     },
   } satisfies ChartConfig;

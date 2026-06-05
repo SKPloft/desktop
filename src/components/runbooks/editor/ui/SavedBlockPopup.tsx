@@ -158,7 +158,9 @@ export function SavedBlockPopup({ isVisible, position, onSelect, onClose }: Save
             >
               <div className="flex items-center gap-2">
                 <BlocksIcon size={14} />
-                <span className="truncate">{block.get("name") || t("editor.saved_blocks.untitled_block")}</span>
+                <span className="truncate">
+                  {block.get("name") || t("editor.saved_blocks.untitled_block")}
+                </span>
               </div>
               <TrashIcon
                 size={14}

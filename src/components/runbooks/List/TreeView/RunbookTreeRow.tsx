@@ -181,7 +181,9 @@ export default function RunbookTreeRow(props: RunbookTreeRowProps) {
               <span>{remoteRunbook.name}</span>
             )}
             {props.useProvidedName && <span>{props.node.data.name}</span>}
-            {!props.useProvidedName && localRunbookName && (localRunbookName || t("common.untitled"))}
+            {!props.useProvidedName &&
+              localRunbookName &&
+              (localRunbookName || t("common.untitled"))}
           </span>
         </h3>
         <div className="flex items-center">

@@ -65,31 +65,55 @@ interface TimeFrame {
 }
 
 const timeOptions: TimeFrame[] = [
-  { name: t("editor.blocks.prometheus.time_frame.last_5_mins"), seconds: 5 * 60, short: "5m" },  
-  { name: t("editor.blocks.prometheus.time_frame.last_15_mins"), seconds: 15 * 60, short: "15m" }, 
-  { name: t("editor.blocks.prometheus.time_frame.last_30_mins"), seconds: 30 * 60, short: "30m" }, 
-  { name: t("editor.blocks.prometheus.time_frame.last_1_hr"), seconds: 60 * 60, short: "1h" }, 
-  { name: t("editor.blocks.prometheus.time_frame.last_3_hrs"), seconds: 3 * 60 * 60, short: "3h" }, 
-  { name: t("editor.blocks.prometheus.time_frame.last_6_hrs"), seconds: 6 * 60 * 60, short: "6h" }, 
-  { name: t("editor.blocks.prometheus.time_frame.last_24_hrs"), seconds: 24 * 60 * 60, short: "24h" }, 
-  { name: t("editor.blocks.prometheus.time_frame.last_2_days"), seconds: 2 * 24 * 60 * 60, short: "2d" }, 
-  { name: t("editor.blocks.prometheus.time_frame.last_7_days"), seconds: 7 * 24 * 60 * 60, short: "7d" }, 
-  { name: t("editor.blocks.prometheus.time_frame.last_30_days"), seconds: 30 * 24 * 60 * 60, short: "30d" }, 
-  { name: t("editor.blocks.prometheus.time_frame.last_90_days"), seconds: 90 * 24 * 60 * 60, short: "90d" }, 
-  { name: t("editor.blocks.prometheus.time_frame.last_180_days"), seconds: 180 * 24 * 60 * 60, short: "180d" }, 
+  { name: t("editor.blocks.prometheus.time_frame.last_5_mins"), seconds: 5 * 60, short: "5m" },
+  { name: t("editor.blocks.prometheus.time_frame.last_15_mins"), seconds: 15 * 60, short: "15m" },
+  { name: t("editor.blocks.prometheus.time_frame.last_30_mins"), seconds: 30 * 60, short: "30m" },
+  { name: t("editor.blocks.prometheus.time_frame.last_1_hr"), seconds: 60 * 60, short: "1h" },
+  { name: t("editor.blocks.prometheus.time_frame.last_3_hrs"), seconds: 3 * 60 * 60, short: "3h" },
+  { name: t("editor.blocks.prometheus.time_frame.last_6_hrs"), seconds: 6 * 60 * 60, short: "6h" },
+  {
+    name: t("editor.blocks.prometheus.time_frame.last_24_hrs"),
+    seconds: 24 * 60 * 60,
+    short: "24h",
+  },
+  {
+    name: t("editor.blocks.prometheus.time_frame.last_2_days"),
+    seconds: 2 * 24 * 60 * 60,
+    short: "2d",
+  },
+  {
+    name: t("editor.blocks.prometheus.time_frame.last_7_days"),
+    seconds: 7 * 24 * 60 * 60,
+    short: "7d",
+  },
+  {
+    name: t("editor.blocks.prometheus.time_frame.last_30_days"),
+    seconds: 30 * 24 * 60 * 60,
+    short: "30d",
+  },
+  {
+    name: t("editor.blocks.prometheus.time_frame.last_90_days"),
+    seconds: 90 * 24 * 60 * 60,
+    short: "90d",
+  },
+  {
+    name: t("editor.blocks.prometheus.time_frame.last_180_days"),
+    seconds: 180 * 24 * 60 * 60,
+    short: "180d",
+  },
 ];
 
 const autoRefreshChoices = [
-  { label: t("common.off"), value: 0 }, 
-  { label: t("blocks.common.refresh.1s"), value: 1000 }, 
-  { label: t("blocks.common.refresh.5s"), value: 5000 }, 
-  { label: t("blocks.common.refresh.10s"), value: 10000 }, 
-  { label: t("blocks.common.refresh.30s"), value: 30000 }, 
-  { label: t("blocks.common.refresh.1m"), value: 60000 }, 
-  { label: t("blocks.common.refresh.2m"), value: 120000 }, 
-  { label: t("blocks.common.refresh.5m"), value: 300000 }, 
-  { label: t("blocks.common.refresh.10m"), value: 600000 }, 
-  { label: t("blocks.common.refresh.30m"), value: 1800000 }, 
+  { label: t("common.off"), value: 0 },
+  { label: t("blocks.common.refresh.1s"), value: 1000 },
+  { label: t("blocks.common.refresh.5s"), value: 5000 },
+  { label: t("blocks.common.refresh.10s"), value: 10000 },
+  { label: t("blocks.common.refresh.30s"), value: 30000 },
+  { label: t("blocks.common.refresh.1m"), value: 60000 },
+  { label: t("blocks.common.refresh.2m"), value: 120000 },
+  { label: t("blocks.common.refresh.5m"), value: 300000 },
+  { label: t("blocks.common.refresh.10m"), value: 600000 },
+  { label: t("blocks.common.refresh.30m"), value: 1800000 },
 ];
 
 // Note: calculateStepSize is now handled by the backend
@@ -315,7 +339,10 @@ const Prometheus = ({
                     {timeFrame.short}
                   </Button>
                 </DropdownTrigger>
-                <DropdownMenu variant="faded" aria-label={t("editor.blocks.prometheus.select_time_frame")}>
+                <DropdownMenu
+                  variant="faded"
+                  aria-label={t("editor.blocks.prometheus.select_time_frame")}
+                >
                   {timeOptions.map((timeOption) => {
                     return (
                       <DropdownItem
@@ -480,12 +507,12 @@ export default createReactBlockSpec(
 );
 
 export const insertPrometheus = (schema: any) => (editor: typeof schema.BlockNoteEditor) => ({
-  title: t("editor.blocks.prometheus.title"), 
+  title: t("editor.blocks.prometheus.title"),
   onItemClick: () => {
     track_event("runbooks.block.create", { type: "prometheus" });
 
     let prometheusBlocks = editor.document.filter((block: any) => block.type === "prometheus");
-    let name = t("editor.blocks.prometheus.default_name", { count: prometheusBlocks.length + 1 }); 
+    let name = t("editor.blocks.prometheus.default_name", { count: prometheusBlocks.length + 1 });
 
     // fetch the default endpoint from the old settings
     Settings.runbookPrometheusUrl().then((url) => {
@@ -506,8 +533,8 @@ export const insertPrometheus = (schema: any) => (editor: typeof schema.BlockNot
     });
   },
   icon: <LineChartIcon size={18} />,
-  aliases: ["prom", "promql", "grafana"], 
-  group: t("editor.blocks.group.monitor"), 
+  aliases: ["prom", "promql", "grafana"],
+  group: t("editor.blocks.group.monitor"),
 });
 
 AIBlockRegistry.getInstance().addBlock({

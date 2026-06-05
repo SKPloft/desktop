@@ -109,7 +109,9 @@ function MessageView({ message, index }: { message: AIMessage; index: number }) 
         <div className="mt-2 space-y-2">
           {toolResponses.map((resp, i) => (
             <div key={i} className="bg-default-100 dark:bg-default-800 p-2 rounded text-sm">
-              <div className="text-xs text-default-400">{t("llmtools.tool_response", { id: resp.callId })}</div>
+              <div className="text-xs text-default-400">
+                {t("llmtools.tool_response", { id: resp.callId })}
+              </div>
               <pre className="text-xs mt-1 overflow-x-auto whitespace-pre-wrap max-h-40 overflow-y-auto">
                 {resp.result}
               </pre>
@@ -134,7 +136,9 @@ function StreamingIndicator({ content, state }: { content: string; state: State 
   return (
     <div className="p-3 border-l-4 bg-green-500/10 border-green-500/50 mb-2 rounded-r animate-pulse">
       <div className="flex items-center gap-2 mb-2">
-        <span className="text-xs font-semibold uppercase tracking-wide">{t("llmtools.roles.assistant")}</span>
+        <span className="text-xs font-semibold uppercase tracking-wide">
+          {t("llmtools.roles.assistant")}
+        </span>
         <span className="text-xs text-green-500">
           {state.type === "sending" && t("llmtools.streaming.sending")}
           {state.type === "streaming" && t("llmtools.streaming.streaming")}

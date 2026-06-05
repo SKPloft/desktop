@@ -31,11 +31,7 @@ const VarDisplay = (props: VarDisplayProps) => {
   }
 
   return (
-    <Tooltip
-      content={t("editor.blocks.var_display.tooltip")}
-      delay={1000}
-      className="outline-none"
-    >
+    <Tooltip content={t("editor.blocks.var_display.tooltip")} delay={1000} className="outline-none">
       <div className="flex flex-col w-full bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-800 dark:to-indigo-950 rounded-lg p-3 border border-blue-200 dark:border-blue-900 shadow-sm hover:shadow-md transition-all duration-200">
         <span className="text-[10px] font-mono text-gray-400 dark:text-gray-500 mb-2">
           var_display
@@ -68,7 +64,9 @@ const VarDisplay = (props: VarDisplayProps) => {
           <div className="flex-1 bg-white dark:bg-slate-900 rounded-md px-4 py-2 border border-blue-200 dark:border-blue-800 font-mono text-sm min-h-[2rem] max-h-[6rem] overflow-auto">
             <div className="w-full transition-opacity duration-200">
               {value.unwrapOr(
-                <span className="italic text-gray-500 dark:text-gray-400">{t("editor.blocks.var_display.empty")}</span>,
+                <span className="italic text-gray-500 dark:text-gray-400">
+                  {t("editor.blocks.var_display.empty")}
+                </span>,
               )}
             </div>
           </div>
@@ -123,8 +121,8 @@ export default createReactBlockSpec(
 
 AIBlockRegistry.getInstance().addBlock({
   typeName: "var_display",
-friendlyName: () => t("editor.blocks.var_display.title"),
-shortDescription: () => t("editor.blocks.var_display.short_desc"),
+  friendlyName: () => t("editor.blocks.var_display.title"),
+  shortDescription: () => t("editor.blocks.var_display.short_desc"),
   description: () => undent`
     Display Variable blocks show the current value of a template variable in the runbook. The displayed value updates automatically as the variable changes.
 

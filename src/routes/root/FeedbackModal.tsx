@@ -114,11 +114,7 @@ export default function FeedbackModal(props: FeedbackModalProps) {
                 value={state.email}
                 onValueChange={handleEmailChange}
               />
-              {state.error && (
-                <div className="text-danger-600">
-                  {t("feedback.error")}
-                </div>
-              )}
+              {state.error && <div className="text-danger-600">{t("feedback.error")}</div>}
             </form>
           )}
         </ModalBody>

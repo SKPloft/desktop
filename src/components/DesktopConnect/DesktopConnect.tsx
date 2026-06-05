@@ -39,13 +39,11 @@ const DesktopConnect = () => {
             <Card>
               <CardBody className="gap-4">
                 <h2 className="text-xl">{t("desktop_connect.request_title")}</h2>
-                <h3 className="text-l">{t("desktop_connect.username", { username: proposedUser!.username })}</h3>
-                <p className="text-gray-600">
-                  {t("desktop_connect.description")}
-                </p>
-                <p className="text-gray-600">
-                  {t("desktop_connect.keychain")}
-                </p>
+                <h3 className="text-l">
+                  {t("desktop_connect.username", { username: proposedUser!.username })}
+                </h3>
+                <p className="text-gray-600">{t("desktop_connect.description")}</p>
+                <p className="text-gray-600">{t("desktop_connect.keychain")}</p>
               </CardBody>
             </Card>
 

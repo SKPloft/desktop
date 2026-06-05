@@ -474,22 +474,16 @@ export default function ConvertWorkspaceDialog(props: ConvertWorkspaceDialogProp
           </p>
 
           {connectionState !== ConnectionState.Online && (
-            <p className="text-warning">
-              {t("workspace.convert.offline_warning")}
-            </p>
+            <p className="text-warning">{t("workspace.convert.offline_warning")}</p>
           )}
 
           {workspaceType === WorkspaceType.Online && (
-            <p>
-              {t("workspace.convert.online_description")}
-            </p>
+            <p>{t("workspace.convert.online_description")}</p>
           )}
 
           {workspaceType === WorkspaceType.Offline && (
             <>
-              <p>
-                {t("workspace.convert.offline_description")}
-              </p>
+              <p>{t("workspace.convert.offline_description")}</p>
               <p>{t("workspace.convert.choose_folder")}</p>
               <FolderPicker
                 selectedPath={folderInfo.path}
@@ -504,9 +498,7 @@ export default function ConvertWorkspaceDialog(props: ConvertWorkspaceDialogProp
 
           {workspaceType === WorkspaceType.Hybrid && (
             <>
-              <p>
-                {t("workspace.convert.hybrid_description")}
-              </p>
+              <p>{t("workspace.convert.hybrid_description")}</p>
               <p>{t("workspace.convert.choose_folder_hybrid")}</p>
               <FolderPicker
                 selectedPath={folderInfo.path}
@@ -520,9 +512,7 @@ export default function ConvertWorkspaceDialog(props: ConvertWorkspaceDialogProp
           )}
 
           {workspaceType === WorkspaceType.Empty && (
-            <p>
-              {t("workspace.convert.empty_description")}
-            </p>
+            <p>{t("workspace.convert.empty_description")}</p>
           )}
 
           {loading && <Spinner />}
@@ -583,14 +573,10 @@ function FolderPicker(props: FolderPickerProps) {
         </span>
       </div>
       {props.selectedPath && props.folderHasContents && !props.folderIsAlreadyWorkspace && (
-        <span className="text-red-500 mt-2">
-          {t("workspace.convert.folder_not_empty")}
-        </span>
+        <span className="text-red-500 mt-2">{t("workspace.convert.folder_not_empty")}</span>
       )}
       {props.selectedPath && props.folderHasContents && props.folderIsAlreadyWorkspace && (
-        <span className="text-red-500 mt-2">
-          {t("workspace.convert.folder_already_workspace")}
-        </span>
+        <span className="text-red-500 mt-2">{t("workspace.convert.folder_already_workspace")}</span>
       )}
       {props.selectedPath && !props.folderIsAlreadyWorkspace && props.folderIsChildOfWorkspace && (
         <span className="text-red-500 mt-2">

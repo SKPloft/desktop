@@ -269,7 +269,11 @@ export async function createWorkspaceMenu(actions: {
 
     menu.separator().item(
       new ItemBuilder()
-        .text(opts.os === "macos" ? t("runbooks.menu.show_in_finder") : t("runbooks.menu.show_in_file_explorer"))
+        .text(
+          opts.os === "macos"
+            ? t("runbooks.menu.show_in_finder")
+            : t("runbooks.menu.show_in_file_explorer"),
+        )
         .action(() => actions.onOpenFolder!())
         .accelerator("CmdOrCtrl+O"),
     );

@@ -166,14 +166,14 @@ export const insertTableOfContents = (schema: any) => (editor: typeof schema.Blo
     );
   },
   icon: <ListIcon size={18} />,
-  aliases: ["toc", "contents"], 
+  aliases: ["toc", "contents"],
   group: i18nT("editor.blocks.group.content"),
 });
 
 AIBlockRegistry.getInstance().addBlock({
   typeName: "table_of_contents",
-friendlyName: () => i18nT("editor.blocks.table_of_contents.title"),
-shortDescription: () => i18nT("editor.blocks.table_of_contents.short_desc"),
+  friendlyName: () => i18nT("editor.blocks.table_of_contents.title"),
+  shortDescription: () => i18nT("editor.blocks.table_of_contents.short_desc"),
   description: () => undent`
     Table of Contents blocks add a navigable list of all headings to the document. It takes no props.
 

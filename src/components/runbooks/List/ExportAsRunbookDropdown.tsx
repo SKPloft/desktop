@@ -59,7 +59,9 @@ export default function ExportRunbookDropdown({
       <DropdownMenu
         aria-label={t("export_runbook.aria")}
         variant="flat"
-        topContent={<div className="text-default-600 font-semibold">{t("export_runbook.title")}</div>}
+        topContent={
+          <div className="text-default-600 font-semibold">{t("export_runbook.title")}</div>
+        }
         items={exportTypes}
       >
         {(exportType) => {

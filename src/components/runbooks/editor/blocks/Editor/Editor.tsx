@@ -72,7 +72,7 @@ function languageLoaders(): LanguageLoader[] {
 
   // then append the custom languages
   languages.push({
-    name: t("editor.blocks.editor.language.hcl"),  
+    name: t("editor.blocks.editor.language.hcl"),
     extension: async () => hcl(),
   });
 
@@ -242,7 +242,13 @@ const EditorBlock = ({
                 disabled={!isEditable}
                 className="font-mono text-xs"
               />
-              <Tooltip content={collapseCode ? t("editor.blocks.editor.expand_code") : t("editor.blocks.editor.collapse_code")}>
+              <Tooltip
+                content={
+                  collapseCode
+                    ? t("editor.blocks.editor.expand_code")
+                    : t("editor.blocks.editor.collapse_code")
+                }
+              >
                 <Button onPress={handleToggleCollapseCode} size="sm" variant="flat" isIconOnly>
                   {collapseCode ? (
                     <ArrowDownToLineIcon size={20} />
@@ -444,12 +450,12 @@ export default createReactBlockSpec(
 );
 
 export const insertEditor = (schema: any) => (editor: typeof schema.BlockNoteEditor) => ({
-  title: t("editor.blocks.editor.title"), 
+  title: t("editor.blocks.editor.title"),
   onItemClick: () => {
     track_event("runbooks.block.create", { type: "editor" });
 
     let editorBlocks = editor.document.filter((block: any) => block.type === "editor");
-    let name = t("editor.blocks.editor.default_name", { count: editorBlocks.length + 1 }); 
+    let name = t("editor.blocks.editor.default_name", { count: editorBlocks.length + 1 });
 
     editor.insertBlocks(
       [
@@ -466,14 +472,14 @@ export const insertEditor = (schema: any) => (editor: typeof schema.BlockNoteEdi
     );
   },
   icon: <CodeIcon size={18} />,
-  group: t("editor.blocks.group.misc"), 
-  aliases: ["code"], 
+  group: t("editor.blocks.group.misc"),
+  aliases: ["code"],
 });
 
 AIBlockRegistry.getInstance().addBlock({
   typeName: "editor",
-friendlyName: () => t("editor.blocks.editor.title"),
-shortDescription: () => t("editor.blocks.editor.short_desc"),
+  friendlyName: () => t("editor.blocks.editor.title"),
+  shortDescription: () => t("editor.blocks.editor.short_desc"),
   description: () => undent`
     Editor blocks provide a syntax-highlighted code editor with language selection. The content can optionally be stored in a template variable.
 

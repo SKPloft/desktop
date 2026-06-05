@@ -335,7 +335,11 @@ const ScriptBlock = ({
               />
 
               <Tooltip
-                content={script.outputVisible ? t("editor.blocks.script.hide_output_terminal") : t("editor.blocks.script.show_output_terminal")}
+                content={
+                  script.outputVisible
+                    ? t("editor.blocks.script.hide_output_terminal")
+                    : t("editor.blocks.script.show_output_terminal")
+                }
               >
                 <Button
                   onPress={() => {
@@ -349,7 +353,13 @@ const ScriptBlock = ({
                 </Button>
               </Tooltip>
 
-              <Tooltip content={collapseCode ? t("editor.blocks.editor.expand_code") : t("editor.blocks.editor.collapse_code")}>
+              <Tooltip
+                content={
+                  collapseCode
+                    ? t("editor.blocks.editor.expand_code")
+                    : t("editor.blocks.editor.collapse_code")
+                }
+              >
                 <Button
                   onPress={() => setCollapseCode(!collapseCode)}
                   size="sm"
@@ -614,7 +624,7 @@ export const insertScript = (schema: any) => (editor: typeof schema.BlockNoteEdi
     track_event("runbooks.block.create", { type: "script" });
 
     let scriptBlocks = editor.document.filter((block: any) => block.type === "script");
-    let name = i18nT("editor.blocks.script.default_name", { count: scriptBlocks.length + 1 }); 
+    let name = i18nT("editor.blocks.script.default_name", { count: scriptBlocks.length + 1 });
 
     // Get default shell from settings, falling back to system default
     const interpreter = await Settings.getEffectiveScriptShell();

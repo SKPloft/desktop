@@ -86,7 +86,7 @@ export const insertHttp = (schema: any) => (editor: typeof schema.BlockNoteEdito
     track_event("runbooks.block.create", { type: "http" });
 
     let httpBlocks = editor.document.filter((block: any) => block.type === "http");
-    let name = t("editor.blocks.http.default_name", { count: httpBlocks.length + 1 }); 
+    let name = t("editor.blocks.http.default_name", { count: httpBlocks.length + 1 });
 
     editor.insertBlocks(
       [

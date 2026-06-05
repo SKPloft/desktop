@@ -98,7 +98,7 @@ export const insertTerminal = (editor: any) => ({
 
     // Count the number of terminal blocks
     let terminalBlocks = editor.document.filter((block: any) => block.type === "run");
-    let name = t("editor.blocks.terminal.default_name", { count: terminalBlocks.length + 1 }); 
+    let name = t("editor.blocks.terminal.default_name", { count: terminalBlocks.length + 1 });
 
     editor.insertBlocks(
       [
@@ -114,6 +114,6 @@ export const insertTerminal = (editor: any) => ({
     );
   },
   icon: <CodeIcon size={18} />,
-  aliases: ["terminal", "run"], 
+  aliases: ["terminal", "run"],
   group: t("editor.blocks.group.execute"),
 });

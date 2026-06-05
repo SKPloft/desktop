@@ -123,7 +123,13 @@ const MarkdownRender = (props: MarkdownRenderProps) => {
               markdown_render
             </span>
             <ButtonGroup size="sm">
-              <Tooltip content={collapsed ? t("editor.blocks.markdown_render.expand") : t("editor.blocks.markdown_render.collapse")}>
+              <Tooltip
+                content={
+                  collapsed
+                    ? t("editor.blocks.markdown_render.expand")
+                    : t("editor.blocks.markdown_render.collapse")
+                }
+              >
                 <Button
                   isIconOnly
                   variant="light"
@@ -188,7 +194,11 @@ const MarkdownRender = (props: MarkdownRenderProps) => {
                   size="sm"
                   min={1}
                   max={100}
-                  endContent={<span className="text-xs text-gray-400">{t("editor.blocks.markdown_render.lines")}</span>}
+                  endContent={
+                    <span className="text-xs text-gray-400">
+                      {t("editor.blocks.markdown_render.lines")}
+                    </span>
+                  }
                 />
               </div>
             </div>
@@ -275,7 +285,7 @@ export const insertMarkdownRender = (editor: any) => ({
     );
   },
   icon: <FileTextIcon size={18} />,
-  aliases: ["markdown", "md", "render", "display"], 
+  aliases: ["markdown", "md", "render", "display"],
   group: t("editor.blocks.group.content"),
 });
 

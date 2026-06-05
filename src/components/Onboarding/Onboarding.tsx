@@ -96,9 +96,7 @@ const Onboarding = () => {
                 <CardBody>
                   <ul className="list-disc pl-6 space-y-2">
                     <li>{t("onboarding.getting_started.select_runbook")}</li>
-                    <li>
-                      {t("onboarding.getting_started.history")}
-                    </li>
+                    <li>{t("onboarding.getting_started.history")}</li>
                     <li>
                       {t("onboarding.getting_started.community_prefix")}{" "}
                       <a
@@ -127,9 +125,7 @@ const Onboarding = () => {
               <Card>
                 <CardBody className="gap-4">
                   <h2 className="text-xl font-bold">{t("onboarding.tracking.title")}</h2>
-                  <p className="text-gray-600">
-                    {t("onboarding.tracking.description")}
-                  </p>
+                  <p className="text-gray-600">{t("onboarding.tracking.description")}</p>
                   <div className="flex items-center justify-between">
                     <p className="font-semibold">{t("onboarding.tracking.enable")}</p>
                     <Switch

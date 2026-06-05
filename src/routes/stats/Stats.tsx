@@ -334,7 +334,10 @@ const Stats = () => {
                     </Pie>
                     <Tooltip
                       formatter={(value: number, _: string, props: any) => [
-                        tt("stats.tooltip.commands", { count: value, percent: ((value / stats.count) * 100).toFixed(1) }),
+                        tt("stats.tooltip.commands", {
+                          count: value,
+                          percent: ((value / stats.count) * 100).toFixed(1),
+                        }),
                         props.payload.exitCode,
                       ]}
                       labelFormatter={() => ""}

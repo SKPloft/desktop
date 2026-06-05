@@ -252,7 +252,7 @@ export function createAIGenerateMenuItem(
       showAIPopup(position, cursorPosition.block.id);
     },
     icon: <SparklesIcon size={18} />,
-    aliases: ["ai", "generate", "prompt"], 
+    aliases: ["ai", "generate", "prompt"],
     group: t("ai.slash_menu.group"),
   };
 }

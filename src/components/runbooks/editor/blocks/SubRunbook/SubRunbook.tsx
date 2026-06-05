@@ -134,8 +134,10 @@ function getStatusLabel(status: SubRunbookStatus): string {
   if (status === "success") return i18nT("editor.blocks.sub_runbook.status.completed");
   if (status === "cancelled") return i18nT("editor.blocks.sub_runbook.status.cancelled");
   if (status === "notFound") return i18nT("editor.blocks.sub_runbook.status.not_found");
-  if (status === "recursionDetected") return i18nT("editor.blocks.sub_runbook.status.recursion_detected");
-  if (typeof status === "object" && "failed" in status) return i18nT("editor.blocks.sub_runbook.status.failed", { error: status.failed.error });
+  if (status === "recursionDetected")
+    return i18nT("editor.blocks.sub_runbook.status.recursion_detected");
+  if (typeof status === "object" && "failed" in status)
+    return i18nT("editor.blocks.sub_runbook.status.failed", { error: status.failed.error });
   return i18nT("editor.blocks.sub_runbook.status.unknown");
 }
 
@@ -243,7 +245,9 @@ function RunbookSelector({
         // Only update state if this request is still relevant
         if (!isCancelled) {
           const message =
-            err?.code === 404 ? i18nT("editor.blocks.sub_runbook.runbook_not_found") : err?.message || i18nT("editor.blocks.sub_runbook.failed_to_fetch");
+            err?.code === 404
+              ? i18nT("editor.blocks.sub_runbook.runbook_not_found")
+              : err?.message || i18nT("editor.blocks.sub_runbook.failed_to_fetch");
           setHubLookup({ status: "error", message });
         }
       }
@@ -451,7 +455,9 @@ function RunbookSelector({
             {hubLookup.status === "loading" && (
               <div className="flex items-center gap-2 px-3 py-2 text-sm border-b border-gray-100 dark:border-gray-700">
                 <Spinner size="sm" classNames={{ wrapper: "h-4 w-4" }} />
-                <span className="text-gray-500 dark:text-gray-400">{t("editor.blocks.sub_runbook.looking_up", { query })}</span>
+                <span className="text-gray-500 dark:text-gray-400">
+                  {t("editor.blocks.sub_runbook.looking_up", { query })}
+                </span>
               </div>
             )}
 
@@ -508,7 +514,9 @@ function RunbookSelector({
                 ) : (
                   <FileIcon size={14} />
                 )}
-                <span className="truncate">{runbook.name || t("editor.blocks.sub_runbook.untitled_runbook")}</span>
+                <span className="truncate">
+                  {runbook.name || t("editor.blocks.sub_runbook.untitled_runbook")}
+                </span>
               </div>
             );
           })
@@ -654,7 +662,7 @@ const SubRunbook = ({
                     isDisabled={!isEditable}
                     aria-label={t("editor.blocks.sub_runbook.select_tag")}
                     items={[
-                      { key: "latest", label: i18nT("editor.blocks.sub_runbook.tag_latest") }, 
+                      { key: "latest", label: i18nT("editor.blocks.sub_runbook.tag_latest") },
                       ...availableTags.map((tag) => ({ key: tag, label: tag })),
                     ]}
                   >
@@ -703,7 +711,9 @@ const SubRunbook = ({
       {/* Settings Modal */}
       <Modal isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} size="sm">
         <ModalContent>
-          <ModalHeader className="text-base font-medium">{t("editor.blocks.sub_runbook.settings_title")}</ModalHeader>
+          <ModalHeader className="text-base font-medium">
+            {t("editor.blocks.sub_runbook.settings_title")}
+          </ModalHeader>
           <ModalBody className="pb-6">
             <div className="space-y-4">
               {/* Export All Context Button */}
@@ -928,7 +938,7 @@ export const insertSubRunbook = (editor: any) => ({
     );
   },
   icon: <BookOpenIcon size={18} />,
-  aliases: ["sub", "runbook", "embed", "include", "nested"], 
+  aliases: ["sub", "runbook", "embed", "include", "nested"],
   group: i18nT("editor.blocks.group.execute"),
 });
 

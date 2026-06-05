@@ -53,7 +53,7 @@ import DesktopImportModal from "./DesktopImportModal";
 import RuntimeUpdateNotice from "./RuntimeUpdateNotice";
 import NotificationManager from "@/lib/notifications/NotificationManager";
 import { useTranslation, t } from "@/lib/i18n";
-// this is different from import { useTranslation }... because this file is react-function mixed 
+// this is different from import { useTranslation }... because this file is react-function mixed
 
 const globalOptions = getGlobalOptions();
 const UPDATE_CHECK_INTERVAL = globalOptions.channel === "edge" ? 1000 * 60 * 5 : 1000 * 60 * 60;
@@ -1035,36 +1035,45 @@ async function confirmMoveItems(
   if (info.folders === 0 && info.runbooks > 0) {
     countSnippet = (
       <strong className="text-danger">
-        {info.runbooks} {info.runbooks === 1 ? t("root.move_items.runbook") : t("root.move_items.runbooks")}
+        {info.runbooks}{" "}
+        {info.runbooks === 1 ? t("root.move_items.runbook") : t("root.move_items.runbooks")}
       </strong>
     );
   } else if (info.folders > 0 && info.runbooks === 0) {
     countSnippet = (
       <strong className="text-danger">
-        {info.folders} {info.folders === 1 ? t("root.move_items.folder") : t("root.move_items.folders")}
+        {info.folders}{" "}
+        {info.folders === 1 ? t("root.move_items.folder") : t("root.move_items.folders")}
       </strong>
     );
   } else if (info.folders > 0 && info.runbooks > 0) {
     countSnippet = (
       <>
         <strong className="text-danger">
-          {info.folders} {info.folders === 1 ? t("root.move_items.folder") : t("root.move_items.folders")}
+          {info.folders}{" "}
+          {info.folders === 1 ? t("root.move_items.folder") : t("root.move_items.folders")}
         </strong>{" "}
         {t("common.and")}{" "}
         <strong className="text-danger">
-          {info.runbooks} {info.runbooks === 1 ? t("root.move_items.runbook") : t("root.move_items.runbooks")}
+          {info.runbooks}{" "}
+          {info.runbooks === 1 ? t("root.move_items.runbook") : t("root.move_items.runbooks")}
         </strong>
       </>
     );
   }
 
-  const itemLabel = moveBundles.length === 1 ? t("root.move_items.item") : t("root.move_items.items");
+  const itemLabel =
+    moveBundles.length === 1 ? t("root.move_items.item") : t("root.move_items.items");
   const itemLabelCap = total === 1 ? t("root.move_items.item_cap") : t("root.move_items.items_cap");
 
   const message = (
     <div className="flex flex-col gap-2">
       <p>
-        {t("root.move_items.confirm_question", { count: moveBundles.length, itemLabel, workspace: targetWorkspace.get("name") || "" })}
+        {t("root.move_items.confirm_question", {
+          count: moveBundles.length,
+          itemLabel,
+          workspace: targetWorkspace.get("name") || "",
+        })}
       </p>
 
       {!sourceWorkspace.isOrgOwned() && targetWorkspace.isOrgOwned() && (
@@ -1073,7 +1082,11 @@ async function confirmMoveItems(
         </Alert>
       )}
 
-      {total > 0 && <p>{t("root.move_items.summary")} {countSnippet}.</p>}
+      {total > 0 && (
+        <p>
+          {t("root.move_items.summary")} {countSnippet}.
+        </p>
+      )}
     </div>
   );
 
@@ -1087,7 +1100,9 @@ async function confirmMoveItems(
       value: "yes",
       color: "danger",
       confirmWith:
-        total > 0 ? t("root.move_items.confirm_button", { count: total, itemLabel: itemLabelCap }) : undefined,
+        total > 0
+          ? t("root.move_items.confirm_button", { count: total, itemLabel: itemLabelCap })
+          : undefined,
     })
     .build();
 }

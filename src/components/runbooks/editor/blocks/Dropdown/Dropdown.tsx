@@ -433,7 +433,9 @@ const Dropdown = ({
           <ModalContent className="max-h-[90vh]">
             {(_onClose) => (
               <>
-                <ModalHeader className="flex flex-col gap-1">{t("editor.blocks.dropdown.options_title")}</ModalHeader>
+                <ModalHeader className="flex flex-col gap-1">
+                  {t("editor.blocks.dropdown.options_title")}
+                </ModalHeader>
                 <ModalBody className="flex-1 overflow-hidden">
                   <Tabs
                     value={optionsType}
@@ -441,9 +443,15 @@ const Dropdown = ({
                     className="h-full flex flex-col"
                   >
                     <TabsList className="grid w-full grid-cols-3 flex-shrink-0">
-                      <TabsTrigger value="fixed">{t("editor.blocks.dropdown.fixed_options")}</TabsTrigger>
-                      <TabsTrigger value="variable">{t("editor.blocks.dropdown.variable_options")}</TabsTrigger>
-                      <TabsTrigger value="command">{t("editor.blocks.dropdown.command_output")}</TabsTrigger>
+                      <TabsTrigger value="fixed">
+                        {t("editor.blocks.dropdown.fixed_options")}
+                      </TabsTrigger>
+                      <TabsTrigger value="variable">
+                        {t("editor.blocks.dropdown.variable_options")}
+                      </TabsTrigger>
+                      <TabsTrigger value="command">
+                        {t("editor.blocks.dropdown.command_output")}
+                      </TabsTrigger>
                     </TabsList>
                     <TabsContent value="fixed" className="flex-1 overflow-auto">
                       <FixedTab

@@ -163,12 +163,12 @@ export default createReactBlockSpec(
 );
 
 export const insertSQLite = (schema: any) => (editor: typeof schema.BlockNoteEditor) => ({
-  title: t("editor.blocks.sqlite.title"), 
+  title: t("editor.blocks.sqlite.title"),
   onItemClick: () => {
     track_event("runbooks.block.create", { type: "sqlite" });
 
     let sqliteBlocks = editor.document.filter((block: any) => block.type === "sqlite");
-    let name = t("editor.blocks.sqlite.default_name", { count: sqliteBlocks.length + 1 }); 
+    let name = t("editor.blocks.sqlite.default_name", { count: sqliteBlocks.length + 1 });
 
     editor.insertBlocks(
       [
@@ -185,7 +185,7 @@ export const insertSQLite = (schema: any) => (editor: typeof schema.BlockNoteEdi
     );
   },
   icon: <DatabaseIcon size={18} />,
-  group: t("editor.blocks.group.database"), 
+  group: t("editor.blocks.group.database"),
 });
 
 AIBlockRegistry.getInstance().addBlock({

@@ -303,7 +303,7 @@ type TabDisplayProps = TabProps & {
 
 const TabDisplay = React.forwardRef(
   (props: TabDisplayProps, ref: React.ForwardedRef<HTMLLIElement>) => {
-  const { t } = useTranslation();
+    const { t } = useTranslation();
     const [hovered, setHovered] = useState(false);
     const elementRef = useRef<HTMLLIElement>(null);
     const combinedRef = (node: HTMLLIElement | null) => {
@@ -557,8 +557,8 @@ function TabContextProvider({
       <TabContent
         url={tab.url}
         active={active}
-        key={`${tab.id}-${locale}`}
-        resetKey={`${tab.id}-${locale}`}
+        key={tab.url.startsWith("/runbook/") ? undefined : `${tab.id}-${locale}`}
+        resetKey={tab.url.startsWith("/runbook/") ? undefined : `${tab.id}-${locale}`}
       />
     </TabsContext.Provider>
   );

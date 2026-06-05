@@ -28,10 +28,7 @@ const Directory = ({ path, onInputChange, isEditable }: DirectoryProps) => {
 
   return (
     <div className="w-full !max-w-full !outline-none overflow-none">
-      <Tooltip
-        content={t("editor.blocks.directory.tooltip")}
-        delay={1000}
-      >
+      <Tooltip content={t("editor.blocks.directory.tooltip")} delay={1000}>
         <div className="flex flex-col w-full bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-slate-800 dark:to-blue-950 rounded-lg p-3 border border-blue-200 dark:border-blue-900 shadow-sm hover:shadow-md transition-all duration-200">
           <span className="text-[10px] font-mono text-gray-400 dark:text-gray-500 mb-2">
             directory

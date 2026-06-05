@@ -162,10 +162,17 @@ export function RunbookLinkPopup({
                   ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
                   : "hover:bg-gray-50 dark:hover:bg-gray-700",
               )}
-              onClick={() => onSelect(runbook.id, runbook.name || t("editor.blocks.sub_runbook.untitled_runbook"))}  
+              onClick={() =>
+                onSelect(
+                  runbook.id,
+                  runbook.name || t("editor.blocks.sub_runbook.untitled_runbook"),
+                )
+              }
             >
               <LinkIcon size={14} />
-              <span className="truncate">{runbook.name || t("editor.blocks.sub_runbook.untitled_runbook")}</span>
+              <span className="truncate">
+                {runbook.name || t("editor.blocks.sub_runbook.untitled_runbook")}
+              </span>
             </div>
           ))
         )}

@@ -78,7 +78,7 @@ export default function CommandPalette() {
     const grouped: Record<string, CommandSearchResult[]> = {};
 
     results.forEach((result) => {
-      const category = resolve(result.command.category ?? "") || "General"; 
+      const category = resolve(result.command.category ?? "") || "General";
       if (!grouped[category]) {
         grouped[category] = [];
       }
@@ -105,7 +105,11 @@ export default function CommandPalette() {
             <DialogTitle>{t("command_palette.title")}</DialogTitle>
           </VisuallyHidden>
           <Command shouldFilter={false}>
-            <CommandInput placeholder={t("command_palette.placeholder")} value={query} onValueChange={setQuery} />
+            <CommandInput
+              placeholder={t("command_palette.placeholder")}
+              value={query}
+              onValueChange={setQuery}
+            />
             <CommandList>
               <CommandEmpty>
                 <div className="py-6 text-center text-sm">

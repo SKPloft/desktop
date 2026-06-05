@@ -188,14 +188,8 @@ export default function DeleteRunbookModal(props: DeleteRunbookModalProps) {
           <p>
             {t("delete_runbook.confirm_prefix")} <strong>{deleteState.runbook?.name}</strong>?
           </p>
-          {ownership === "local" && (
-            <p>{t("delete_runbook.local_warning")}</p>
-          )}
-          {ownership === "none" && (
-            <p>
-              {t("delete_runbook.none_warning", { nwo: nwo.unwrap() })}
-            </p>
-          )}
+          {ownership === "local" && <p>{t("delete_runbook.local_warning")}</p>}
+          {ownership === "none" && <p>{t("delete_runbook.none_warning", { nwo: nwo.unwrap() })}</p>}
           {ownership === "owner" && (
             <>
               <p>{t("delete_runbook.will")}</p>
@@ -221,9 +215,7 @@ export default function DeleteRunbookModal(props: DeleteRunbookModalProps) {
               <p>{t("delete_runbook.will")}</p>
               <ul className="list-disc ml-4">
                 <li>{t("delete_runbook.machine")}</li>
-                <li>
-                  {t("delete_runbook.collaboration", { nwo: nwo.unwrap() })}
-                </li>
+                <li>{t("delete_runbook.collaboration", { nwo: nwo.unwrap() })}</li>
               </ul>
               {connectionState !== ConnectionState.Online && (
                 <p>{t("delete_runbook.offline_notice")}</p>

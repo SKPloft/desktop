@@ -127,8 +127,8 @@ export default createReactBlockSpec(
 
 AIBlockRegistry.getInstance().addBlock({
   typeName: "var",
-friendlyName: () => t("editor.blocks.template_var.title"),
-shortDescription: () => t("editor.blocks.template_var.short_desc"),
+  friendlyName: () => t("editor.blocks.template_var.title"),
+  shortDescription: () => t("editor.blocks.template_var.short_desc"),
   description: () => undent`
     Template Variable blocks define variables that can be referenced in other blocks using the {{ var.variable_name }} syntax. Values are synced with collaborators.
     For sensitive data, or values that should not be synced, use a Local Variable block instead.

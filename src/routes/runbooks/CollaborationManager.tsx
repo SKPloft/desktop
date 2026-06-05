@@ -84,10 +84,10 @@ export default function CollaborationManager(props: CollaborationManagerProps) {
   }
 
   async function handleDeleteClicked(collaborationId: string) {
-    const doDelete = await confirm(
-      t("runbooks.collaboration.remove_confirm"),
-      { title: t("app.name"), kind: "warning" },
-    );
+    const doDelete = await confirm(t("runbooks.collaboration.remove_confirm"), {
+      title: t("app.name"),
+      kind: "warning",
+    });
 
     if (!doDelete) return;
 
@@ -151,7 +151,11 @@ export default function CollaborationManager(props: CollaborationManagerProps) {
               <span>{collaboration.user.username}</span>
             </div>
             <div className="flex flex-row text-sm text-gray-500 items-center">
-              <span>{collaboration.accepted ? t("runbooks.collaboration.accepted") : t("runbooks.collaboration.pending")}</span>
+              <span>
+                {collaboration.accepted
+                  ? t("runbooks.collaboration.accepted")
+                  : t("runbooks.collaboration.pending")}
+              </span>
               <Button
                 size="sm"
                 variant="flat"

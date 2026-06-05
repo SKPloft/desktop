@@ -175,7 +175,9 @@ export default function DesktopImportModal(props: DesktopImportModalProps) {
             { id: "__import_new__", name: t("desktop_import.import_new") },
             ...forkedRunbooks.map((runbook) => ({
               id: runbook.id,
-              name: t("desktop_import.open_existing", { name: runbook.name || t("common.untitled") }),
+              name: t("desktop_import.open_existing", {
+                name: runbook.name || t("common.untitled"),
+              }),
             })),
           ]}
         >
@@ -197,7 +199,11 @@ export default function DesktopImportModal(props: DesktopImportModalProps) {
             }
           }}
         >
-          {isImportNew ? t("common.import") : hasSelection ? t("common.open") : t("common.continue")}
+          {isImportNew
+            ? t("common.import")
+            : hasSelection
+              ? t("common.open")
+              : t("common.continue")}
         </Button>
       </ModalFooter>
     );
@@ -232,18 +238,14 @@ export default function DesktopImportModal(props: DesktopImportModalProps) {
       </ModalFooter>
     );
   } else if (failed) {
-    body = (
-      <p>{t("desktop_import.load_info_failed")}</p>
-    );
+    body = <p>{t("desktop_import.load_info_failed")}</p>;
     footer = (
       <ModalFooter>
         <Button onPress={handleClose}>{t("common.close")}</Button>
       </ModalFooter>
     );
   } else if (cannotImport) {
-    body = (
-      <p>{t("desktop_import.cannot_connect")}</p>
-    );
+    body = <p>{t("desktop_import.cannot_connect")}</p>;
     footer = (
       <ModalFooter>
         <Button onPress={handleClose}>{t("common.close")}</Button>
@@ -267,7 +269,8 @@ export default function DesktopImportModal(props: DesktopImportModalProps) {
       <>
         <p>
           {t("desktop_import.import_prompt_prefix")} <strong>{runbookName}</strong>@
-          <strong>{props.tag}</strong>{t("desktop_import.import_prompt_suffix")}
+          <strong>{props.tag}</strong>
+          {t("desktop_import.import_prompt_suffix")}
         </p>
         <WorkspaceSelector
           workspaces={workspaces.data ?? []}
@@ -297,7 +300,9 @@ export default function DesktopImportModal(props: DesktopImportModalProps) {
         {() => (
           <>
             <ModalHeader>
-              {step === "forked-options" ? t("desktop_import.open_title") : t("desktop_import.import_title")}
+              {step === "forked-options"
+                ? t("desktop_import.open_title")
+                : t("desktop_import.import_title")}
             </ModalHeader>
             <ModalBody>{body}</ModalBody>
             {footer}

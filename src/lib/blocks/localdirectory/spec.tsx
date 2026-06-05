@@ -38,6 +38,6 @@ export const insertLocalDirectory = (editor: any) => ({
     );
   },
   icon: <FolderIcon size={18} />,
-  aliases: ["localdirectory", "localdir", "workdir"], 
+  aliases: ["localdirectory", "localdir", "workdir"],
   group: t("editor.blocks.group.execute"),
 });

@@ -307,7 +307,11 @@ export const RunBlock = ({
                 </Chip>
               )}
               <Tooltip
-                content={terminal.outputVisible ? t("editor.blocks.script.hide_output_terminal") : t("editor.blocks.script.show_output_terminal")}
+                content={
+                  terminal.outputVisible
+                    ? t("editor.blocks.script.hide_output_terminal")
+                    : t("editor.blocks.script.show_output_terminal")
+                }
               >
                 <button
                   onClick={() => setOutputVisible(!terminal.outputVisible)}
@@ -316,7 +320,13 @@ export const RunBlock = ({
                   {terminal.outputVisible ? <Eye size={20} /> : <EyeOff size={20} />}
                 </button>
               </Tooltip>
-              <Tooltip content={isFullscreen ? t("blocks.common.exit_fullscreen") : t("blocks.common.open_fullscreen")}>
+              <Tooltip
+                content={
+                  isFullscreen
+                    ? t("blocks.common.exit_fullscreen")
+                    : t("blocks.common.open_fullscreen")
+                }
+              >
                 <button
                   onClick={() => setIsFullscreen(!isFullscreen)}
                   className="p-2 hover:bg-default-100 rounded-md"
@@ -325,7 +335,13 @@ export const RunBlock = ({
                   {isFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
                 </button>
               </Tooltip>
-              <Tooltip content={collapseCode ? t("editor.blocks.editor.expand_code") : t("editor.blocks.editor.collapse_code")}>
+              <Tooltip
+                content={
+                  collapseCode
+                    ? t("editor.blocks.editor.expand_code")
+                    : t("editor.blocks.editor.collapse_code")
+                }
+              >
                 <button
                   onClick={() => setCollapseCode(!collapseCode)}
                   className="p-2 hover:bg-default-100 rounded-md"

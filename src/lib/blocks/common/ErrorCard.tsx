@@ -17,13 +17,13 @@ const ErrorCard = ({ error }: any) => {
           >
             {t("common.error")}
           </Chip>
-          <span className="text-danger-700 font-semibold">{t("editor.blocks.prometheus.error")}</span>
+          <span className="text-danger-700 font-semibold">
+            {t("editor.blocks.prometheus.error")}
+          </span>
         </div>
       </CardHeader>
       <CardBody className="p-4">
-        <p className="text-danger-600 select-text">
-          {error || t("blocks.common.request_error")}
-        </p>
+        <p className="text-danger-600 select-text">{error || t("blocks.common.request_error")}</p>
       </CardBody>
     </Card>
   );

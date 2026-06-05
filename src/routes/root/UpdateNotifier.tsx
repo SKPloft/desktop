@@ -165,7 +165,9 @@ export default function UpdateNotifier() {
     return (
       <Modal isOpen={true} onClose={dismiss} size="2xl">
         <ModalContent>
-          <ModalHeader>{t("updates.release_notes", { version: availableUpdate.version })}</ModalHeader>
+          <ModalHeader>
+            {t("updates.release_notes", { version: availableUpdate.version })}
+          </ModalHeader>
           <ModalBody>
             <div className="max-h-[300px] overflow-y-auto bg-gray-100 dark:bg-gray-800 rounded-md p-2">
               <Markdown content={availableUpdate.body!} />
@@ -196,7 +198,9 @@ export default function UpdateNotifier() {
       <Modal isOpen={true} onClose={() => {}} hideCloseButton>
         <ModalContent>
           {!relaunching && (
-            <ModalHeader>{t("updates.updating", { version: updating.unwrapOr("<unknown>") })}</ModalHeader>
+            <ModalHeader>
+              {t("updates.updating", { version: updating.unwrapOr("<unknown>") })}
+            </ModalHeader>
           )}
           {relaunching && <ModalHeader>{t("updates.relaunching")}</ModalHeader>}
           <ModalBody>

@@ -192,9 +192,7 @@ export default function TagSelector(props: TagSelectorProps) {
           <div>
             <Divider className="mb-2" />
             <div className="font-bold">{t("tag_selector.create_title")}</div>
-            <div className="mb-2">
-              {t("tag_selector.create_description")}
-            </div>
+            <div className="mb-2">{t("tag_selector.create_description")}</div>
             <form onSubmit={handleFormSubmit}>
               <div className="flex flex-col">
                 <Input

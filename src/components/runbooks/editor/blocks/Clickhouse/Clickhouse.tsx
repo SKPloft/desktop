@@ -66,7 +66,7 @@ export default createReactBlockSpec(
   {
     type: "clickhouse",
     propSchema: {
-      name: { default: t("editor.blocks.clickhouse.title") }, 
+      name: { default: t("editor.blocks.clickhouse.title") },
       query: { default: "" },
       uri: { default: "" },
       autoRefresh: { default: 0 },
@@ -224,4 +224,3 @@ AIBlockRegistry.getInstance().addBlock({
     }
   `,
 });
-

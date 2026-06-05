@@ -401,7 +401,11 @@ const NoteSidebar = forwardRef((props: NotesSidebarProps, ref: React.ForwardedRe
                     }
                     onPress={handleSelectPersonalOrg}
                   >
-                    {user.isLoggedIn() ? <h3>{t("runbook_list.personal_user", { username: user.username })}</h3> : <h3>{t("common.personal")}</h3>}
+                    {user.isLoggedIn() ? (
+                      <h3>{t("runbook_list.personal_user", { username: user.username })}</h3>
+                    ) : (
+                      <h3>{t("common.personal")}</h3>
+                    )}
                   </DropdownItem>
                   <>
                     {userOrgs.map((org) => (
@@ -467,7 +471,8 @@ const NoteSidebar = forwardRef((props: NotesSidebarProps, ref: React.ForwardedRe
               <Tooltip
                 content={
                   <span className="flex items-center gap-1.5">
-                    {t("runbook_list.search")} <kbd className="px-1 py-0.5 text-[10px] bg-gray-600/50 rounded">⌘P</kbd>
+                    {t("runbook_list.search")}{" "}
+                    <kbd className="px-1 py-0.5 text-[10px] bg-gray-600/50 rounded">⌘P</kbd>
                   </span>
                 }
                 placement="bottom"
