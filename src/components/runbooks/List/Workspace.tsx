@@ -410,7 +410,7 @@ export default function WorkspaceComponent(props: WorkspaceProps) {
         message = err.data.message;
       }
     } else {
-      message = "An unknown error occurred while renaming the folder.";
+      message = t("workspace.error.unknown_rename_folder");
     }
 
     if (result.isErr()) {
@@ -429,7 +429,7 @@ export default function WorkspaceComponent(props: WorkspaceProps) {
 
     if (result.isErr()) {
       const err = result.unwrapErr();
-      let message = "An unknown error occurred while creating the folder.";
+      let message = t("workspace.error.unknown_create_folder");
       if ("message" in err.data) {
         message = err.data.message;
       }
@@ -467,7 +467,7 @@ export default function WorkspaceComponent(props: WorkspaceProps) {
     const folderName = node?.data.name;
     const snippet = (
       <span>
-        the folder <b>{folderName}</b>
+        {t("delete.folder_ref")} <b>{folderName}</b>
       </span>
     );
 
@@ -502,9 +502,7 @@ export default function WorkspaceComponent(props: WorkspaceProps) {
         new DialogBuilder()
           .title(t("workspace.error.delete_folder"))
           .message(
-            t("workspace.error.delete_folder_with_message", {
-              message: "An unknown error occurred while deleting the folder.",
-            }),
+            t("workspace.error.unknown_delete_folder"),
           )
           .action({ label: t("common.ok"), value: "ok" })
           .build();
@@ -537,13 +535,13 @@ export default function WorkspaceComponent(props: WorkspaceProps) {
 
       if (result.isErr()) {
         const err = result.unwrapErr();
-        let message = "An unknown error occurred while moving the items.";
+        let message = t("workspace.error.unknown_move_items");
         if ("message" in err.data) {
           message = err.data.message;
         }
 
         new DialogBuilder()
-          .title(t("workspace.error.rename_folder"))
+          .title(t("workspace.error.move_items"))
           .message(message)
           .action({ label: t("common.ok"), value: "ok" })
           .build();
@@ -742,7 +740,7 @@ export default function WorkspaceComponent(props: WorkspaceProps) {
         const { node, descendents } = folderInfo(null);
         const snippet = (
           <span>
-            the workspace <b>{props.workspace.get("name")}</b>
+            {t("delete.workspace_ref")} <b>{props.workspace.get("name")}</b>
           </span>
         );
 
@@ -805,20 +803,20 @@ export default function WorkspaceComponent(props: WorkspaceProps) {
       props.workspace.save();
     } else if (!id.isOk()) {
       let err = id.unwrapErr();
-      let message = "An unknown error occurred while reading the directory.";
+      let message = t("workspace.error.unknown_read_directory");
       if ("message" in err.data) {
         message = err.data.message;
       }
 
       await new DialogBuilder()
-        .title(t("workspace.error.folder_unreadable"))
+        .title(t("workspace.error.directory_read_error"))
         .message(message)
         .action({ label: t("common.ok"), value: "ok" })
         .build();
     } else if (id.isOk() && id.unwrap() !== props.workspace.get("id")!) {
       await new DialogBuilder()
-        .title(t("workspace.already_exists.title"))
-        .message(t("workspace.already_exists.message"))
+        .title(t("workspace.error.id_mismatch"))
+        .message(t("workspace.error.id_mismatch_message"))
         .action({ label: t("common.ok"), value: "ok" })
         .build();
     }
@@ -851,35 +849,44 @@ export default function WorkspaceComponent(props: WorkspaceProps) {
 
     switch (error.type) {
       case "WorkspaceReadError":
-        errorType = "Workspace Read Error";
-        errorText = `The workspace at ${error.data.path} could not be read: ${error.data.message}`;
-        helpText =
-          "Ensure that atuin.toml exists at the root of the workspace directory and that the directory is readable.";
+        errorType = t("workspace.error.read_error");
+        errorText = t("workspace.error.read_error_description", {
+          path: error.data.path,
+          message: error.data.message,
+        });
+        helpText = t("workspace.error.read_error_help");
         break;
       case "WorkspaceNotWatched":
-        errorType = "Workspace Not Watched";
-        errorText = `The workspace is not being watched: ${error.data.workspace_id}`;
+        errorType = t("workspace.error.not_watched");
+        errorText = t("workspace.error.not_watched_description", {
+          workspace_id: error.data.workspace_id,
+        });
         break;
       case "WorkspaceAlreadyWatched": {
-        errorType = "Workspace Already Watched";
-        errorText = `The workspace is already being watched: ${error.data.workspace_id}`;
+        errorType = t("workspace.error.already_watched");
+        errorText = t("workspace.error.already_watched_description", {
+          workspace_id: error.data.workspace_id,
+        });
         break;
       }
       case "WatchError":
-        errorType = "Watch Error";
-        errorText = `The workspace could not be watched: ${error.data.message}`;
-        helpText =
-          "Ensure that the workspace directory and all its subdirectories and files are readable.";
+        errorType = t("workspace.error.watch_error");
+        errorText = t("workspace.error.watch_error_description", {
+          message: error.data.message,
+        });
+        helpText = t("workspace.error.watch_error_help");
         break;
       default:
-        errorType = "Unknown Error";
-        errorText = `An unknown error occurred: ${"message" in error.data ? error.data.message : error.type}`;
+        errorType = t("common.unknown_error");
+        errorText = t("workspace.error.unknown_description", {
+          message: "message" in error.data ? error.data.message : error.type,
+        });
     }
 
     async function confirmDeleteWorkspace() {
       const answer = await new DialogBuilder<"yes" | "no">()
-        .title("Delete Workspace")
-        .message("Are you sure you want to delete this workspace?")
+        .title(t("workspace.delete.title"))
+        .message(t("workspace.delete.confirm"))
         .action({ label: i18n_t("common.delete"), value: "yes", variant: "flat", color: "danger" })
         .action({ label: i18n_t("common.cancel"), value: "no", variant: "flat" })
         .build();
@@ -900,16 +907,15 @@ export default function WorkspaceComponent(props: WorkspaceProps) {
               <CircleAlertIcon className="w-8 h-8 stroke-gray-500 dark:stroke-gray-400" />
             </div>
             <p className="text-sm text-muted-foreground">
-              The workspace folder could not be read. If the workspace directory has changed, you
-              can locate the workspace folder to continue.
+              {t("workspace.error.folder_unreadable")}
             </p>
           </div>
           <div className="flex flex-row flex-wrap gap-2 justify-center">
             <Button variant="flat" size="sm" color="primary" onPress={handleLocateWorkspace}>
-              Locate Workspace
+              {t("workspace.error.locate_workspace")}
             </Button>
             <Button variant="flat" size="sm" color="danger" onPress={confirmDeleteWorkspace}>
-              Delete Workspace
+              {t("workspace.delete.title")}
             </Button>
           </div>
         </div>
@@ -925,12 +931,12 @@ export default function WorkspaceComponent(props: WorkspaceProps) {
               <CircleAlertIcon className="w-8 h-8 stroke-gray-500 dark:stroke-gray-400" />
             </div>
             <p className="text-sm text-muted-foreground">
-              There is an error with this workspace. Click to see more information.
+              {t("workspace.error.details_prompt")}
             </p>
           </div>
           <div className="flex flex-row flex-wrap gap-2 justify-center">
             <Button variant="flat" size="sm" color="danger" onPress={confirmDeleteWorkspace}>
-              Delete Workspace
+              {t("workspace.delete.title")}
             </Button>
           </div>
         </div>
@@ -945,8 +951,7 @@ export default function WorkspaceComponent(props: WorkspaceProps) {
         <div className="flex flex-row gap-2">
           <CircleAlertIcon className="w-8 h-8 stroke-gray-500 dark:stroke-gray-400 min-w-8" />
           <p className="text-sm text-muted-foreground">
-            This workspace is a legacy hybrid workspace. It needs to be converted, and until it is,
-            is read-only.
+            {t("workspace.legacy_hybrid.description")}
           </p>
         </div>
 
@@ -958,7 +963,7 @@ export default function WorkspaceComponent(props: WorkspaceProps) {
             setShowConvertWorkspaceDialog(true);
           }}
         >
-          Convert Workspace
+          {t("workspace.legacy_hybrid.convert")}
         </Button>
       </div>
     );
