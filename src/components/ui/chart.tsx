@@ -27,7 +27,7 @@ function useChart() {
   const context = React.useContext(ChartContext);
 
   if (!context) {
-    throw new Error(t("ui.chart.error_no_context")); // I18N: no-translate - internal exception
+    throw new Error("useChart must be used within a <ChartContainer />") // I18N: no-translate - internal exception
   }
 
   return context;

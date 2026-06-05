@@ -522,8 +522,6 @@ _version: 1
 "local_directory.title": "Local Directory"
 "local_directory.subtext": "Set current working directory (local to your machine)"
 
-"ui.chart.error_no_context": "useChart must be used within a <ChartContainer />"
-
 "updates.release_notes": "Atuin Desktop v{{version}} Release Notes"
 "updates.error_title": "Error"
 "updates.error_description": "There was an error updating the app. Please try again later."

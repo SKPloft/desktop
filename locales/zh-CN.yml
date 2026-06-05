@@ -524,8 +524,6 @@ _version: 1
 "local_directory.title": "本地目录"
 "local_directory.subtext": "设置当前工作目录（仅本机）"
 
-"ui.chart.error_no_context": "useChart 必须在 <ChartContainer /> 内使用"
-
 "updates.release_notes": "Atuin Desktop v{{version}} 发行说明"
 "updates.error_title": "错误"
 "updates.error_description": "更新应用时出错。请稍后重试。"
