@@ -2,7 +2,6 @@ import { DependencySpec } from "../../workflow/dependency";
 import Block from "../../workflow/blocks/block";
 import undent from "undent";
 import AIBlockRegistry from "@/lib/ai/block_registry";
-import { t } from "@/lib/i18n";
 
 export class KubernetesBlock extends Block {
   command: string;
