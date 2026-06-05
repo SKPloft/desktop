@@ -6,6 +6,8 @@
 
 *Note: This is a community fork/custom build of the official [Atuin Desktop](https://github.com/atuinsh/atuin) that introduces **EXPERIMENTAL** full Internationalization (i18n) support and various AI provider bug fixes, bulit for specific organization. Since this fork may set destructive behavior, If you find bugs, please consider report to issues page in current repo before submitting to official*
 
+---
+
 <p align="center">
  <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://github.com/atuinsh/atuin/assets/53315310/13216a1d-1ac0-4c99-b0eb-d88290fe0efd">
