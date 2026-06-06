@@ -672,10 +672,10 @@ _version: 1
 "delete_runbook.none_warning": "删除此 Runbook 后，你只能通过 Atuin Hub 的 {{nwo}} 再次访问它。"
 "delete_runbook.will": "删除此 Runbook 将会："
 "delete_runbook.machine": "从你的机器中永久删除此 Runbook"
-"delete_runbook.hub": "从 Atuin Hub 永久删除此 runbook（{{nwo}}）"
+"delete_runbook.hub": "从 Atuin Hub 永久删除此 Runbook（{{nwo}}）"
 "delete_runbook.offline_notice": "由于你处于离线状态，此操作将在你下次在线时执行。"
 "delete_runbook.org_warning": "删除此 Runbook 会将其从你的组织中永久移除。"
-"delete_runbook.collaboration": "永久移除你与 Atuin Hub 上该 Runbook 的协作关系（{{nwo}}）"
+"delete_runbook.collaboration": "永久移除你在 Atuin Hub 上与该 Runbook 的协作关系（{{nwo}}）"
 
 "desktop_import.checking": "正在检查现有副本..."
 "desktop_import.existing_one": "你已经有此 Runbook 的一个副本。要打开现有副本还是导入新副本？"
@@ -1013,7 +1013,7 @@ _version: 1
 
 "common.clear": "清除"
 "common.copy": "复制"
-"common.duplicate": "复制一份"
+"common.duplicate": "创建新副本"
 "common.save_changes": "保存更改"
 
 "blocks.common.code_copied": "代码已复制到剪贴板"
@@ -1092,7 +1092,7 @@ _version: 1
 "workspace.convert.error_title": "转换工作区失败"
 "workspace.convert.error_description": "转换工作区时出错。请重试。"
 "workspace.convert.legacy_description": "工作区 {{name}} 是旧版工作区，需要进行转换。"
-"workspace.convert.offline_warning": "您处于离线状态或未登录 Atuin Hub。转换将使用缓存数据进行。为确保信息最新，建议在在线时进行转换。"
+"workspace.convert.offline_warning": "您处于离线状态或未登录 Atuin Hub。将使用离线缓存数据进行转换。建议在在线时进行转换以确保内容最新。"
 "workspace.convert.online_description": "此工作区中的所有 Runbook 均为<strong>在线</strong> runbook。此工作区将转换为<strong>纯在线</strong>工作区。"
 "workspace.convert.offline_description": "此工作区中的所有 Runbook 均为<strong>离线</strong> runbook。此工作区将转换为<strong>纯离线</strong>工作区。"
 "workspace.convert.choose_folder": "请选择一个文件夹来存储工作区。"
@@ -1177,7 +1177,7 @@ _version: 1
 "workspace.delete.confirm": "确定要删除此工作区吗？"
 "workspace.welcome.failed_title": "创建默认工作区失败"
 "workspace.welcome.name": "欢迎使用 Atuin"
-"workspace.legacy_hybrid.description": "此工作区是旧版混合工作区。需要先转换；转换前它将保持只读。"
+"workspace.legacy_hybrid.description": "此工作区是旧版混合工作区，需要先进行转换；转换前它将保持只读。"
 "workspace.legacy_hybrid.convert": "转换工作区"
 "workspace.convert.title": "转换旧版工作区"
 
@@ -1210,7 +1210,7 @@ _version: 1
 "editor.completion.label_last_block": "最后一个块"
 "editor.completion.label_previous_block": "上一个块"
 "editor.completion.label_named_block": "已命名块"
-"editor.completion.label_runbook_blocks": "runbook 块"
+"editor.completion.label_runbook_blocks": "Runbook 块"
 "editor.completion.label_workspace_root": "工作区根目录"
 "editor.completion.detail_template_variables": "模板变量"
 "editor.completion.detail_document_properties": "文档属性"
