@@ -63,6 +63,7 @@ pub(crate) struct AtuinState {
     pub app_path: PathBuf,
 
     // Whether to use the Hub updater service
+    #[allow(dead_code)]
     pub use_hub_updater_service: bool,
 
     // Map of runbook -> output variable -> output value

@@ -16,7 +16,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  CN_APP_SLUG: atuin/atuin-desktop
+  CN_APP_SLUG: vrcd/desktop-vrcd
   NODE_ENV: production
 
 jobs:

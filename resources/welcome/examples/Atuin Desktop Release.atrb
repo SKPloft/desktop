@@ -539,10 +539,10 @@ content:
     text: 'CrabNebula: '
     styles: {}
   - type: link
-    href: https://web.crabnebula.cloud/atuin/atuin-desktop
+    href: https://web.crabnebula.cloud/vrcd/desktop-vrcd
     content:
     - type: text
-      text: https://web.crabnebula.cloud/atuin/atuin-desktop
+      text: https://web.crabnebula.cloud/vrcd/desktop-vrcd
       styles: {}
   children: []
 - id: 0d64d4af-7605-4daa-ab50-71a829e1d1c6

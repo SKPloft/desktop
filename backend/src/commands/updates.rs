@@ -4,7 +4,7 @@ use serde::Serialize;
 use tauri::{Manager, ResourceId, Runtime, Url, Webview};
 use tauri_plugin_updater::UpdaterExt;
 
-use crate::state;
+// use crate::state;
 
 // This file is largely copied from the tauri-plugin-updater crate,
 // as they don't export all the structs we need to use.
@@ -29,18 +29,25 @@ pub(crate) async fn check_for_updates<R: Runtime>(
     target: Option<String>,
     allow_downgrades: Option<bool>,
 ) -> Result<Option<Metadata>, String> {
-    let state = webview.state::<state::AtuinState>();
     let update_channel = env!("APP_CHANNEL");
 
+    // Since this is a fork, we default to GitHub releases and CrabNebula updater.
+    // The Atuin Hub updater service is commented out/disabled.
+    /*
+    let state = webview.state::<state::AtuinState>();
     let update_endpoints = match (state.use_hub_updater_service, update_channel) {
         (true, _) => vec![format!("https://hub.atuin.sh/api/updates/{update_channel}/{{{{target}}}}/{{{{arch}}}}/{{{{current_version}}}}")],
         (false, "edge") => vec![format!("https://hub.atuin.sh/api/updates/{update_channel}/{{{{target}}}}/{{{{arch}}}}/{{{{current_version}}}}")],
         (false, _) => vec![
-            "https://releases.atuin.sh/{{target}}/{{arch}}/{{current_version}}".to_string(),
-            "https://github.com/atuinsh/desktop/releases/latest/download/latest.json".to_string(),
-            "https://cdn.crabnebula.app/update/atuin/atuin-desktop/{{target}}-{{arch}}/{{current_version}}".to_string(),
+            "https://github.com/skploft/desktop-vrcd/releases/latest/download/latest.json".to_string(),
+            "https://cdn.crabnebula.app/update/vrcd/desktop-vrcd/{{target}}-{{arch}}/{{current_version}}".to_string(),
         ],
     };
+    */
+    let update_endpoints = vec![
+        "https://github.com/skploft/desktop-vrcd/releases/latest/download/latest.json".to_string(),
+        "https://cdn.crabnebula.app/update/vrcd/desktop-vrcd/{{target}}-{{arch}}/{{current_version}}".to_string(),
+    ];
 
     let mut builder = webview.updater_builder();
     builder = builder
