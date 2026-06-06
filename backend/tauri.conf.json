@@ -74,7 +74,8 @@
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEJEQjUyN0ZGQUUxQUNBNzMKUldSenlocXUveWUxdlQ0SXoyWUU0eTNEbUxURWt4UWFsZE1pL1FwVFJWRTBoeVF5UFVoSTc3djUK",
       "dialog": true,
       "endpoints": [
-        "https://github.com/skploft/desktop-vrcd/releases/latest/download/latest.json"
+        "https://github.com/skploft/desktop-vrcd/releases/latest/download/latest.json",
+        "https://cdn.crabnebula.app/update/vrcd/desktop-vrcd/{{target}}-{{arch}}/{{current_version}}"
       ]
     }
   },
