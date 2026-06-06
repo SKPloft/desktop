@@ -71,12 +71,10 @@
       "requireLiteralLeadingDot": false
     },
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDlGNUQ5Rjc5NDhCRkY2RjkKUldUNTlyOUllWjlkbjNVMlVoYWJJaGxOZ3FqdWkycE1TSzhTVERYWUdIekFYQ0FtUGc2UTh2a1kK",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEJEQjUyN0ZGQUUxQUNBNzMKUldSenlocXUveWUxdlQ0SXoyWUU0eTNEbUxURWt4UWFsZE1pL1FwVFJWRTBoeVF5UFVoSTc3djUK",
       "dialog": true,
       "endpoints": [
-        "https://releases.atuin.sh/{{target}}/{{arch}}/{{current_version}}",
-        "https://github.com/atuinsh/desktop/releases/latest/download/latest.json",
-        "https://cdn.crabnebula.app/update/atuin/atuin-desktop/{{target}}-{{arch}}/{{current_version}}"
+        "https://github.com/skploft/desktop-vrcd/releases/latest/download/latest.json"
       ]
     }
   },
