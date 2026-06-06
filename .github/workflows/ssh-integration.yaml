@@ -27,7 +27,7 @@ env:
 jobs:
   ssh-integration-tests:
     name: SSH Integration Tests
-    runs-on: depot-ubuntu-22.04-4
+    runs-on: ubuntu-22.04
 
     steps:
       - uses: actions/checkout@v4
