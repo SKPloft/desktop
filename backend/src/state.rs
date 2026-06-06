@@ -85,6 +85,10 @@ pub(crate) struct AtuinState {
 
     // Current tab items for menu rebuilding on locale change
     pub tab_items: Mutex<Vec<TabItem>>,
+
+    // Native menu rebuilds can be triggered by both locale changes and tab-title
+    // updates. Keep them serialized so platform menu replacement cannot overlap.
+    pub menu_rebuild_lock: Mutex<()>,
 }
 
 impl AtuinState {
@@ -115,6 +119,7 @@ impl AtuinState {
             use_hub_updater_service,
             secret_cache: Mutex::new(None),
             tab_items: Mutex::new(Vec::new()),
+            menu_rebuild_lock: Mutex::new(()),
         }
     }
     pub async fn init<R: Runtime>(&self, _app: &AppHandle<R>) -> Result<()> {

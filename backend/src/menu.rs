@@ -90,6 +90,9 @@ pub(crate) fn initialize_menu_handlers<R: Runtime>(handle: &AppHandle<R>) {
                 log::error!("Failed to open LLM Tools window: {}", e); // I18N: no-translate - Rust diagnostic log
             }
         }
+        "open-new-runtime-explainer-runbook" => {
+            let _ = app_handle.emit("open-new-runtime-explainer-runbook", 0);
+        }
         other_id if other_id.starts_with("link-menu-item:") => {
             let href = other_id.splitn(3, ":").nth(2);
             if let Some(href) = href {
@@ -204,18 +207,20 @@ pub(crate) struct TabItem {
     title: String,
 }
 
+fn tab_title<R: Runtime>(handle: &AppHandle<R>, tab: &TabItem) -> String {
+    match tab.url.as_str() {
+        "/settings" => tr(handle, "runbook_list.settings"),
+        "/stats" => tr(handle, "runbook_list.stats"),
+        "/history" => tr(handle, "runbook_list.history"),
+        _ => tab.title.clone(),
+    }
+}
+
 fn open_new_runtime_explainer_runbook<R: Runtime>(handle: &AppHandle<R>) -> Result<MenuItem<R>> {
     let open_new_runtime_explainer_runbook =
         MenuItemBuilder::new(tr(handle, "menu.open_new_runtime_docs"))
             .id("open-new-runtime-explainer-runbook")
             .build(handle)?;
-
-    let handle_clone = handle.clone();
-    handle.on_menu_event(move |_, event| {
-        if event.id().0 == "open-new-runtime-explainer-runbook" {
-            let _ = handle_clone.emit("open-new-runtime-explainer-runbook", 0);
-        }
-    });
 
     Ok(open_new_runtime_explainer_runbook)
 }
@@ -238,7 +243,7 @@ pub fn menu<R: Runtime>(app_handle: &AppHandle<R>, tab_items: &[TabItem]) -> Res
         .iter()
         .flat_map(|tab| {
             let app_handle = app_handle.clone();
-            MenuItemBuilder::new(&tab.title)
+            MenuItemBuilder::new(tab_title(&app_handle, tab))
                 .id(format!("window-tab-item:{}", tab.url.clone()))
                 .build(&app_handle)
                 .ok()

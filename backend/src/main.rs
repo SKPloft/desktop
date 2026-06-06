@@ -352,6 +352,22 @@ async fn get_platform_info() -> Result<String, String> {
     Ok(base_os)
 }
 
+fn set_app_menu<R: Runtime>(app: &AppHandle<R>, tabs: &[TabItem]) -> Result<(), String> {
+    let new_menu = menu::menu(app, tabs).map_err(|e| e.to_string())?;
+    app.set_menu(new_menu).map_err(|e| e.to_string())?;
+
+    Ok(())
+}
+
+fn rebuild_app_menu<R: Runtime>(
+    app: &AppHandle<R>,
+    state: &state::AtuinState,
+    tabs: &[TabItem],
+) -> Result<(), String> {
+    let _guard = state.menu_rebuild_lock.lock().unwrap();
+    set_app_menu(app, tabs)
+}
+
 #[tauri::command]
 async fn update_window_menu_tabs<R: Runtime>(
     app: AppHandle<R>,
@@ -359,8 +375,7 @@ async fn update_window_menu_tabs<R: Runtime>(
     tabs: Vec<TabItem>,
 ) -> Result<(), String> {
     *state.tab_items.lock().unwrap() = tabs.clone();
-    let new_menu = menu::menu(&app, &tabs).map_err(|e| e.to_string())?;
-    let _ = app.set_menu(new_menu);
+    rebuild_app_menu(&app, &state, &tabs)?;
 
     Ok(())
 }
@@ -719,20 +734,16 @@ fn main() {
                 apply_runbooks_migrations(&handle_clone).await.unwrap();
             });
 
-            handle.set_menu(menu::menu(handle, &[]).expect("Failed to build menu"))?; // I18N: no-translate - internal expectation message
+            set_app_menu(handle, &[]).expect("Failed to build menu"); // I18N: no-translate - internal expectation message
 
             let handle_clone = handle.clone();
             handle.listen("i18n:locale_changed", move |_event| {
                 let handle = handle_clone.clone();
                 tauri::async_runtime::spawn(async move {
-                    let tabs = handle
-                        .state::<state::AtuinState>()
-                        .tab_items
-                        .lock()
-                        .unwrap()
-                        .clone();
-                    if let Ok(new_menu) = menu::menu(&handle, &tabs) {
-                        let _ = handle.set_menu(new_menu);
+                    let state = handle.state::<state::AtuinState>();
+                    let tabs = state.tab_items.lock().unwrap().clone();
+                    if let Err(e) = rebuild_app_menu(&handle, &state, &tabs) {
+                        log::error!("Failed to rebuild localized menu: {}", e); // I18N: no-translate - Rust diagnostic log
                     }
                 });
             });

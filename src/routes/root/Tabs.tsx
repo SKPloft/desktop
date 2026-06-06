@@ -73,23 +73,18 @@ export default function Tabs() {
 
   const updateWindowMenuTabs = useCallback(
     debounce(async (tabs: TabType[]) => {
-      const translated = tabs.map((tab) => ({
+      const menuTabs = tabs.map((tab) => ({
         url: tab.url,
-        title: (() => {
-          if (tab.url === "/settings") return t("runbook_list.settings");
-          if (tab.url === "/stats") return t("runbook_list.stats");
-          if (tab.url === "/history") return t("runbook_list.history");
-          return tab.title;
-        })(),
+        title: tab.title,
       }));
-      invoke<void>("update_window_menu_tabs", { tabs: translated });
+      invoke<void>("update_window_menu_tabs", { tabs: menuTabs });
     }, 250),
     [],
   );
 
   useEffect(() => {
     updateWindowMenuTabs(tabs);
-  }, [tabs, locale]);
+  }, [tabs]);
 
   const listRef = useRef<HTMLUListElement>(null);
   const [activeDragId, setActiveDragId] = useState<string | null>(null);
