@@ -1,3 +1,28 @@
+# ============================================================
+# Workflow: TypeScript Tests
+# ============================================================
+#
+# PURPOSE:
+#   Runs the TypeScript / JavaScript unit-test suite using the
+#   Bun runtime.  This catches regressions in front-end logic
+#   without requiring a full Tauri desktop build.
+#
+#   The `test-once` npm script maps to `vitest run` (a single
+#   non-watch pass) — see package.json for details.
+#
+# TRIGGERS:
+#   - pull_request — blocks merge if tests fail
+#   - push → main  — confirms the default branch stays green
+#
+# REQUIRED SECRETS:
+#   (none)
+#
+# TOOLS USED:
+#   - Bun (oven-sh/setup-bun) — JavaScript runtime, package
+#     manager, and test runner
+#   - Vitest (via bun test-once) — unit test framework
+# ============================================================
+
 name: "ts-tests"
 
 on:
@@ -9,13 +34,27 @@ jobs:
   ts-tests:
     name: TypeScript Tests
     runs-on: ubuntu-22.04
+
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup Bun
+      # ── 1. Checkout ───────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── 2. Install Bun ────────────────────────────────────────
+      #   Bun is used as both the package manager (bun install)
+      #   and the test runner (bun test-once → vitest run).
+      - name: Set up Bun
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-      - name: Install Dependencies
+
+      # ── 3. Install JS/TS dependencies ─────────────────────────
+      - name: Install dependencies
         run: bun install
-      - name: TypeScript Tests
+
+      # ── 4. Run tests ─────────────────────────────────────────
+      #   `bun test-once` is defined in package.json as:
+      #     "test-once": "vitest run"
+      #   It exits non-zero on any test failure.
+      - name: Run TypeScript tests
         run: bun test-once

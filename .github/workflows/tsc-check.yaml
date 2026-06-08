@@ -1,3 +1,30 @@
+# ============================================================
+# Workflow: TypeScript Type Check
+# ============================================================
+#
+# PURPOSE:
+#   Validates TypeScript types across the entire front-end
+#   codebase (tsc --noEmit) and also verifies that Tauri plugin
+#   versions declared in package.json match those in Cargo.toml.
+#
+#   This is a fast, zero-build check: TypeScript is compiled in
+#   type-check-only mode so no output files are emitted.
+#
+# TRIGGERS:
+#   - pull_request — blocks merge if types don't check out
+#   - push → main  — confirms the default branch stays green
+#
+# REQUIRED SECRETS:
+#   (none)
+#
+# TOOLS USED:
+#   - Bun (oven-sh/setup-bun) — package manager
+#   - TypeScript (tsc)        — bundled in node_modules via devDependencies
+#   - script/check-tauri-versions — project script that cross-checks
+#       @tauri-apps/* npm package versions against tauri-* Cargo crate
+#       versions so mismatches are caught before a build is attempted.
+# ============================================================
+
 name: "tsc-check"
 
 on:
@@ -9,15 +36,33 @@ jobs:
   tsc-check:
     name: TypeScript Check
     runs-on: ubuntu-22.04
+
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup Bun
+      # ── 1. Checkout ───────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── 2. Install Bun ────────────────────────────────────────
+      - name: Set up Bun
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-      - name: Install Dependencies
+
+      # ── 3. Install JS/TS dependencies ─────────────────────────
+      - name: Install dependencies
         run: bun install
-      - name: Check Tauri Plugin Versions
+
+      # ── 4. Verify Tauri plugin version alignment ──────────────
+      #   Checks that @tauri-apps/* versions in package.json match
+      #   the corresponding tauri-plugin-* versions in Cargo.toml.
+      #   Version mismatches cause cryptic runtime errors, so this
+      #   catches them early at PR time.
+      - name: Check Tauri plugin version alignment
         run: bun run script/check-tauri-versions
-      - name: TypeScript Check
+
+      # ── 5. TypeScript type check ─────────────────────────────
+      #   Runs the TypeScript compiler in type-check-only mode.
+      #   --noEmit means no output files are written; this is
+      #   purely a validity check.
+      - name: TypeScript type check (tsc --noEmit)
         run: ./node_modules/.bin/tsc --noEmit

@@ -1,3 +1,64 @@
+# ============================================================
+# Workflow: Edge Build (Rolling / Pre-release)
+# ============================================================
+#
+# PURPOSE:
+#   Builds and publishes rolling "edge" pre-release packages to
+#   the GitHub "edge" release tag on every push to main.
+#   Edge builds are intended for early adopters and testers who
+#   want the latest features before a tagged stable release.
+#
+#   ⚠️  Edge builds are UNSIGNED and UNSTABLE.  They are not
+#   recommended for production use.
+#
+# PIPELINE (3 jobs, jobs 2 runs in parallel after job 1):
+#
+#   1. create-release   — ensures the rolling "edge" GH release
+#                         tag exists and clears old assets
+#   2. build-edge       — builds Tauri packages for each platform
+#                         and uploads to the "edge" release
+#
+# TRIGGERS:
+#   - push → main
+#   - workflow_dispatch — allows manual re-build without a push
+#
+# CONCURRENCY:
+#   One run per workflow + ref combination.
+#   A new push cancels the in-progress build.
+#
+# PLATFORMS (build-edge matrix):
+#   - ubuntu-22.04       →  x86_64 Linux (.deb, .rpm, AppImage*)
+#   - ubuntu-24.04-arm   →  aarch64 Linux (.deb, .rpm)
+#   - macos-latest       →  aarch64 macOS (.app.tar.gz) [unsigned]
+#
+#   * AppImage files are intentionally skipped in the upload step
+#     because they require FUSE and are not bundled by default.
+#
+# REQUIRED SECRETS:
+#   TAURI_SIGNING_PRIVATE_KEY          — your own Ed25519 key used
+#   TAURI_SIGNING_PRIVATE_KEY_PASSWORD   to sign updater manifests
+#     Generate once with: cargo tauri signer generate -w ~/.tauri/key
+#     Then add both values to GitHub repo secrets.
+#
+#   GITHUB_TOKEN — auto-provided; used to create/edit the GH release
+#
+# OPTIONAL (currently disabled — see TBD block below):
+#   APPLE_CERTIFICATE          — base64-encoded .p12 certificate
+#   APPLE_CERTIFICATE_PASSWORD — certificate passphrase
+#   APPLE_ID                   — Apple ID email
+#   APPLE_PASSWORD             — App-specific password
+#   APPLE_SIGNING_IDENTITY     — e.g. "Developer ID Application: ..."
+#   APPLE_TEAM_ID              — 10-character Apple team identifier
+#
+# TOOLS USED:
+#   - Bun           (oven-sh/setup-bun)        — JS package manager
+#   - Node.js LTS   (actions/setup-node)        — required by tauri-action
+#   - Rust stable   (dtolnay/rust-toolchain)   — Rust compiler
+#   - Rust cache    (swatinem/rust-cache)       — speeds up incremental builds
+#   - Tauri build   (tauri-apps/tauri-action)  — bundles the desktop app
+#   - GitHub CLI    (gh, bundled)              — uploads release assets
+# ============================================================
+
 name: edge
 
 on:
@@ -15,6 +76,12 @@ env:
   APP_CHANNEL: edge
 
 jobs:
+  # ─────────────────────────────────────────────────────────────
+  # Job 1: create-release
+  # Ensures the "edge" pre-release tag exists on GitHub.
+  # If it already exists, the release notes are updated and all
+  # stale assets are deleted so only the latest build is present.
+  # ─────────────────────────────────────────────────────────────
   create-release:
     name: Ensure edge release exists
     runs-on: ubuntu-latest
@@ -22,303 +89,239 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v4
+      # ── 1. Checkout ───────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Create or update edge release
+      # ── 2. Create or update the rolling "edge" release ────────
+      - name: Create or update "edge" GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          # Check if edge release already exists
-          if gh release view edge >/dev/null 2>&1; then
-            echo "Edge release already exists, updating body..."
-            gh release edit edge --notes "**Rolling edge build** - updated with commit ${{ github.sha }}
+          NOTES="**⚠️ Rolling edge build — unstable, use at your own risk**
 
-          **⚠️ This is an unstable development build - use at your own risk**
+          Updated with commit: ${{ github.sha }}
+          Latest commit message: ${{ github.event.head_commit.message }}
 
-          Latest commit: ${{ github.event.head_commit.message }}
-          Built from: ${{ github.sha }}"
-            gh release view edge --json assets | jq -r '.assets[].name' | \
-              while read name; do \
-                echo Deleting existing asset: "$name"
-                gh release delete-asset edge "$name" -y
-              done
+          These packages are unsigned. See the [README](https://github.com/${{ github.repository }}/blob/main/README.md) for installation instructions."
+
+          if gh release view edge > /dev/null 2>&1; then
+            echo "Edge release exists — updating notes and clearing old assets..."
+            gh release edit edge --notes "$NOTES"
+
+            # Delete all existing assets so outdated builds don't accumulate
+            gh release view edge --json assets \
+              | jq -r '.assets[].name' \
+              | while read name; do
+                  echo "  Deleting old asset: $name"
+                  gh release delete-asset edge "$name" -y
+                done
           else
             echo "Creating new edge release..."
             gh release create edge \
               --title "Edge Release (Rolling)" \
-              --notes "**Rolling edge build** - updated with commit ${{ github.sha }}
-
-            **⚠️ This is an unstable development build - use at your own risk**
-            
-            Latest commit: ${{ github.event.head_commit.message }}
-            Built from: ${{ github.sha }}" \
+              --notes "$NOTES" \
               --prerelease \
               --latest=false
           fi
 
+  # ─────────────────────────────────────────────────────────────
+  # Job 2: build-edge
+  # Builds the Tauri application for each supported platform and
+  # uploads the packaged artifacts to the "edge" GH release.
+  # ─────────────────────────────────────────────────────────────
   build-edge:
-    name: Build edge release
+    name: Build edge (${{ matrix.platform }})
     needs: create-release
     permissions:
       contents: write
 
     strategy:
-      fail-fast: false
+      fail-fast: false   # Allow all platforms to finish even if one fails
       matrix:
         include:
-          - platform: "macos-latest"
-            args: "--target aarch64-apple-darwin"
           - platform: "ubuntu-22.04"
             args: ""
           - platform: "ubuntu-24.04-arm"
             args: "--target aarch64-unknown-linux-gnu"
+          - platform: "macos-latest"
+            # Builds for Apple Silicon (M1+).
+            # NOTE: macOS builds are currently UNSIGNED.
+            #       See the TBD block inside the tauri-action step.
+            args: "--target aarch64-apple-darwin"
 
     runs-on: ${{ matrix.platform }}
 
     steps:
-      - uses: actions/checkout@v4
+      # ── 1. Checkout ───────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.TS_CLONE_DEPLOY_KEY }}
-
-      - name: install dependencies (ubuntu only)
+      # ── 2. Install Linux system dependencies ─────────────────
+      #   Only required on Linux. macOS has WebKit bundled.
+      - name: Install Linux system dependencies
         if: matrix.platform == 'ubuntu-22.04' || matrix.platform == 'ubuntu-24.04-arm'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libasound2-dev
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libappindicator3-dev \
+            librsvg2-dev \
+            patchelf \
+            libasound2-dev
 
-      - name: Run sccache-cache
-        uses: mozilla-actions/sccache-action@v0.0.7
-
-      - name: Setup Bun
+      # ── 3. Set up Bun ─────────────────────────────────────────
+      #   Bun handles JS/TS dependency installation.
+      - name: Set up Bun
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
-      - name: setup node
+      # ── 4. Set up Node.js LTS ─────────────────────────────────
+      #   tauri-apps/tauri-action requires Node.js to be present
+      #   alongside Bun for its internal scripts.
+      - name: Set up Node.js LTS
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
 
-      - name: install Rust stable
+      # ── 5. Install Rust stable ───────────────────────────────
+      #   The cross-compile target is only set for platforms that
+      #   need it (macOS aarch64, Linux arm64).
+      - name: Install Rust (stable)
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin' || (matrix.platform == 'ubuntu-24.04-arm' && 'aarch64-unknown-linux-gnu' || '') }}
 
-      - name: install frontend dependencies
+      # ── 6. Cache Rust build artifacts ────────────────────────
+      #   Significantly speeds up incremental builds after small
+      #   code changes.
+      - name: Cache Rust build artifacts
+        uses: swatinem/rust-cache@v2
+
+      # ── 7. Install JS/TS dependencies ─────────────────────────
+      - name: Install frontend dependencies
         run: bun install
 
-      - name: update edge version
+      # ── 8. Stamp edge version into Cargo.toml ─────────────────
+      #   Appends the short commit SHA to the semver version so
+      #   edge artifacts are clearly distinguishable from stable
+      #   releases (e.g. "0.3.0-beta.2-a1b2c3d").
+      - name: Stamp edge version (version-commitSHA)
         id: update-edge-version
         run: |
-          # Get the current version from Cargo.toml
-          version=$(grep -m 1 '^version = ' Cargo.toml | sed 's/version = "\([^"]*\)".*/\1/')
-          # Get the short commit SHA
+          version=$(grep -m 1 '^version = ' Cargo.toml \
+            | sed 's/version = "\([^"]*\)".*/\1/')
           commit_sha=$(git rev-parse --short HEAD)
-          # Create the new version string
           new_version="${version}-${commit_sha}"
-          # Replace the version in both Cargo.toml files
+
+          # Update root and backend Cargo.toml in-place
           sed -i.bak "s/^version = \"${version}\"/version = \"${new_version}\"/" Cargo.toml
           sed -i.bak "s/^version = \"${version}\"/version = \"${new_version}\"/" backend/Cargo.toml
-          echo "new_version=${new_version}" >> $GITHUB_OUTPUT
 
-      - uses: tauri-apps/tauri-action@v0
+          echo "new_version=${new_version}" >> $GITHUB_OUTPUT
+          echo "Stamped version: ${new_version}"
+
+      # ── 9. Build with Tauri ───────────────────────────────────
+      - name: Build Tauri application
         id: tauri-action
+        uses: tauri-apps/tauri-action@v0
         env:
-          TAURI_BUNDLER_DMG_IGNORE_CI: false
-          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
-          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
-          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY}}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          # Updater signing keys — required for Tauri's auto-updater to
+          # validate packages.  Generate your own key pair once with:
+          #   cargo tauri signer generate -w ~/.tauri/key
+          # Then add TAURI_SIGNING_PRIVATE_KEY and
+          # TAURI_SIGNING_PRIVATE_KEY_PASSWORD to your repo secrets.
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_RELEASE: ${{ steps.update-edge-version.outputs.new_version }}
+
+          # Node.js heap limit — needed for large front-end builds
           NODE_OPTIONS: "--max-old-space-size=6144"
-          RUSTC_WRAPPER: sccache
+
           IS_EDGE_BUILD: true
+
+          # ── TBD: Apple Code Signing ─────────────────────────
+          # To enable macOS code signing and notarisation, add the
+          # following secrets to your GitHub repository and uncomment:
+          #
+          # APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          # APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          # APPLE_ID: ${{ secrets.APPLE_ID }}
+          # APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          # APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          # APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          # TAURI_BUNDLER_DMG_IGNORE_CI: false
+          #
+          # See: https://tauri.app/distribute/sign/macos/
         with:
           args: ${{ matrix.args }}
 
-      - name: Rename platform-specific files and upload to GitHub release
+      # ── 10. Upload artifacts to "edge" GitHub release ─────────
+      #   Renames platform-specific filenames for clarity, then
+      #   uploads to the rolling "edge" pre-release.
+      #
+      #   Skipped file types:
+      #     .app   — raw macOS app bundle (too large, use .app.tar.gz)
+      #     .AppImage — optional; skipped to keep release lean
+      - name: Rename and upload artifacts to "edge" release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          # Get the artifact paths from tauri-action output
-          echo "Artifact paths: ${{ steps.tauri-action.outputs.artifactPaths }}"
+          echo "Artifacts produced: ${{ steps.tauri-action.outputs.artifactPaths }}"
 
-          # Remove brackets and read into array
-          paths_str=$(echo "${{ steps.tauri-action.outputs.artifactPaths }}" | sed 's/^\[//;s/\]$//')
+          # Parse the JSON array of artifact paths
+          paths_str=$(echo "${{ steps.tauri-action.outputs.artifactPaths }}" \
+            | sed 's/^\[//;s/\]$//')
           IFS=',' read -ra paths <<< "$paths_str"
 
-          # Determine platform suffix based on matrix args
+          # Determine if we need a platform suffix (macOS aarch64 builds)
           platform_suffix=""
           if [[ "${{ matrix.args }}" == *"aarch64-apple-darwin"* ]]; then
             platform_suffix="-aarch64"
           fi
 
-          # Rename files and upload to GitHub release
           for file in "${paths[@]}"; do
-            echo "Checking file: $file"
+            file="${file// /}"   # trim any stray whitespace
+            echo "Processing: $file"
+
             if [[ "$file" == *.deb ]] || [[ "$file" == *.rpm ]]; then
-              # Extract directory and filename
+              # Normalise spaces in Linux package filenames
               dir=$(dirname "$file")
               filename=$(basename "$file")
-
-              echo "Processing file: $filename"
-              new_filename=$(echo "$filename" | sed 's/Atuin Desktop/Atuin_Desktop/g')
-              echo "New filename: $new_filename"
+              new_filename=$(echo "$filename" | sed 's/ /_/g')
 
               if [[ "$filename" != "$new_filename" ]]; then
-                new_path="$dir/$new_filename"
-                echo "Renaming: $file -> $new_path"
-                mv "$file" "$new_path"
-                gh release upload "edge" "$new_path" --clobber
+                mv "$file" "$dir/$new_filename"
+                gh release upload "edge" "$dir/$new_filename" --clobber
               else
-                echo "No rename needed for: $filename"
                 gh release upload "edge" "$file" --clobber
               fi
+
             elif [[ "$file" == *.app.tar.gz ]] || [[ "$file" == *.app.tar.gz.sig ]]; then
-              # Rename macOS files to include platform suffix
+              # Append platform suffix to macOS update bundles
               if [[ -n "$platform_suffix" ]]; then
                 dir=$(dirname "$file")
                 filename=$(basename "$file")
-                
-                echo "Processing macOS file: $filename"
                 if [[ "$file" == *.app.tar.gz.sig ]]; then
-                  new_filename=$(echo "$filename" | sed "s/\.app\.tar\.gz\.sig$/${platform_suffix}.app.tar.gz.sig/")
-                elif [[ "$file" == *.app.tar.gz ]]; then
-                  new_filename=$(echo "$filename" | sed "s/\.app\.tar\.gz$/${platform_suffix}.app.tar.gz/")
+                  new_filename=$(echo "$filename" \
+                    | sed "s/\.app\.tar\.gz\.sig$/${platform_suffix}.app.tar.gz.sig/")
+                else
+                  new_filename=$(echo "$filename" \
+                    | sed "s/\.app\.tar\.gz$/${platform_suffix}.app.tar.gz/")
                 fi
-                
-                new_path="$dir/$new_filename"
-                echo "Renaming: $file -> $new_path"
-                mv "$file" "$new_path"
-                gh release upload "edge" "$new_path" --clobber
+                mv "$file" "$(dirname "$file")/$new_filename"
+                gh release upload "edge" "$(dirname "$file")/$new_filename" --clobber
               else
                 gh release upload "edge" "$file" --clobber
               fi
+
             elif [[ "$file" == *.app ]]; then
-              # skip this file
-              echo "Skipping raw .app bundle: $file"
+              echo "Skipping raw .app bundle (use .app.tar.gz instead): $file"
+
             elif [[ "$file" == *.AppImage ]]; then
-              # skip AppImage files
-              echo "Skipping AppImage: $file"
+              echo "Skipping AppImage (not distributed in edge builds): $file"
+
             else
               gh release upload "edge" "$file" --clobber
-            fi
-          done
-
-  build-edge-cef:
-    name: Build edge release (CEF)
-    needs: create-release
-    permissions:
-      contents: write
-
-    runs-on: macos-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.TS_CLONE_DEPLOY_KEY }}
-
-      - name: Run sccache-cache
-        uses: mozilla-actions/sccache-action@v0.0.7
-
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-
-      - name: setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-
-      - name: install Rust stable
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: aarch64-apple-darwin
-
-      - name: Install CEF tauri-cli
-        run: cargo install --git https://github.com/tauri-apps/tauri --branch feat/cef tauri-cli
-
-      - name: install frontend dependencies
-        run: bun install
-
-      - name: update edge version
-        id: update-edge-version
-        run: |
-          # Get the current version from Cargo.toml
-          version=$(grep -m 1 '^version = ' Cargo.toml | sed 's/version = "\([^"]*\)".*/\1/')
-          # Get the short commit SHA
-          commit_sha=$(git rev-parse --short HEAD)
-          # Create the new version string
-          new_version="${version}-${commit_sha}"
-          # Replace the version in both Cargo.toml files
-          sed -i.bak "s/^version = \"${version}\"/version = \"${new_version}\"/" Cargo.toml
-          sed -i.bak "s/^version = \"${version}\"/version = \"${new_version}\"/" backend/Cargo.toml
-          echo "new_version=${new_version}" >> $GITHUB_OUTPUT
-
-      - name: Build with CEF
-        env:
-          TAURI_BUNDLER_DMG_IGNORE_CI: false
-          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
-          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
-          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
-          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_RELEASE: ${{ steps.update-edge-version.outputs.new_version }}
-          NODE_OPTIONS: "--max-old-space-size=6144"
-          RUSTC_WRAPPER: sccache
-          IS_EDGE_BUILD: true
-        run: node script/tauri cef build --target aarch64-apple-darwin
-
-      - name: Find and upload CEF artifacts
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          # Find built artifacts in target directory
-          artifact_dir="target/aarch64-apple-darwin/release/bundle"
-
-          echo "Looking for artifacts in: $artifact_dir"
-
-          # Find .app.tar.gz and .app.tar.gz.sig files
-          for file in "$artifact_dir/macos"/*.app.tar.gz "$artifact_dir/macos"/*.app.tar.gz.sig; do
-            if [[ -f "$file" ]]; then
-              filename=$(basename "$file")
-
-              # Add -cef suffix before the extension
-              if [[ "$file" == *.app.tar.gz.sig ]]; then
-                new_filename=$(echo "$filename" | sed 's/\.app\.tar\.gz\.sig$/-cef-aarch64.app.tar.gz.sig/')
-              elif [[ "$file" == *.app.tar.gz ]]; then
-                new_filename=$(echo "$filename" | sed 's/\.app\.tar\.gz$/-cef-aarch64.app.tar.gz/')
-              fi
-
-              echo "Uploading: $filename as $new_filename"
-              mv "$file" "$(dirname "$file")/$new_filename"
-              gh release upload "edge" "$(dirname "$file")/$new_filename" --clobber --repo "${{ github.repository }}"
-            fi
-          done
-
-          # Also upload DMG if it exists
-          for file in "$artifact_dir/dmg"/*.dmg; do
-            if [[ -f "$file" ]]; then
-              filename=$(basename "$file")
-              # DMG already has _aarch64 in name, just add -cef suffix
-              new_filename=$(echo "$filename" | sed 's/\.dmg$/-cef.dmg/')
-
-              echo "Uploading DMG: $filename as $new_filename"
-              mv "$file" "$(dirname "$file")/$new_filename"
-              gh release upload "edge" "$(dirname "$file")/$new_filename" --clobber --repo "${{ github.repository }}"
             fi
           done
