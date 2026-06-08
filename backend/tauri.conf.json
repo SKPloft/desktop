@@ -71,7 +71,7 @@
       "requireLiteralLeadingDot": false
     },
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEJEQjUyN0ZGQUUxQUNBNzMKUldSenlocXUveWUxdlQ0SXoyWUU0eTNEbUxURWt4UWFsZE1pL1FwVFJWRTBoeVF5UFVoSTc3djUK",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDM1NDExQkEwRDEwNjk2ODUKUldTRmxnYlJvQnRCTmJWNitQSWIyMW9NenNVaUY0OG1JcHl6dDdEZTF1ajR2eklsekFTb2RDUW8K",
       "dialog": true,
       "endpoints": [
         "https://github.com/skploft/desktop-vrcd/releases/latest/download/latest.json",
