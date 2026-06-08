@@ -1,3 +1,53 @@
+# ============================================================
+# Workflow: SSH Integration Tests
+# ============================================================
+#
+# PURPOSE:
+#   Runs the SSH feature's integration test suite against a real
+#   SSH server running inside a Docker Compose container.
+#   These tests require a live network socket and therefore
+#   cannot run in unit-test mode — they are gated with
+#   `#[ignore]` in the source and must be run with `--ignored`.
+#
+# TRIGGERS:
+#   - push → main  (paths below)
+#   - pull_request (paths below)
+#   - workflow_dispatch — can be triggered manually for debugging
+#
+#   Paths that activate this workflow:
+#     crates/atuin-desktop-runtime/src/ssh/**
+#     docker/ssh-test/**
+#     .github/workflows/ssh-integration.yaml
+#
+# CONCURRENCY:
+#   One run per workflow + branch combination.
+#   A new push cancels the in-progress run for the same branch.
+#
+# REQUIRED SECRETS:
+#   (none — all credentials are generated on the fly)
+#
+# ENVIRONMENT VARIABLES (injected into the test process):
+#   SSH_TEST_HOST     = localhost
+#   SSH_TEST_PORT     = 2222
+#   SSH_TEST_USER     = testuser
+#   SSH_TEST_PASSWORD = testpassword
+#   SSH_TEST_KEYS_DIR = ${{ github.workspace }}/docker/ssh-test/test-keys
+#   RUST_LOG          = debug  (verbose logging for easier failure diagnosis)
+#
+# REQUIRED SYSTEM PACKAGES:
+#   libwebkit2gtk-4.1-dev   — Tauri WebKitGTK backend
+#   libappindicator3-dev    — system tray
+#   librsvg2-dev            — SVG rendering
+#   patchelf                — ELF patching for bundlers
+#   libasound2-dev          — audio support
+#
+# TOOLS USED:
+#   - Docker Compose         — spins up the test SSH server container
+#   - Rust stable            (dtolnay/rust-toolchain)
+#   - Rust build cache       (Swatinem/rust-cache)
+#   - cache-apt-pkgs-action  (awalsh128/cache-apt-pkgs-action)
+# ============================================================
+
 name: SSH Integration Tests
 
 concurrency:
@@ -18,7 +68,7 @@ on:
       - "docker/ssh-test/**"
       - ".github/workflows/ssh-integration.yaml"
 
-  # Allow manual triggering for debugging
+  # Allow manual runs for debugging
   workflow_dispatch:
 
 env:
@@ -30,43 +80,70 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - uses: actions/checkout@v4
+      # ── 1. Checkout ───────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
+      # ── 2. Generate ephemeral SSH test keys ───────────────────
+      #   Creates a fresh key pair in docker/ssh-test/test-keys/
+      #   so tests never rely on any pre-committed private key.
       - name: Generate test SSH keys
         run: |
           chmod +x docker/ssh-test/setup-keys.sh
           docker/ssh-test/setup-keys.sh
 
+      # ── 3. Start the SSH test container ──────────────────────
+      #   Builds (if not cached) and starts an OpenSSH server in
+      #   a Docker container, mapped to port 2222 on localhost.
       - name: Build and start SSH test container
         run: |
           docker compose -f docker/ssh-test/docker-compose.yml build
           docker compose -f docker/ssh-test/docker-compose.yml up -d
 
-      - name: Wait for SSH server to be ready
+      # ── 4. Wait for SSH server readiness ─────────────────────
+      #   The container declares a health check; we poll until it
+      #   reports "healthy" (max 60 seconds).
+      - name: Wait for SSH server to become healthy
         run: |
-          echo "Waiting for SSH server to be healthy..."
-          timeout 60 bash -c 'until docker compose -f docker/ssh-test/docker-compose.yml ps | grep -q "healthy"; do echo "Waiting..."; sleep 2; done'
-          echo "SSH server is ready"
+          echo "Polling until SSH container reports healthy..."
+          timeout 60 bash -c \
+            'until docker compose -f docker/ssh-test/docker-compose.yml ps | grep -q "healthy"; do
+               echo "  Still waiting..."; sleep 2
+             done'
+          echo "SSH server is healthy."
 
-      - name: Verify SSH connection works
+      # ── 5. Verify SSH port accessibility ─────────────────────
+      #   Quick sanity-check that port 22 inside the container is
+      #   actually reachable before spending time compiling tests.
+      - name: Verify SSH port is accessible
         run: |
-          # Quick sanity check that we can connect
-          docker compose -f docker/ssh-test/docker-compose.yml exec -T sshd nc -z localhost 22
-          echo "SSH port is accessible"
+          docker compose -f docker/ssh-test/docker-compose.yml \
+            exec -T sshd nc -z localhost 22
+          echo "Port 22 is accessible inside the container."
 
-      - name: Install Rust
+      # ── 6. Install Rust stable ───────────────────────────────
+      - name: Install Rust (stable)
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Cache cargo
+      # ── 7. Cache Rust build artifacts ────────────────────────
+      - name: Cache Rust build artifacts
         uses: Swatinem/rust-cache@v2
 
-      - name: Install system dependencies
+      # ── 8. Install Linux system dependencies ─────────────────
+      #   Skipped in local act runs (slim act image lacks these APT sources).
+      #   Real GitHub ubuntu-22.04 runners install them cleanly.
+      - name: Install Linux system dependencies
+        if: "!env.ACT"
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
           packages: libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libasound2-dev
           version: 1.0
 
-      - name: Run SSH Integration Tests
+      # ── 9. Run SSH integration tests ─────────────────────────
+      #   --ignored         — required to run #[ignore]-gated tests
+      #   --test-threads=1  — serial execution avoids port conflicts
+      #   --nocapture       — show stdout/stderr for debugging
+      - name: Run SSH integration tests
         env:
           SSH_TEST_HOST: localhost
           SSH_TEST_PORT: 2222
@@ -75,9 +152,15 @@ jobs:
           SSH_TEST_KEYS_DIR: ${{ github.workspace }}/docker/ssh-test/test-keys
           RUST_LOG: debug
         run: |
-          cargo test -p atuin-desktop-runtime ssh::integration_tests -- --ignored --test-threads=1 --nocapture
+          cargo test \
+            -p atuin-desktop-runtime \
+            ssh::integration_tests \
+            -- --ignored --test-threads=1 --nocapture
 
-      - name: Show container logs on failure
+      # ── 10. Dump logs on failure ──────────────────────────────
+      #   Only runs when a previous step has failed; prints the
+      #   SSH server's logs to help diagnose container-side issues.
+      - name: Show container logs (on failure)
         if: failure()
         run: |
           echo "=== Docker Compose Status ==="
@@ -86,7 +169,8 @@ jobs:
           echo "=== SSH Server Logs ==="
           docker compose -f docker/ssh-test/docker-compose.yml logs sshd
 
-      - name: Stop SSH test container
+      # ── 11. Tear down container ───────────────────────────────
+      #   Always runs (success or failure) to free runner resources.
+      - name: Tear down SSH test container
         if: always()
-        run: |
-          docker compose -f docker/ssh-test/docker-compose.yml down
+        run: docker compose -f docker/ssh-test/docker-compose.yml down

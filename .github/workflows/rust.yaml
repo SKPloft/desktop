@@ -1,3 +1,49 @@
+# ============================================================
+# Workflow: Rust CI — Tests and Checks
+# ============================================================
+#
+# PURPOSE:
+#   Runs the full Rust test suite and static-analysis checks on
+#   every push to main and on every pull request that touches
+#   Rust code.
+#
+#   Two independent job groups run in parallel:
+#
+#   rust-tests  — runs `cargo test` across the entire workspace
+#                 on both Linux (x86_64) and macOS (aarch64).
+#
+#   rust-checks — runs three static-analysis passes on Linux only:
+#                   • cargo check    — fast compile without linking
+#                   • cargo clippy   — Rust linter (warnings = errors)
+#                   • cargo fmt      — format check (does not modify files)
+#
+# TRIGGERS:
+#   - push → main (always run to catch regressions on the default branch)
+#   - pull_request touching:
+#       backend/**      — Rust backend crate
+#       crates/**       — all workspace crates
+#       .github/**      — workflow changes themselves
+#
+# CONCURRENCY:
+#   One run per workflow + branch combination.
+#   A new push cancels the in-progress run for the same branch.
+#
+# REQUIRED SECRETS:
+#   (none — uses GITHUB_TOKEN implicitly for checkout)
+#
+# REQUIRED SYSTEM PACKAGES (Linux only, installed via cache-apt-pkgs):
+#   libwebkit2gtk-4.1-dev   — Tauri's WebView backend on Linux
+#   libappindicator3-dev    — System tray support
+#   librsvg2-dev            — SVG rendering
+#   patchelf                — ELF binary patching used by bundlers
+#   libasound2-dev          — Audio support
+#
+# TOOLS USED:
+#   - Rust stable           (dtolnay/rust-toolchain)
+#   - sccache               (mozilla-actions/sccache-action) — compiler cache
+#   - cache-apt-pkgs-action (awalsh128/cache-apt-pkgs-action) — APT dependency cache
+# ============================================================
+
 name: Rust
 
 concurrency:
@@ -18,82 +64,122 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
+  # ─────────────────────────────────────────────────────────────
+  # Job: rust-tests
+  # Runs the full test suite via `cargo test`.
+  # Matrix: Linux x86_64 and macOS arm64 to catch platform-
+  #         specific issues early.
+  # ─────────────────────────────────────────────────────────────
   rust-tests:
-    name: ${{ matrix.name }}
+    name: Test (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false   # Let both platform jobs finish even if one fails
       matrix:
         include:
-          - name: Test (Ubuntu)
-            os: ubuntu-22.04
-            atuin_run_url: https://atuin-binary.t3.storage.dev/bin/main/x86_64-unknown-linux-gnu/atuin-run
-          - name: Test (macOS)
-            os: macos-latest
-            atuin_run_url: https://atuin-binary.t3.storage.dev/bin/main/aarch64-apple-darwin/atuin-run
+          - os: ubuntu-22.04
+          - os: macos-latest
+
     steps:
-      - uses: actions/checkout@v4
+      # ── 1. Checkout ───────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Install atuin-run
-        run: |
-          curl -L -o atuin-run ${{ matrix.atuin_run_url }}
-          sudo mv atuin-run /usr/local/bin/atuin-run
-          sudo chmod +x /usr/local/bin/atuin-run
+      # ── 2. Install Rust stable ───────────────────────────────
+      - name: Install Rust (stable)
+        uses: dtolnay/rust-toolchain@stable
 
-      - name: ${{ matrix.name }}
-        run: |
-          atuin-run ./runbooks/Run\ Rust\ tests.atrb
+      # ── 3. Cache Rust build artifacts ────────────────────────
+      - name: Cache Rust build artifacts
+        uses: swatinem/rust-cache@v2
 
-  rust-checks:
-    name: ${{ matrix.name }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        include:
-          - name: Check
-            command: check
-            components: ""
-            os: ubuntu-22.04
-          - name: Clippy
-            command: clippy
-            components: clippy
-            os: ubuntu-22.04
-          - name: Format
-            command: fmt
-            components: rustfmt
-            os: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install latest rust
-        uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: stable
-          components: ${{ matrix.components }}
-
-      - uses: awalsh128/cache-apt-pkgs-action@latest
-        if: runner.os == 'Linux'
+      # ── 4. Install Linux system dependencies ─────────────────
+      #   Required by Tauri's WebKitGTK backend and audio support.
+      #   Skipped automatically on macOS.
+      #   Also skipped when running locally via `act` ($ACT is set by act
+      #   automatically) because the lightweight act image lacks these
+      #   APT sources. On real GitHub-hosted ubuntu-22.04 runners this
+      #   installs cleanly.
+      - name: Install Linux system dependencies
+        if: runner.os == 'Linux' && !env.ACT
+        uses: awalsh128/cache-apt-pkgs-action@latest
         with:
           packages: libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libasound2-dev
           version: 1.0
 
-      - name: Run sccache-cache
+      # ── 5. Run tests ─────────────────────────────────────────
+      #   Runs the full workspace test suite.
+      #   Note: integration tests that require a live SSH container
+      #   are in the separate ssh-integration.yaml workflow.
+      - name: Run Rust tests
+        run: cargo test
+
+  # ─────────────────────────────────────────────────────────────
+  # Job: rust-checks
+  # Static analysis matrix: check, clippy, fmt.
+  # All three run on ubuntu-22.04 only (platform-agnostic checks).
+  # ─────────────────────────────────────────────────────────────
+  rust-checks:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false   # Show all check failures at once
+      matrix:
+        include:
+          - name: Cargo Check
+            command: check
+            components: ""
+          - name: Clippy
+            command: clippy
+            components: clippy
+          - name: Rustfmt
+            command: fmt
+            components: rustfmt
+
+    steps:
+      # ── 1. Checkout ───────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── 2. Install Rust stable + required components ──────────
+      - name: Install Rust (stable) with components
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          # Empty string is valid and means "no extra component".
+          components: ${{ matrix.components }}
+
+      # ── 3. Install Linux system dependencies (cached) ─────────
+      #   Skipped in local act runs (slim Docker image lacks these repos).
+      #   cargo fmt/clippy/check do not need webkit/GTK to run — only
+      #   full compilation of the Tauri backend requires them.
+      - name: Install Linux system dependencies
+        if: "!env.ACT"
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libasound2-dev
+          version: 1.0
+
+      # ── 4. Enable sccache compiler cache ─────────────────────
+      - name: Set up sccache
         uses: mozilla-actions/sccache-action@v0.0.7
 
+      # ── 5. Run the static analysis check ─────────────────────
       - name: Run ${{ matrix.name }}
         env:
           RUSTC_WRAPPER: sccache
         run: |
           case "${{ matrix.command }}" in
-            test)
-              cargo test
-              ;;
             check)
+              # Check that all crates compile cleanly.
+              # --features wry selects the default WebView backend.
               cargo check --no-default-features --features wry
               ;;
             clippy)
+              # Treat clippy warnings as errors so they don't accumulate.
               cargo clippy -- -D warnings
               ;;
             fmt)
+              # Verify formatting without modifying files.
               cargo fmt -- --check
               ;;
           esac

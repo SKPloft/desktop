@@ -1,9 +1,73 @@
+# ============================================================
+# Workflow: Publish Stable Release
+# ============================================================
+#
+# PURPOSE:
+#   Builds and publishes a stable, versioned release whenever a
+#   semver tag (v*.*.*) is pushed.  The release is initially
+#   created as a draft so maintainers can review it before
+#   marking it as the latest public release.
+#
+# PIPELINE (3 sequential stages):
+#
+#   1. generate-changelog  — uses git-cliff to auto-generate
+#                            release notes from conventional commits
+#   2. draft               — creates a draft GitHub release with
+#                            the generated changelog body
+#   3. build               — builds Tauri packages for each
+#                            platform and uploads to the draft release
+#
+#   After all build jobs succeed, go to GitHub → Releases and
+#   click "Publish release" to make it public.
+#
+# TRIGGERS:
+#   - push → tags matching "v*.*.*"
+#   Note: a few specific early tags are excluded (legacy builds
+#         that pre-date this workflow):
+#         v0.0.101 – v0.0.106
+#
+# CONCURRENCY:
+#   One run per workflow + ref combination.
+#   A new tag push cancels any in-progress run for that tag.
+#
+# PLATFORMS (build matrix):
+#   - ubuntu-22.04       →  x86_64 Linux (.deb, .rpm)
+#   - ubuntu-24.04-arm   →  aarch64 Linux (.deb, .rpm)
+#   - macos-latest       →  aarch64 macOS (.app.tar.gz) [unsigned]
+#
+# REQUIRED SECRETS:
+#   TAURI_SIGNING_PRIVATE_KEY          — Ed25519 private key for
+#   TAURI_SIGNING_PRIVATE_KEY_PASSWORD   Tauri updater signatures
+#     Generate once: cargo tauri signer generate -w ~/.tauri/key
+#
+#   GITHUB_TOKEN — auto-provided; used to create the GH release
+#
+# OPTIONAL (currently disabled — see TBD block in build job):
+#   APPLE_CERTIFICATE          — base64-encoded .p12 certificate
+#   APPLE_CERTIFICATE_PASSWORD — certificate passphrase
+#   APPLE_ID                   — Apple ID email
+#   APPLE_PASSWORD             — app-specific password
+#   APPLE_SIGNING_IDENTITY     — "Developer ID Application: ..."
+#   APPLE_TEAM_ID              — 10-character Apple team ID
+#
+# TOOLS USED:
+#   - git-cliff    (orhun/git-cliff-action)     — changelog generator
+#   - softprops    (softprops/action-gh-release) — GH release creation
+#   - Bun          (oven-sh/setup-bun)           — JS package manager
+#   - Node.js LTS  (actions/setup-node)          — required by tauri-action
+#   - Rust stable  (dtolnay/rust-toolchain)     — Rust compiler
+#   - Rust cache   (swatinem/rust-cache)         — build artifact cache
+#   - Tauri build  (tauri-apps/tauri-action)    — app bundler
+#   - GitHub CLI   (gh, bundled)                — asset upload
+# ============================================================
+
 name: publish
 
 on:
   push:
     tags:
       - "v*.*.*"
+      # Exclude specific legacy tags that pre-date this workflow
       - "!v0.0.101"
       - "!v0.0.102"
       - "!v0.0.103"
@@ -16,198 +80,239 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  CN_APP_SLUG: vrcd/desktop-vrcd
   NODE_ENV: production
 
 jobs:
+  # ─────────────────────────────────────────────────────────────
+  # Stage 1: Generate changelog
+  # Uses git-cliff to produce structured release notes from
+  # conventional commit messages since the last tag.
+  # ─────────────────────────────────────────────────────────────
   generate-changelog:
     name: Generate changelog
     runs-on: ubuntu-24.04
     outputs:
+      # The generated markdown is passed to the draft job
       release_body: ${{ steps.git-cliff.outputs.content }}
 
     steps:
-      - name: checkout
+      # ── 1. Checkout (full history needed for git-cliff) ────────
+      - name: Checkout repository (full history)
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0   # git-cliff needs the full commit graph
 
-      - name: generate changelog
+      # ── 2. Generate changelog with git-cliff ──────────────────
+      #   git-cliff reads COMMIT_EDITMESSAGE history and formats
+      #   release notes according to ./cliff.toml.
+      #   --latest        — only include commits since the last tag
+      #   --no-exec       — don't run any pre/post hooks
+      #   --github-repo   — adds issue/PR links in the changelog
+      #   --tag-pattern   — only consider tags matching "v.*"
+      - name: Generate release notes (git-cliff)
         id: git-cliff
         uses: orhun/git-cliff-action@v4
         with:
           version: latest
-          args: -vv --latest --no-exec --github-repo ${{ github.repository }} --tag-pattern "v.*" --github-token ${{ github.token }}
+          args: >-
+            -vv
+            --latest
+            --no-exec
+            --github-repo ${{ github.repository }}
+            --tag-pattern "v.*"
+            --github-token ${{ github.token }}
 
+  # ─────────────────────────────────────────────────────────────
+  # Stage 2: Create draft GitHub release
+  # Creates a draft release with the generated changelog.
+  # The release remains a draft until a maintainer publishes it.
+  # ─────────────────────────────────────────────────────────────
   draft:
-    name: Draft releases
+    name: Create draft GitHub release
     runs-on: ubuntu-24.04
     needs: generate-changelog
     permissions:
       contents: write
     outputs:
+      # The upload URL is consumed by build jobs to attach assets
       upload_url: ${{ steps.create_gh_release.outputs.upload_url }}
 
     steps:
-      - uses: actions/checkout@v4
+      # ── 1. Checkout ───────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: create draft release
-        uses: crabnebula-dev/cloud-release@v0.1.0
-        with:
-          command: release draft ${{ env.CN_APP_SLUG }} --framework tauri
-          api-key: ${{ secrets.CN_API_KEY }}
-
-      - name: create draft github release
-        uses: softprops/action-gh-release@v2
+      # ── 2. Create draft GitHub release ───────────────────────
+      #   draft: true — keeps the release hidden until manually
+      #   published by a maintainer, allowing review before making
+      #   it the "latest" release.
+      - name: Create draft GitHub release
         id: create_gh_release
+        uses: softprops/action-gh-release@v2
         with:
           draft: true
           body: ${{ needs.generate-changelog.outputs.release_body }}
 
+  # ─────────────────────────────────────────────────────────────
+  # Stage 3: Build release artifacts
+  # Runs in parallel across all platform targets.
+  # Each job builds the Tauri app and uploads its artifacts to
+  # the draft GitHub release created in stage 2.
+  # ─────────────────────────────────────────────────────────────
   build:
-    name: Build releases
+    name: Build (${{ matrix.platform }})
     needs: draft
-
     permissions:
       contents: write
 
     strategy:
-      fail-fast: false
+      fail-fast: false   # Let all platforms finish even if one fails
       matrix:
         include:
-          - platform: "macos-latest" # for Arm based macs (M1 and above).
-            args: "--target aarch64-apple-darwin"
           - platform: "ubuntu-22.04"
             args: ""
           - platform: "ubuntu-24.04-arm"
             args: "--target aarch64-unknown-linux-gnu"
+          - platform: "macos-latest"
+            # Apple Silicon (M1+).  Currently UNSIGNED — see TBD block.
+            args: "--target aarch64-apple-darwin"
 
     runs-on: ${{ matrix.platform }}
+
     steps:
-      - uses: actions/checkout@v4
+      # ── 1. Checkout ───────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.TS_CLONE_DEPLOY_KEY }}
-
-      - name: install dependencies (ubuntu only)
+      # ── 2. Install Linux system dependencies ─────────────────
+      - name: Install Linux system dependencies
         if: matrix.platform == 'ubuntu-22.04' || matrix.platform == 'ubuntu-24.04-arm'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libasound2-dev
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libappindicator3-dev \
+            librsvg2-dev \
+            patchelf \
+            libasound2-dev
 
-      - name: Setup Bun
+      # ── 3. Set up Bun ─────────────────────────────────────────
+      - name: Set up Bun
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
-      - name: setup node
+      # ── 4. Set up Node.js LTS ─────────────────────────────────
+      #   Required by tauri-apps/tauri-action internally.
+      - name: Set up Node.js LTS
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
 
-      - name: install Rust stable
-        uses: dtolnay/rust-toolchain@stable # Set this to dtolnay/rust-toolchain@nightly
+      # ── 5. Install Rust stable ───────────────────────────────
+      #   Cross-compile targets are only set when needed.
+      - name: Install Rust (stable)
+        uses: dtolnay/rust-toolchain@stable
         with:
-          # Targets are set for macOS and ARM Linux runners to enable cross-compilation.
           targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin' || (matrix.platform == 'ubuntu-24.04-arm' && 'aarch64-unknown-linux-gnu' || '') }}
 
-      - name: Rust cache
+      # ── 6. Cache Rust build artifacts ────────────────────────
+      - name: Cache Rust build artifacts
         uses: swatinem/rust-cache@v2
 
-      - name: install frontend dependencies
+      # ── 7. Install JS/TS dependencies ─────────────────────────
+      - name: Install frontend dependencies
         run: bun install
 
-      - name: Set release version
-        # we need to remove the "v" prefix from the version for Sentry
-        id: version
-        run: echo "version=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
-
-      - uses: tauri-apps/tauri-action@v0
+      # ── 8. Build with Tauri ───────────────────────────────────
+      - name: Build Tauri application
         id: tauri-action
+        uses: tauri-apps/tauri-action@v0
         env:
-          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
-          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
-          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY}}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          # Updater signing — sign with your own Ed25519 key pair.
+          # Generate: cargo tauri signer generate -w ~/.tauri/key
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_RELEASE: ${{ steps.version.outputs.version }}
+
           NODE_OPTIONS: "--max-old-space-size=6144"
+
+          # ── TBD: Apple Code Signing ─────────────────────────
+          # Uncomment the block below and add the corresponding
+          # secrets to enable macOS code signing and notarisation.
+          # Without signing, macOS users will see a Gatekeeper
+          # warning when opening the app for the first time.
+          #
+          # APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          # APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          # APPLE_ID: ${{ secrets.APPLE_ID }}
+          # APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          # APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          # APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          # TAURI_BUNDLER_DMG_IGNORE_CI: false
+          #
+          # See: https://tauri.app/distribute/sign/macos/
         with:
           args: ${{ matrix.args }}
 
-      - name: Rename platform-specific files and upload to GitHub release
+      # ── 9. Upload artifacts to GitHub draft release ───────────
+      #   Normalises filenames (no spaces) and appends a platform
+      #   suffix to macOS update bundles for disambiguation.
+      - name: Rename and upload artifacts to draft GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          # Get the artifact paths from tauri-action output
-          echo "Artifact paths: ${{ steps.tauri-action.outputs.artifactPaths }}"
+          echo "Artifacts produced: ${{ steps.tauri-action.outputs.artifactPaths }}"
 
-          # Remove brackets and read into array
-          paths_str=$(echo "${{ steps.tauri-action.outputs.artifactPaths }}" | sed 's/^\[//;s/\]$//')
+          paths_str=$(echo "${{ steps.tauri-action.outputs.artifactPaths }}" \
+            | sed 's/^\[//;s/\]$//')
           IFS=',' read -ra paths <<< "$paths_str"
 
-          # Determine platform suffix based on matrix args
+          # macOS aarch64 builds get a "-aarch64" suffix
           platform_suffix=""
           if [[ "${{ matrix.args }}" == *"aarch64-apple-darwin"* ]]; then
             platform_suffix="-aarch64"
           fi
 
-          # Rename files and upload to GitHub release
           for file in "${paths[@]}"; do
-            echo "Checking file: $file"
+            file="${file// /}"   # strip stray whitespace
+            echo "Processing: $file"
+
             if [[ "$file" == *.deb ]] || [[ "$file" == *.rpm ]]; then
-              # Extract directory and filename
+              # Normalise spaces in Linux package filenames
               dir=$(dirname "$file")
               filename=$(basename "$file")
-
-              echo "Processing file: $filename"
-              new_filename=$(echo "$filename" | sed 's/Atuin Desktop/Atuin_Desktop/g')
-              echo "New filename: $new_filename"
+              new_filename=$(echo "$filename" | sed 's/ /_/g')
 
               if [[ "$filename" != "$new_filename" ]]; then
-                new_path="$dir/$new_filename"
-                echo "Renaming: $file -> $new_path"
-                mv "$file" "$new_path"
-                gh release upload "${{ github.ref_name }}" "$new_path" --clobber
+                mv "$file" "$dir/$new_filename"
+                gh release upload "${{ github.ref_name }}" "$dir/$new_filename" --clobber
               else
-                echo "No rename needed for: $filename"
                 gh release upload "${{ github.ref_name }}" "$file" --clobber
               fi
+
             elif [[ "$file" == *.app.tar.gz ]] || [[ "$file" == *.app.tar.gz.sig ]]; then
-              # Rename macOS files to include platform suffix
+              # Append platform suffix to macOS update bundles
               if [[ -n "$platform_suffix" ]]; then
                 dir=$(dirname "$file")
                 filename=$(basename "$file")
-                
-                echo "Processing macOS file: $filename"
                 if [[ "$file" == *.app.tar.gz.sig ]]; then
-                  new_filename=$(echo "$filename" | sed "s/\.app\.tar\.gz\.sig$/${platform_suffix}.app.tar.gz.sig/")
-                elif [[ "$file" == *.app.tar.gz ]]; then
-                  new_filename=$(echo "$filename" | sed "s/\.app\.tar\.gz$/${platform_suffix}.app.tar.gz/")
+                  new_filename=$(echo "$filename" \
+                    | sed "s/\.app\.tar\.gz\.sig$/${platform_suffix}.app.tar.gz.sig/")
+                else
+                  new_filename=$(echo "$filename" \
+                    | sed "s/\.app\.tar\.gz$/${platform_suffix}.app.tar.gz/")
                 fi
-                
-                new_path="$dir/$new_filename"
-                echo "Renaming: $file -> $new_path"
-                mv "$file" "$new_path"
-                gh release upload "${{ github.ref_name }}" "$new_path" --clobber
+                mv "$file" "$(dirname "$file")/$new_filename"
+                gh release upload "${{ github.ref_name }}" "$(dirname "$file")/$new_filename" --clobber
               else
                 gh release upload "${{ github.ref_name }}" "$file" --clobber
               fi
+
             elif [[ "$file" == *.app ]]; then
-              # skip this file
+              # Skip raw .app bundles — .app.tar.gz is used instead
               echo "Skipping raw .app bundle: $file"
+
             else
               gh release upload "${{ github.ref_name }}" "$file" --clobber
             fi
           done
-
-      - name: upload assets to cloudnebula
-        uses: crabnebula-dev/cloud-release@v0.1.0
-        with:
-          command: release upload ${{ env.CN_APP_SLUG }} --framework tauri
-          api-key: ${{ secrets.CN_API_KEY }}
