@@ -263,9 +263,13 @@ jobs:
         run: |
           echo "Artifacts produced: ${{ steps.tauri-action.outputs.artifactPaths }}"
 
-          paths_str=$(echo "${{ steps.tauri-action.outputs.artifactPaths }}" \
-            | sed 's/^\[//;s/\]$//')
-          IFS=',' read -ra paths <<< "$paths_str"
+          # Parse the JSON array of artifact paths produced by tauri-action.
+          # tauri-action outputs a JSON array like:
+          #   ["/path/to/App Name_1.0_amd64.deb","/path/to/App Name.app.tar.gz"]
+          # jq -r '.[]' decodes the JSON and prints one clean path per line,
+          # correctly preserving spaces inside filenames.
+          # jq is pre-installed on all GitHub-hosted runners and act images.
+          mapfile -t paths < <(echo '${{ steps.tauri-action.outputs.artifactPaths }}' | jq -r '.[]')
 
           # macOS aarch64 builds get a "-aarch64" suffix
           platform_suffix=""
@@ -274,7 +278,6 @@ jobs:
           fi
 
           for file in "${paths[@]}"; do
-            file="${file// /}"   # strip stray whitespace
             echo "Processing: $file"
 
             if [[ "$file" == *.deb ]] || [[ "$file" == *.rpm ]]; then
