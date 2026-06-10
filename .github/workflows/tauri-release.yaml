@@ -268,8 +268,12 @@ jobs:
           #   ["/path/to/App Name_1.0_amd64.deb","/path/to/App Name.app.tar.gz"]
           # jq -r '.[]' decodes the JSON and prints one clean path per line,
           # correctly preserving spaces inside filenames.
-          # jq is pre-installed on all GitHub-hosted runners and act images.
-          mapfile -t paths < <(echo '${{ steps.tauri-action.outputs.artifactPaths }}' | jq -r '.[]')
+          # Note: we use while-read instead of mapfile because macOS runners
+          # ship with bash 3.2, which does not have the mapfile built-in.
+          paths=()
+          while IFS= read -r p; do
+            paths+=("$p")
+          done < <(echo '${{ steps.tauri-action.outputs.artifactPaths }}' | jq -r '.[]')
 
           # macOS aarch64 builds get a "-aarch64" suffix
           platform_suffix=""
